@@ -219,7 +219,7 @@
           </div>
         </mat-tab>
 
-        <mat-tab label="Attachments" *ngIf="indicator.metaProperties && indicator.metaProperties.attachments && indicator.metaProperties.attachments.length">
+        <mat-tab label="Attachments" *ngIf="!blockAttachments && indicator.metaProperties && indicator.metaProperties.attachments && indicator.metaProperties.attachments.length">
           <br>
           <table class="uf-table">
             <thead>

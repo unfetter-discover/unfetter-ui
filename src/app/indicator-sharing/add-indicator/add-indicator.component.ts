@@ -19,6 +19,7 @@ import { KillChainPhasesForm } from '../../global/form-models/kill-chain-phases'
 import { FormatHelpers } from '../../global/static/format-helpers';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { GridFSFile } from '../../global/models/grid-fs-file';
+import { RunConfigService } from '../../core/services/run-config.service';
 
 @Component({
     selector: 'add-indicator',
@@ -46,6 +47,7 @@ export class AddIndicatorComponent implements OnInit {
     public files: File[];
     public uploadProgress: number;
     public submitErrorMsg: string;
+    public blockAttachments: boolean;
 
     @ViewChild('associatedDataStep') 
     public associatedDataStep: MatStep;
@@ -69,7 +71,8 @@ export class AddIndicatorComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public editData: any,
         private indicatorSharingService: IndicatorSharingService,
         private authService: AuthService,
-        private genericApi: GenericApi
+        private genericApi: GenericApi,
+        private runConfigService: RunConfigService
     ) { }    
 
     public ngOnInit() {
@@ -178,6 +181,11 @@ export class AddIndicatorComponent implements OnInit {
                     patternChange$.unsubscribe();
                 }
             );
+
+        this.runConfigService.config.subscribe((config) => {
+                this.blockAttachments = config.blockAttachments;
+            }
+        );
     }
 
     public resetForm(e = null) {
@@ -272,6 +280,11 @@ export class AddIndicatorComponent implements OnInit {
     private uploadFiles(): Promise<[any, GridFSFile[]]> {
         this.uploadProgress = 0;
         return new Promise((resolve) => {
+            if (this.blockAttachments) {
+                console.log('Attachments are blocked');
+                resolve([null, null]);
+                return;
+            }
             const newFiles = this.files.filter((file) => !(file as any).existingFile);
             if (newFiles.length) {
                 const uploadFile$ = this.genericApi.uploadAttachments(newFiles, (prog) => this.uploadProgress = prog)
