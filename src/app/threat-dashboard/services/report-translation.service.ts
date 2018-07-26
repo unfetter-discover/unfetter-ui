@@ -1,7 +1,7 @@
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { empty as observableEmpty, Observable, OperatorFunction } from 'rxjs';
+import { EMPTY, Observable, OperatorFunction } from 'rxjs';
 import { map } from '../../../../node_modules/rxjs/operators';
 import { Constance } from '../../utils/constance';
 import { ExternalDataTranslationRequest } from '../models/adapter/external-data-translation-request';
@@ -28,7 +28,7 @@ export class ReportTranslationService {
    */
   public translateUrl(req: UrlTranslationRequest): Observable<UrlTranslationResponse> {
     if (!req || !req.systemName || !req.url) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     const jsonApiObject = new JsonApiObject<UrlTranslationRequest>();
@@ -51,7 +51,7 @@ export class ReportTranslationService {
     if (!req || !req.systemName || !req.payload) {
       console.log(req);
       console.log('system name and payload is required to request a data tranlation but was not found, attempting to move on...');
-      return observableEmpty();
+      return EMPTY;
     }
 
     const jsonApiObject = new JsonApiObject<ExternalDataTranslationRequest>();
@@ -80,7 +80,7 @@ export class ReportTranslationService {
    */
   public fetchExternalReport(url: string, withCredentials = true, includeAuthHeaders = false): Observable<any> {
     if (!url) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     let headers = this.headers;

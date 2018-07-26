@@ -4,16 +4,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatChipsModule, MatDatepickerModule, MatFormFieldModule, MatIconModule, MatOptionModule, MatProgressSpinnerModule, MatSelectModule, MatSnackBarModule, MatTableDataSource, MatTableModule } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { empty, from as observableFrom, Observable, of as observableOf } from 'rxjs';
+import { EMPTY, from as observableFrom, Observable, of as observableOf } from 'rxjs';
 import * as UUID from 'uuid';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { GlobalModule } from '../../global/global.module';
 import { Report } from '../../models/report';
 import { ExternalReference } from '../../models/stix/external_reference';
 import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
+import { SelectOption } from '../models/select-option';
 import { ThreatReport } from '../models/threat-report.model';
 import { ThreatReportEditorComponent } from './threat-report-editor.component';
-import { SelectOption } from '../models/select-option';
 
 class MockThreatReport {
     public static empty(): ThreatReport {
@@ -39,7 +39,7 @@ describe('ThreatReportEditorComponent', () => {
 
         saveThreatReport(report: ThreatReport): Observable<ThreatReport> {
             if (!report) {
-                return empty();
+                return EMPTY;
             }
             report.id = report.id || UUID.v4();
             const saveReports$ = this.upsertReports(report.reports as Report[], report)
