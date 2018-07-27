@@ -24,9 +24,9 @@ import { CleanAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttac
 import { RiskByAttackPatternState } from '../store/riskbyattackpattern.reducers';
 import { CleanAssessmentResultData, LoadSingleAssessmentSummaryData, LoadSingleRiskPerKillChainData, LoadSingleSummaryAggregationData } from '../store/summary.actions';
 import { SummaryState } from '../store/summary.reducers';
+import { getAllFinishedLoading, getFinishedLoadingAssessment, getFinishedLoadingKillChainData, getFinishedLoadingSummaryAggregationData, getFullAssessmentName, getKillChainData, getSummary, getSummaryAggregationData } from '../store/summary.selectors';
 import { SummaryCalculationService } from './summary-calculation.service';
 import { SummaryDataSource } from './summary.datasource';
-import { getSummary, getAllFinishedLoading, getKillChainData, getSummaryAggregationData, getFullAssessmentName, getFinishedLoadingKillChainData, getFinishedLoadingAssessment, getFinishedLoadingSummaryAggregationData } from '../store/summary.selectors';
 
 @Component({
   selector: 'summary',
