@@ -11,6 +11,7 @@ import { of as observableOf, Observable } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { take } from 'rxjs/operators';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { RunConfigService } from '../../core/services/run-config.service';
 
 describe('AddIndicatorComponent', () => {
     let component: AddIndicatorComponent;
@@ -136,6 +137,12 @@ describe('AddIndicatorComponent', () => {
                 {
                     provide: GenericApi,
                     useValue: mockGenericApi
+                },
+                {
+                    provide: RunConfigService,
+                    useValue: {
+                        config: observableOf({})
+                    }
                 }
             ]
         })

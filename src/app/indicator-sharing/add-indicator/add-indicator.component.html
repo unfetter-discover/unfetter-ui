@@ -182,13 +182,10 @@
                     <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
                 </div>
 
-                <div *ngIf="!editMode">
-                    <h5>File Attachments</h5>
-                    <div class="uf-well">
-                        <p>
-                            <input type="file" name="attachments" id="attachments" (change)="fileInputChange($event)" multiple>
-                        </p>
-                    </div>
+                <div *ngIf="!blockAttachments">
+                    <h5>Attachments</h5>
+                    <file-list [existingFiles]="editData && editData.metaProperties && editData.metaProperties.attachments" (filesChange)="filesChange($event)"></file-list>
+                    <br>
                 </div>
 
                 <div class="mt-6">

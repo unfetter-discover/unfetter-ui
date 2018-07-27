@@ -19,6 +19,7 @@ import { KillChainPhasesForm } from '../../global/form-models/kill-chain-phases'
 import { FormatHelpers } from '../../global/static/format-helpers';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { GridFSFile } from '../../global/models/grid-fs-file';
+import { RunConfigService } from '../../core/services/run-config.service';
 
 @Component({
     selector: 'add-indicator',
@@ -43,9 +44,10 @@ export class AddIndicatorComponent implements OnInit {
     public patternObjs: PatternHandlerPatternObject[] = [];
     public patternObjSubject: Subject<PatternHandlerPatternObject[]> = new Subject();
     public editMode: boolean = false;
-    public files: FileList;
+    public files: File[];
     public uploadProgress: number;
     public submitErrorMsg: string;
+    public blockAttachments: boolean;
 
     @ViewChild('associatedDataStep') 
     public associatedDataStep: MatStep;
@@ -69,7 +71,8 @@ export class AddIndicatorComponent implements OnInit {
         @Inject(MAT_DIALOG_DATA) public editData: any,
         private indicatorSharingService: IndicatorSharingService,
         private authService: AuthService,
-        private genericApi: GenericApi
+        private genericApi: GenericApi,
+        private runConfigService: RunConfigService
     ) { }    
 
     public ngOnInit() {
@@ -178,6 +181,11 @@ export class AddIndicatorComponent implements OnInit {
                     patternChange$.unsubscribe();
                 }
             );
+
+        this.runConfigService.config.subscribe((config) => {
+                this.blockAttachments = config.blockAttachments;
+            }
+        );
     }
 
     public resetForm(e = null) {
@@ -201,7 +209,25 @@ export class AddIndicatorComponent implements OnInit {
             if (!tempIndicator.metaProperties) {
                 tempIndicator.metaProperties = {};
             }
-            tempIndicator.metaProperties.attachments = filesToUpload;
+            if (this.editMode && this.editData.metaProperties && this.editData.metaProperties.attachments) {
+                const attachmentsToKeep = this.editData.metaProperties.attachments
+                    .filter((att) => {
+                        return this.files
+                            .filter((file) => (file as any)._id)
+                            .find((file) => (file as any)._id === att._id)
+                    });
+                tempIndicator.metaProperties.attachments = attachmentsToKeep.concat(filesToUpload);
+            } else {
+                tempIndicator.metaProperties.attachments = filesToUpload;
+            }
+        } else if (this.editMode && this.editData.metaProperties && this.editData.metaProperties.attachments) {
+            const attachmentsToKeep = this.editData.metaProperties.attachments
+                .filter((att) => {
+                    return this.files
+                        .filter((file) => (file as any)._id)
+                        .find((file) => (file as any)._id === att._id)
+                });
+            tempIndicator.metaProperties.attachments = attachmentsToKeep;
         }
 
         if (uploadError) {
@@ -212,10 +238,7 @@ export class AddIndicatorComponent implements OnInit {
             tempIndicator.id = this.editData.id;
             if (this.editData.metaProperties && this.editData.metaProperties.interactions) {
                 tempIndicator.metaProperties.interactions = this.editData.metaProperties.interactions;
-            }
-            if (this.editData.metaProperties && this.editData.metaProperties.attachments) {
-                tempIndicator.metaProperties.attachments = this.editData.metaProperties.attachments;
-            }
+            }            
             this.dialogRef.close({
                 'indicator': tempIndicator,
                 'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined),
@@ -243,8 +266,8 @@ export class AddIndicatorComponent implements OnInit {
 
     }
 
-    public fileInputChange(event) {
-        this.files = event.target.files;
+    public filesChange(files: File[]) {
+        this.files = files;
     }
 
     public stepperChanged(event: StepperSelectionEvent) {
@@ -256,9 +279,15 @@ export class AddIndicatorComponent implements OnInit {
 
     private uploadFiles(): Promise<[any, GridFSFile[]]> {
         this.uploadProgress = 0;
-        return new Promise((resolve, reject) => {
-            if (this.files && this.files.length) {
-                const uploadFile$ = this.genericApi.uploadAttachments(this.files, (prog) => this.uploadProgress = prog)
+        return new Promise((resolve) => {
+            if (this.blockAttachments) {
+                console.log('Attachments are blocked');
+                resolve([null, null]);
+                return;
+            }
+            const newFiles = this.files.filter((file) => !(file as any).existingFile);
+            if (newFiles.length) {
+                const uploadFile$ = this.genericApi.uploadAttachments(newFiles, (prog) => this.uploadProgress = prog)
                     .pipe(
                         finalize(() => this.uploadProgress = 0 || uploadFile$ && uploadFile$.unsubscribe())
                     )
