@@ -1,13 +1,16 @@
+import { Measurement } from './measurement';
+
 /**
  * Report Dashboard Mitigation Mixin to for computed related properties
  * Builds out the referenced objects.
  */
 export class Measurements {
-  protected changeMeasurement(measurement, selected_value) {
+  public changeMeasurement(measurement, selected_value) {
     measurement.selected_value = selected_value;
     measurement.risk = parseFloat(selected_value.risk);
     return measurement;
   }
+
   /**
    * Build Measurements
    *
@@ -16,9 +19,10 @@ export class Measurements {
    *
    * @return {Object} will build the measurements based on the type
    */
-  protected buildMeasurements(dataType): any[] {
+  public buildMeasurements(dataType: string): Measurement[] {
     const measurements = [];
-    if (dataType.substr(0, 6) === 'course') {
+    dataType = (dataType) ? dataType.trim() : '';
+    if (dataType.startsWith('course')) {
       // If the data type starts with course of action
       const policyOptions = [
         'No Policy',
@@ -61,7 +65,7 @@ export class Measurements {
       measurements.push(
         this.createMeasurement('reporting', -1, reportingOptions)
       );
-    } else if (dataType.substr(0, 6) === 'indicator') {
+    } else if (dataType.startsWith('indicator')) {
       // Then, assuming its an indicator
       const indicatorOption = [
         'Nothing',
@@ -92,11 +96,15 @@ export class Measurements {
    * @param  number risk
    * @returns string
    */
-  protected displayRisk(risk: number): string {
+  public displayRisk(risk: number): string {
     return Number(risk * 100).toFixed(2);
   }
 
-  protected calculateRisk(assessments): number {
+  /**
+   * @param  {} assessments
+   * @returns number
+   */
+  public calculateRisk(assessments): number {
     let risk = 0;
     assessments.forEach(assessment => {
       if (assessment.risk && typeof assessment.risk === 'number') {
@@ -107,10 +115,14 @@ export class Measurements {
     return risk / assessments.length;
   }
 
-  protected getRisk(measureObject) {
+  /**
+   * @param  {} measureObject
+   * @returns number
+   */
+  public getRisk(measureObject: Measurement[]): number {
     let risk = 0;
     let count = 0;
-    measureObject.forEach(measurement => {
+    measureObject.forEach((measurement) => {
       const selected_value = measurement.selected_value;
       risk = risk + parseFloat(selected_value.risk);
       count = count + 1;
@@ -118,7 +130,7 @@ export class Measurements {
     return risk / measureObject.length;
   }
 
-  protected getRiskByName(assessments) {
+  public getRiskByName(assessments) {
     if (Array.isArray(assessments)) {
       const riskMap = [];
       assessments.forEach(assessment => {
@@ -148,7 +160,14 @@ export class Measurements {
     }
   }
 
-  protected createMeasurement(name, selectedOption, options) {
+  /**
+   * @description create a single measurement
+   * @param  {} name
+   * @param  {} selectedOption
+   * @param  {} options
+   * @returns Measurement
+   */
+  public createMeasurement(name, selectedOption: number, options): Measurement {
     const measurement: any = {};
     measurement.name = name;
     measurement.options = [];
@@ -167,7 +186,6 @@ export class Measurements {
       measurement.risk = -1;
     }
 
-    /***measurement.selected_option = selectedOption;**/
     return measurement;
   }
 
@@ -176,7 +194,7 @@ export class Measurements {
    * @param  {any[]} measurements an object w/ a risk field
    * @returns number -1 is the measurements are empty others an avg of the risk
    */
-  protected calculateMeasurementsAvgRisk(measurements: any[]): number {
+  public calculateMeasurementsAvgRisk(measurements: any[]): number {
     const validMeasurements = measurements.filter((measurement) => measurement.risk !== -1);
     if (!validMeasurements || validMeasurements.length === 0) {
       return -1;
@@ -188,7 +206,7 @@ export class Measurements {
     return sum / validMeasurements.length;
   }
 
-  protected updateQuestionRisk(question, risk) {
+  public updateQuestionRisk(question, risk) {
     if (question.selected_value === undefined) {
       question.selected_value = {};
     }
