@@ -186,6 +186,33 @@ export class AddIndicatorComponent implements OnInit {
                 this.blockAttachments = config.blockAttachments;
             }
         );
+
+        this.form.get('metaProperties').get('relationships').valueChanges
+            .subscribe(
+                (apIds) => {
+                    const killChainPhaseSet = new Set();
+                    this.attackPatterns
+                        .filter((ap) => apIds.includes(ap.id) && ap.kill_chain_phases && ap.kill_chain_phases.length)
+                        .map((ap) => ap.kill_chain_phases.map((kcp) => JSON.stringify(kcp)))
+                        .forEach((kcpStrings) => kcpStrings.forEach((kcpString) => killChainPhaseSet.add(kcpString)));
+
+                    while (this.form.get('kill_chain_phases').length !== 0) {
+                        this.form.get('kill_chain_phases').removeAt(0)
+                    }
+
+                    Array.from(killChainPhaseSet)
+                        .map((kcpString) => JSON.parse(kcpString))
+                        .forEach((kcp) => {
+                            const kcpForm = KillChainPhasesForm();
+                            kcpForm.patchValue(kcp);
+                            this.form.get('kill_chain_phases').push(kcpForm);
+                        });
+                    console.log('####', this.form.get('kill_chain_phases'));
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
     }
 
     public resetForm(e = null) {
@@ -204,12 +231,16 @@ export class AddIndicatorComponent implements OnInit {
         const tempIndicator: any = cleanObjectProperties({}, this.form.value);        
         this.pruneQueries(tempIndicator);
 
+        if (tempIndicator.metaProperties && !tempIndicator.metaProperties.relationships) {
+            tempIndicator.metaProperties.relationships = [];
+        }
+
         const [uploadError, filesToUpload] = await this.uploadFiles();
         if (!uploadError && filesToUpload && filesToUpload.length) {
             if (!tempIndicator.metaProperties) {
                 tempIndicator.metaProperties = {};
             }
-            if (this.editMode && this.editData.metaProperties && this.editData.metaProperties.attachments) {
+            if (this.editMode && this.editData.metaProperties && this.editData.metaProperties.attachments && this.editData.metaProperties.attachments.length) {
                 const attachmentsToKeep = this.editData.metaProperties.attachments
                     .filter((att) => {
                         return this.files
@@ -235,6 +266,10 @@ export class AddIndicatorComponent implements OnInit {
         }
         
         if (this.editMode) {
+            if (this.editData.kill_chain_phases && !tempIndicator.kill_chain_phases) {
+                // force removal of kill chain faces
+                tempIndicator.kill_chain_phases = [];
+            }
             tempIndicator.id = this.editData.id;
             if (this.editData.metaProperties && this.editData.metaProperties.interactions) {
                 tempIndicator.metaProperties.interactions = this.editData.metaProperties.interactions;
@@ -285,7 +320,7 @@ export class AddIndicatorComponent implements OnInit {
                 resolve([null, null]);
                 return;
             }
-            const newFiles = this.files.filter((file) => !(file as any).existingFile);
+            const newFiles = this.files && this.files.length ? this.files.filter((file) => !(file as any).existingFile) : [];
             if (newFiles.length) {
                 const uploadFile$ = this.genericApi.uploadAttachments(newFiles, (prog) => this.uploadProgress = prog)
                     .pipe(

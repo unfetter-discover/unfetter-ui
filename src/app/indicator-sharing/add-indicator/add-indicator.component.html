@@ -159,7 +159,7 @@
                 </div>
                 
                 <!-- ~~~ Kill Chain Phases ~~~ -->
-                <div>
+                <!-- <div>
                     <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
                     <mat-chip-list formArrayName="kill_chain_phases" *ngIf="form.get('kill_chain_phases').value.length > 0" class="chipListPadding">
                         <mat-chip *ngFor="let kill_chain of form.get('kill_chain_phases').value; let i = index" class="cursor-pointer chipListChip"
@@ -168,7 +168,7 @@
                             <mat-icon matChipRemove (click)="form.get('kill_chain_phases').removeAt(i)">cancel</mat-icon>
                         </mat-chip>
                     </mat-chip-list>
-                </div>
+                </div> -->
                 
                 <!-- ~~~ Labels ~~~ -->
                 <h5>Add Labels</h5>
@@ -203,6 +203,7 @@
                         <button mat-button matStepperPrevious type="button">BACK</button>
                     </div>
                 </div>
+                <!-- <div *ngFor="let kcp of form.get('kill_chain_phases')">{{ kcp.value | json }}</div> -->
             </mat-step>
             
             <mat-step label="Input Data">
