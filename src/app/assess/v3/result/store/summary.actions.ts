@@ -13,7 +13,8 @@ export const LOAD_SUMMARY_AGGREGATION_DATA = '[Assess Summary] LOAD_SUMMARY_AGGR
 
 // For reducers
 export const CLEAN_ASSESSMENT_RESULT_DATA = '[Assess Result Group] CLEAN_ASSESSMENT_RESULT_DATA';
-export const FINISHED_LOADING = '[Assess Summary] FINISHED_LOADING';
+export const FAILED_TO_LOAD = '[Assess Summary] FAILED_TO_LOAD'
+export const FINISHED_LOADING_ASSESSMENT = '[Assess Summary] FINISHED_LOADING_ASSESSMENT';
 export const FINISHED_LOADING_KILL_CHAIN_DATA = '[Assess Summary] FINISHED_LOADING_KILL_CHAIN_DATA';
 export const FINISHED_LOADING_SUMMARY_AGGREGATION_DATA = '[Assess Summary] FINISHED_LOADING_SUMMARY_AGGREGATION_DATA';
 export const SET_ASSESSMENTS = '[Assess Summary] SET_ASSESSMENTS';
@@ -41,8 +42,8 @@ export class SetAssessments implements Action {
     constructor(public payload: Assessment[]) { }
 }
 
-export class FinishedLoading implements Action {
-    public readonly type = FINISHED_LOADING;
+export class FinishedLoadingAssessment implements Action {
+    public readonly type = FINISHED_LOADING_ASSESSMENT;
 
     constructor(public payload: boolean) { }
 }
@@ -105,9 +106,15 @@ export class CleanAssessmentResultData {
     constructor() { }
 }
 
+export class FailedToLoad implements Action {
+    public readonly type = FAILED_TO_LOAD;
+    constructor(public payload: boolean) { }
+}
+
 export type SummaryActions =
     CleanAssessmentResultData |
-    FinishedLoading |
+    FailedToLoad |
+    FinishedLoadingAssessment |
     FinishedLoadingKillChainData |
     FinishedLoadingSummaryAggregationData |
     LoadAssessmentSummaryData |
