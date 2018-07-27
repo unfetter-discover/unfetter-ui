@@ -3,16 +3,16 @@ import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
-import { empty as observableEmpty } from 'rxjs';
+import { of as observableOf } from 'rxjs';
 import { catchError, mergeMap, pluck, switchMap } from 'rxjs/operators';
 import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessService } from '../../services/assess.service';
 import { 
-    FinishedLoading, FinishedLoadingKillChainData, FinishedLoadingSummaryAggregationData, LOAD_ASSESSMENT_SUMMARY_DATA, 
+    FinishedLoadingAssessment, FinishedLoadingKillChainData, FinishedLoadingSummaryAggregationData, LOAD_ASSESSMENT_SUMMARY_DATA, 
     LOAD_RISK_PER_KILL_CHAIN_DATA, LOAD_SINGLE_ASSESSMENT_SUMMARY_DATA, LOAD_SINGLE_RISK_PER_KILL_CHAIN_DATA, 
-    LOAD_SINGLE_SUMMARY_AGGREGATION_DATA, LOAD_SUMMARY_AGGREGATION_DATA, SetAssessments, SetKillChainData, SetSummaryAggregationData 
+    LOAD_SINGLE_SUMMARY_AGGREGATION_DATA, LOAD_SUMMARY_AGGREGATION_DATA, SetAssessments, SetKillChainData, SetSummaryAggregationData, FailedToLoad 
 } from './summary.actions';
 
 @Injectable()
@@ -35,7 +35,7 @@ export class SummaryEffects {
                     .getById(assessmentId)
                     .pipe(
                         mergeMap((data: Assessment) => {
-                            const actions = [new FinishedLoading(true)];
+                            const actions = [new FinishedLoadingAssessment(true)];
                             if (!data || !data.id) {
                                 return actions;
                             }
@@ -43,7 +43,7 @@ export class SummaryEffects {
                         }),
                         catchError((err) => {
                             console.log(err);
-                            return observableEmpty();
+                            return observableOf(new FailedToLoad(true));
                         }),
                 );
             })
@@ -58,10 +58,10 @@ export class SummaryEffects {
                 return this.assessService
                     .getByRollupId(rollupId)
                     .pipe(
-                        mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoading(true)]),
+                        mergeMap((data: Assessment[]) => [new SetAssessments(data), new FinishedLoadingAssessment(true)]),
                         catchError((err) => {
                             console.log(err);
-                            return observableEmpty();
+                            return observableOf(new FailedToLoad(true));
                         })
                     );
             })
@@ -79,7 +79,7 @@ export class SummaryEffects {
                         mergeMap((data: RiskByKillChain) => [new SetKillChainData([data]), new FinishedLoadingKillChainData(true)]),
                         catchError((err) => {
                             console.log(err);
-                            return observableEmpty();
+                            return observableOf(new FailedToLoad(true));
                         })
                     );
             })
@@ -97,7 +97,7 @@ export class SummaryEffects {
                         mergeMap((data: RiskByKillChain[]) => [new SetKillChainData(data), new FinishedLoadingKillChainData(true)]),
                         catchError((err) => {
                             console.log(err);
-                            return observableEmpty();
+                            return observableOf(new FailedToLoad(true));
                         })
                     );
             })
@@ -116,7 +116,7 @@ export class SummaryEffects {
                         mergeMap((data: SummaryAggregation) => [new SetSummaryAggregationData([data]), new FinishedLoadingSummaryAggregationData(true)]),
                         catchError((err) => {
                             console.log(err);
-                            return observableEmpty();
+                            return observableOf(new FailedToLoad(true));
                         })
                     );
             })
@@ -134,7 +134,7 @@ export class SummaryEffects {
                         mergeMap((data: SummaryAggregation[]) => [new SetSummaryAggregationData(data), new FinishedLoadingSummaryAggregationData(true)]),
                         catchError((err) => {
                             console.log(err);
-                            return observableEmpty();
+                            return observableOf(new FailedToLoad(true));
                         })
                     );
             })
