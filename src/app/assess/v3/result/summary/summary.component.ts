@@ -1,33 +1,32 @@
 
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { catchError, distinctUntilChanged, filter, map, pluck, take, tap } from 'rxjs/operators';
+import { Observable, of as observableOf, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, pluck, take, tap } from 'rxjs/operators';
 import { AssessmentEvalTypeEnum } from 'stix';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
-import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { ConfirmationDialogComponent } from '../../../../components/dialogs/confirmation/confirmation-dialog.component';
 import { slideInOutAnimation } from '../../../../global/animations/animations';
 import { MasterListDialogTableHeaders } from '../../../../global/components/master-list-dialog/master-list-dialog.component';
+import { AngularHelper } from '../../../../global/static/angular-helper';
 import { UserProfile } from '../../../../models/user/user-profile';
 import { AppState } from '../../../../root-store/app.reducers';
 import { Constance } from '../../../../utils/constance';
 import { LastModifiedAssessment } from '../../models/last-modified-assessment';
 import { AssessService } from '../../services/assess.service';
+import { getFailedToLoad } from '../../store/assess.selectors';
 import { CleanAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttackPatternData } from '../store/riskbyattackpattern.actions';
 import { RiskByAttackPatternState } from '../store/riskbyattackpattern.reducers';
 import { CleanAssessmentResultData, LoadSingleAssessmentSummaryData, LoadSingleRiskPerKillChainData, LoadSingleSummaryAggregationData } from '../store/summary.actions';
 import { SummaryState } from '../store/summary.reducers';
+import { getFinishedLoadingAssessment, getFinishedLoadingKillChainData, getFinishedLoadingSummaryAggregationData, getFullAssessmentName, getKillChainData, getSummary, getSummaryAggregationData } from '../store/summary.selectors';
 import { SummaryCalculationService } from './summary-calculation.service';
 import { SummaryDataSource } from './summary.datasource';
-import { getSummary, getAllFinishedLoading, getKillChainData, getSummaryAggregationData, getFullAssessmentName, getFinishedLoadingKillChainData, getFinishedLoadingAssessment, getFinishedLoadingSummaryAggregationData } from '../store/summary.selectors';
-import { getFailedToLoad } from '../../store/assess.selectors';
-import { AngularHelper } from '../../../../global/static/angular-helper';
-import { of as observableOf } from 'rxjs';
 
 @Component({
   selector: 'summary',
@@ -162,13 +161,19 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select(getKillChainData)
       .pipe(
         distinctUntilChanged(),
+        filter((el) => el !== undefined),
         tap((killChainData) => {
-          console.log('kill chain data is here');
-          if (killChainData) {
-            this.transformKCD(killChainData)
-          }
-        }),
-    );
+          console.log('kill chain data is here', killChainData);
+          this.transformKCD(killChainData)
+        })
+      );
+
+    const sX$ = this.riskByKillChain$
+      .subscribe(
+        () => console.log('subscribe to riskByKillChain fired'),
+        (err) => console.log(err),
+        () => sX$.unsubscribe()
+      );
 
     this.summaryAggregation$ = this.store
       .select(getSummaryAggregationData)
@@ -191,7 +196,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.finishedLoadingKCD$ = this.store
       .select(getFinishedLoadingKillChainData)
       .pipe(distinctUntilChanged(),
-    tap((finished) => console.log(`am i finished loading KCD? ${finished}`)));
+        tap((finished) => console.log(`am i finished loading KCD? ${finished}`)));
 
     this.finishedLoadingSAD$ = this.store
       .select(getFinishedLoadingSummaryAggregationData)
