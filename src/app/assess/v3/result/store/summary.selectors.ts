@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { SummaryState } from './summary.reducers';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { SummaryState } from './summary.reducers';
 
 export const getSummaryState = createFeatureSelector<SummaryState>('summary');
 
@@ -26,9 +26,7 @@ export const getFinishedLoadingKillChainData = createSelector(
 
 export const getKillChainData = createSelector(
     getSummaryState,
-    (state: SummaryState) => {
-        console.log('Kill Chain Data is gotten')
-        return state.killChainData[0]; }
+    (state: SummaryState) => state.killChainData[0]
 );
 
 export const getFinishedLoadingSummaryAggregationData = createSelector(
