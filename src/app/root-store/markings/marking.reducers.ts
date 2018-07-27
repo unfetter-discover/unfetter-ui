@@ -17,6 +17,7 @@ export function markingsReducer(state = initialState, action: markingActions.Mar
          * When asked to assign marking definitions, replace the state with the data, and return it.
          */
         case markingActions.SET_MARKINGS:
+            console.log('marking definitions', action.payload);
             return {
                 ...state,
                 definitions: action.payload

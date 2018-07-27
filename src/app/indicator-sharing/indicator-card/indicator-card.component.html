@@ -1,6 +1,7 @@
 <mat-card class="indicatorCard uf-mat-card" *ngIf="indicator">
   <mat-card-header>
     <mat-card-title>
+        <markings-list [model]="indicator"></markings-list>
         <span>{{ indicator.name }}</span>
         <span class="flex1">&nbsp;</span>
         <button mat-icon-button [matMenuTriggerFor]="menu" class="mat-24">

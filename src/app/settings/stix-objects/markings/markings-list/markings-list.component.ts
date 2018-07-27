@@ -20,6 +20,7 @@ export class MarkingsListComponent extends BaseStixComponent implements OnInit {
     public url: string;
 
     private definitionTypeOrder = ['capco', 'tlp', 'rating', 'statement'];
+    private capcoOrder = ['Classification', 'Compartment', 'Access', 'Dissemination'];
     private tlpOrder = ['white', 'green', 'amber', 'red'];
 
     constructor(
@@ -39,36 +40,7 @@ export class MarkingsListComponent extends BaseStixComponent implements OnInit {
         let subscription = super.load(filter)
             .subscribe(
                 (data: MarkingDefinition[]) => {
-                    this.markings = data.sort((a, b) => {
-                        const aType = this.definitionTypeOrder.indexOf(a.attributes.definition_type);
-                        const bType = this.definitionTypeOrder.indexOf(b.attributes.definition_type);
-                        const typeOrder = aType - bType;
-                        if (typeOrder !== 0) {
-                            return typeOrder;
-                        }
-                        if (a.attributes.definition_type === 'capco') {
-                            const level =  a.attributes.definition.level - b.attributes.definition.level;
-                            if (level !== 0) {
-                                return level;
-                            }
-                            const order = a.attributes.definition.order - b.attributes.definition.order;
-                            if (order !== 0) {
-                                return order;
-                            }
-                            return a.attributes.definition.label.localeCompare(b.attributes.definition.label);
-                        }
-                        if (a.attributes.definition_type === 'tlp') {
-                            return this.tlpOrder.indexOf(a.attributes.definition.tlp) -
-                                    this.tlpOrder.indexOf(b.attributes.definition.tlp);
-                        }
-                        if (a.attributes.definition_type === 'rating') {
-                            return a.attributes.definition.rating - b.attributes.definition.rating;
-                        }
-                        if (a.attributes.definition_type === 'statement') {
-                            return a.attributes.definition.statement.localeCompare(b.attributes.definition.statement);
-                        }
-                        return 0;
-                    });
+                    this.markings = data.sort((a, b) => this.sortMarkings(a, b));
                 },
                 (error) => {
                     // handle errors here
@@ -81,6 +53,39 @@ export class MarkingsListComponent extends BaseStixComponent implements OnInit {
                     }
                 }
             );
+    }
+
+    private sortMarkings(a: MarkingDefinition, b: MarkingDefinition) {
+        const aType = this.definitionTypeOrder.indexOf(a.attributes.definition_type);
+        const bType = this.definitionTypeOrder.indexOf(b.attributes.definition_type);
+        const typeOrder = aType - bType;
+        if (typeOrder !== 0) {
+            return typeOrder;
+        }
+        if (a.attributes.definition_type === 'capco') {
+            const aCat = this.capcoOrder.indexOf(a.attributes.definition.category);
+            const bCat = this.capcoOrder.indexOf(b.attributes.definition.category);
+            const catOrder = aCat - bCat;
+            if (catOrder !== 0) {
+                return catOrder;
+            }
+            const precedence = a.attributes.definition.precedence - b.attributes.definition.precedence;
+            if (precedence !== 0) {
+                return precedence;
+            }
+            return a.attributes.definition.text.localeCompare(b.attributes.definition.text);
+        }
+        if (a.attributes.definition_type === 'tlp') {
+            return this.tlpOrder.indexOf(a.attributes.definition.tlp) -
+                    this.tlpOrder.indexOf(b.attributes.definition.tlp);
+        }
+        if (a.attributes.definition_type === 'rating') {
+            return a.attributes.definition.rating - b.attributes.definition.rating;
+        }
+        if (a.attributes.definition_type === 'statement') {
+            return a.attributes.definition.statement.localeCompare(b.attributes.definition.statement);
+        }
+        return 0;
     }
 
 }
