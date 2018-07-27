@@ -47,8 +47,8 @@ export const getUnassessedPhases = createSelector(
 export const getAllFinishedLoading = createSelector(
     getFinishedLoadingAssessment,
     getFinishedLoadingGroupData,
-    (finisedLoadingAssessment: boolean, finishedLoadingGroup: boolean) => {
-        return finisedLoadingAssessment && finishedLoadingGroup;
+    (finishedLoadingAssessment: boolean, finishedLoadingGroup: boolean) => {
+        return finishedLoadingAssessment && finishedLoadingGroup;
     }
 );
 
