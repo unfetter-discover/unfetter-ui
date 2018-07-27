@@ -1,10 +1,10 @@
 
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { catchError, distinctUntilChanged, filter, map, pluck, take } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, filter, map, pluck, take, tap } from 'rxjs/operators';
 import { AssessmentEvalTypeEnum } from 'stix';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
@@ -24,28 +24,38 @@ import { CleanAssessmentResultData, LoadSingleAssessmentSummaryData, LoadSingleR
 import { SummaryState } from '../store/summary.reducers';
 import { SummaryCalculationService } from './summary-calculation.service';
 import { SummaryDataSource } from './summary.datasource';
+import { getSummary, getAllFinishedLoading, getKillChainData, getSummaryAggregationData, getFullAssessmentName, getFinishedLoadingKillChainData, getFinishedLoadingAssessment, getFinishedLoadingSummaryAggregationData } from '../store/summary.selectors';
+import { getFailedToLoad } from '../../store/assess.selectors';
+import { AngularHelper } from '../../../../global/static/angular-helper';
+import { of as observableOf } from 'rxjs';
 
 @Component({
   selector: 'summary',
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss'],
   animations: [slideInOutAnimation],
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class SummaryComponent implements OnInit, OnDestroy {
 
   readonly baseAssessUrl = '/assess-beta';
-  assessmentName: Observable<string>;
+
+  assessmentName$: Observable<string>;
+  refassessmentName: string;
   rollupId: string;
   assessmentId: string;
-  summaries: Assessment[];
+  summaries$: Observable<Assessment[]>;
+  summary$: Observable<Assessment>;
   summary: Assessment;
   riskByAttack: RiskByAttack;
-  riskByKillChain: RiskByKillChain;
-  summaryAggregation: SummaryAggregation;
-  finishedLoading = false;
+  riskByKillChain$: Observable<RiskByKillChain>;
+  summaryAggregation$: Observable<SummaryAggregation>;
+  failedToLoad$: Observable<boolean>;
+  finishedLoadingAll$: Observable<boolean>;
+  finishedLoadingAssessment$: Observable<boolean>;
   finishedLoadingRBAP = false;
-  finishedLoadingKCD = false;
-  finishedLoadingSAD = false;
+  finishedLoadingKCD$: Observable<boolean>;
+  finishedLoadingSAD$: Observable<boolean>;
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
@@ -57,14 +67,15 @@ export class SummaryComponent implements OnInit, OnDestroy {
   private readonly subscriptions: Subscription[] = [];
 
   constructor(
+    private assessService: AssessService,
+    private changeDetectorRef: ChangeDetectorRef,
+    private dialog: MatDialog,
+    private riskByAttackPatternStore: Store<RiskByAttackPatternState>,
     private route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog,
     private store: Store<SummaryState>,
-    private riskByAttackPatternStore: Store<RiskByAttackPatternState>,
+    private summaryCalculationService: SummaryCalculationService,
     private userStore: Store<AppState>,
-    private assessService: AssessService,
-    private summaryCalculationService: SummaryCalculationService
   ) { }
 
   public getDialog(): MatDialog {
@@ -81,17 +92,12 @@ export class SummaryComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
-    const idParamSub$ = this.route.params.pipe(
-      distinctUntilChanged())
+    const idParamSub$ = this.route.params
+      .pipe(distinctUntilChanged())
       .subscribe((params) => {
         this.rollupId = params.rollupId || '';
         this.assessmentId = params.assessmentId || '';
-        this.summary = undefined;
-        this.summaries = undefined;
-        this.finishedLoading = false;
         this.riskByAttack = undefined;
-        this.store.dispatch(new CleanAssessmentResultData());
-        this.riskByAttackPatternStore.dispatch(new CleanAssessmentRiskByAttackPatternData());
         const sub$ = this.userStore
           .select('users')
           .pipe(
@@ -103,10 +109,26 @@ export class SummaryComponent implements OnInit, OnDestroy {
           },
             (err) => console.log(err));
         this.subscriptions.push(sub$);
+        this.changeDetectorRef.detectChanges();
       },
         (err) => console.log(err));
+
     this.listenForDataChanges();
     this.subscriptions.push(idParamSub$);
+  }
+
+  public requestAncillaryDataLoad(assessment: Assessment): void {
+    const id = this.assessmentId;
+    const assessmentType = assessment.determineAssessmentType();
+    if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
+      this.summaryCalculationService.isCapability = true;
+    } else {
+      this.summaryCalculationService.isCapability = false;
+    }
+    this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData({ id: this.assessmentId, isCapability: this.summaryCalculationService.isCapability }));
+    this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));
+    this.store.dispatch(new LoadSingleSummaryAggregationData({ id: this.assessmentId, isCapability: this.summaryCalculationService.isCapability }));
+
   }
 
   /**
@@ -114,46 +136,68 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public listenForDataChanges(): void {
-    const sub1$ = this.store
-      .select('summary')
+    this.summary$ = this.store
+      .select(getSummary)
       .pipe(
-        pluck('summaries'),
         distinctUntilChanged(),
-        filter((arr: Assessment[]) => arr && arr.length > 0 && arr[0] !== undefined && arr[0].determineAssessmentType !== undefined)
-      )
-      .subscribe((arr: Assessment[]) => {
-        this.summaries = [...arr];
-        this.summary = this.summaries[0] || new Assessment();
-        const assessmentType = this.summary.determineAssessmentType();
-        if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
-          this.summaryCalculationService.isCapability = true;
-        } else {
-          this.summaryCalculationService.isCapability = false;
-        }
-        this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData({id: this.assessmentId, isCapability: this.summaryCalculationService.isCapability}));
-        this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));
-        this.store.dispatch(new LoadSingleSummaryAggregationData({id: this.assessmentId, isCapability: this.summaryCalculationService.isCapability}));
-      },
-        (err) => console.log(err));
+        tap((summary) => {
+          if (summary) {
+            this.requestAncillaryDataLoad(summary);
+            this.transformSummary(summary);
+            this.summary = summary;
+          }
+        }),
+    );
 
-    const sub2$ = this.store
-      .select('summary')
+    this.finishedLoadingAll$ = this.store
+      .select(getFinishedLoadingAssessment) // TODO Fix
+      .pipe(distinctUntilChanged(),
+        tap((finished) => console.log(`ALL ALL am i finished loading assessment? ${finished}`)));
+
+    this.failedToLoad$ = this.store
+      .select(getFailedToLoad)
+      .pipe(distinctUntilChanged());
+
+    this.riskByKillChain$ = this.store
+      .select(getKillChainData)
       .pipe(
-        pluck('finishedLoading'),
         distinctUntilChanged(),
-        filter((el) => el === true)
-      )
-      .subscribe((done: boolean) => {
-        if (this.summary === undefined) {
-          // fetching the summary failed, set all flags to done
-          this.setLoadingToDone();
-          return;
-        }
-        this.finishedLoading = done;
-        this.transformSummary()
-      }, (err) => console.log(err));
+        tap((killChainData) => {
+          console.log('kill chain data is here');
+          if (killChainData) {
+            this.transformKCD(killChainData)
+          }
+        }),
+    );
 
-    const sub3$ = this.riskByAttackPatternStore
+    this.summaryAggregation$ = this.store
+      .select(getSummaryAggregationData)
+      .pipe(distinctUntilChanged(),
+        tap((summaryAggregationData) => this.transformSAD(summaryAggregationData)),
+    );
+
+    this.assessmentName$ = this.store
+      .select(getFullAssessmentName)
+      .pipe(
+        distinctUntilChanged(),
+        tap((name) => this.refassessmentName = name),
+    );
+
+    this.finishedLoadingAssessment$ = this.store
+      .select(getFinishedLoadingAssessment)
+      .pipe(distinctUntilChanged(),
+        tap((finished) => console.log(`am i finished loading assessment? ${finished}`)));
+
+    this.finishedLoadingKCD$ = this.store
+      .select(getFinishedLoadingKillChainData)
+      .pipe(distinctUntilChanged(),
+    tap((finished) => console.log(`am i finished loading KCD? ${finished}`)));
+
+    this.finishedLoadingSAD$ = this.store
+      .select(getFinishedLoadingSummaryAggregationData)
+      .pipe(distinctUntilChanged());
+
+    const sub1$ = this.riskByAttackPatternStore
       .select('riskByAttackPattern')
       .pipe(
         pluck('riskByAttackPatterns'),
@@ -165,7 +209,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       },
         (err) => console.log(err));
 
-    const sub4$ = this.riskByAttackPatternStore
+    const sub2$ = this.riskByAttackPatternStore
       .select('riskByAttackPattern')
       .pipe(
         pluck('finishedLoading'),
@@ -179,83 +223,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       },
         (err) => console.log(err));
 
-    const sub5$ = this.store
-      .select('summary')
-      .pipe(
-        pluck('killChainData'),
-        distinctUntilChanged()
-      )
-      .subscribe((arr: RiskByKillChain[]) => {
-        if (!arr || arr.length === 0) {
-          this.riskByKillChain = undefined;
-          return;
-        }
-
-        this.riskByKillChain = { ...arr[0] };
-      }, (err) => console.log(err))
-
-    const sub6$ = this.store
-      .select('summary')
-      .pipe(
-        pluck('finishedLoadingKillChainData'),
-        distinctUntilChanged()
-      )
-      .subscribe((done: boolean) => {
-        if (this.riskByKillChain === undefined) {
-          // fetching the killChaindData failed, set flag to done
-          this.finishedLoadingKCD = done;
-          return;
-        }
-        this.finishedLoadingKCD = done;
-        if (done) {
-          this.transformKCD();
-        }
-      }, (err) => console.log(err));
-
-    const sub7$ = this.store
-      .select('summary')
-      .pipe(
-        pluck('summaryAggregations'),
-        distinctUntilChanged()
-      )
-      .subscribe((arr: SummaryAggregation[]) => {
-        if (!arr || arr.length === 0) {
-          this.summaryAggregation = undefined;
-          return;
-        }
-        this.summaryAggregation = { ...arr[0] };
-      })
-
-    const sub8$ = this.store
-      .select('summary')
-      .pipe(
-        pluck('finishedLoadingSummaryAggregationData'),
-        distinctUntilChanged()
-      )
-      .subscribe((done: boolean) => {
-        this.finishedLoadingSAD = done;
-        if (done) {
-          this.transformSAD();
-        }
-      }, (err) => console.log(err));
-
-    this.assessmentName = this.store
-      .select('summary')
-      .pipe(
-        pluck('summaries'),
-        distinctUntilChanged(),
-        filter((arr: Assessment[]) => arr && arr.length > 0 && arr[0] !== undefined && arr[0].determineAssessmentType !== undefined),
-        map((summaries: Assessment[]) => {
-          const assessmentType = summaries[0].determineAssessmentType();
-          return `${summaries[0].name} - ${assessmentType}`;
-        }),
-        catchError((err, caught) => {
-          console.log(err);
-          return caught;
-        }),
-    );
-
-    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$);
+    this.subscriptions.push(sub1$, sub2$);
   }
 
   /**
@@ -322,8 +290,9 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public onDeleteCurrent(): void {
-    const id = this.rollupId;
-    this.confirmDelete({ name: this.summary.name, rollupId: id });
+    const rollupId = this.rollupId;
+    const name = this.refassessmentName;
+    this.confirmDelete({ name, rollupId });
   }
 
   /**
@@ -387,10 +356,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
    */
   public onCellSelected(assessment: LastModifiedAssessment): Promise<boolean> {
     if (!assessment || !assessment.rollupId || !assessment.id) {
-      return;
+      return Promise.resolve(false);
     }
-
     this.store.dispatch(new CleanAssessmentResultData());
+    this.riskByAttackPatternStore.dispatch(new CleanAssessmentRiskByAttackPatternData());
     return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 
@@ -411,18 +380,14 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @return {number}
    */
   public trackByFn(index: number, item: any): number {
-    let value = index;
-    if (item && (item.id || item.id === 0)) {
-      value = item.id || index;
-    }
-    return value
+    return AngularHelper.genericTrackBy(index, item);
   }
 
-  public transformSummary() {
-    if (this.summary && this.summary.assessment_objects) {
-      this.summaryCalculationService.setAverageRiskPerAssessedObject(this.summary.assessment_objects);
-      if (this.summary.assessment_objects[0] && this.summary.assessment_objects[0].questions && this.summary.assessment_objects[0].questions[0]) {
-        this.summaryCalculationService.calculateThresholdOptionNames(this.summary.assessment_objects[0].questions[0])
+  public transformSummary(summary: Assessment) {
+    if (summary && summary.assessment_objects) {
+      this.summaryCalculationService.setAverageRiskPerAssessedObject(summary.assessment_objects);
+      if (summary.assessment_objects[0] && summary.assessment_objects[0].questions && summary.assessment_objects[0].questions[0]) {
+        this.summaryCalculationService.calculateThresholdOptionNames(summary.assessment_objects[0].questions[0])
       }
     }
   }
@@ -431,16 +396,16 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.summaryCalculationService.calculateWeakness(this.riskByAttack);
   }
 
-  public transformKCD() {
-    this.summaryCalculationService.calculateTopRisks(this.riskByKillChain);
+  public transformKCD(riskByKillChain) {
+    this.summaryCalculationService.calculateTopRisks(riskByKillChain);
   }
 
   /**
    * @description
    * @returns {void}
    */
-  public transformSAD(): void {
-    this.summaryCalculationService.summaryAggregation = this.summaryAggregation;
+  public transformSAD(summaryAggregation): void {
+    this.summaryCalculationService.summaryAggregation = summaryAggregation;
     if (this.summary) {
       this.summaryCalculationService.populateAssessmentsGrouping(this.summary.assessment_objects);
       this.summaryCalculationService.populateTechniqueBreakdown(this.summary.assessment_objects);
@@ -452,9 +417,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
    * @returns {void}
    */
   public setLoadingToDone(): void {
-    this.finishedLoadingKCD = true;
+    this.finishedLoadingKCD$ = observableOf(true);
     this.finishedLoadingRBAP = true;
-    this.finishedLoadingSAD = true;
-    this.finishedLoading = true;
+    this.finishedLoadingSAD$ = observableOf(true);
+    this.finishedLoadingAssessment$ = observableOf(true);
+    this.finishedLoadingAll$ = observableOf(true);
   }
 }
