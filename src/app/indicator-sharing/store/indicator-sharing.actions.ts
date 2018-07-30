@@ -180,7 +180,7 @@ export class FetchIndicators implements Action {
 
 export type IndicatorSharingActions =
     FetchData |
-    CreateIndicatorToApRelationship |
+    CreateIndicatorToApRelationships |
     RefreshApMap |
     StartDeleteIndicator |
     StartUpdateIndicator |
