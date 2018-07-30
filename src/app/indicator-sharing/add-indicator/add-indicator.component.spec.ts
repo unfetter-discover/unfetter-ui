@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { StoreModule } from '@ngrx/store';
 import { MatButtonModule, MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 import { AddIndicatorComponent } from './add-indicator.component';
@@ -12,6 +13,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { take } from 'rxjs/operators';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { RunConfigService } from '../../core/services/run-config.service';
+import * as fromRoot from '../../root-store/app.reducers';
 
 describe('AddIndicatorComponent', () => {
     let component: AddIndicatorComponent;
@@ -112,7 +114,8 @@ describe('AddIndicatorComponent', () => {
             imports: [
                 MatButtonModule,
                 MatDialogModule,
-                RouterTestingModule
+                RouterTestingModule,
+                StoreModule.forRoot(fromRoot.reducers)
             ],
             schemas: [NO_ERRORS_SCHEMA],
             providers: [

@@ -3,6 +3,7 @@ import { StoreModule, Store } from '@ngrx/store';
 
 import { MatChipsModule, MatTooltipModule } from '@angular/material';
 
+import { MarkingDefinition } from 'stix';
 import { MarkingsChipsComponent } from './markings-chips.component';
 import { reducers, AppState } from '../../../root-store/app.reducers';
 import * as markingActions from '../../../root-store/markings/marking.actions';
@@ -24,7 +25,15 @@ describe('MarkingsChipsComponent', () => {
                 rating: 1,
                 label: 'WEAK'
             },
-        },
+            attributes: {
+                id: 'mdr-1',
+                definition_type: 'rating',
+                definition: {
+                    rating: 1,
+                    label: 'WEAK'
+                }
+            }
+        } as MarkingDefinition,
         {
             id: 'mdr-10',
             type: StixCoreEnum.MARKING_DEFINITION,
@@ -34,7 +43,15 @@ describe('MarkingsChipsComponent', () => {
                 rating: 10,
                 label: 'STRONG'
             },
-        },
+            attributes: {
+                id: 'mdr-10',
+                definition_type: 'rating',
+                definition: {
+                    rating: 10,
+                    label: 'STRONG'
+                }
+            }
+        } as MarkingDefinition,
     ];
 
     beforeEach(async(() => {
@@ -55,7 +72,7 @@ describe('MarkingsChipsComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(MarkingsChipsComponent);
         component = fixture.componentInstance;
-        store = component.store;
+        store = component['store'];
         store.dispatch(new markingActions.SetMarkings(markings));
         fixture.detectChanges();
     });

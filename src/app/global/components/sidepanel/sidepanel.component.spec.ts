@@ -5,7 +5,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SidepanelComponent } from './sidepanel.component';
 
-
 describe('SidepanelComponent', () => {
   let component: SidepanelComponent;
   let fixture: ComponentFixture<SidepanelComponent>;

@@ -45,7 +45,6 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
                             return defs;
                         }, { loaded: false });
                     this.markingDefinitions.loaded = true;
-                    console.log('got marking definitions', this.markingDefinitions);
                     this.setMarkings(this.model);
                 },
                 err => console.log('error loading marking definitions', err),
@@ -54,7 +53,6 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('changes?', changes);
         if (this.markingDefinitions.loaded && changes && changes.model) {
             this.setMarkings(changes.model.currentValue);
         }
@@ -65,9 +63,7 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
      */
     private setMarkings(model: any) {
         const markings = [];
-        console.log('got model?', model);
         if (model && model.object_marking_refs) {
-            console.log('got markings', model.object_marking_refs);
             const capco = {
                 Classification: [],
                 Compartment: [],
@@ -119,7 +115,6 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
                 markings.unshift(marking);
             }
         }
-        console.log('new markings', markings);
         this._markings = markings;
     }
 
