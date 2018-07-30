@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { pluck, distinctUntilChanged } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
@@ -8,7 +8,8 @@ import { MarkingDefinition } from '../../../models';
 @Component({
     selector: 'markings-chips',
     templateUrl: './markings-chips.component.html',
-    styleUrls: ['./markings-chips.component.scss']
+    styleUrls: ['./markings-chips.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MarkingsChipsComponent implements OnInit, OnChanges {
 
@@ -22,7 +23,8 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
     private tlpOrder = ['white', 'green', 'amber', 'red'];
 
     constructor(
-        public store: Store<fromRoot.AppState>,
+        private store: Store<fromRoot.AppState>,
+        private changeDetection: ChangeDetectorRef,
     ) {
     }
 
@@ -52,8 +54,9 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        console.log('changes?', changes);
         if (this.markingDefinitions.loaded && changes && changes.model) {
-            this.setMarkings(changes.model);
+            this.setMarkings(changes.model.currentValue);
         }
     }
 
@@ -79,7 +82,10 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
                             markings.push({color: def.definition.tlp, text: `TLP: ${def.definition.tlp}`});
                             break;
                         case 'rating':
-                            markings.push({color: null, text: `(${def.definition.rating}) ${def.definition.label}`});
+                            markings.push({
+                                color: null,
+                                text: `Rating: (${def.definition.rating}) ${def.definition.label}`
+                            });
                             break;
                         case 'statement':
                             markings.push({color: 'white', text: def.definition.statement});
@@ -113,6 +119,7 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
                 markings.unshift(marking);
             }
         }
+        console.log('new markings', markings);
         this._markings = markings;
     }
 

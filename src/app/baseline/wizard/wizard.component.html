@@ -88,6 +88,19 @@
               <created-by-ref [assessmentMeta]="meta"></created-by-ref>
             </div>
           </div>
+          <div class="row mat-card-padding">
+            <div class="col-xs-12 flex">
+              <mat-form-field class="flex1 full-width">
+                <mat-select multiple placeholder="Marking References" [(ngModel)]="currentBaseline.object_marking_refs"
+                    (selectionChange)="onMarkingChange($event)">
+                  <mat-option *ngFor="let marking of marking$ | async" [value]="marking.id">
+                    {{getMarkingLabel(marking)}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <markings-chips #markingsChips class="flex1" [model]="currentBaseline"></markings-chips>
+            </div>
+          </div>
         </mat-card-content>
       </div>
     </div>

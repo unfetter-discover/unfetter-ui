@@ -2,7 +2,7 @@
   && finishedLoadingRBAP && finishedLoadingSAD; else loadingBlock" class="fadeIn">
   <mat-sidenav-container *ngIf="summary !== undefined; else notFound">
     <mat-sidenav class="side-panel" mode="side" opened="true">
-      <unfetter-side-panel class="side-panel" [item]="{ name: assessmentName|async, object_marking_refs: summary.object_marking_refs }" collapsible="false" width="320">
+      <unfetter-side-panel class="side-panel" [item]="{ name: assessmentName|async }" collapsible="false" width="320">
 
         <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
         <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
@@ -12,6 +12,7 @@
           [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
           (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
 
+        <markings-chips [model]="summary"></markings-chips>
         <sidepanel-list-item label="{{summaries[0].name}}" [items]="summaries" expandable="true">
           <mat-list-item *ngFor="let summary of summaries; trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
             <h4 mat-line>

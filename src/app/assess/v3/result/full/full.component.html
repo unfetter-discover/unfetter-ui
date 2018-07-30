@@ -2,7 +2,8 @@
   <div *ngIf="(failedToLoad$|async) === false; else failedToLoadBlock" class="fadeIn">
     <mat-sidenav-container *ngIf="assessment$ | async as assessment">
       <mat-sidenav *ngIf="(assessmentGroup$ | async) as assessmentGroup" class="side-panel" mode="side" opened="true">
-        <unfetter-side-panel class="side-panel" [item]="{ name: (assessmentName$ | async) }" collapsible="false" width="320">
+        <unfetter-side-panel class="side-panel" collapsible="false" width="320"
+            [item]="{ name: (assessmentName$ | async), object: (assessment$ | async) }">
 
           <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
           <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
@@ -12,6 +13,7 @@
             [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
             (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
         </unfetter-side-panel>
+        <markings-chips [model]="assessment$ | async"></markings-chips>
         <div *ngIf="assessmentGroup.riskByAttackPattern" class="side-panel-risks">
           <div class="risk-header-wrapper">
             <div class="flex risk-header">
