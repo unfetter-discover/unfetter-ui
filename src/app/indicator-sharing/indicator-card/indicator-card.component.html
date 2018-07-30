@@ -78,7 +78,7 @@
             <h4 class="fw400">
               <a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a>
             </h4>
-            <div *ngIf="ap.kill_chain_phases">
+            <div *ngIf="ap.kill_chain_phases && ap.kill_chain_phases.length">
               <label>Tactics</label>
               <p>
                 <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
@@ -112,7 +112,7 @@
             <markdown-editor [editing]="false" [flushed]="true" [truncate]="true"
                 [value]="indicator.description"></markdown-editor>
           </div>
-          <div *ngIf="indicator.kill_chain_phases">
+          <div *ngIf="indicator.kill_chain_phases && indicator.kill_chain_phases.length">
             <label>Tactics</label>
             <p>
               <span *ngFor="let phase of indicator.kill_chain_phases; let i = index" class="text-muted">
