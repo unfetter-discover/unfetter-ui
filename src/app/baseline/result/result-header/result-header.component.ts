@@ -37,11 +37,9 @@ export class ResultHeaderComponent implements OnInit {
   public ngOnInit(): void {
     const base = '/baseline/result/';
     this.summaryLink = `${base}/summary/${this.baselineId}`;
-    this.infoBarMsg = 'Baselines is currently in beta. Some functionality does not work.'
-
     this.percentCompleted = this.calculationService.blPercentComplete;
     if (this.percentCompleted < 100) {
-      this.infoBarMsg += ` ${this.percentCompleted.toFixed(2)}% of your baseline is complete.`;
+      this.infoBarMsg = `${this.percentCompleted.toFixed(2)}% of your baseline is complete.`;
       this.editUrl = `/baseline/wizard/edit/${this.baselineId}`;
     }
   }
