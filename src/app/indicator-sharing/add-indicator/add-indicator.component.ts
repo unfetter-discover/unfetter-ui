@@ -207,7 +207,6 @@ export class AddIndicatorComponent implements OnInit {
                             kcpForm.patchValue(kcp);
                             this.form.get('kill_chain_phases').push(kcpForm);
                         });
-                    console.log('####', this.form.get('kill_chain_phases'));
                 },
                 (err) => {
                     console.log(err);
