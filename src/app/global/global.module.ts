@@ -47,7 +47,7 @@ import { LandingPageComponent } from './components/landing-page/landing-page.com
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { MarkdownEditorComponent } from './components/markdown-editor/markdown-editor.component';
 import { MarkingsEditorComponent } from './components/marking-references/markings-editor.component';
-import { MarkingsListComponent } from './components/marking-references/markings-list.component';
+import { MarkingsChipsComponent } from './components/marking-references/markings-chips.component';
 import {
     MasterListDialogComponent,
     MasterListDialogTriggerComponent,
@@ -131,7 +131,7 @@ const unfetterComponents = [
     KillChainPhasesReactiveComponent,
     LandingPageComponent,
     LoadingSpinnerComponent,
-    MarkingsListComponent,
+    MarkingsChipsComponent,
     MarkingsEditorComponent,      
     MasterListDialogComponent,
     MasterListDialogTriggerComponent,

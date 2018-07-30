@@ -1,7 +1,7 @@
 <div id="newAssessmentsSummary" *ngIf="finishedLoading; else loadingBlock" class="fadeIn">
   <mat-sidenav-container *ngIf="calculationService.baseline !== undefined; else notFound">
     <mat-sidenav class="side-panel" mode="side" opened="true">
-      <unfetter-side-panel class="side-panel" [item]="{ name: baselineName | async | capitalize }" collapsible="false" width="320">
+      <unfetter-side-panel class="side-panel" [item]="{ name: baselineName | async | capitalize, object_marking_refs: currentBaseline.object_marking_refs }" collapsible="false" width="320">
 
         <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
         <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>

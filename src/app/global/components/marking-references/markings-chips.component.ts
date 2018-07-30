@@ -6,11 +6,11 @@ import * as fromRoot from '../../../root-store/app.reducers';
 import { MarkingDefinition } from '../../../models';
 
 @Component({
-    selector: 'markings-list',
-    templateUrl: './markings-list.component.html',
-    styleUrls: ['./markings-list.component.scss']
+    selector: 'markings-chips',
+    templateUrl: './markings-chips.component.html',
+    styleUrls: ['./markings-chips.component.scss']
 })
-export class MarkingsListComponent implements OnInit, OnChanges {
+export class MarkingsChipsComponent implements OnInit, OnChanges {
 
     @Input() public model: any;
 
@@ -62,7 +62,9 @@ export class MarkingsListComponent implements OnInit, OnChanges {
      */
     private setMarkings(model: any) {
         const markings = [];
+        console.log('got model?', model);
         if (model && model.object_marking_refs) {
+            console.log('got markings', model.object_marking_refs);
             const capco = {
                 Classification: [],
                 Compartment: [],

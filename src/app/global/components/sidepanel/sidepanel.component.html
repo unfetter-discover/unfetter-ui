@@ -27,6 +27,7 @@
             </mat-toolbar>
 
             <mat-toolbar class="theme-color-accent" id="item-toolbar">
+                <markings-chips [model]="item"></markings-chips>
                 <span class="push-right mat-display-2"> {{item?.name || 'Unnamed'}} </span>
             </mat-toolbar>
 
