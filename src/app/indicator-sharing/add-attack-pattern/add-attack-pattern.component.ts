@@ -1,11 +1,13 @@
 
-import { distinctUntilChanged, pluck, map } from 'rxjs/operators';
+import { distinctUntilChanged, pluck, map, withLatestFrom, filter, tap } from 'rxjs/operators';
 import { Component, OnInit, Input } from '@angular/core'; 
 import { Store } from '@ngrx/store';
 
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { heightCollapse } from '../../global/animations/height-collapse';
+import { getPreferredKillchain } from '../../root-store/users/user.selectors';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 
 @Component({
   selector: 'add-attack-pattern',
@@ -14,7 +16,7 @@ import { heightCollapse } from '../../global/animations/height-collapse';
   animations: [heightCollapse]
 })
 export class AddAttackPatternComponent implements OnInit {
-  @Input() public indicatorId: string;
+  @Input() public indicator: any;
   @Input() public createdByRef: string;
   @Input() public existingAttackPatterns: any[] = [];
   @Input() public canCrud: boolean = false;
@@ -26,15 +28,25 @@ export class AddAttackPatternComponent implements OnInit {
   constructor(public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>) { }
 
   ngOnInit() {
-    this.displayedAttackPatterns$ = this.store.select('indicatorSharing').pipe(
+    this.displayedAttackPatterns$ = this.store.select('indicatorSharing')
+    .pipe(
       pluck('attackPatterns'),
-      map((attackPatterns: any[]) => {
+      withLatestFrom(this.store.select(getPreferredKillchain)),
+      map(([attackPatterns, preferredKillchain]: [any[], string]) => {
         return attackPatterns
-          .filter((attackPattern) => {
-            return this.existingAttackPatterns
-              .find((existingAttackPattern: any) => existingAttackPattern.id === attackPattern.id) === undefined;
+          .filter((attackPattern) => {            
+            return attackPattern.kill_chain_phases 
+              && attackPattern.kill_chain_phases.length
+              && attackPattern.kill_chain_phases
+                  .map((kcp) => kcp.kill_chain_name)
+                  .includes(preferredKillchain)
+              && !this.existingAttackPatterns
+                  .find((existingAttackPattern: any) => existingAttackPattern.id === attackPattern.id);
           });
-      }));
+      }),
+      RxjsHelpers.sortByField('name', 'ASCENDING')
+    );
+
     const getFilteredAp$ = this.store.select('indicatorSharing').pipe(
       pluck('searchParameters'),
       pluck('attackPatterns'),
@@ -56,10 +68,11 @@ export class AddAttackPatternComponent implements OnInit {
 
   public saveRelationsips() {
     this.showAddAp = false;
-    this.selectedAttackPatterns
-      .forEach((attackPatternId) => { 
-        this.store.dispatch(new indicatorSharingActions.CreateIndicatorToApRelationship({ indicatorId: this.indicatorId, attackPatternId, createdByRef: this.createdByRef }))
-      })
+    this.store.dispatch(new indicatorSharingActions.CreateIndicatorToApRelationships({ 
+      indicatorId: this.indicator.id, 
+      attackPatternIds: this.selectedAttackPatterns, 
+      createdByRef: this.createdByRef 
+    }));
     this.selectedAttackPatterns = [];
   }
 

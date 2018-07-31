@@ -66,7 +66,7 @@
         </div>
 
         <label *ngIf="(attackPatterns && attackPatterns.length > 0) || canCrud">Indicated Techniques</label>
-        <add-attack-pattern [existingAttackPatterns]="attackPatterns" [indicatorId]="indicator.id" [createdByRef]="indicator.created_by_ref" [canCrud]="canCrud"></add-attack-pattern>
+        <add-attack-pattern [existingAttackPatterns]="attackPatterns" [indicator]="indicator" [createdByRef]="indicator.created_by_ref" [canCrud]="canCrud"></add-attack-pattern>
 
       <div *ngIf="attackPatterns && attackPatterns.length > 0">
         <div class="uf-collapsible-control mb-10 mt-6" (click)="showAttackPatternDetails = !showAttackPatternDetails">
@@ -78,7 +78,7 @@
             <h4 class="fw400">
               <a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a>
             </h4>
-            <div *ngIf="ap.kill_chain_phases">
+            <div *ngIf="ap.kill_chain_phases && ap.kill_chain_phases.length">
               <label>Tactics</label>
               <p>
                 <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
@@ -112,7 +112,7 @@
             <markdown-editor [editing]="false" [flushed]="true" [truncate]="true"
                 [value]="indicator.description"></markdown-editor>
           </div>
-          <div *ngIf="indicator.kill_chain_phases">
+          <div *ngIf="indicator.kill_chain_phases && indicator.kill_chain_phases.length">
             <label>Tactics</label>
             <p>
               <span *ngFor="let phase of indicator.kill_chain_phases; let i = index" class="text-muted">
