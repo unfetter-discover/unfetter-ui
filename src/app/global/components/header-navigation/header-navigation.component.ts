@@ -35,14 +35,14 @@ export class HeaderNavigationComponent {
       icon: Constance.LOGO_IMG_ASSESSMENTS
     },
     {
-      url: Constance.X_UNFETTER_ASSESSMENT3_NAVIGATE_URL,
+      url: Constance.X_UNFETTER_BASELINE_NAVIGATE_URL,
       title: 'Assessments Beta',
       icon: Constance.LOGO_IMG_ASSESSMENTS_BETA
     },
     {
-      url: Constance.X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL,
+      url: Constance.X_UNFETTER_BASELINE_NAVIGATE_URL,
       title: 'Baselines',
-      icon: Constance.LOGO_IMG_ASSESSMENTS_BETA
+      icon: Constance.LOGO_IMG_BASELINES
     },
     {
       url: 'intrusion-set-dashboard',
