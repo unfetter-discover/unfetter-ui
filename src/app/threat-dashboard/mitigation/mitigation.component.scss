@@ -1,0 +1,48 @@
+@import '../../../styles/_variables.scss';
+
+$timeline-grey: #d1d5da;
+
+.title {
+    padding-top: 12px;
+    color: $dark-text-default;
+}
+
+.attackIcon {
+    padding-right: 8px;
+    // position: relative;
+    // top: 10px;
+
+    svg {
+        width: 32px;
+        height: 32px;
+        fill: #fafafa;
+        border: 1px solid red;
+        border-radius: 50%;
+        background: red;
+    }
+}
+
+.main {
+    min-height: calc(100vh - 350px);
+    color: $dark-text-default;
+    margin: 12px;
+
+    .line {
+        min-height: 64px;
+
+        .col1, .col3 {
+            margin: auto auto;
+        }
+
+        .col2 {
+            border-left: 4px solid $timeline-grey;
+        }
+        
+        svg {
+            width: 24px;
+            height: 24px;
+            fill: $timeline-grey; 
+        }
+    }
+}
+
