@@ -1,7 +1,7 @@
 <mat-expansion-panel [disabled]="getCount() === 0" [expanded]="expanded" [hideToggle]="hideToggle">
     <mat-expansion-panel-header>
         <mat-panel-title>
-            <svg><use class="icon" attr.xlink:href="{{icon}}"></use></svg>
+            <svg><use class="icon" attr.href="{{icon}}"></use></svg>
             <span>{{label}}</span>
             <span *ngIf="showCount === true">&nbsp;({{getCount()}})</span>
         </mat-panel-title>

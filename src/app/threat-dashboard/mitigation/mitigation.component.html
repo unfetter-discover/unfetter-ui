@@ -1,0 +1,38 @@
+<div class="main flex-col">
+    <div class="flex mat-title title">
+        <div class="attackIcon">
+            <svg>
+                <use href="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></use>
+            </svg>
+        </div>
+        <div>
+            Mitigations
+        </div>
+    </div>
+    <div class="flex line">
+        <div class="flex1 col1">
+            <span *ngIf="isAttackerTurn === true">
+                <form [formGroup]="attackerForm">
+                    <mat-form-field>
+                        <mat-select placeholder="Attack Pattern Referenced">
+                            <mat-option *ngFor="let attackPattern of currentReportAttackPatterns" [value]="attackPattern.id">
+                                {{attackPattern.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </form>
+            </span>
+        </div>
+        <div class="flex0 col2">
+            <!-- <svg>
+                <use href="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></use>
+            </svg> -->
+        </div>
+        <div class="flex1 col3">
+            col c
+        </div>
+    </div>
+    <div class="defenderIcon">
+        <mat-icon class="mat-48">security</mat-icon>
+    </div>
+</div>
