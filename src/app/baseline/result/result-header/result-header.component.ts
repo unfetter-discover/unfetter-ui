@@ -17,7 +17,7 @@ export class ResultHeaderComponent implements OnInit {
 
   @Input()
   public published: Date;
-  private percentCompleted: number;
+  public percentCompleted: number;
   public summaryLink: string;
   infoBarMsg: string;
   public editUrl: string;
