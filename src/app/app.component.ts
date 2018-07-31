@@ -8,7 +8,7 @@ import { AuthService } from './core/services/auth.service';
 import { Themes } from './global/enums/themes.enum';
 import * as fromApp from './root-store/app.reducers';
 import * as configActions from './root-store/config/config.actions';
-import * as identityActions from './root-store/identities/identity.actions';
+import * as stixActions from './root-store/stix/stix.actions';
 import * as markingActions from './root-store/markings/marking.actions';
 import * as userActions from './root-store/users/user.actions';
 import { demoUser } from './testing/demo-user';
@@ -70,7 +70,7 @@ export class AppComponent implements OnInit {
          */
         this.store.dispatch(new configActions.FetchConfig(false));
         this.store.dispatch(new configActions.FetchTactics());
-        this.store.dispatch(new identityActions.FetchIdentities());
+        this.store.dispatch(new stixActions.FetchIdentities());
         this.store.dispatch(new markingActions.FetchMarkings());
       }
     }

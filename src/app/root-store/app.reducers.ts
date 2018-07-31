@@ -4,7 +4,7 @@ import * as fromUsers from './users/users.reducers';
 import * as fromConfig from './config/config.reducers';
 import * as fromUtility from './utility/utility.reducers';
 import * as fromMarkings from './markings/marking.reducers';
-import * as fromIdentities from './identities/identity.reducers';
+import * as fromStix from './stix/stix.reducers';
 import * as fromNotification from './notification/notification.reducers';
 
 export interface AppState {
@@ -12,7 +12,7 @@ export interface AppState {
     config: fromConfig.ConfigState,
     utility: any, // TODO update type if an interface is added
     markings: fromMarkings.MarkingState,
-    identities: fromIdentities.IdentityState,
+    stix: fromStix.StixState,
     notifications: fromNotification.NotificationState,
 }
 
@@ -21,6 +21,6 @@ export const reducers: ActionReducerMap<AppState> = {
     config: fromConfig.configReducer,
     utility: fromUtility.utilityReducer,
     markings: fromMarkings.markingsReducer,
-    identities: fromIdentities.identitiesReducer,
+    stix: fromStix.stixReducer,
     notifications: fromNotification.notificationReducer,
 }

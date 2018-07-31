@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { map } from 'rxjs/operators';
 
-import { getOrganizations } from '../../root-store/identities/identity.selectors';
+import { getOrganizations } from '../../root-store/stix/stix.selectors';
 import { AdminService } from '../admin.service';
 import { AppState } from '../../root-store/app.reducers';
 import { Constance } from '../../utils/constance';

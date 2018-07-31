@@ -1,22 +1,23 @@
-import * as identityActions from './identity.actions';
 import { Identity } from 'stix';
 
-export interface IdentityState {
+import * as stixActions from './stix.actions';
+
+export interface StixState {
     identities: Identity[],
 }
 
-export const initialState: IdentityState = {
+export const initialState: StixState = {
     identities: [],
 }
 
-export function identitiesReducer(state = initialState, action: identityActions.IdentityActions): IdentityState {
+export function stixReducer(state = initialState, action: stixActions.StixActions): StixState {
     switch (action.type) {
-        case identityActions.SET_IDENTITIES:
+        case stixActions.SET_IDENTITIES:
             return {
                 ...state,
                 identities: action.payload,
             };
-        case identityActions.CLEAR_IDENTITIES:
+        case stixActions.CLEAR_IDENTITIES:
             return {
                 ...state,
                 ...initialState
