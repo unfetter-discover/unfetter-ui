@@ -132,7 +132,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     const subIdentitie$ = this.userStore
-      .select('identities').pipe(
+      .select('stix').pipe(
       pluck('identities'),
       finalize(() => subIdentitie$ && subIdentitie$.unsubscribe()))
       .subscribe(

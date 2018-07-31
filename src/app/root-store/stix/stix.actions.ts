@@ -1,12 +1,15 @@
 import { Action } from '@ngrx/store';
 import { Identity, MarkingDefinition } from 'stix';
+import { Dictionary } from 'stix/common/dictionary';
+
+import { TacticChain } from '../../global/components/tactics-pane/tactics.model';
 
 export const FETCH_IDENTITIES = '[Stix] Fetch Identities';
 export const SET_IDENTITIES = '[Stix] Set Identities';
-export const CLEAR_IDENTITIES = '[Stix] Clear Identities';
 export const FETCH_MARKING_DEFINITIONS = '[Stix] Fetch Marking Definitions';
 export const SET_MARKING_DEFINITIONS = '[Stix] Set Marking Definitions';
-export const CLEAR_MARKING_DEFINITIONS = '[Stix] Clear Marking Definitions';
+export const FETCH_ATTACK_PATTERNS = '[Stix] Fetch Attack Patterns';
+export const SET_ATTACK_PATTERNS = '[Stix] Set Attack Patterns';
 export const CLEAR_STIX = '[Stix] Clear Stix';
 
 export class FetchIdentities implements Action {
@@ -17,10 +20,6 @@ export class SetIdentities implements Action {
     public readonly type = SET_IDENTITIES;
 
     constructor(public payload: Identity[]) {}
-}
-
-export class ClearIdentities implements Action {
-    public readonly type = CLEAR_IDENTITIES;
 }
 
 /**
@@ -38,11 +37,13 @@ export class SetMarkingDefinitions implements Action {
     constructor(public payload: MarkingDefinition[]) { }
 }
 
-/**
- * Orders the state to erase all known marking definitions.
- */
-export class ClearMarkingDefinitions implements Action {
-    public readonly type = CLEAR_MARKING_DEFINITIONS;
+export class FetchAttackPatterns implements Action {
+    public readonly type = FETCH_ATTACK_PATTERNS;
+}
+
+export class SetAttackPatterns implements Action {
+    public readonly type = SET_ATTACK_PATTERNS;
+    constructor(public payload: Dictionary<TacticChain>) { }
 }
 
 export class ClearStix implements Action {
@@ -52,8 +53,8 @@ export class ClearStix implements Action {
 export type StixActions = 
     FetchIdentities |
     SetIdentities |
-    ClearIdentities |
     FetchMarkingDefinitions |
     SetMarkingDefinitions |
-    ClearMarkingDefinitions |
+    FetchAttackPatterns |
+    SetAttackPatterns |
     ClearStix;

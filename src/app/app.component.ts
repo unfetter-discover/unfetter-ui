@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
          * effect and do NOT pertain to UAC
          */
         this.store.dispatch(new configActions.FetchConfig(false));
-        this.store.dispatch(new configActions.FetchTactics());
+        this.store.dispatch(new stixActions.FetchAttackPatterns());
         this.store.dispatch(new stixActions.FetchIdentities());
         this.store.dispatch(new stixActions.FetchMarkingDefinitions());
       }

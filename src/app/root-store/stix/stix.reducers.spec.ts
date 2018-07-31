@@ -24,14 +24,6 @@ describe('stixReducer', () => {
         expect(stixReducer(undefined, new stixActions.SetIdentities(payload))).toEqual(expected);
     });
 
-    it('should clear identities', () => {
-        const mockState = {
-            ...mockInitialState,
-            identities: ['foo', 'bar']
-        };
-        expect(stixReducer(mockState as any, new stixActions.ClearIdentities())).toEqual(initialState);
-    });
-
     it('should set markings', () => {
         const marking = new MarkingDefinition();
         const payload: MarkingDefinition[] = [marking];
@@ -40,14 +32,6 @@ describe('stixReducer', () => {
             markingDefinitions: payload
         };
         expect(stixReducer(undefined, new stixActions.SetMarkingDefinitions(payload))).toEqual(expected);
-    });
-
-    it('should clear markings', () => {
-        const mockState = {
-            ...mockInitialState,
-            markingDefinitions: ['foo', 'bar']
-        };
-        expect(stixReducer(mockState as any, new stixActions.ClearMarkingDefinitions())).toEqual(initialState);
     });
 
     it('should clear stix', () => {

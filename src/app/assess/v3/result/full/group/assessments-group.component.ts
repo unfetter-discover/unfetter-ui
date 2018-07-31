@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
+import { of as observableOf } from 'rxjs/observable/of';
 import { distinctUntilChanged, filter, pluck, switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 import { AssessAttackPatternMeta } from 'stix/assess/v2/assess-attack-pattern-meta';
@@ -417,19 +417,19 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       .map((ap) => ap.attackPatternId);
 
     const s$ = this.appStore
-      .select('config')
+      .select('stix')
       .pipe(
         filter(() => this.activePhase !== undefined && this.activePhase.length > 0),
         switchMap(
           (state) => {
             // get all the phases across the frameworks
-            const phases = Object.keys(state.tacticsChains)
-              .map((curFramework) => state.tacticsChains[curFramework].phases)
+            const phases = Object.keys(state.visualizationData)
+              .map((curFramework) => state.visualizationData[curFramework].phases)
               .reduce((acc, val) => acc.concat(val), []);
             // look for the currently viewed phase
             // TODO: there is potential to get the wrong phase if the phase id exists in two frameworks
             const curPhase = phases.filter((phase) => phase.id === this.activePhase)[0];
-            return of(curPhase.tactics);
+            return observableOf(curPhase.tactics);
           })
       )
       .subscribe(
