@@ -7,7 +7,7 @@ export const FETCH_DATA = '[Indicator Sharing] FETCH_DATA';
 export const FETCH_INDICATORS = '[Indicator Sharing] FETCH_INDICATORS';
 export const START_DELETE_INDICATOR = '[Indicator Sharing] START_DELETE_INDICATOR';
 export const START_UPDATE_INDICATOR = '[Indicator Sharing] START_UPDATE_INDICATOR';
-export const CREATE_IND_TO_AP_RELATIONSHIP = '[Indicator Sharing] CREATE_IND_TO_AP_RELATIONSHIP';
+export const CREATE_IND_TO_AP_RELATIONSHIPS = '[Indicator Sharing] CREATE_IND_TO_AP_RELATIONSHIPS';
 export const REFRESH_AP_MAP = '[Indicator Sharing] REFRESH_AP_MAP';
 
 // For reducers
@@ -36,10 +36,10 @@ export class FetchData implements Action {
     public readonly type = FETCH_DATA;
 }
 
-export class CreateIndicatorToApRelationship implements Action {
-    public readonly type = CREATE_IND_TO_AP_RELATIONSHIP;
+export class CreateIndicatorToApRelationships implements Action {
+    public readonly type = CREATE_IND_TO_AP_RELATIONSHIPS;
     
-    constructor(public payload: { indicatorId: string, attackPatternId: string, createdByRef: string } ) { }
+    constructor(public payload: { indicatorId: string, attackPatternIds: string[], createdByRef: string } ) { }
 }
 
 export class RefreshApMap implements Action {
@@ -180,7 +180,7 @@ export class FetchIndicators implements Action {
 
 export type IndicatorSharingActions =
     FetchData |
-    CreateIndicatorToApRelationship |
+    CreateIndicatorToApRelationships |
     RefreshApMap |
     StartDeleteIndicator |
     StartUpdateIndicator |
