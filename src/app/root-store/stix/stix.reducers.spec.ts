@@ -3,6 +3,61 @@ import { Identity, MarkingDefinition } from 'stix';
 import * as stixActions from './stix.actions';
 import { StixState, initialState, stixReducer } from './stix.reducers';
 
+export const air_tactics = [
+    {
+        id: 'air-135',
+        name: 'Spotter',
+        description: 'Locate enemy troop movements and strategic targets',
+        phases: ['Recon'],
+        platforms: ['RC-135'],
+    },
+    {
+        id: 'air-f16',
+        name: 'Fighter Jet',
+        description: 'Air-to-air combat piloting',
+        phases: ['Offense'],
+        platforms: ['F-16', 'F-18'],
+    },
+    {
+        id: 'air-a10',
+        name: 'Ground Attack',
+        description: 'Air-to-ground',
+        phases: ['Offense'],
+        platforms: ['A-10, Huey'],
+    },
+    {
+        id: 'air-ffff',
+        name: 'MOAB',
+        description: 'Mother of all bombs',
+        phases: ['Wipeout'],
+        platforms: ['B-2'],
+    },
+];
+
+export const mockTactics = {
+    aerial: {
+        id: 'air',
+        name: 'Aerial Warfare',
+        phases: [
+            {
+                id: 'air-101',
+                name: 'Aerial Reconnaissance',
+                tactics: [air_tactics[0]],
+            },
+            {
+                id: 'air-blap-blap-blap',
+                name: 'Air Strike',
+                tactics: [air_tactics[1], air_tactics[2]],
+            },
+            {
+                id: 'air-bomb',
+                name: 'Strategic Bombing',
+                tactics: [air_tactics[3]],
+            },
+        ],
+    }
+};
+
 describe('stixReducer', () => {
     let mockInitialState: StixState = null;
 
@@ -42,4 +97,15 @@ describe('stixReducer', () => {
         };
         expect(stixReducer(mockState as any, new stixActions.ClearStix())).toEqual(initialState);
     });
+
+    it('should load attackPatterns', () => {
+        const newState = stixReducer(undefined, new stixActions.SetAttackPatterns(mockTactics));
+        expect(newState).toBeDefined();
+        expect(newState.visualizationData).toEqual(mockTactics);
+        expect(newState.attackPatterns.length).toBe(4);
+        const ids = air_tactics.map(t => t.id).sort();
+        const newIds: string[] = (newState as any).tactics.map(t => t.id).sort();
+        ids.forEach((id, idx) => expect(id).toEqual(newIds[idx]));
+    });
+
 });
