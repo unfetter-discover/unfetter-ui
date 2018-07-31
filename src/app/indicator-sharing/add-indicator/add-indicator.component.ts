@@ -1,14 +1,15 @@
-
-import { of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subject  } from 'rxjs';
-
-import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize } from 'rxjs/operators';
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { of as observableOf, forkJoin as observableForkJoin, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, debounceTime, switchMap, pluck, tap, finalize } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatStep } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
+import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { PatternHandlerTranslateAll, PatternHandlerGetObjects, PatternHandlerPatternObject } from '../../global/models/pattern-handlers';
@@ -20,6 +21,7 @@ import { FormatHelpers } from '../../global/static/format-helpers';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { GridFSFile } from '../../global/models/grid-fs-file';
 import { RunConfigService } from '../../core/services/run-config.service';
+import { MarkingDefinition } from '../../models';
 
 @Component({
     selector: 'add-indicator',
@@ -48,6 +50,10 @@ export class AddIndicatorComponent implements OnInit {
     public uploadProgress: number;
     public submitErrorMsg: string;
     public blockAttachments: boolean;
+    public marking$: Observable<MarkingDefinition[]>;
+    public markings = {
+        object_marking_refs: []
+    };
 
     @ViewChild('associatedDataStep') 
     public associatedDataStep: MatStep;
@@ -72,7 +78,8 @@ export class AddIndicatorComponent implements OnInit {
         private indicatorSharingService: IndicatorSharingService,
         private authService: AuthService,
         private genericApi: GenericApi,
-        private runConfigService: RunConfigService
+        private runConfigService: RunConfigService,
+        private store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
     ) { }    
 
     public ngOnInit() {
@@ -211,6 +218,12 @@ export class AddIndicatorComponent implements OnInit {
                 (err) => {
                     console.log(err);
                 }
+            );
+
+        this.marking$ = this.store
+            .select('markings')
+            .pipe(
+                pluck('definitions')
             );
     }
 
@@ -413,4 +426,25 @@ export class AddIndicatorComponent implements OnInit {
         const originalValue = formCtrl.value;
         formCtrl.setValue(FormatHelpers.normalizeQuotes(originalValue));
     }
+
+    public getMarkingLabel(marking) {
+        if (marking && marking.attributes && marking.attributes.definition_type) {
+            switch (marking.attributes.definition_type) {
+                case 'statement': {
+                    return marking.attributes.definition.statement;
+                }
+                case 'tlp': {
+                    return `TLP: ${marking.attributes.definition.tlp}`;
+                }
+                case 'rating': {
+                    return `Rating: (${marking.attributes.definition.rating}) ${marking.attributes.definition.label}`;
+                }
+                case 'capco': {
+                    return `${marking.attributes.definition.category}: ${marking.attributes.definition.text}`
+                }
+            }
+        }
+        return 'unknown marking';
+    }
+
 }

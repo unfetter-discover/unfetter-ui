@@ -12,6 +12,7 @@
             [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
             (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
         </unfetter-side-panel>
+        <markings-chips [model]="assessment$ | async"></markings-chips>
         <div *ngIf="assessmentGroup.riskByAttackPattern" class="side-panel-risks">
           <div class="risk-header-wrapper">
             <div class="flex risk-header">

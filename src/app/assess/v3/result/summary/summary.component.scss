@@ -3,6 +3,24 @@
 .side-panel {
     width: 320px;
     background-color: white;
+
+    markings-chips {
+        ::ng-deep div.flex {
+            margin-bottom: 4px;
+
+            mat-chip-list {
+                margin: 0 auto;
+            }
+
+            mat-chip {
+                margin: 0 auto 4px;
+            }
+
+            mat-chip:first-of-type {
+                margin-top: -8px;
+            }
+        }
+    }
 }
 
 .main-panel {

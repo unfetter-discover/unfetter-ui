@@ -16,12 +16,23 @@
                         Name is <strong>required</strong>
                     </mat-error>
                 </mat-form-field>
-                
+
                 <mat-form-field class="full-width mb-6" *ngIf="!editMode">
                     <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
                         <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
                     </mat-select>
                 </mat-form-field>
+
+                <div class="flex">
+                    <mat-form-field class="flex1 full-width mb-6">
+                        <mat-select multiple placeholder="Marking References" formControlName="object_marking_refs">
+                            <mat-option *ngFor="let marking of marking$ | async" [value]="marking.id">
+                                {{getMarkingLabel(marking)}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <markings-chips class="flex1" [model]="form.value"></markings-chips>
+                </div>
 
                 <markdown-editor 
                     [editing]="true" 

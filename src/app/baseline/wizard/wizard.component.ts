@@ -1,7 +1,6 @@
-
 import { of as observableOf,  Observable ,  Subscription  } from 'rxjs';
 
-import { take, filter, distinctUntilChanged, pluck } from 'rxjs/operators';
+import { take, filter, distinctUntilChanged, pluck, tap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren, ViewChild } from '@angular/core';
 import { MatDialog, MatSelect, MatSnackBar } from '@angular/material';
@@ -20,6 +19,8 @@ import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-p
 import { Measurements } from './models/measurements';
 import { Assess3Meta } from 'stix/assess/v3';
 import { CapabilityComponent } from './capability/capability.component';
+import { MarkingDefinition } from '../../models';
+import { MarkingsChipsComponent } from '../../global/components/marking-references/markings-chips.component';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -60,6 +61,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public currentCapability = {} as Capability;
   @ViewChild('capabilityPane') capabilityPane: CapabilityComponent;
   private baselineObjAssessments: ObjectAssessment[] = [];
+
+  public marking$: Observable<MarkingDefinition[]>;
+  @ViewChild('markingsChips') markingsChips: MarkingsChipsComponent;
 
   public showHeatmap = false;
   public allAttackPatterns: Observable<AttackPattern[]> = observableOf([]);
@@ -142,6 +146,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       distinctUntilChanged())
       .subscribe(
         (assessmentSet: AssessmentSet) => {
+          if (!assessmentSet['object_marking_refs']) {
+            assessmentSet['object_marking_refs'] = [];
+          }
           this.currentBaseline = assessmentSet;
           this.meta = new Assess3Meta();
           this.meta.title = this.currentBaseline.name;
@@ -247,7 +254,13 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .select('baseline').pipe(
         pluck<{}, AttackPattern[]>('selectedFrameworkAttackPatterns'),
         distinctUntilChanged());
-    
+
+      this.marking$ = this.userStore
+        .select('markings')
+        .pipe(
+          pluck('definitions')
+        );
+
       this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$, sub10$, sub11$, sub12$, sub13$, sub14$, sub15$);
 
       // Fetch categories and capabilities to power this wizard
@@ -668,6 +681,31 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       split[i] = s;
     }
     return split.join(' ');
+  }
+
+  public getMarkingLabel(marking) {
+    if (marking && marking.attributes && marking.attributes.definition_type) {
+      switch (marking.attributes.definition_type) {
+        case 'statement': {
+          return marking.attributes.definition.statement;
+        }
+        case 'tlp': {
+          return `TLP: ${marking.attributes.definition.tlp}`;
+        }
+        case 'rating': {
+          return `Rating: (${marking.attributes.definition.rating}) ${marking.attributes.definition.label}`;
+        }
+        case 'capco': {
+          return `${marking.attributes.definition.category}: ${marking.attributes.definition.text}`
+        }
+      }
+    }
+    return 'unknown marking';
+  }
+
+  public onMarkingChange(marking) {
+    this.markingsChips['setMarkings'](this.currentBaseline);
+    this.markingsChips['changeDetection'].markForCheck();
   }
 
   /*

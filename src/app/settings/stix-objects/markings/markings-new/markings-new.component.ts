@@ -28,6 +28,7 @@ interface RatingMarkingDefinition {
 }
 interface CAPCOMarkingDefinition {
     category: 'Classification' | 'Compartment' | 'Access' | 'Dissemination'
+    precedence: number;
     portion: string;
     text: string;
 }
@@ -75,6 +76,7 @@ export class MarkingsNewComponent extends BaseStixComponent implements OnInit {
     public readonly categoryCtrl: FormControl = new FormControl();
     public capco: CAPCOMarkingDefinition = {
         category: undefined,
+        precedence: 0,
         portion: undefined,
         text: undefined
     };
@@ -176,6 +178,16 @@ export class MarkingsNewComponent extends BaseStixComponent implements OnInit {
         let invalid = false;
         if (!this.capco.category) {
             this.validationErrorMessages.push('You need to select a CAPCO category');
+            invalid = true;
+        }
+        if (this.capco.precedence === undefined) {
+            this.validationErrorMessages.push('You must provide a precedence value');
+            invalid = true;
+        } else if (this.capco.precedence < 0) {
+            this.validationErrorMessages.push('The precedence must be a non-negative integer');
+            invalid = true;
+        } else if (!Number.isInteger(this.capco.precedence)) {
+            this.validationErrorMessages.push('The precedence must be an integer');
             invalid = true;
         }
         if (!this.capco.portion || !this.capco.portion.trim()) {

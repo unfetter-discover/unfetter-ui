@@ -1,9 +1,9 @@
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, ViewChildren, ViewChild } from '@angular/core';
 import { MatSelect } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MenuItem } from 'primeng/components/common/menuitem';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, pluck, take } from 'rxjs/operators';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
 import { AssessmentQuestion } from 'stix/assess/v2/assessment-question';
@@ -33,6 +33,8 @@ import { Measurements } from './models/measurements';
 import { SidePanelName } from './models/side-panel-name.enum';
 import { TempModel } from './models/temp-model';
 import { WizardQuestion } from './models/wizard-question';
+import { MarkingDefinition } from '../../../models';
+import { MarkingsChipsComponent } from '../../../global/components/marking-references/markings-chips.component';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -123,6 +125,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   private assessments: WizardQuestion[] = [];
   private groupings = [];
   private tempModel: TempModel = {} as TempModel;
+
+  public ext = {
+    object_marking_refs: []
+  }
+  public marking$: Observable<MarkingDefinition[]>;
+  @ViewChild('markingsChips') markingsChips: MarkingsChipsComponent;
 
   private readonly subscriptions: Subscription[] = [];
   private readonly sidePanelOrder: SidePanelName[] = [
@@ -287,6 +295,12 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (err) => console.log(err)
       );
 
+    this.marking$ = this.userStore
+      .select('markings')
+      .pipe(
+        pluck('definitions')
+      );
+
     this.subscriptions.push(sub1$, sub2$, sub3$, sub4$, sub5$, sub6$, sub7$, sub8$, sub9$);
   }
 
@@ -349,6 +363,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     //  to display the questions and existing answers
     const typedAssessments = {};
     const summary = new Assessment();
+    const marking_refs = new Set();
     arr.forEach((assessment) => {
       summary.id = assessment.id;
       summary.type = assessment.type;
@@ -361,6 +376,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         assessment.assessment_objects
       );
       summary.created_by_ref = meta.created_by_ref = assessment.created_by_ref;
+      if (assessment['object_marking_refs']) {
+        assessment['object_marking_refs'].forEach(ref => marking_refs.add(ref));
+      }
       if (!assessment.metaProperties) {
         assessment.metaProperties = { published: false };
         if (!assessment.metaProperties.rollupId) {
@@ -395,6 +413,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       relationships: typedAssessments,
       links: undefined,
     };
+    this.ext.object_marking_refs = Array.from(marking_refs);
 
     meta.title = summary.name;
     meta.description = summary.description;
@@ -1322,6 +1341,31 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return (category && category.name) ? category.name : id;
   }
 
+  public getMarkingLabel(marking) {
+    if (marking && marking.attributes && marking.attributes.definition_type) {
+      switch (marking.attributes.definition_type) {
+        case 'statement': {
+          return marking.attributes.definition.statement;
+        }
+        case 'tlp': {
+          return `TLP: ${marking.attributes.definition.tlp}`;
+        }
+        case 'rating': {
+          return `Rating: (${marking.attributes.definition.rating}) ${marking.attributes.definition.label}`;
+        }
+        case 'capco': {
+          return `${marking.attributes.definition.category}: ${marking.attributes.definition.text}`
+        }
+      }
+    }
+    return 'unknown marking';
+  }
+
+  public onMarkingChange(marking) {
+    this.markingsChips['setMarkings'](this.ext);
+    this.markingsChips['changeDetection'].markForCheck();
+  }
+
   /**
    * @description save an assessment object to the database
    * @param {void}
@@ -1336,6 +1380,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         if (this.meta.created_by_ref) {
           assessment.created_by_ref = this.meta.created_by_ref;
         }
+        assessment['object_marking_refs'] = this.ext.object_marking_refs;
       });
       this.wizardStore.dispatch(new SaveAssessment(assessments));
     } else {
@@ -1383,6 +1428,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     assessment.description = this.meta.description;
     assessment.created = this.publishDate.toISOString();
     assessment.created_by_ref = this.meta.created_by_ref;
+    assessment['object_marking_refs'] = this.ext.object_marking_refs;
     const assessmentSet = new Set<AssessmentObject>();
 
     Object.keys(tempModel).forEach((assessmentId) => {
