@@ -24,7 +24,7 @@ import { CleanAssessmentRiskByAttackPatternData, LoadSingleAssessmentRiskByAttac
 import { RiskByAttackPatternState } from '../store/riskbyattackpattern.reducers';
 import { CleanAssessmentResultData, LoadSingleAssessmentSummaryData, LoadSingleRiskPerKillChainData, LoadSingleSummaryAggregationData } from '../store/summary.actions';
 import { SummaryState } from '../store/summary.reducers';
-import { getFinishedLoadingAssessment, getFinishedLoadingKillChainData, getFinishedLoadingSummaryAggregationData, getFullAssessmentName, getKillChainData, getSummary, getSummaryAggregationData } from '../store/summary.selectors';
+import { getFinishedLoadingAssessment, getFinishedLoadingKillChainData, getFinishedLoadingSummaryAggregationData, getFullAssessmentName, getKillChainData, getSummary, getSummaryAggregationData, getAllFinishedLoading } from '../store/summary.selectors';
 import { SummaryCalculationService } from './summary-calculation.service';
 import { SummaryDataSource } from './summary.datasource';
 
@@ -139,19 +139,24 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select(getSummary)
       .pipe(
         distinctUntilChanged(),
+        filter((el) => el !== undefined),
         tap((summary) => {
-          if (summary) {
-            this.requestAncillaryDataLoad(summary);
-            this.transformSummary(summary);
-            this.summary = summary;
-          }
+          this.requestAncillaryDataLoad(summary);
+          this.transformSummary(summary);
+          this.summary = summary;
         }),
     );
 
+    const summarySubscription$ = this.summary$
+      .subscribe(
+        () => { },
+        (err) => console.log(err),
+        () => summarySubscription$.unsubscribe()
+      );
+
     this.finishedLoadingAll$ = this.store
-      .select(getFinishedLoadingAssessment) // TODO Fix
-      .pipe(distinctUntilChanged(),
-        tap((finished) => console.log(`ALL ALL am i finished loading assessment? ${finished}`)));
+      .select(getAllFinishedLoading)
+      .pipe(distinctUntilChanged());
 
     this.failedToLoad$ = this.store
       .select(getFailedToLoad)
@@ -163,23 +168,30 @@ export class SummaryComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         filter((el) => el !== undefined),
         tap((killChainData) => {
-          console.log('kill chain data is here', killChainData);
           this.transformKCD(killChainData)
         })
       );
 
-    const sX$ = this.riskByKillChain$
+    const riskByKillChainSubscription$ = this.riskByKillChain$
       .subscribe(
-        () => console.log('subscribe to riskByKillChain fired'),
+        () => { },
         (err) => console.log(err),
-        () => sX$.unsubscribe()
+        () => riskByKillChainSubscription$.unsubscribe()
       );
 
     this.summaryAggregation$ = this.store
       .select(getSummaryAggregationData)
       .pipe(distinctUntilChanged(),
+        filter((el) => el !== undefined),
         tap((summaryAggregationData) => this.transformSAD(summaryAggregationData)),
     );
+
+    const summaryAggregationSubscripton$ = this.summaryAggregation$
+      .subscribe(
+        () => { },
+        (err) => console.error(err),
+        () => summaryAggregationSubscripton$.unsubscribe()
+      )
 
     this.assessmentName$ = this.store
       .select(getFullAssessmentName)
@@ -190,13 +202,11 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     this.finishedLoadingAssessment$ = this.store
       .select(getFinishedLoadingAssessment)
-      .pipe(distinctUntilChanged(),
-        tap((finished) => console.log(`am i finished loading assessment? ${finished}`)));
+      .pipe(distinctUntilChanged());
 
     this.finishedLoadingKCD$ = this.store
       .select(getFinishedLoadingKillChainData)
-      .pipe(distinctUntilChanged(),
-        tap((finished) => console.log(`am i finished loading KCD? ${finished}`)));
+      .pipe(distinctUntilChanged());
 
     this.finishedLoadingSAD$ = this.store
       .select(getFinishedLoadingSummaryAggregationData)
