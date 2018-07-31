@@ -12,12 +12,12 @@
           [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
           (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
 
-        <sidepanel-list-item label="{ (summary|async).name }" [items]="(summaries$|async)" expandable="true">
-          <mat-list-item *ngFor="let summary of (summaries$|async); trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
+        <sidepanel-list-item [label]="(summary$ | async)?.name" [items]="([summary$|async])" expandable="true">
+          <mat-list-item *ngFor="let summ of ([summary$|async]); trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
             <h4 mat-line>
-              {{summary?.name}}
+              {{summ?.name}}
             </h4>
-            <div mat-line class="mat-caption"> {{summary?.assessment_objects[0]?.stix?.type}} </div>
+            <div mat-line class="mat-caption"> {{summ?.assessment_objects[0]?.stix?.type}} </div>
           </mat-list-item>
         </sidepanel-list-item>
 
