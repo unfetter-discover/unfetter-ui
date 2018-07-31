@@ -16,12 +16,23 @@
                         Name is <strong>required</strong>
                     </mat-error>
                 </mat-form-field>
-                
+
                 <mat-form-field class="full-width mb-6" *ngIf="!editMode">
                     <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
                         <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
                     </mat-select>
                 </mat-form-field>
+
+                <div class="flex">
+                    <mat-form-field class="flex1 full-width mb-6">
+                        <mat-select multiple placeholder="Marking References" formControlName="object_marking_refs">
+                            <mat-option *ngFor="let marking of marking$ | async" [value]="marking.id">
+                                {{getMarkingLabel(marking)}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <markings-chips class="flex1" [model]="form.value"></markings-chips>
+                </div>
 
                 <markdown-editor 
                     [editing]="true" 
@@ -158,18 +169,6 @@
                     </mat-chip-list>
                 </div>
                 
-                <!-- ~~~ Kill Chain Phases ~~~ -->
-                <div>
-                    <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
-                    <mat-chip-list formArrayName="kill_chain_phases" *ngIf="form.get('kill_chain_phases').value.length > 0" class="chipListPadding">
-                        <mat-chip *ngFor="let kill_chain of form.get('kill_chain_phases').value; let i = index" class="cursor-pointer chipListChip"
-                            color="primary" selected="true" removable="true">
-                            <span class="flex1 flexNowrap">{{ kill_chain.phase_name | capitalize}}</span>
-                            <mat-icon matChipRemove (click)="form.get('kill_chain_phases').removeAt(i)">cancel</mat-icon>
-                        </mat-chip>
-                    </mat-chip-list>
-                </div>
-                
                 <!-- ~~~ Labels ~~~ -->
                 <h5>Add Labels</h5>
                 <div class="flex flexItemsCenter" id="labelsWrapper">
@@ -182,13 +181,10 @@
                     <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
                 </div>
 
-                <div *ngIf="!editMode">
-                    <h5>File Attachments</h5>
-                    <div class="uf-well">
-                        <p>
-                            <input type="file" name="attachments" id="attachments" (change)="fileInputChange($event)" multiple>
-                        </p>
-                    </div>
+                <div *ngIf="!blockAttachments">
+                    <h5>Attachments</h5>
+                    <file-list [existingFiles]="editData && editData.metaProperties && editData.metaProperties.attachments" (filesChange)="filesChange($event)"></file-list>
+                    <br>
                 </div>
 
                 <div class="mt-6">
@@ -205,6 +201,14 @@
                         <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
                         <button mat-button matStepperPrevious type="button">BACK</button>
                     </div>
+                </div>
+                <div *ngIf="form.get('kill_chain_phases').value.length">
+                    <h5>Derived Tactics</h5>
+                    <mat-chip-list class="chipListPadding">
+                        <mat-chip *ngFor="let kcp of form.get('kill_chain_phases').value" class="cursor-pointer chipListChip">
+                            {{ kcp.phase_name | capitalize }}
+                        </mat-chip>
+                    </mat-chip-list>   
                 </div>
             </mat-step>
             

@@ -228,9 +228,9 @@ export class GenericApi {
      * @description This is the observable to upload a list of files to the upload/files route.
      * The optional callback will assist in driving progress bars.
      */
-    public uploadAttachments(files: FileList, progressCallback?: (number) => void): Observable<GridFSFile[]> {
+    public uploadAttachments(files: File[], progressCallback?: (number) => void): Observable<GridFSFile[]> {
         const formData: FormData = new FormData();
-        Object.values(files).forEach((file) => formData.append('attachments', file));
+        files.forEach((file) => formData.append('attachments', file));
         const req = new HttpRequest('POST', `${Constance.UPLOAD_URL}/files`, formData, {
             reportProgress: true
         }); 

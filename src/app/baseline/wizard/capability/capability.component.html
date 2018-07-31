@@ -1,15 +1,14 @@
 
 <mat-card-content>
     <div class="row margin-bottom top-row flex-sm flexItemsCenter">
-      <div class="col-lg-9">
+      <div class="col-lg-10">
         <mat-card-title>
           {{ currentCapabilityName }}
         </mat-card-title>
       </div>
       <div class="col-lg-1">
         <button mat-icon-button matTooltip="HeatMap Chart View" (click)="onToggleHeatMap.emit(dataSource.data)">
-          <mat-icon class="mat-24" aria-hidden="true" aria-label="view heat map">view_comfy</mat-icon>
-          {{ attackMatrix }}
+          <i class="material-icons mat-24">view_comfy</i>
         </button>
       </div>
     </div>
@@ -31,8 +30,9 @@
       <div class="row margin-bottom">
         <div class="col-sm-12">
             <button mat-raised-button matTooltip="HeatMap Chart View" (click)="onToggleHeatMap.emit(dataSource.data)">
-              {{ openAttackMatrix }}
+              <i class="material-icons mat-24">view_comfy</i>
             </button>
+            {{ openHeatMapMatrix }}
         </div>
       </div>
     </div>

@@ -65,7 +65,7 @@
     </div>
 
     <div *ngSwitchCase="'capco'" class="row selectRow">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <form>
                <mat-form-field class="full-width">
                     <input matInput required [formControl]="categoryCtrl" [(ngModel)]="capco.category"
@@ -78,7 +78,13 @@
                 </mat-option>
             </mat-autocomplete>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <mat-form-field class="full-width">
+                <input matInput required [(ngModel)]="capco.precedence"
+                        type="number" autocomplete="off" placeholder="Precedence" aria-label="Precedence within category">
+            </mat-form-field>
+        </div>
+        <div class="col-md-2">
             <mat-form-field class="full-width">
                 <input matInput required class="capco-input" [(ngModel)]="capco.portion"
                         autocomplete="off" placeholder="Portion Marking" aria-label="CAPCO Portion Marking">

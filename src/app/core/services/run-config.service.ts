@@ -32,6 +32,7 @@ export interface MasterConfig extends PublicConfig {
     lastReviewed?: number;
     lastModified?: number;
     footerTextHtml?: string;
+    blockAttachments?: boolean;
 }
 
 @Injectable()
@@ -47,15 +48,21 @@ export class RunConfigService {
     }
     
     private loadPrivateConfig() {
-        this._config = this.http.get<MasterConfig>('./assets/config/local-settings.json').pipe(catchError(() => {
-            console.warn('Could not load assets/config/local-settings.json. Default configuration will be used.');
-            console.warn('If you create or edit the file, be sure to restart the application.');
-            return observableOf({} as MasterConfig);
-        }));
+        this._config = this.http.get<MasterConfig>('./assets/config/local-settings.json')
+            .pipe(
+                catchError(() => {
+                    console.warn('Could not load assets/config/local-settings.json. Default configuration will be used.');
+                    console.warn('If you create or edit the file, be sure to restart the application.');
+                    return observableOf({} as MasterConfig);
+                })
+            );
     }
 
     public get config(): Observable<MasterConfig> {
-        return this._config.pipe(map(cfg => ({...public_config[this.runMode] as PublicConfig, ...cfg})));
+        return this._config
+            .pipe(
+                map(cfg => ({...public_config[this.runMode] as PublicConfig, ...cfg}))
+            );
     }
 
 }

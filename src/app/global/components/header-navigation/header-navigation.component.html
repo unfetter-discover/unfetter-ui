@@ -14,12 +14,12 @@
   <span class="flex1">&nbsp;</span>
 
   <ng-container *ngIf="!demoMode && !authService.loggedIn()">
-    <ng-container *ngIf="authServices.length === 1">
+    <ng-container *ngIf="authServices && (authServices.length === 1)">
       <a href="/api/auth/{{authServices[0]}}-login/">
         <button id="login-button" mat-raised-button color="accent">Sign In / Register</button>
       </a>
     </ng-container>
-    <ng-container *ngIf="authServices.length > 1">
+    <ng-container *ngIf="authServices && (authServices.length > 1)">
       <button id="login-button" mat-raised-button *ngIf="!demoMode && !authService.loggedIn()"
           [matMenuTriggerFor]="loginMenu" color="accent">Sign In / Register</button>
       <mat-menu #loginMenu="matMenu" class="login-options" [overlapTrigger]="false">

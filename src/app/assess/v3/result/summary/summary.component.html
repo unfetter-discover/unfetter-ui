@@ -12,6 +12,7 @@
           [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
           (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
 
+        <markings-chips [model]="summary"></markings-chips>
         <sidepanel-list-item label="{{summaries[0].name}}" [items]="summaries" expandable="true">
           <mat-list-item *ngFor="let summary of summaries; trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
             <h4 mat-line>

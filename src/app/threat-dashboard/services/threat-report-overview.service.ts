@@ -1,7 +1,7 @@
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { empty as observableEmpty, forkJoin as observableForkJoin, from as observableFrom, merge as observableMerge, Observable, of as observableOf, throwError as observableThrowError, zip as observableZip } from 'rxjs';
+import { EMPTY, forkJoin as observableForkJoin, from as observableFrom, merge as observableMerge, Observable, of as observableOf, throwError as observableThrowError, zip as observableZip } from 'rxjs';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError, filter, first, map, mergeMap, reduce, tap } from 'rxjs/operators';
 import * as UUID from 'uuid';
@@ -85,7 +85,7 @@ export class ThreatReportOverviewService {
    */
   public loadReport(id: string): Observable<Report> {
     if (!id) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     const query = { 'stix.type': 'report', 'stix.id': id };
@@ -314,7 +314,7 @@ export class ThreatReportOverviewService {
    */
   public saveThreatReport(threatReport: Partial<ThreatReport>): Observable<Partial<ThreatReport>> {
     if (!threatReport) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     const url = this.reportsUrl;
@@ -339,7 +339,7 @@ export class ThreatReportOverviewService {
    */
   public deleteReport(id: string): Observable<Report> {
     if (!id || id.trim().length === 0) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     const url = this.reportsUrl + '/' + id;
@@ -355,7 +355,7 @@ export class ThreatReportOverviewService {
    */
   public removeReport(report: Report, threatReport: ThreatReport): Observable<Report> {
     if (!report || !threatReport) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     const url = this.reportsUrl;
@@ -415,7 +415,7 @@ export class ThreatReportOverviewService {
    */
   public deleteThreatReport(id: string): Observable<Observable<Report[]>> {
     if (!id || id.trim().length === 0) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     const url = this.reportsUrl;

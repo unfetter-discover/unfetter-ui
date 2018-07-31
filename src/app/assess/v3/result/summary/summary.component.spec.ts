@@ -44,7 +44,6 @@ describe('SummaryComponent', () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [SummaryComponent],
-
       imports: [
         NoopAnimationsModule,
         RouterTestingModule,

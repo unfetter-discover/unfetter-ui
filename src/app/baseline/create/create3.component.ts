@@ -9,7 +9,7 @@ import * as assessReducers from '../store/baseline.reducers';
 import { BaselineForm } from '../../global/form-models/baseline';
 import { BaselineMeta } from '../../models/baseline/baseline-meta';
 import { BaselineStateService } from '../services/baseline-state.service';
-import { UpdatePageTitle } from '../store/baseline.actions';
+import { UpdatePageTitle, FinishedLoading } from '../store/baseline.actions';
 import { AssessmentSet } from 'stix/assess/v3/baseline';
 
 @Component({
@@ -89,6 +89,7 @@ export class Create3Component implements OnInit {
    */
   public onTitleBlur(event?: UIEvent): void {
     this.store.dispatch(new UpdatePageTitle(this.form.value.title));
+    this.store.dispatch(new FinishedLoading(true));
   }
 
   /**
