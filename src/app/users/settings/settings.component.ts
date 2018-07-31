@@ -130,7 +130,7 @@ export class SettingsComponent implements OnInit {
         const changeSubscription$ = this.usersService.changeOrgSubscription(this.user._id, orgId, checked)
             .subscribe(
                 (res) => {
-                    console.log('#####', res);
+                    console.log('Subscription changed');
                 },
                 (err) => {
                     console.log(err);

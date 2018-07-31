@@ -158,18 +158,6 @@
                     </mat-chip-list>
                 </div>
                 
-                <!-- ~~~ Kill Chain Phases ~~~ -->
-                <div>
-                    <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
-                    <mat-chip-list formArrayName="kill_chain_phases" *ngIf="form.get('kill_chain_phases').value.length > 0" class="chipListPadding">
-                        <mat-chip *ngFor="let kill_chain of form.get('kill_chain_phases').value; let i = index" class="cursor-pointer chipListChip"
-                            color="primary" selected="true" removable="true">
-                            <span class="flex1 flexNowrap">{{ kill_chain.phase_name | capitalize}}</span>
-                            <mat-icon matChipRemove (click)="form.get('kill_chain_phases').removeAt(i)">cancel</mat-icon>
-                        </mat-chip>
-                    </mat-chip-list>
-                </div>
-                
                 <!-- ~~~ Labels ~~~ -->
                 <h5>Add Labels</h5>
                 <div class="flex flexItemsCenter" id="labelsWrapper">
@@ -202,6 +190,14 @@
                         <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
                         <button mat-button matStepperPrevious type="button">BACK</button>
                     </div>
+                </div>
+                <div *ngIf="form.get('kill_chain_phases').value.length">
+                    <h5>Derived Tactics</h5>
+                    <mat-chip-list class="chipListPadding">
+                        <mat-chip *ngFor="let kcp of form.get('kill_chain_phases').value" class="cursor-pointer chipListChip">
+                            {{ kcp.phase_name | capitalize }}
+                        </mat-chip>
+                    </mat-chip-list>   
                 </div>
             </mat-step>
             
