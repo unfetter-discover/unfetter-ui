@@ -53,6 +53,8 @@ export const getFullAssessmentName = createSelector(
     (summary: Assessment) => {
         const assessmentType = (summary !== undefined && summary.determineAssessmentType) ?
             summary.determineAssessmentType() : 'Unknown';
-        return `${summary.name} - ${assessmentType}`;
+        const name = (summary !== undefined && summary.name) ?
+            summary.name : 'Unknown Name'
+        return `${name} - ${assessmentType}`;
     }
 );
