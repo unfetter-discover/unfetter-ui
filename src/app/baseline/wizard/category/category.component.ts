@@ -62,6 +62,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.push(catSub1$, catSub2$, catSub3$);
 
     this.wizardStore.dispatch(new assessActions.FetchCapabilityGroups());
+    this.wizardStore.dispatch(new assessActions.FinishedLoading(true));
   }
 
   ngAfterViewInit() {
