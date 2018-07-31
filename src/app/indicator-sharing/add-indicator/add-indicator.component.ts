@@ -221,9 +221,9 @@ export class AddIndicatorComponent implements OnInit {
             );
 
         this.marking$ = this.store
-            .select('markings')
+            .select('stix')
             .pipe(
-                pluck('definitions')
+                pluck('markingDefinitions')
             );
     }
 

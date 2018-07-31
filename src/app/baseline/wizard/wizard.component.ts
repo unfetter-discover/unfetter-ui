@@ -256,9 +256,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         distinctUntilChanged());
 
       this.marking$ = this.userStore
-        .select('markings')
+        .select('stix')
         .pipe(
-          pluck('definitions')
+          pluck('markingDefinitions')
         );
 
       this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$, sub10$, sub11$, sub12$, sub13$, sub14$, sub15$);

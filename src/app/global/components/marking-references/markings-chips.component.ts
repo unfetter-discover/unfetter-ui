@@ -29,9 +29,9 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
-        const markings$ = this.store.select('markings')
+        const markings$ = this.store.select('stix')
             .pipe(
-                pluck('definitions'),
+                pluck('markingDefinitions'),
                 distinctUntilChanged()
             )
             .subscribe(
