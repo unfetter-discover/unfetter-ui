@@ -14,6 +14,7 @@ import { MarkingDefinition } from 'stix';
 export class MarkingsChipsComponent implements OnInit, OnChanges {
 
     @Input() public model: any;
+    @Input() public disableTooltips = false;
 
     private _markings = [];
 
