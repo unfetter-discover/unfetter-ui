@@ -1,4 +1,4 @@
-<ng-container *ngIf="(finishedLoading$|async) === true || (failedToLoad$|async) === true; else loadingBlock">
+<ng-container *ngIf="(finishedLoading$|async) === true; else loadingBlock">
   <div *ngIf="(failedToLoad$|async) === false; else failedToLoadBlock" class="fadeIn">
     <mat-sidenav-container *ngIf="assessment$ | async as assessment">
       <mat-sidenav *ngIf="(assessmentGroup$ | async) as assessmentGroup" class="side-panel" mode="side" opened="true">
