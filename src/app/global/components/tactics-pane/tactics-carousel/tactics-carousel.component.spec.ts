@@ -11,7 +11,7 @@ import { TacticsTooltipService, TooltipEvent } from '../tactics-tooltip/tactics-
 import { ResizeDirective } from '../../../directives/resize.directive';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
 import { mockUser, mockTactics, mockAttackPatterns, mockTargets } from '../tactics.model.test';
-import * as configActions from '../../../../root-store/config/config.actions';
+import * as stixActions from '../../../../root-store/stix/stix.actions';
 import * as userActions from '../../../../root-store/users/user.actions';
 import { reducers, AppState } from '../../../../root-store/app.reducers';
 
@@ -48,7 +48,7 @@ describe('TacticCarouselComponent', () => {
         component = fixture.componentInstance;
         store = component['store'];
         store.dispatch(new userActions.LoginUser(mockUser));
-        store.dispatch(new configActions.LoadTactics(mockTactics));
+        store.dispatch(new stixActions.SetAttackPatterns(mockTactics));
         fixture.detectChanges();
     });
 

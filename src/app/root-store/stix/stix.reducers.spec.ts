@@ -104,7 +104,7 @@ describe('stixReducer', () => {
         expect(newState.visualizationData).toEqual(mockTactics);
         expect(newState.attackPatterns.length).toBe(4);
         const ids = air_tactics.map(t => t.id).sort();
-        const newIds: string[] = (newState as any).tactics.map(t => t.id).sort();
+        const newIds: string[] = (newState as any).attackPatterns.map(t => t.id).sort();
         ids.forEach((id, idx) => expect(id).toEqual(newIds[idx]));
     });
 

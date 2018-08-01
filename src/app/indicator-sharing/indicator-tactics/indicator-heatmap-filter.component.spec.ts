@@ -20,7 +20,7 @@ import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { AuthService } from '../../core/services/auth.service';
 import { reducers } from '../../root-store/app.reducers';
-import * as configActions from '../../root-store/config/config.actions';
+import * as stixActions from '../../root-store/stix/stix.actions';
 import * as userActions from '../../root-store/users/user.actions';
 import { mockAttackPatterns } from '../../testing/mock-store';
 import { Dictionary } from '../../models/json/dictionary';
@@ -179,7 +179,7 @@ describe('IndicatorHeatMapFilterComponent', () => {
         component = fixture.componentInstance;
         let store = component.store;
         store.dispatch(new userActions.LoginUser(testUser));
-        store.dispatch(new configActions.LoadTactics(tactics));
+        store.dispatch(new stixActions.SetAttackPatterns(tactics));
         store.dispatch(new indicatorSharingActions.SetAttackPatterns(mockAttackPatternData));
         fixture.detectChanges();
     });
