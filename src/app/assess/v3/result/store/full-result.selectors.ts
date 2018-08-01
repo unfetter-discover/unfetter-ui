@@ -52,6 +52,14 @@ export const getAllFinishedLoading = createSelector(
     }
 );
 
+export const getAllFinishedLoadingOrFailure = createSelector(
+    getAllFinishedLoading,
+    getFailedToLoadAssessment,
+    (allFinishedLoading: boolean, loadingFailure: boolean) => {
+        return allFinishedLoading || loadingFailure;
+    }
+);
+
 export const getFullAssessmentName = createSelector(
     getFullAssessment,
     (assessment: Assessment) => {

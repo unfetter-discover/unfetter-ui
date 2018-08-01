@@ -1,5 +1,5 @@
 import { FullAssessmentResultState, genState } from './full-result.reducers';
-import { getFailedToLoadAssessment, getFinishedLoadingAssessment, getTacticsChains } from './full-result.selectors';
+import { getFailedToLoadAssessment, getFinishedLoadingAssessment, getTacticsChains, getAllFinishedLoading, getAllFinishedLoadingOrFailure } from './full-result.selectors';
 
 describe('assessment v3 - full result selectors spec', () => {
 
@@ -39,6 +39,49 @@ describe('assessment v3 - full result selectors spec', () => {
         const el = getFinishedLoadingAssessment(state);
         expect(el).toBeDefined();
         expect(el).toBeTruthy();
+    });
+
+    it('should return all finished loading true', () => {
+        state.fullAssessment.finishedLoading = true;
+        state.fullAssessment.group.finishedLoadingGroupData = true;
+        const el = getAllFinishedLoading(state);
+        expect(el).toBeDefined();
+        expect(el).toBeTruthy();
+    });
+
+    it('should return all finished loading false', () => {
+        state.fullAssessment.finishedLoading = true;
+        state.fullAssessment.group.finishedLoadingGroupData = false;
+        const el = getAllFinishedLoading(state);
+        expect(el).toBeDefined();
+        expect(el).toBeFalsy();
+    });
+
+    it('should return all finished loading or failed to load, true1', () => {
+        state.fullAssessment.finishedLoading = true;
+        state.fullAssessment.group.finishedLoadingGroupData = true;
+        state.fullAssessment.failedToLoad = false;
+        const el = getAllFinishedLoadingOrFailure(state);
+        expect(el).toBeDefined();
+        expect(el).toBeTruthy();
+    });
+
+    it('should return all finished loading or failed to load, true2', () => {
+        state.fullAssessment.finishedLoading = true;
+        state.fullAssessment.group.finishedLoadingGroupData = false;
+        state.fullAssessment.failedToLoad = true;
+        const el = getAllFinishedLoadingOrFailure(state);
+        expect(el).toBeDefined();
+        expect(el).toBeTruthy();
+    });
+
+    it('should return all finished loading or failed to load, true2', () => {
+        state.fullAssessment.finishedLoading = false;
+        state.fullAssessment.group.finishedLoadingGroupData = false;
+        state.fullAssessment.failedToLoad = false;
+        const el = getAllFinishedLoadingOrFailure(state);
+        expect(el).toBeDefined();
+        expect(el).toBeFalsy();
     });
 
     it('getTacticsChains should return config tacticsChains', () => {
