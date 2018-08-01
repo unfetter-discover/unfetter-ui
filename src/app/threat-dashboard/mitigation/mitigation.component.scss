@@ -1,48 +1,123 @@
 @import '../../../styles/_variables.scss';
 
 $timeline-grey: #d1d5da;
+$red: get-color($red, 400);
+$blue: get-color($blue, 400);
+$title-padding: 24px;
+// $max-width: 1280px;
+$max-width: 1366px;
 
 .title {
-    padding-top: 12px;
+    padding-top: $title-padding;
+    padding-left: $title-padding;
+    padding-right: $title-padding;
     color: $dark-text-default;
+
+    .title-text {
+        padding-left: 18px;
+    }
 }
 
 .attackIcon {
-    padding-right: 8px;
+    border-radius: 50%;
+    height: 42px;
+    width: 42px;
     // position: relative;
     // top: 10px;
 
     svg {
-        width: 32px;
-        height: 32px;
-        fill: #fafafa;
-        border: 1px solid red;
+        width: 42px;
+        height: 42px;
+        fill: #ffffff;
+        border: 1px solid $red;
         border-radius: 50%;
-        background: red;
+        background: $red;
     }
+}
+
+.defendIcon {
+    border-radius: 50%;
+    border: 1px solid $blue;
+    background-color: $blue;
+    height: 42px;
+    width: 42px;
+    border-radius: 50%;
+    color: #ffffff;
+
+    mat-icon {
+        font-size: 42px;
+    }
+}
+
+.flex-rev {
+    flex-direction: row-reverse;
+    margin-right: 24px;
+}
+
+@mixin minRowPading {
+    padding-left: $title-padding;
+    padding-right: $title-padding;
 }
 
 .main {
     min-height: calc(100vh - 350px);
     color: $dark-text-default;
-    margin: 12px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    margin: auto auto;
+    max-width: $max-width;
 
     .line {
         min-height: 64px;
 
         .col1, .col3 {
-            margin: auto auto;
+            @include minRowPading;
+            padding-bottom: 12px;
         }
 
         .col2 {
-            border-left: 4px solid $timeline-grey;
+            border-left: 2px solid $timeline-grey;
         }
         
-        svg {
-            width: 24px;
-            height: 24px;
-            fill: $timeline-grey; 
+        .to-right {
+            float: right;
         }
+
+        .text-fadeable {
+            position: relative;
+            max-height: 64px;
+            overflow-y: hidden;
+        }
+    
+        .text-fadeable:after {
+            content: "";
+            text-align: right;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            top: 20px;
+            width: 70%;
+            height: 20px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0), $light-text-slightly-dimmed 100%);
+        }
+
+        .citation-links {
+            border-bottom: 1px dashed $timeline-grey;
+        }
+
     }
+
+    .helper {
+        @include minRowPading;
+        padding-top: $title-padding;
+    }
+
+    .text-muted {
+        color: rgba(0, 0, 0, 0.57) !important;
+    }
+}
+
+.flex-half {
+    flex-basis: 50%;
 }
 
