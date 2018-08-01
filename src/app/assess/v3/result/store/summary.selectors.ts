@@ -1,5 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { SummaryAggregation } from 'stix/assess/v2/summary-aggregation';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { RiskByKillChain } from 'stix/assess/v3/risk-by-kill-chain';
 import { SummaryState } from './summary.reducers';
 
 export const getSummaryState = createFeatureSelector<SummaryState>('summary');
@@ -16,7 +18,13 @@ export const getFailedToLoadData = createSelector(
 
 export const getSummary = createSelector(
     getSummaryState,
-    (state: SummaryState) => state.summaries[0]
+    (state: SummaryState) => {
+        if (state.summaries) {
+            return state.summaries[0];
+        } else {
+            return new Assessment();
+        }
+    }
 );
 
 export const getFinishedLoadingKillChainData = createSelector(
@@ -26,7 +34,13 @@ export const getFinishedLoadingKillChainData = createSelector(
 
 export const getKillChainData = createSelector(
     getSummaryState,
-    (state: SummaryState) => state.killChainData[0]
+    (state: SummaryState) => {
+        if (state.killChainData) {
+            return state.killChainData[0];
+        } else {
+            return new RiskByKillChain();
+        }
+    }
 );
 
 export const getFinishedLoadingSummaryAggregationData = createSelector(
@@ -36,7 +50,13 @@ export const getFinishedLoadingSummaryAggregationData = createSelector(
 
 export const getSummaryAggregationData = createSelector(
     getSummaryState,
-    (state: SummaryState) => state.summaryAggregations[0]
+    (state: SummaryState) => {
+        if (state.summaryAggregations) {
+            return state.summaryAggregations[0];
+        } else {
+            return new SummaryAggregation();
+        }
+    }
 );
 
 export const getAllFinishedLoading = createSelector(
