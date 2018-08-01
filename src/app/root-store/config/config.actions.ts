@@ -7,7 +7,6 @@ export const ADD_CONFIG = '[Config] Add Config';
 export const UPDATE_CONFIG = '[Config] Update Config';
 export const DELETE_CONFIG = '[Config] Delete Config';
 export const CLEAR_CONFIG = '[Config] Clear Config';
-export const FETCH_RUN_CONFIG = '[Config] Fetch Run Config';
 export const LOAD_RUN_CONFIG = '[Config] Add Run Config';
 
 export class FetchConfig implements Action {
@@ -38,11 +37,6 @@ export class ClearConfig implements Action {
     public readonly type = CLEAR_CONFIG;
 }
 
-export class FetchRunConfig implements Action {
-    public readonly type = FETCH_RUN_CONFIG;
-    constructor() {}
-}
-
 export class LoadRunConfig implements Action {
     public readonly type = LOAD_RUN_CONFIG;
     constructor(public payload: MasterConfig) {}
@@ -54,5 +48,4 @@ export type ConfigActions =
     UpdateConfig |
     DeleteConfig |
     ClearConfig |
-    FetchRunConfig |
     LoadRunConfig;

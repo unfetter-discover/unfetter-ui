@@ -17,31 +17,44 @@ describe('configReducer', () => {
         const payload = { foo: 'bar' };
         const expected = {
             configurations: payload,
-            tactics: [],
+            runConfig: {},
         };
         expect(configReducer(undefined, new configActions.AddConfig(payload))).toEqual(expected);
     });
 
     it('should update config', () => {
-        const mockState = { configurations: { foo: 'fizz' } };
+        const mockState = { configurations: { foo: 'fizz' }, runConfig: {} };
         const payload = { foo: 'bar' };
         const expected = {
-            configurations: payload
+            configurations: payload,
+            runConfig: {}
         };
         expect(configReducer(mockState, new configActions.UpdateConfig(payload))).toEqual(expected);
     });
 
     it('should delete config', () => {
-        const mockState = { configurations: { foo: 'fizz', bar: 'buzz' } };
+        const mockState = { configurations: { foo: 'fizz', bar: 'buzz' }, runConfig: {} };
         const payload = 'foo';
         const expected = {
-            configurations: { bar: 'buzz' }
+            configurations: { bar: 'buzz' },
+            runConfig: {}
         };
         expect(configReducer(mockState, new configActions.DeleteConfig(payload))).toEqual(expected);
     });
 
     it('should clear config', () => {
-        const mockState = { configurations: { foo: 'fizz', bar: 'buzz' } };
+        const mockState = { configurations: { foo: 'fizz', bar: 'buzz' }, runConfig: {} };
         expect(configReducer(mockState, new configActions.ClearConfig())).toEqual(initialState);
     });
+
+    it('should load run config', () => {
+        const mockState = { configurations: { foo: 'bar' }, runConfig: {} };
+        const payload = { showBanner: true };
+        const expected = {
+            configurations: { foo: 'bar' },
+            runConfig: payload,
+        };
+        expect(configReducer(mockState, new configActions.LoadRunConfig(payload))).toEqual(expected);
+    });
+
 });

@@ -1,9 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule, MatChipsModule, MatSelectModule, MatMenuModule, MatIconModule, MatCardModule, MatTooltipModule, MatTabsModule, MatAutocompleteModule } from '@angular/material';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NO_ERRORS_SCHEMA, Renderer2 } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { of as observableOf, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { StoreModule, Store } from '@ngrx/store';
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule, MatChipsModule, MatSelectModule, MatMenuModule, MatIconModule, MatCardModule, MatTooltipModule, MatTabsModule, MatAutocompleteModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FieldSortPipe } from '../../global/pipes/field-sort.pipe';
 import { IndicatorCardComponent } from './indicator-card.component';
@@ -17,14 +21,14 @@ import { AuthService } from '../../core/services/auth.service';
 import { Constance } from '../../utils/constance';
 import { mockConfigService } from '../../testing/mock-config-service';
 import { ConfigService } from '../../core/services/config.service';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { of as observableOf, Observable } from 'rxjs';
 import { ReadableBytesPipe } from '../../global/pipes/readable-bytes.pipe';
-import { RunConfigService } from '../../core/services/run-config.service';
+import * as fromApp from '../../root-store/app.reducers';
 
 describe('IndicatorCardComponent', () => {
-    let component: IndicatorCardComponent;
+
     let fixture: ComponentFixture<IndicatorCardComponent>;
+    let component: IndicatorCardComponent;
+    let store: Store<fromApp.AppState>;
 
     const mockIndicator = {
         name: 'test indicator',
@@ -119,57 +123,53 @@ describe('IndicatorCardComponent', () => {
     };
 
     beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            schemas: [ NO_ERRORS_SCHEMA ],
-            declarations: [
-                IndicatorCardComponent,
-                FieldSortPipe,
-                TimeAgoPipe,
-                CapitalizePipe,
-                ChipLinksComponent,
-                ReadableBytesPipe,
-            ],
-            imports: [
-                MatButtonModule,
-                MatChipsModule,
-                MatSelectModule,
-                MatMenuModule,
-                MatIconModule,
-                MatCardModule,
-                MatTooltipModule,
-                MatTabsModule,
-                MatAutocompleteModule,
-                FormsModule,
-                ReactiveFormsModule,
-                BrowserAnimationsModule,
-                RouterTestingModule,
-            ],
-            providers: [
-                {
-                    provide: IndicatorSharingService,
-                    useValue: mockIndService
-                },
-                {
-                    provide: AuthService,
-                    useValue: mockAuthService
-                },
-                {
-                    provide: Renderer2,
-                    useValue: mockRenderer
-                },
-                {
-                    provide: ConfigService,
-                    useValue: mockConfigService
-                },
-                {
-                    provide: RunConfigService,
-                    useValue: {
-                        config: observableOf({})
-                    }
-                }
-            ],
-        })
-        .compileComponents();
+        TestBed
+            .configureTestingModule({
+                schemas: [ NO_ERRORS_SCHEMA ],
+                declarations: [
+                    IndicatorCardComponent,
+                    FieldSortPipe,
+                    TimeAgoPipe,
+                    CapitalizePipe,
+                    ChipLinksComponent,
+                    ReadableBytesPipe,
+                ],
+                imports: [
+                    MatButtonModule,
+                    MatChipsModule,
+                    MatSelectModule,
+                    MatMenuModule,
+                    MatIconModule,
+                    MatCardModule,
+                    MatTooltipModule,
+                    MatTabsModule,
+                    MatAutocompleteModule,
+                    FormsModule,
+                    ReactiveFormsModule,
+                    BrowserAnimationsModule,
+                    RouterTestingModule,
+                    StoreModule.forRoot(fromApp.reducers),
+                ],
+                providers: [
+                    {
+                        provide: IndicatorSharingService,
+                        useValue: mockIndService
+                    },
+                    {
+                        provide: AuthService,
+                        useValue: mockAuthService
+                    },
+                    {
+                        provide: Renderer2,
+                        useValue: mockRenderer
+                    },
+                    {
+                        provide: ConfigService,
+                        useValue: mockConfigService
+                    },
+                ],
+            })
+            .compileComponents();
     }));
 
     beforeEach(() => {

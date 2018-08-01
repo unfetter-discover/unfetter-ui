@@ -4,15 +4,18 @@ import { of as observableOf, Observable } from 'rxjs';
 
 import { IPGeoService } from './ipgeo.service';
 import { GenericApi } from '../core/services/genericapi.service';
-import { RunConfigService } from '../core/services/run-config.service';
+import { reducers } from '../root-store/app.reducers';
+import { StoreModule } from '@ngrx/store';
 
 describe('ipgeo service', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
+            imports: [
+                HttpClientTestingModule,
+                StoreModule.forRoot(reducers),
+            ],
             providers: [
-                RunConfigService,
                 IPGeoService,
                 GenericApi,
             ],

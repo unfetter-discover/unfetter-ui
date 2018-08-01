@@ -175,6 +175,7 @@ describe(`App`, () => {
     }));
 
     it(`stub AppState class`, () => {
+        fixture = TestBed.createComponent(AppComponent);
         let appState = fixture.debugElement.injector.get(AppState);
         appState.set('user', 'pat');
         expect(appState.get('user')).toEqual('pat');

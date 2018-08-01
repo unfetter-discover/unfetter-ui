@@ -8,7 +8,8 @@ describe('config selectors', () => {
 
     beforeEach(() => {
         mockConfigStore = {
-            configurations: mockConfig
+            configurations: mockConfig,
+            runConfig: {}
         };
     });
 

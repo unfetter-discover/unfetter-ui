@@ -13,7 +13,6 @@ export interface ConfigState {
 export const initialState: ConfigState = {
     configurations: {},
     runConfig: {},
-    tactics: [],
 }
 
 export function configReducer(state = initialState, action: configActions.ConfigActions) {

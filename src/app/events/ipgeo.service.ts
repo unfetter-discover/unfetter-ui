@@ -45,7 +45,6 @@ export class IPGeoService {
                         this.expiration_time = cfg.ipgeo.expiration_time || (1 * 60 * 60 * 1000);
                         this.max_cached_items = cfg.ipgeo.max_cached_items || 1000;
                     }
-                    console.log('ipgeo service got run config', cfg);
                 }
             );
     }
