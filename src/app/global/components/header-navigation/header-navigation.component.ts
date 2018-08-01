@@ -30,14 +30,9 @@ export class HeaderNavigationComponent {
       icon: Constance.LOGO_IMG_ANALYTIC_HUB
     },
     {
-      url: Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL,
+      url: Constance.X_UNFETTER_ASSESSMENT3_NAVIGATE_URL,
       title: 'Assessments',
       icon: Constance.LOGO_IMG_ASSESSMENTS
-    },
-    {
-      url: Constance.X_UNFETTER_ASSESSMENT3_NAVIGATE_URL,
-      title: 'Assessments Beta',
-      icon: Constance.LOGO_IMG_ASSESSMENTS_BETA
     },
     {
       url: Constance.X_UNFETTER_BASELINE_NAVIGATE_URL,
