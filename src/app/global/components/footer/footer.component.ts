@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { pluck, distinctUntilChanged } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
-// import { RunConfigService } from '../../../core/services/run-config.service';
 import { AppState } from '../../../root-store/app.reducers';
-import { pluck, distinctUntilChanged } from 'rxjs/operators';
 import { MasterConfig } from '../../../core/services/run-config.service';
 
 @Component({
@@ -20,7 +19,6 @@ export class FooterComponent implements OnInit {
   public footerTextHtml: string = null;
 
   constructor(
-    // private runConfigService: RunConfigService,
     private store: Store<AppState>,
   ) {}
 
@@ -40,12 +38,9 @@ export class FooterComponent implements OnInit {
             this.lastReviewed = cfg.lastReviewed || null;
             this.lastModified = cfg.lastModified || null;
             this.footerTextHtml = cfg.footerTextHtml || null;
-            console.log('footer component got run config', cfg);
           }
         }
       );
-    // this.runConfigService.config.subscribe(
-    // );
   }
 
 }
