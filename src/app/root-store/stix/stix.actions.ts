@@ -10,6 +10,7 @@ export const FETCH_MARKING_DEFINITIONS = '[Stix] Fetch Marking Definitions';
 export const SET_MARKING_DEFINITIONS = '[Stix] Set Marking Definitions';
 export const FETCH_ATTACK_PATTERNS = '[Stix] Fetch Attack Patterns';
 export const SET_ATTACK_PATTERNS = '[Stix] Set Attack Patterns';
+export const FETCH_STIX = '[Stix] Fetch Stix';
 export const CLEAR_STIX = '[Stix] Clear Stix';
 
 export class FetchIdentities implements Action {
@@ -46,6 +47,10 @@ export class SetAttackPatterns implements Action {
     constructor(public payload: Dictionary<TacticChain>) { }
 }
 
+export class FetchStix implements Action {
+    public readonly type = FETCH_STIX;
+}
+
 export class ClearStix implements Action {
     public readonly type = CLEAR_STIX;
 }
@@ -57,4 +62,5 @@ export type StixActions =
     SetMarkingDefinitions |
     FetchAttackPatterns |
     SetAttackPatterns |
+    FetchStix |
     ClearStix;

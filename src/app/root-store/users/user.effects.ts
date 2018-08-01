@@ -84,9 +84,7 @@ export class UserEffects {
                     new configActions.FetchConfig(false),
                     new notificationActions.FetchNotificationStore(),
                     new utilityActions.RecordVisit(),
-                    new stixActions.FetchAttackPatterns(),
-                    new stixActions.FetchMarkingDefinitions(),
-                    new stixActions.FetchIdentities()
+                    new stixActions.FetchStix(),
                 ];
             }
 

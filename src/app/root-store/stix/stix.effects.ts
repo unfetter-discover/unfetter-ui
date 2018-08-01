@@ -16,17 +16,30 @@ import { StixUrls } from '../../global/enums/stix-urls.enum';
 import { StixApiOptions } from '../../global/models/stix-api-options';
 import { AppState } from '../app.reducers';
 import { ConfigState } from '../config/config.reducers';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 
 @Injectable()
 export class StixEffects {
 
     @Effect()
+    public fetchStix = this.actions$
+        .ofType(stixActions.FETCH_STIX)
+        .pipe(
+            mergeMap(() => [
+                new stixActions.FetchAttackPatterns(),
+                new stixActions.FetchIdentities(),
+                new stixActions.FetchMarkingDefinitions(),
+            ])
+        );
+
+    @Effect()
     public fetchIdentities = this.actions$
-        .ofType(stixActions.FETCH_IDENTITIES).pipe(
-        switchMap(() => this.usersService.getOrganizations()),
-        mergeMap(identities => [
-            new stixActions.SetIdentities(identities.map(x => x.attributes))
-        ]));
+        .ofType(stixActions.FETCH_IDENTITIES)
+        .pipe(
+            switchMap(() => this.usersService.getOrganizations()),
+            RxjsHelpers.unwrapJsonApi(),
+            map(identities => new stixActions.SetIdentities(identities))
+        );
 
     @Effect()
     public fetchMarkings = this.actions$
