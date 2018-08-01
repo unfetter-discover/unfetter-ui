@@ -23,7 +23,6 @@ import { ConfigEffects } from './root-store/config/config.effects';
 import { NotificationEffects } from './root-store/notification/notification.effects';
 import { UserEffects } from './root-store/users/user.effects';
 import { UtilityEffects } from './root-store/utility/utility.effects';
-import { RunConfigService } from './core/services/run-config.service';
 import { MatSnackBarModule } from '@angular/material';
 import { StixEffects } from './root-store/stix/stix.effects';
 
@@ -83,7 +82,6 @@ import { StixEffects } from './root-store/stix/stix.effects';
     ConfirmationDialogComponent,
   ],
   providers: [
-    RunConfigService,
   ]
 })
 export class AppModule {
