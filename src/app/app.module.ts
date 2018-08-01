@@ -3,9 +3,8 @@ import { ApplicationRef, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
-import { createInputTransfer, createNewHosts, removeNgStyles } from '@angularclass/hmr';
 import { EffectsModule } from '@ngrx/effects';
-import { ActionReducer, MetaReducer, Store, StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import 'hammerjs';
 import { environment } from '../environments/environment';
@@ -17,7 +16,6 @@ import { ComponentModule } from './components/component.module';
 import { ConfirmationDialogComponent } from './components/dialogs/confirmation/confirmation-dialog.component';
 import { CoreModule } from './core/core.module';
 import { GlobalModule } from './global/global.module';
-import { HomeComponent } from './home';
 import { NoContentComponent } from './no-content';
 import * as fromApp from './root-store/app.reducers';
 import { reducers } from './root-store/app.reducers';
@@ -25,10 +23,9 @@ import { ConfigEffects } from './root-store/config/config.effects';
 import { NotificationEffects } from './root-store/notification/notification.effects';
 import { UserEffects } from './root-store/users/user.effects';
 import { UtilityEffects } from './root-store/utility/utility.effects';
-import { IdentityEffects } from './root-store/identities/identity.effects';
-import { MarkingEffects } from './root-store/markings/marking.effects';
 import { RunConfigService } from './core/services/run-config.service';
 import { MatSnackBarModule } from '@angular/material';
+import { StixEffects } from './root-store/stix/stix.effects';
 
 // make sure you export for AoT
 // export function stateSetter(reducer: ActionReducer<any>): ActionReducer<any> {
@@ -76,9 +73,8 @@ import { MatSnackBarModule } from '@angular/material';
       UserEffects,
       ConfigEffects,
       UtilityEffects,
-      MarkingEffects,
       NotificationEffects,
-      IdentityEffects,
+      StixEffects,
     ]),
     (!environment.production && environment.runMode !== 'DEMO') ? StoreDevtoolsModule.instrument() : [],
     AppRoutingModule,

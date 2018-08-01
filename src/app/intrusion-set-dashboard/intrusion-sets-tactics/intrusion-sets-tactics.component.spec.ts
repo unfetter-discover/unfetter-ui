@@ -35,7 +35,7 @@ import {
     mockTargets,
     mockAttackPatternData
 } from '../../global/components/tactics-pane/tactics.model.test';
-import * as configActions from '../../root-store/config/config.actions';
+import * as stixActions from '../../root-store/stix/stix.actions';
 import * as userActions from '../../root-store/users/user.actions';
 import { reducers, AppState } from '../../root-store/app.reducers';
 
@@ -90,7 +90,7 @@ describe('IntrusionSetsTacticsComponent', () => {
         component = fixture.componentInstance;
         store = TestBed.get(Store);
         store.dispatch(new userActions.LoginUser(mockUser));
-        store.dispatch(new configActions.LoadTactics(mockTactics));
+        store.dispatch(new stixActions.SetAttackPatterns(mockTactics));
         fixture.detectChanges();
     });
 

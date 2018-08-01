@@ -5,6 +5,7 @@ export enum StixUrls {
     IDENTITY = 'api/identities',
     INDICATOR = 'api/indicators',
     MALWARE = 'api/malwares',
+    MARKING_DEFINITION = 'api/marking-definitions',
     OBSERVED_DATA = 'api/observed-data',
     RELATIONSHIP = 'api/relationships',
     REPORT = 'api/reports',

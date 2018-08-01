@@ -6,7 +6,7 @@ import { MatChipsModule, MatTooltipModule } from '@angular/material';
 import { MarkingDefinition } from 'stix';
 import { MarkingsChipsComponent } from './markings-chips.component';
 import { reducers, AppState } from '../../../root-store/app.reducers';
-import * as markingActions from '../../../root-store/markings/marking.actions';
+import * as stixActions from '../../../root-store/stix/stix.actions';
 import { StixCoreEnum } from 'stix';
 
 describe('MarkingsChipsComponent', () => {
@@ -73,7 +73,7 @@ describe('MarkingsChipsComponent', () => {
         fixture = TestBed.createComponent(MarkingsChipsComponent);
         component = fixture.componentInstance;
         store = component['store'];
-        store.dispatch(new markingActions.SetMarkings(markings));
+        store.dispatch(new stixActions.SetMarkingDefinitions(markings));
         fixture.detectChanges();
     });
 

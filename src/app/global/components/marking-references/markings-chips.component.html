@@ -1,8 +1,0 @@
-<div class="markings-chips" class="flex flexItemsCenter">
-    <mat-chip-list class="inlineFlex">
-        <mat-chip *ngFor="let marking of markings" selected="true" class="cursor-pointer marking-chip"
-                color="{{ marking.color || '' }}" matTooltip="{{ marking.text }}">
-            {{ marking.portion || marking.text }}
-        </mat-chip>
-    </mat-chip-list>
-</div>

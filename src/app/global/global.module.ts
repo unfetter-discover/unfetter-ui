@@ -46,7 +46,7 @@ import { KillChainPhasesReactiveComponent } from './components/kill-chain-phases
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { MarkdownEditorComponent } from './components/markdown-editor/markdown-editor.component';
-import { MarkingsChipsComponent } from './components/marking-references/markings-chips.component';
+import { MarkingsChipsComponent } from './components/marking-definitions/markings-chips.component';
 import {
     MasterListDialogComponent,
     MasterListDialogTriggerComponent,
