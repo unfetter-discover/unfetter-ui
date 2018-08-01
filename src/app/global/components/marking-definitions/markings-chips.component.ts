@@ -3,7 +3,7 @@ import { pluck, distinctUntilChanged } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import * as fromRoot from '../../../root-store/app.reducers';
-import { MarkingDefinition } from '../../../models';
+import { MarkingDefinition } from 'stix';
 
 @Component({
     selector: 'markings-chips',
@@ -14,6 +14,7 @@ import { MarkingDefinition } from '../../../models';
 export class MarkingsChipsComponent implements OnInit, OnChanges {
 
     @Input() public model: any;
+    @Input() public disableTooltips = false;
 
     private _markings = [];
 
@@ -23,15 +24,14 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
     private tlpOrder = ['white', 'green', 'amber', 'red'];
 
     constructor(
-        private store: Store<fromRoot.AppState>,
-        private changeDetection: ChangeDetectorRef,
+        private store: Store<fromRoot.AppState>
     ) {
     }
 
     ngOnInit() {
-        const markings$ = this.store.select('markings')
+        const markings$ = this.store.select('stix')
             .pipe(
-                pluck('definitions'),
+                pluck('markingDefinitions'),
                 distinctUntilChanged()
             )
             .subscribe(
@@ -40,7 +40,7 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
                         .sort((a, b) => this.sortMarkings(a, b))
                         .reduce((defs, marking) => {
                             if (marking && marking.id) {
-                                defs[marking.id] = marking.attributes;
+                                defs[marking.id] = marking;
                             }
                             return defs;
                         }, { loaded: false });
@@ -118,35 +118,36 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
         this._markings = markings;
     }
 
-    private sortMarkings(a: MarkingDefinition, b: MarkingDefinition) {
-        const aType = this.definitionTypeOrder.indexOf(a.attributes.definition_type);
-        const bType = this.definitionTypeOrder.indexOf(b.attributes.definition_type);
+    // TODO update MarkingDefinition in stix package
+    private sortMarkings(a: MarkingDefinition | any, b: MarkingDefinition | any) {
+        const aType = this.definitionTypeOrder.indexOf(a.definition_type);
+        const bType = this.definitionTypeOrder.indexOf(b.definition_type);
         const typeOrder = aType - bType;
         if (typeOrder !== 0) {
             return typeOrder;
         }
-        if (a.attributes.definition_type === 'capco') {
-            const aCat = this.capcoOrder.indexOf(a.attributes.definition.category);
-            const bCat = this.capcoOrder.indexOf(b.attributes.definition.category);
+        if (a.definition_type === 'capco') {
+            const aCat = this.capcoOrder.indexOf(a.definition.category);
+            const bCat = this.capcoOrder.indexOf(b.definition.category);
             const catOrder = aCat - bCat;
             if (catOrder !== 0) {
                 return catOrder;
             }
-            const precedence = a.attributes.definition.precedence - b.attributes.definition.precedence;
+            const precedence = a.definition.precedence - b.definition.precedence;
             if (precedence !== 0) {
                 return precedence;
             }
-            return a.attributes.definition.text.localeCompare(b.attributes.definition.text);
+            return a.definition.text.localeCompare(b.definition.text);
         }
-        if (a.attributes.definition_type === 'tlp') {
-            return this.tlpOrder.indexOf(a.attributes.definition.tlp) -
-                    this.tlpOrder.indexOf(b.attributes.definition.tlp);
+        if (a.definition_type === 'tlp') {
+            return this.tlpOrder.indexOf(a.definition.tlp) -
+                    this.tlpOrder.indexOf(b.definition.tlp);
         }
-        if (a.attributes.definition_type === 'rating') {
-            return a.attributes.definition.rating - b.attributes.definition.rating;
+        if (a.definition_type === 'rating') {
+            return a.definition.rating - b.definition.rating;
         }
-        if (a.attributes.definition_type === 'statement') {
-            return a.attributes.definition.statement.localeCompare(b.attributes.definition.statement);
+        if (a.definition_type === 'statement') {
+            return a.definition.statement.localeCompare(b.definition.statement);
         }
         return 0;
     }

@@ -218,8 +218,8 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
             );
 
         this.chain$ = this.store
-            .select('config').pipe(
-            pluck('tacticsChains'),
+            .select('stix').pipe(
+            pluck('visualizationData'),
             filter(t => t !== null),
             distinctUntilChanged())
             .subscribe(

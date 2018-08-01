@@ -15,7 +15,7 @@ import { TreemapOptions } from '../../treemap/treemap.data';
 import { ResizeDirective } from '../../../directives/resize.directive';
 import { GenericApi } from '../../../../core/services/genericapi.service';
 import { mockUser, mockTactics, mockAttackPatterns, mockTargets } from '../tactics.model.test';
-import * as configActions from '../../../../root-store/config/config.actions';
+import * as stixActions from '../../../../root-store/stix/stix.actions';
 import * as userActions from '../../../../root-store/users/user.actions';
 import { reducers, AppState } from '../../../../root-store/app.reducers';
 
@@ -64,7 +64,7 @@ describe('TacticsTreemapComponent', () => {
         ];
         store = component['store'];
         store.dispatch(new userActions.LoginUser(mockUser));
-        store.dispatch(new configActions.LoadTactics(mockTactics));
+        store.dispatch(new stixActions.SetAttackPatterns(mockTactics));
     });
     
     it('should create', async(() => {

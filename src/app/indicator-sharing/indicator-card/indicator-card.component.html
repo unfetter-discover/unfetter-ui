@@ -1,7 +1,6 @@
 <mat-card class="indicatorCard uf-mat-card" *ngIf="indicator">
   <mat-card-header>
-    <mat-card-title>
-        <markings-chips [model]="indicator"></markings-chips>
+    <mat-card-title>        
         <span>{{ indicator.name }}</span>
         <span class="flex1">&nbsp;</span>
         <button mat-icon-button [matMenuTriggerFor]="menu" class="mat-24">
@@ -112,7 +111,7 @@
             <label>Description</label>
             <markdown-editor [editing]="false" [flushed]="true" [truncate]="true"
                 [value]="indicator.description"></markdown-editor>
-          </div>
+          </div>          
           <div *ngIf="indicator.kill_chain_phases && indicator.kill_chain_phases.length">
             <label>Tactics</label>
             <p>
@@ -132,15 +131,6 @@
               </span>
             </p>
           </div>
-          <div *ngIf="indicator.external_references">
-            <label>External References</label>
-            <br>
-            <chip-links [data]="indicator.external_references" nameField="source_name" urlField="url"></chip-links>
-          </div>
-          <div *ngIf="indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length">
-            <label>Observed Data</label>
-            <observable-data-summary [observedData]="indicator.metaProperties.observedData"></observable-data-summary>
-          </div>
           <div *ngIf="indicator.x_mitre_data_sources">
             <label>Required Data Sources:&nbsp;</label>
             <p class="whiteSpaceNormal">
@@ -150,6 +140,19 @@
               </span>
             </p>
           </div>
+          <div *ngIf="indicator.object_marking_refs && indicator.object_marking_refs.length">
+            <label>Marking Definitions</label>
+            <markings-chips [model]="indicator" disableTooltips="true"></markings-chips>
+          </div>
+          <div *ngIf="indicator.external_references">
+            <label>External References</label>
+            <br>
+            <chip-links [data]="indicator.external_references" nameField="source_name" urlField="url"></chip-links>
+          </div>
+          <div *ngIf="indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length">
+            <label>Observed Data</label>
+            <observable-data-summary [observedData]="indicator.metaProperties.observedData"></observable-data-summary>
+          </div>          
           <div class="mt-3">
             <label>Unfetter User Interactions: </label>
             <span *ngIf="indicator.metaProperties && indicator.metaProperties.interactions">{{ indicator.metaProperties.interactions.length }}</span>

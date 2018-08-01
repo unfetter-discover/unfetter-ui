@@ -77,16 +77,12 @@ export class UtilityEffects {
                 }
 
                 if (!panelClass && !duration) {
-                    console.log('No extras');
                     this.snackBarService.openSnackbar(message);
                 } else if (!panelClass && duration) {
-                    console.log('Duration only');
                     this.snackBarService.openSnackbar(message, [], duration);
                 } else if (panelClass && !duration) {
-                    console.log('panel class only');
                     this.snackBarService.openSnackbar(message, panelClass);
                 } else if (panelClass && duration) {
-                    console.log('panel class and duration');
                     this.snackBarService.openSnackbar(message, panelClass, duration);
                 } else {
                     console.log('WARNING: Unable to process snackbar arguments');

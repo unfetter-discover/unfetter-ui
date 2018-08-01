@@ -8,7 +8,7 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatSelectModule } from '@angular/material';
 import { makeRootMockStore, mockConfig } from '../../../testing/mock-store';
 import { take } from 'rxjs/operators';
-import { NO_ERRORS_SCHEMA } from '../../../../../node_modules/@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('DataSourcesComponent', () => {
   let component: DataSourcesComponent;

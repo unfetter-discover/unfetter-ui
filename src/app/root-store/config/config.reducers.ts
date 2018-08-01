@@ -49,22 +49,6 @@ export function configReducer(state = initialState, action: configActions.Config
                 ...initialState
             };
 
-        case configActions.LOAD_TACTICS:
-            console.log('loaded tactics', action);
-            const patterns = [];
-            if (action.payload) {
-                Object.values(action.payload).forEach(chain => {
-                    chain.phases.forEach(phase => {
-                        phase.tactics.forEach(tactic => patterns.push(tactic));
-                    });
-                });
-            }
-            return {
-                ...state,
-                tacticsChains: {...action.payload},
-                tactics: patterns,
-            };
-
         default:
             return state;
 

@@ -23,8 +23,8 @@ import { mockTactics, mockUser } from '../../../../../global/components/tactics-
 import { TreemapComponent } from '../../../../../global/components/treemap/treemap.component';
 import { CapitalizePipe } from '../../../../../global/pipes/capitalize.pipe';
 import { AppState, reducers } from '../../../../../root-store/app.reducers';
-import * as configActions from '../../../../../root-store/config/config.actions';
 import * as userActions from '../../../../../root-store/users/user.actions';
+import * as stixActions from '../../../../../root-store/stix/stix.actions';
 import { SummaryTacticsComponent } from './summary-tactics.component';
 
 describe('SummaryTacticsComponent', () => {
@@ -78,7 +78,7 @@ describe('SummaryTacticsComponent', () => {
         component = fixture.componentInstance;
         store = TestBed.get(Store);
         store.dispatch(new userActions.LoginUser(mockUser));
-        store.dispatch(new configActions.LoadTactics(mockTactics));
+        store.dispatch(new stixActions.SetAttackPatterns(mockTactics));
         fixture.detectChanges();
     });
 

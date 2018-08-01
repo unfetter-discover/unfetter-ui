@@ -20,7 +20,8 @@ import { Measurements } from './models/measurements';
 import { Assess3Meta } from 'stix/assess/v3';
 import { CapabilityComponent } from './capability/capability.component';
 import { MarkingDefinition } from '../../models';
-import { MarkingsChipsComponent } from '../../global/components/marking-references/markings-chips.component';
+import { MarkingsChipsComponent } from '../../global/components/marking-definitions/markings-chips.component';
+import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -256,9 +257,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         distinctUntilChanged());
 
       this.marking$ = this.userStore
-        .select('markings')
+        .select('stix')
         .pipe(
-          pluck('definitions')
+          pluck('markingDefinitions')
         );
 
       this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$, sub10$, sub11$, sub12$, sub13$, sub14$, sub15$);
@@ -684,23 +685,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   }
 
   public getMarkingLabel(marking) {
-    if (marking && marking.attributes && marking.attributes.definition_type) {
-      switch (marking.attributes.definition_type) {
-        case 'statement': {
-          return marking.attributes.definition.statement;
-        }
-        case 'tlp': {
-          return `TLP: ${marking.attributes.definition.tlp}`;
-        }
-        case 'rating': {
-          return `Rating: (${marking.attributes.definition.rating}) ${marking.attributes.definition.label}`;
-        }
-        case 'capco': {
-          return `${marking.attributes.definition.category}: ${marking.attributes.definition.text}`
-        }
-      }
-    }
-    return 'unknown marking';
+    return MarkingDefinitionHelpers.getMarkingLabel(marking);
   }
 
   public onMarkingChange(marking) {

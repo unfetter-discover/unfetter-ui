@@ -88,13 +88,13 @@ export class SummaryTacticsComponent implements OnInit {
      */
     ngOnInit(): void {
         const sub$ = this.appStore
-            .select('config')
+            .select('stix')
             .pipe(
-                filter((config) => config.tactics !== undefined && config.tacticsChains !== undefined),
-                map((config) => {
-                    const tactics = config.tactics;
-                    let attackPatterns = this.attackPatternIdsToTactics(this.selectedAttackPatternIds, tactics);
-                    const chains = config.tacticsChains;
+                filter((stix) => stix.attackPatterns && stix.attackPatterns.length > 0 && stix.visualizationData !== undefined && Object.keys(stix.visualizationData).length > 0),
+                map((stix) => {
+                    const tactics = stix.attackPatterns;
+                    let attackPatterns = this.attackPatternIdsToTactics(this.selectedAttackPatternIds, tactics as any);
+                    const chains = stix.visualizationData;
                     attackPatterns = this.deriveAttackPatternFramework(attackPatterns, chains);
                     return this.enhanceWithHeatMapOptions(attackPatterns);
                 })

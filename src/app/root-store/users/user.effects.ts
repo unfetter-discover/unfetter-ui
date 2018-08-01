@@ -12,8 +12,7 @@ import * as configActions from '../../root-store/config/config.actions';
 import * as notificationActions from '../../root-store/notification/notification.actions';
 import * as userActions from '../../root-store/users/user.actions';
 import * as utilityActions from '../../root-store/utility/utility.actions';
-import * as markingActions from '../../root-store/markings/marking.actions';
-import * as identityActions from '../../root-store/identities/identity.actions';
+import * as stixActions from '../../root-store/stix/stix.actions';
 import { AppState } from '../app.reducers';
 
 
@@ -83,11 +82,9 @@ export class UserEffects {
                     }),
                     new userActions.SetToken(token),
                     new configActions.FetchConfig(false),
-                    new configActions.FetchTactics(),
                     new notificationActions.FetchNotificationStore(),
                     new utilityActions.RecordVisit(),
-                    new markingActions.FetchMarkings(),
-                    new identityActions.FetchIdentities()
+                    new stixActions.FetchStix(),
                 ];
             }
 

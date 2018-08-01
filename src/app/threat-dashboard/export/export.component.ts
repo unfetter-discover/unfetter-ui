@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { MatTooltip } from '../../../../node_modules/@angular/material/tooltip';
+import { MatTooltip } from '@angular/material/tooltip';
 import { ThreatReport } from '../models/threat-report.model';
 
 @Component({
