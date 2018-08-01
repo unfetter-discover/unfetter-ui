@@ -118,16 +118,19 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   public requestAncillaryDataLoad(assessment: Assessment): void {
     const id = this.assessmentId;
-    const assessmentType = assessment.determineAssessmentType();
-    if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
-      this.summaryCalculationService.isCapability = true;
+    if (assessment && assessment.determineAssessmentType) {
+      const assessmentType = assessment.determineAssessmentType();
+      if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
+        this.summaryCalculationService.isCapability = true;
+      } else {
+        this.summaryCalculationService.isCapability = false;
+      }
+      this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData({ id: this.assessmentId, isCapability: this.summaryCalculationService.isCapability }));
+      this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));
+      this.store.dispatch(new LoadSingleSummaryAggregationData({ id: this.assessmentId, isCapability: this.summaryCalculationService.isCapability }));
     } else {
-      this.summaryCalculationService.isCapability = false;
+      console.log('Unable to determine assessment type.');
     }
-    this.riskByAttackPatternStore.dispatch(new LoadSingleAssessmentRiskByAttackPatternData({ id: this.assessmentId, isCapability: this.summaryCalculationService.isCapability }));
-    this.store.dispatch(new LoadSingleRiskPerKillChainData(this.assessmentId));
-    this.store.dispatch(new LoadSingleSummaryAggregationData({ id: this.assessmentId, isCapability: this.summaryCalculationService.isCapability }));
-
   }
 
   /**
@@ -160,7 +163,13 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     this.failedToLoad$ = this.store
       .select(getFailedToLoad)
-      .pipe(distinctUntilChanged());
+      .pipe(distinctUntilChanged(),
+        tap((failed) => {
+          if (failed) {
+            this.setLoadingToDone();
+          }
+        })
+      );
 
     this.riskByKillChain$ = this.store
       .select(getKillChainData)
