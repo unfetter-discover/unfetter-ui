@@ -17,7 +17,7 @@
   </div>
   <mat-accordion displayMode="flat" multi="false">
     <mat-expansion-panel *ngIf="indicators && indicators.length > 0" hideToggle="true" [expanded]="openedSidePanel === 'indicators'"
-      (opened)="onOpenSidePanel('indicators', $event)">
+      (opened)="onOpenSidePanel('indicators', $event)" class="stepper-vertical">
       <mat-expansion-panel-header [expandedHeight]="sidePanelExpandedHeight" [collapsedHeight]="sidePanelCollapseHeight">
         <mat-panel-title>
           INDICATORS
