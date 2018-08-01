@@ -1,5 +1,5 @@
 <div id="tabWrapper" class="flex flexColumn">
-  <div class="flex flexRow">
+  <div *ngIf="percentCompleted < 100" class="flex flexRow">
     <div class="flex">
       <uf-info-bar isWarningMsg="true" message="{{ infoBarMsg }}" [completeActionUrl]="editUrl||''"></uf-info-bar>
     </div>

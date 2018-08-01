@@ -375,7 +375,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
                 // we deleted the current baseline
                 if (isCurrentlyViewed) {
-                  return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL]);
+                  return this.router.navigate([Constance.X_UNFETTER_BASELINE_NAVIGATE_URL]);
                 }
               });
         },

@@ -94,22 +94,15 @@ export const Constance = {
   X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
   X_UNFETTER_ASSESSMENT3_NAVIGATE_URL: 'assess-beta/navigate',
-  X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL: 'baseline/navigate',
-  X_UNFETTER_BASELINE_URL: 'api/v3/x-unfetter-assessment-sets', // matches assessment sets url below
-  X_UNFETTER_ASSESSMENT3_TYPE: 'x-unfetter-object-assessment',
-
+  
+  X_UNFETTER_BASELINE_NAVIGATE_URL: 'baseline/navigate',
+  
+  X_UNFETTER_BASELINE_URL: 'api/v3/x-unfetter-assessment-sets', // matches assessment sets url below\
   X_UNFETTER_CAPABILITY_URL: 'api/v3/x-unfetter-capabilities',
-  X_UNFETTER_CAPABILITY_TYPE: 'x-unfetter-capability',
-
   X_UNFETTER_ASSESSMENT_SETS_URL: 'api/v3/x-unfetter-assessment-sets',
-  X_UNFETTER_ASSESSMENT_SETS_TYPE: 'x-unfetter-assessment-sets',
-
   X_UNFETTER_CATEGORY_URL: 'api/v3/x-unfetter-categories',
-  X_UNFETTER_CATEGORY_TYPE: 'x-unfetter-category',
-
   X_UNFETTER_OBJECT_ASSESSMENTS_URL: 'api/v3/x-unfetter-object-assessments',
-  X_UNFETTER_OBJECT_ASSESSMENTS_TYPE: 'x-unfetter-object-assessments',
-
+  
   AUTH_URL: 'api/auth',
   USER_FROM_TOKEN_URL: 'api/auth/user-from-token',
   FINALIZE_REGISTRATION_URL: 'api/auth/finalize-registration',
@@ -139,6 +132,7 @@ export const Constance = {
   LOGO_IMG_ASSESSMENTS: 'assets/icon/dashboard-logos/icon-Assessments.png',
   LOGO_IMG_ASSESSMENTS_BETA: 'assets/icon/dashboard-logos/icon-Assessments_beta.png',
   LOGO_IMG_THREAT_DASHBOARD: 'assets/icon/dashboard-logos/icon-Threat_Dashboard.png',
+  LOGO_IMG_BASELINES: 'assets/icon/dashboard-logos/icon-Baselines.png',
   LOGO_IMG_EVENTS_DASHBOARD: 'assets/icon/dashboard-logos/icon-event_Dashboard_beta.png',
   LOGO_IMG_API_EXPLORER: 'assets/icon/dashboard-logos/icon-api.png',
   LOGO_IMG_STIX: 'assets/icon/dashboard-logos/icon-STIX_Dashboard.png',
