@@ -34,7 +34,8 @@ import { SidePanelName } from './models/side-panel-name.enum';
 import { TempModel } from './models/temp-model';
 import { WizardQuestion } from './models/wizard-question';
 import { MarkingDefinition } from '../../../models';
-import { MarkingsChipsComponent } from '../../../global/components/marking-references/markings-chips.component';
+import { MarkingsChipsComponent } from '../../../global/components/marking-definitions/markings-chips.component';
+import MarkingDefinitionHelpers from '../../../global/static/marking-definition-helper';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -1342,23 +1343,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   }
 
   public getMarkingLabel(marking) {
-    if (marking && marking.attributes && marking.attributes.definition_type) {
-      switch (marking.attributes.definition_type) {
-        case 'statement': {
-          return marking.attributes.definition.statement;
-        }
-        case 'tlp': {
-          return `TLP: ${marking.attributes.definition.tlp}`;
-        }
-        case 'rating': {
-          return `Rating: (${marking.attributes.definition.rating}) ${marking.attributes.definition.label}`;
-        }
-        case 'capco': {
-          return `${marking.attributes.definition.category}: ${marking.attributes.definition.text}`
-        }
-      }
-    }
-    return 'unknown marking';
+    return MarkingDefinitionHelpers.getMarkingLabel(marking);
   }
 
   public onMarkingChange(marking) {

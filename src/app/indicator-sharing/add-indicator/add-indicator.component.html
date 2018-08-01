@@ -25,7 +25,7 @@
 
                 <div class="flex">
                     <mat-form-field class="flex1 full-width mb-6">
-                        <mat-select multiple placeholder="Marking References" formControlName="object_marking_refs">
+                        <mat-select multiple placeholder="Marking Definitions" formControlName="object_marking_refs">
                             <mat-option *ngFor="let marking of marking$ | async" [value]="marking.id">
                                 {{getMarkingLabel(marking)}}
                             </mat-option>

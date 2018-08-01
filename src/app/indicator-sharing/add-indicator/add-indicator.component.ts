@@ -22,6 +22,7 @@ import { GenericApi } from '../../core/services/genericapi.service';
 import { GridFSFile } from '../../global/models/grid-fs-file';
 import { RunConfigService } from '../../core/services/run-config.service';
 import { MarkingDefinition } from '../../models';
+import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
 
 @Component({
     selector: 'add-indicator',
@@ -428,23 +429,7 @@ export class AddIndicatorComponent implements OnInit {
     }
 
     public getMarkingLabel(marking) {
-        if (marking && marking.attributes && marking.attributes.definition_type) {
-            switch (marking.attributes.definition_type) {
-                case 'statement': {
-                    return marking.attributes.definition.statement;
-                }
-                case 'tlp': {
-                    return `TLP: ${marking.attributes.definition.tlp}`;
-                }
-                case 'rating': {
-                    return `Rating: (${marking.attributes.definition.rating}) ${marking.attributes.definition.label}`;
-                }
-                case 'capco': {
-                    return `${marking.attributes.definition.category}: ${marking.attributes.definition.text}`
-                }
-            }
-        }
-        return 'unknown marking';
+        return MarkingDefinitionHelpers.getMarkingLabel(marking);
     }
 
 }

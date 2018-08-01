@@ -2,7 +2,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EMPTY, Observable, OperatorFunction } from 'rxjs';
-import { map } from '../../../../node_modules/rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Constance } from '../../utils/constance';
 import { ExternalDataTranslationRequest } from '../models/adapter/external-data-translation-request';
 import { ExternalDataTranslationResponse } from '../models/adapter/external-data-translation-response';

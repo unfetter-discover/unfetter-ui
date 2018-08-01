@@ -8,7 +8,7 @@ import { AttackPattern } from 'stix';
 import { StixUrls } from '../../global/enums/stix-urls.enum';
 import { StixApiOptions } from '../../global/models/stix-api-options';
 import { Constance } from '../../utils/constance';
-import { HttpEventType } from '../../../../node_modules/@angular/common/http';
+import { HttpEventType } from '@angular/common/http';
 import { GridFSFile } from '../../global/models/grid-fs-file';
 
 describe('GenericApi service', () => {
