@@ -145,7 +145,7 @@ describe(`App`, () => {
             { path: 'admin', title: 'admin', theme: Themes.DEFAULT },
             { path: 'assessments', title: 'assessments', theme: Themes.ASSESSMENTS },
             { path: 'assess', title: 'assessments', theme: Themes.ASSESSMENTS },
-            { path: 'assess-beta', title: 'assessments beta', theme: Themes.ASSESSMENTS },
+            { path: 'assess-beta', title: 'assessments', theme: Themes.ASSESSMENTS },
             { path: 'baseline', title: 'Baselines', theme: Themes.ASSESSMENTS },
             { path: 'events', title: 'events', theme: Themes.EVENTS },
             { path: 'home', title: 'home', theme: Themes.DEFAULT },
