@@ -161,6 +161,13 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
     public close() {
         this._selections = Array.from(new Set(this.selectedPatterns.map(pattern => pattern.id)));
         this.dialogRef.close(this.selections);
+    }  
+
+    /**
+     * @description Remove all selections
+      */
+    public clearSelections() {
+      this.selectedPatterns.slice(0).forEach(pattern => this.toggleAttackPattern({data: pattern}));
     }
   
-}
+  }
