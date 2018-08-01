@@ -3,12 +3,12 @@ import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
-import { empty as observableEmpty } from 'rxjs';
+import { of as observableOf } from 'rxjs';
 import { catchError, mergeMap, pluck, switchMap } from 'rxjs/operators';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { GenericApi } from '../../../../core/services/genericapi.service';
 import { AssessService } from '../../services/assess.service';
-import { FinishedLoading, LOAD_RISK_BY_ATTACK_PATTERN_DATA, LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA, SetRiskByAttackPattern } from './riskbyattackpattern.actions';
+import { FinishedLoading, LOAD_RISK_BY_ATTACK_PATTERN_DATA, LOAD_SINGLE_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA, SetRiskByAttackPattern, FailedToLoad } from './riskbyattackpattern.actions';
 
 
 @Injectable()
@@ -35,7 +35,7 @@ export class RiskByAttackPatternEffects {
                         mergeMap((data: RiskByAttack) => [new SetRiskByAttackPattern([data]), new FinishedLoading(true)]),
                         catchError((err) => {
                             console.log(err);
-                            return observableEmpty();
+                            return observableOf(new FailedToLoad(true));
                         })
                     );
             }),
@@ -53,7 +53,7 @@ export class RiskByAttackPatternEffects {
                         mergeMap((data: RiskByAttack[]) => [new SetRiskByAttackPattern(data), new FinishedLoading(true)]),
                         catchError((err) => {
                             console.log(err);
-                            return observableEmpty();
+                            return observableOf(new FailedToLoad(true));
                         })
                     );
             }),
