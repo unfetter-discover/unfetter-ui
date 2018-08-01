@@ -162,25 +162,25 @@ describe('SummaryComponent', () => {
     spyOn(service, 'setAverageRiskPerAssessedObject');
 
     component.summary = null;
-    component.transformSummary();
+    component.transformSummary(component.summary);
     expect(service.setAverageRiskPerAssessedObject).not.toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
 
     component.summary = AssessmentMockFactory.mockOne();
     component.summary.assessment_objects = null;
-    component.transformSummary();
+    component.transformSummary(component.summary);
     expect(service.setAverageRiskPerAssessedObject).not.toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
 
     component.summary = AssessmentMockFactory.mockOne();
     component.summary.assessment_objects =  component.summary.assessment_objects || [];
     component.summary.assessment_objects[0].questions = null;
-    component.transformSummary();
+    component.transformSummary(component.summary);
     expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).not.toHaveBeenCalled();
 
     component.summary = AssessmentMockFactory.mockOne();
-    component.transformSummary();
+    component.transformSummary(component.summary);
     expect(service.setAverageRiskPerAssessedObject).toHaveBeenCalled();
     expect(service.calculateThresholdOptionNames).toHaveBeenCalled();
   });
@@ -189,14 +189,14 @@ describe('SummaryComponent', () => {
     const service = component.getSummaryCalculationService();
     spyOn(service, 'populateAssessmentsGrouping');
     spyOn(service, 'populateTechniqueBreakdown');
-    component.summaryAggregation = {
+    const summaryAggregation = {
       assessedAttackPatternCountBySophisicationLevel: null,
       attackPatternsByAssessedObject: null,
       totalAttackPatternCountBySophisicationLevel: null
     };
     component.summary = AssessmentMockFactory.mockOne();
 
-    component.transformSAD();
+    component.transformSAD(summaryAggregation);
     expect(component.getSummaryCalculationService().summaryAggregation).toEqual({
       assessedAttackPatternCountBySophisicationLevel: null,
       attackPatternsByAssessedObject: null,
@@ -206,7 +206,7 @@ describe('SummaryComponent', () => {
     expect(service.populateTechniqueBreakdown).toHaveBeenCalledTimes(1);
 
     component.summary = null;
-    component.transformSAD();
+    component.transformSAD(summaryAggregation);
     expect(service.populateAssessmentsGrouping).toHaveBeenCalledTimes(1);
     expect(service.populateTechniqueBreakdown).toHaveBeenCalledTimes(1);
   });
@@ -214,7 +214,7 @@ describe('SummaryComponent', () => {
   it('should transform Kill Chain Data (KCD)', () => {
     const service = component.getSummaryCalculationService();
     spyOn(service, 'calculateTopRisks');
-    component.transformKCD();
+    component.transformKCD(null);
     expect(service.calculateTopRisks).toHaveBeenCalled();
   });
 
@@ -237,10 +237,10 @@ describe('SummaryComponent', () => {
 
   it('should set all loading flags to done', () => {
     component.setLoadingToDone();
-    expect(component.finishedLoading).toBe(true);
-    expect(component.finishedLoadingKCD).toBe(true);
+    component.finishedLoadingAssessment$.subscribe(value => expect(value).toEqual(true));
+    component.finishedLoadingKCD$.subscribe(value => expect(value).toEqual(true));
     expect(component.finishedLoadingRBAP).toBe(true);
-    expect(component.finishedLoadingSAD).toBe(true);
+    component.finishedLoadingSAD$.subscribe(value => expect(value).toEqual(true));
   });
 
 });
