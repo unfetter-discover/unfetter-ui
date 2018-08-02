@@ -1,13 +1,13 @@
-
 import { of as observableOf,  Observable  } from 'rxjs';
 
-import { tap } from 'rxjs/operators';
+import { tap, pluck, distinctUntilChanged } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { RunConfigService } from '../core/services/run-config.service';
 import { GenericApi } from '../core/services/genericapi.service';
 import { Constance } from '../utils/constance';
+import { AppState } from '../root-store/app.reducers';
+import { MasterConfig } from '../core/services/run-config.service';
 
 interface IPGeoData {
     data: any,
@@ -29,18 +29,24 @@ export class IPGeoService {
     private max_cached_items = 1000;
 
     constructor(
-        private runConfigService: RunConfigService,
+        private store: Store<AppState>,
         private genericApi: GenericApi,
     ) {
-        this.runConfigService.config.subscribe(
-            config => {
-                if (config && config.ipgeo) {
-                    this.perform_lookups = (config.ipgeo.performLookups !== false);
-                    this.expiration_time = config.ipgeo.expiration_time || (1 * 60 * 60 * 1000);
-                    this.max_cached_items = config.ipgeo.max_cached_items || 1000;
+        this.store
+            .select('config')
+            .pipe(
+                pluck('runConfig'),
+                distinctUntilChanged(),
+            )
+            .subscribe(
+                (cfg: MasterConfig) => {
+                    if (cfg && cfg.ipgeo) {
+                        this.perform_lookups = (cfg.ipgeo.performLookups !== false);
+                        this.expiration_time = cfg.ipgeo.expiration_time || (1 * 60 * 60 * 1000);
+                        this.max_cached_items = cfg.ipgeo.max_cached_items || 1000;
+                    }
                 }
-            }
-        );
+            );
     }
 
     /**

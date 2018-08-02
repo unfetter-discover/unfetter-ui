@@ -46,6 +46,7 @@ export class AppComponent implements OnInit {
     this.runConfigService.config.subscribe(
       (cfg) => {
         if (cfg) {
+          this.store.dispatch(new configActions.LoadRunConfig(cfg));
           this.showBanner = cfg.showBanner || false;
           this.securityMarkingLabel = cfg.bannerText || '';
         }

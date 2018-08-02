@@ -1,51 +1,52 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { of as observableOf, Observable } from 'rxjs';
+import { Store, StoreModule } from '@ngrx/store';
 
 import { FooterComponent } from './footer.component';
-import { of as observableOf, Observable } from 'rxjs';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { RunConfigService } from '../../../core/services/run-config.service';
+import * as fromRoot from '../../../root-store/app.reducers';
+import * as configActions from '../../../root-store/config/config.actions';
 
 describe('FooterComponent', () => {
-  let component: FooterComponent;
-  let fixture: ComponentFixture<FooterComponent>;
 
-  const config = {
-    'showBanner': true,
-    'bannerText': 'This is a test',
-    'contentOwner': 'bob',
-    'pagePublisher': 'bob',
-    'lastReviewed': 20170404,
-    'lastModified': 20170404,
-    'footerTextHtml': '<p>hi</p><br><p>More stuff!</p>',
-  };
-  const mockRunConfig = {
-    loadPrivateConfig: () => {
-      console.log('i solemnly swear i am not trying to perform an http get...');
-    },
-    config: observableOf(config)
-  }
+    let fixture: ComponentFixture<FooterComponent>;
+    let component: FooterComponent;
+    let store: Store<fromRoot.AppState>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ FooterComponent ],
-      schemas: [NO_ERRORS_SCHEMA],
-      providers: [
-        {
-          provide: RunConfigService,
-          useValue: mockRunConfig
-        }
-      ]
-    })
-    .compileComponents();
-  }));
+    const config = {
+        'showBanner': true,
+        'bannerText': 'This is a test',
+        'contentOwner': 'bob',
+        'pagePublisher': 'bob',
+        'lastReviewed': 20170404,
+        'lastModified': 20170404,
+        'footerTextHtml': '<p>hi</p><br><p>More stuff!</p>',
+    };
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FooterComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async(() => {
+        TestBed
+            .configureTestingModule({
+                imports: [
+                    StoreModule.forRoot(fromRoot.reducers),
+                ],
+                declarations: [
+                    FooterComponent,
+                ],
+                schemas: [NO_ERRORS_SCHEMA],
+            })
+            .compileComponents();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(FooterComponent);
+        component = fixture.componentInstance;
+        store = component['store'];
+        store.dispatch(new configActions.LoadRunConfig(config));
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
 });

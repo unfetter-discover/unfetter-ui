@@ -20,7 +20,7 @@ import { KillChainPhasesForm } from '../../global/form-models/kill-chain-phases'
 import { FormatHelpers } from '../../global/static/format-helpers';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { GridFSFile } from '../../global/models/grid-fs-file';
-import { RunConfigService } from '../../core/services/run-config.service';
+import { MasterConfig } from '../../core/services/run-config.service';
 import { MarkingDefinition } from '../../models';
 import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
 
@@ -79,7 +79,6 @@ export class AddIndicatorComponent implements OnInit {
         private indicatorSharingService: IndicatorSharingService,
         private authService: AuthService,
         private genericApi: GenericApi,
-        private runConfigService: RunConfigService,
         private store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
     ) { }    
 
@@ -190,10 +189,17 @@ export class AddIndicatorComponent implements OnInit {
                 }
             );
 
-        this.runConfigService.config.subscribe((config) => {
-                this.blockAttachments = config.blockAttachments;
-            }
-        );
+        this.store
+            .select('config')
+            .pipe(
+                pluck('runConfig'),
+                distinctUntilChanged(),
+            )
+            .subscribe(
+                (cfg: MasterConfig) => {
+                    this.blockAttachments = cfg.blockAttachments;
+                }
+            );
 
         this.form.get('metaProperties').get('relationships').valueChanges
             .subscribe(

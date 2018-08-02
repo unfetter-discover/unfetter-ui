@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { Observable ,  Subscription ,  BehaviorSubject } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { MatTooltip } from '@angular/material';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
@@ -14,7 +15,9 @@ import { canCrud } from '../../global/static/stix-permissions';
 import { SearchParameters } from '../models/search-parameters';
 import { GridFSFile } from '../../global/models/grid-fs-file';
 import { Constance } from '../../utils/constance';
-import { RunConfigService, MasterConfig } from '../../core/services/run-config.service';
+import { MasterConfig } from '../../core/services/run-config.service';
+import { AppState } from '../../root-store/app.reducers';
+import { pluck, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
     selector: 'indicator-card',
@@ -68,9 +71,9 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
 
     constructor(
         private indicatorSharingService: IndicatorSharingService, 
+        private store: Store<AppState>,
         private authService: AuthService,
         private renderer: Renderer2,
-        private runConfigService: RunConfigService
     ) { }
 
     public ngOnInit() {
@@ -115,10 +118,17 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                 );
         }
 
-        this.runConfigService.config.subscribe((config) => {
-                this.blockAttachments = config.blockAttachments;
-            }
-        );
+        this.store
+            .select('config')
+            .pipe(
+                pluck('runConfig'),
+                distinctUntilChanged(),
+            )
+            .subscribe(
+                (cfg: MasterConfig) => {
+                    this.blockAttachments = cfg.blockAttachments;
+                }
+            );
     }
 
     public ngAfterViewInit() {

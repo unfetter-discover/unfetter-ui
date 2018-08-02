@@ -16,17 +16,19 @@ import { AuthService } from '../../../core/services/auth.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
+import * as configActions from '../../../root-store/config/config.actions';
 import { environment } from '../../../../environments/environment';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { FieldSortPipe } from '../../pipes/field-sort.pipe';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
-import { RunConfigService } from '../../../core/services/run-config.service';
 
 describe('HeaderNavigationComponent', () => {
 
-    let component: HeaderNavigationComponent;
     let fixture: ComponentFixture<HeaderNavigationComponent>;
-    const config = {
+    let component: HeaderNavigationComponent;
+    let store: Store<fromApp.AppState>;
+
+    const runConfig = {
         'showBanner': false,
         'bannerText': '',
         'authServices': [ 'github' ]
@@ -53,10 +55,6 @@ describe('HeaderNavigationComponent', () => {
                     AuthService,
                     GenericApi,
                     ConfigService,
-                    {
-                        provide: RunConfigService,
-                        useValue: { config: observableOf(config) }
-                    },
                 ],
                 schemas: [ NO_ERRORS_SCHEMA ]
             })
@@ -67,6 +65,8 @@ describe('HeaderNavigationComponent', () => {
         environment.runMode = 'UAC';
         fixture = TestBed.createComponent(HeaderNavigationComponent);
         component = fixture.componentInstance;
+        store = component['store'];
+        store.dispatch(new configActions.LoadRunConfig(runConfig));
         fixture.detectChanges();
     });
 
@@ -97,12 +97,12 @@ describe('HeaderNavigationComponent', () => {
 
         {
             expect(component.topPx).toEqual('0px');
-            config.showBanner = true;
+            runConfig.showBanner = true;
             const titledFixture = TestBed.createComponent(HeaderNavigationComponent);
             const titledComponent = titledFixture.componentInstance;
             titledFixture.detectChanges();
             expect(titledComponent.topPx).toEqual('17px');
-            config.showBanner = false;
+            runConfig.showBanner = false;
         }
     });
 
@@ -130,7 +130,6 @@ describe('HeaderNavigationComponent', () => {
 
     describe('with a logged in user', () => {
 
-        let store: Store<fromApp.AppState>;
         let authService: AuthService;
 
         const demoUser = {
