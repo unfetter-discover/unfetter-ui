@@ -1,33 +1,73 @@
 @import '../../../styles/_variables.scss';
 
 $timeline-grey: #d1d5da;
-$red: get-color($red, 400);
-$blue: get-color($blue, 400);
+$red: get-color($red, 500);
+// $blue: get-color($blue, 400);
 $title-padding: 24px;
+$row-lr-padding: 12px;
+$icon-size: 36px;
 // $max-width: 1280px;
 $max-width: 1366px;
 
+$arrow-size: 10px;
+.arrow-right {
+    height: 0;
+    border-top: $arrow-size solid transparent;
+    border-left: ($arrow-size * 2) solid $timeline-grey;
+    border-bottom: $arrow-size solid transparent;
+    float: right;
+}
+
+.arrow-left {
+    width: 0;
+	height: 0;
+	border-top: $arrow-size solid transparent;
+	border-right: ($arrow-size * 2) solid $timeline-grey;
+	border-bottom: $arrow-size solid transparent;
+}
+
+.box {
+    border: 1px solid $timeline-grey;
+    border-radius: 15px;
+}
+
+.box-left {
+    margin-right: 24px;
+    padding: 4px;
+}
+
+.box-right {
+    padding: 4px;
+}
+
+.top-bar {
+    border-top: 2px solid $threat-dashboard-primary-light;
+    padding-top: 16px;
+}
+
 .title {
     padding-top: $title-padding;
-    padding-left: $title-padding;
-    padding-right: $title-padding;
-    color: $dark-text-default;
+    padding-left: 12px;
+    padding-right: 12px;
+    color: $dark-text-dimmed;
 
-    .title-text {
-        padding-left: 18px;
-    }
+    // .title-text {
+    //     padding-left: 18px;
+    // }
 }
 
 .attackIcon {
     border-radius: 50%;
-    height: 42px;
-    width: 42px;
+    height: $icon-size;
+    width: $icon-size;
     // position: relative;
     // top: 10px;
+    position: relative;
+    right: $icon-size/2;
 
     svg {
-        width: 42px;
-        height: 42px;
+        width: $icon-size;
+        height: $icon-size;
         fill: #ffffff;
         border: 1px solid $red;
         border-radius: 50%;
@@ -35,17 +75,23 @@ $max-width: 1366px;
     }
 }
 
+.position-on-line {
+    position: relative;
+    right: 21px;
+    top: 48px;
+}
+
 .defendIcon {
     border-radius: 50%;
-    border: 1px solid $blue;
-    background-color: $blue;
-    height: 42px;
-    width: 42px;
+    border: 1px solid $threat-dashboard-primary-light;
+    background-color: $threat-dashboard-primary-light;
+    height: $icon-size;
+    width: $icon-size;
     border-radius: 50%;
     color: #ffffff;
 
     mat-icon {
-        font-size: 42px;
+        font-size: $icon-size;
     }
 }
 
@@ -55,8 +101,8 @@ $max-width: 1366px;
 }
 
 @mixin minRowPading {
-    padding-left: $title-padding;
-    padding-right: $title-padding;
+    padding-left: $row-lr-padding;
+    padding-right: $row-lr-padding;
 }
 
 .main {
@@ -72,7 +118,7 @@ $max-width: 1366px;
 
         .col1, .col3 {
             @include minRowPading;
-            padding-bottom: 12px;
+            padding-bottom: 18px;
         }
 
         .col2 {
