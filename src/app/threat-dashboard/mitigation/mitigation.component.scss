@@ -1,5 +1,6 @@
 @import '../../../styles/_variables.scss';
 
+$white: #ffffff;
 $timeline-grey: #d1d5da;
 $red: get-color($red, 500);
 // $blue: get-color($blue, 400);
@@ -26,18 +27,69 @@ $arrow-size: 10px;
 	border-bottom: $arrow-size solid transparent;
 }
 
+
+
 .box {
+    position: relative;
     border: 1px solid $timeline-grey;
     border-radius: 15px;
+    padding: 4px;
 }
 
 .box-left {
     margin-right: 24px;
-    padding: 4px;
+
+    &:after, &:before {
+        left: 100%;
+        top: 30%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+    
+    &:after {
+        border-color: rgba(136, 183, 213, 0);
+        border-left-color: $white;
+        border-width: 10px;
+        margin-top: -10px;
+    }
+    
+    &:before {
+        border-color: rgba(194, 225, 245, 0);
+        border-left-color: $timeline-grey;
+        border-width: 11px;
+        margin-top: -11px;
+    }
 }
 
 .box-right {
-    padding: 4px;
+    &:after, &:before {
+        right: 100%;
+        bottom: 30%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+
+    &:after {
+        border-color: rgba(136, 183, 213, 0);
+        border-right-color: $white;
+        border-width: 10px;
+        margin-top: -10px;
+    }
+
+    &:before {
+        border-color: rgba(194, 225, 245, 0);
+        border-right-color: $timeline-grey;
+        border-width: 11px;
+        margin-top: -11px;
+    }
 }
 
 .top-bar {
@@ -68,7 +120,7 @@ $arrow-size: 10px;
     svg {
         width: $icon-size;
         height: $icon-size;
-        fill: #ffffff;
+        fill: $white;
         border: 1px solid $red;
         border-radius: 50%;
         background: $red;
@@ -88,7 +140,7 @@ $arrow-size: 10px;
     height: $icon-size;
     width: $icon-size;
     border-radius: 50%;
-    color: #ffffff;
+    color: $white;
 
     mat-icon {
         font-size: $icon-size;
