@@ -8,8 +8,8 @@ $row-lr-padding: 12px;
 $icon-size: 36px;
 // $max-width: 1280px;
 $max-width: 1366px;
-
 $arrow-size: 10px;
+
 .arrow-right {
     height: 0;
     border-top: $arrow-size solid transparent;
@@ -110,7 +110,8 @@ $arrow-size: 10px;
     color: $dark-text-default;
     margin-top: 12px;
     margin-bottom: 12px;
-    margin: auto auto;
+    margin-left: auto;
+    margin-right: auto;
     max-width: $max-width;
 
     .line {
