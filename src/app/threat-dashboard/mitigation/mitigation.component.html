@@ -1,103 +1,107 @@
-<div class="main flex-col">
-    <div class="flex mat-title title">
-        <div class="attackIcon mat-elevation-z5">
-            <!-- filter="url(assets/icon/stix-icons/svg/all-defs.svg#dropFilter)"-->
-            <svg>
-                <use href="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></use>
-            </svg>
-        </div>
-        <div class="title-text">
-            Mitigation Timeline
-        </div>
+<div class="flex mat-title title">
+    <div class="title-text">
+        Mitigation Timeline
     </div>
-    <div class="flex line" *ngIf="mitigationLines?.length > 0">
-        <div class="flex1 col1 mat-subheading-2">
-            Attacker Event
-        </div>
-        <div class="flex0">
-        </div>
-        <div class="flex1 col3 mat-subheading-2">
-            Defender Event
-        </div>
-    </div>
-    <div class="flex line" *ngFor="let line of mitigationLines">
-        <div class="flex1 col1">
-            <div>
-                {{line.attackPattern.name}}
+</div>
+<div class="mb-18 mt-18 ml-16 mr-16 mat-card mat-elevation-z3 cardHoverShadow">
+    <div class="main flex-col top-bar">
+        <div class="flex line" *ngIf="mitigationLines?.length > 0">
+            <div class="flex1 col1 mat-subheading-2">
+                Attacker Event
             </div>
-            <div class="full-width mat-caption text-muted text-fadeable">
-                {{line.attackPattern.description}}
+            <div class="flex0">
             </div>
-            <div class="mat-caption">
-                <span class="citation-links">
-                    Citations:
-                </span>
-                <span>
-                    <a href="{{citationLink}}" target="_blank" *ngFor="let citationLink of citationLinksFor(line.attackPattern); trackBy: trackByFn; let i = index">
-                        {{(i + 1)}}
-                        <mat-icon>open_in_new</mat-icon>
-                    </a>
-                </span>
+            <div class="flex1 col3 mat-subheading-2">
+                Defender Event
             </div>
         </div>
-        <div class="flex0 col2">
-        </div>
-        <div class="flex1 col3">
-            <div>
-                {{line.courseOfAction.name}}
+        <div class="flex line" *ngFor="let line of mitigationLines; trackBy: trackByFn; let curLineIndex = index">
+            <div class="flex1 col1">
+                <!-- <div class="arrow-right"></div> -->
+                <div class="box box-left" #mitigationLeftBox [class.mat-elevation-z5]="hoverIndex === curLineIndex">
+                    <div>
+                        {{line.attackPattern.name}}
+                    </div>
+                    <div class="full-width mat-caption text-muted text-fadeable">
+                        {{line.attackPattern.description}}
+                    </div>
+                    <div class="mat-caption">
+                        <span class="citation-links">
+                            Citations:
+                        </span>
+                        <span>
+                            <a href="{{citationLink}}" target="_blank" *ngFor="let citationLink of citationLinksFor(line.attackPattern); trackBy: trackByFn; let i = index">
+                                {{(i + 1)}}
+                                <mat-icon>open_in_new</mat-icon>
+                            </a>
+                        </span>
+                    </div>
+                </div>
             </div>
-            <div class="full-width mat-caption text-muted text-fadeable">
-                {{line.courseOfAction.description}}
+            <div class="flex0 col2">
+                <div class="attackIcon" [class.mat-elevation-z5]="hoverIndex === curLineIndex" (mouseenter)="hoverIndex = curLineIndex" (mouseleave)="hoverIndex = -1">
+                    <svg>
+                        <use href="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></use>
+                    </svg>
+                </div>
+                <div class="defendIcon position-on-line" [class.mat-elevation-z5]="hoverIndex === curLineIndex" (mouseenter)="hoverIndex = curLineIndex" (mouseleave)="hoverIndex = -1">
+                    <mat-icon class="mat-42">security</mat-icon>
+                </div>
+            </div>
+            <div class="flex1 col3">
+                <div class="box box-right" [class.mat-elevation-z5]="hoverIndex === curLineIndex" #mitigationRightBox>
+                    <div>
+                        {{line.courseOfAction.name}}
+                    </div>
+                    <div class="full-width mat-caption text-muted text-fadeable">
+                        {{line.courseOfAction.description}}
+                    </div>
+                    <!-- <div class="arrow-left"></div> -->
+                </div>
             </div>
         </div>
-    </div>
-    <p class="text-mutable helper mat-caption">
-        {{mitigationLines?.length || 0}} event(s) in timeline.
-        <span *ngIf="!showEdit; else editShownBlock">
-            <a href="#" (click)="showEdit = true; $event.preventDefault()">
-                Add more events.
-            </a>
-        </span>
-        <ng-template #editShownBlock>
-            Add more events using the drop downs below.
-        </ng-template>
-    </p>
-    <form *ngIf="mitigationLineFormResetComplete && showEdit" autocomplete="off" novalidate [formGroup]="mitigationLineForm" (ngSubmit)="handleNewMitigationLineClick($event)">
-        <div class="flex line">
-            <div class="flex1 col1 flex-half">
-                <span *ngIf="isAttackerTurn === true">
+        <p class="text-mutable helper mat-caption">
+            {{mitigationLines?.length || 0}} event(s) in timeline.
+            <span *ngIf="!showEdit; else editShownBlock">
+                <a href="#" (click)="showEdit = true; $event.preventDefault()">
+                    Add more events.
+                </a>
+            </span>
+            <ng-template #editShownBlock>
+                Add more events using the drop downs below.
+            </ng-template>
+        </p>
+        <form *ngIf="mitigationLineFormResetComplete && showEdit" autocomplete="off" novalidate [formGroup]="mitigationLineForm"
+            (ngSubmit)="handleNewMitigationLineClick($event)">
+            <div class="flex line">
+                <div class="flex1 col1 flex-half">
+                    <span *ngIf="isAttackerTurn === true">
+                        <mat-form-field class="full-width">
+                            <mat-select formControlName="attackPattern" placeholder="Attack Pattern Referenced">
+                                <mat-option *ngFor="let attackPattern of currentReportAttackPatterns" [value]="attackPattern">
+                                    {{attackPattern.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </span>
+                </div>
+                <div class="flex0">
+                    <!-- <svg>
+                    <use href="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></use>
+                </svg> -->
+                </div>
+                <div class="flex1 col3 flex-half">
                     <mat-form-field class="full-width">
-                        <mat-select formControlName="attackPattern" placeholder="Attack Pattern Referenced">
-                            <mat-option *ngFor="let attackPattern of currentReportAttackPatterns" [value]="attackPattern">
-                                {{attackPattern.name}}
+                        <mat-select formControlName="courseOfAction" placeholder="Course Of Action Referenced">
+                            <mat-option *ngFor="let courseOfAction of filterToRelatedCoursesOfAction(mitigationLineForm.value.attackPattern.id, coursesOfAction)" [value]="courseOfAction">
+                                {{courseOfAction.name}}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-                </span>
+                    <button mat-raised-button color="primary" type="submit" class="to-right" [disabled]="!mitigationLineForm.valid">Add Event</button>
+                    <button mat-button type="button" class="to-right" (click)="showEdit = false">Done</button>
+                </div>
             </div>
-            <div class="flex0">
-                <!-- <svg>
-                    <use href="assets/icon/stix-icons/svg/all-defs.svg#threat-actor"></use>
-                </svg> -->
-            </div>
-            <div class="flex1 col3 flex-half">
-                <mat-form-field class="full-width">
-                    <mat-select formControlName="courseOfAction" placeholder="Course Of Action Referenced">
-                        <mat-option *ngFor="let courseOfAction of coursesOfAction" [value]="courseOfAction">
-                            {{courseOfAction.name}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <button mat-raised-button color="primary" type="submit" class="to-right" [disabled]="!mitigationLineForm.valid">Add Event</button>
-                <button mat-raised-button type="button" class="to-right" (click)="showEdit = false">Done</button>
-            </div>
-        </div>
-    </form>
-    <!-- <div class="defenderIcon">
-        <mat-icon class="mat-48">security</mat-icon>
-    </div> -->
-    <div class="flex flex-rev">
-        <div class="defendIcon mat-elevation-z5">
-            <mat-icon class="mat-42">security</mat-icon>
-        </div>
+        </form>
     </div>
+</div>
