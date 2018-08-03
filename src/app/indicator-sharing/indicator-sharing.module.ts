@@ -51,6 +51,7 @@ import { IndicatorHeatMapFilterComponent } from './indicator-tactics/indicator-h
 import { SummaryStatisticsComponent } from './summary-statistics/summary-statistics.component';
 import { IndicatorTacticsComponent } from './indicator-tactics/indicator-tactics.component';
 import { ObservedDataFilterComponent } from './indicator-sharing-filters/observed-data-filter/observed-data-filter.component';
+import { IndicatorFormComponent } from './indicator-form/indicator-form.component';
 
 const matModules = [
     MatButtonModule,
@@ -102,6 +103,7 @@ const matModules = [
         SummaryStatisticsComponent,
         IndicatorTacticsComponent,
         ObservedDataFilterComponent,
+        IndicatorFormComponent,
     ],
     providers: [
         IndicatorSharingService
