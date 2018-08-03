@@ -1,7 +1,7 @@
 <div id="indicatorSharingList" class="fadeIn" *ngIf="SERVER_CALL_COMPLETE; else loadingBlock">
-    <button mat-fab color="primary" class="bottomRightFab" (click)="openDialog()">
+    <a mat-fab color="primary" class="bottomRightFab" routerLink="/indicator-sharing/add">
         <i class="material-icons mat-24">add</i>
-    </button>
+    </a>
 
     <mat-sidenav-container>
         <mat-sidenav #filterContainer id="filterContainer" opened="false" mode="side" class="mat-elevation-z8" (openedStart)="openedStart()"
@@ -38,7 +38,7 @@
                             <div class="pl-24 pr-24 flex flexItemsCenter" id="listControlFlexWraper">
                                 <indicator-sharing-sort></indicator-sharing-sort>
                                 <label class="spacer" id="spacer1">&nbsp;|&nbsp;</label>
-                                <label class="mb-0">Results: {{ filteredIndicators.length }} / {{ totalIndicatorCount$ | async }}</label>
+                                <label class="mb-0" *ngIf="filteredIndicators">Results: {{ filteredIndicators.length }} / {{ totalIndicatorCount$ | async }}</label>
                                 <label class="spacer" id="spacer2">&nbsp;|&nbsp;</label>
                                 <span id="listControlBtns">
                                     <!-- Download bundle -->
