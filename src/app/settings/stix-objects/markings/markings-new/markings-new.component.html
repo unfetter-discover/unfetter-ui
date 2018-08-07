@@ -24,8 +24,9 @@
         <div class="col-md-12">
             <form>
                 <mat-form-field class="full-width">
-                    <mat-select [(value)]="tlpCtrl" required placeholder="TLP">
-                        <mat-option *ngFor="let TLPValue of TLPValues" [value]="tlpValue.tlp">
+                    <mat-select [(value)]="tlpCtrl" required placeholder="TLP"
+                            (selectionChange)="tlpValue.tlp = tlpCtrl">
+                        <mat-option *ngFor="let TLPValue of TLPValues" [value]="TLPValue">
                             <span>{{ TLPValue }}</span>
                         </mat-option>
                     </mat-select>
