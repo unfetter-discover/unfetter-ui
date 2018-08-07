@@ -8,15 +8,13 @@
     <div class="col-md-12">
         <form>
             <mat-form-field class="full-width">
-                <input matInput required [formControl]="definitionTypeCtrl" [(ngModel)]="definitionType"
-                        [matAutocomplete]="autotype" placeholder="Definition Type" aria-label="Definition Type">
+                <mat-select [(value)]="definitionType" required placeholder="Definition Type">
+                    <mat-option *ngFor="let definitionType of markingDefinitionTypes" [value]="definitionType">
+                        <span>{{ definitionType.label }}</span>
+                    </mat-option>
+                </mat-select>
             </mat-form-field>
         </form>
-        <mat-autocomplete name="autotype" #autotype="matAutocomplete" [displayWith]="displayDefinitionType">
-            <mat-option *ngFor="let definitionType of markingDefinitionTypes" [value]="definitionType">
-                <span>{{ definitionType.label }}</span>
-            </mat-option>
-        </mat-autocomplete>
     </div>
 </div>
 
@@ -25,16 +23,15 @@
     <div *ngSwitchCase="'tlp'" class="row selectRow">
         <div class="col-md-12">
             <form>
-               <mat-form-field class="full-width">
-                    <input matInput required [formControl]="tlpCtrl" [(ngModel)]="tlpValue.tlp"
-                            [matAutocomplete]="autotlp" placeholder="TLP" aria-label="TLP Value">
-               </mat-form-field>
+                <mat-form-field class="full-width">
+                    <mat-select [(value)]="tlpCtrl" required placeholder="TLP"
+                            (selectionChange)="tlpValue.tlp = tlpCtrl">
+                        <mat-option *ngFor="let TLPValue of TLPValues" [value]="TLPValue">
+                            <span>{{ TLPValue }}</span>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </form>
-            <mat-autocomplete name="autotlp" #autotlp="matAutocomplete">
-                <mat-option *ngFor="let TLPValue of TLPValues" [value]="TLPValue">
-                    <span>{{ TLPValue }}</span>
-                </mat-option>
-            </mat-autocomplete>
         </div>
     </div>
 
@@ -67,16 +64,14 @@
     <div *ngSwitchCase="'capco'" class="row selectRow">
         <div class="col-md-2">
             <form>
-               <mat-form-field class="full-width">
-                    <input matInput required [formControl]="categoryCtrl" [(ngModel)]="capco.category"
-                            [matAutocomplete]="autocat" placeholder="Category" aria-label="CAPCO Category">
-               </mat-form-field>
+                <mat-form-field class="full-width">
+                    <mat-select [(value)]="capco.category" required placeholder="CAPCO Category">
+                        <mat-option *ngFor="let category of CategoryValues" [value]="category">
+                            <span>{{ category }}</span>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </form>
-            <mat-autocomplete name="autocat" #autocat="matAutocomplete">
-                <mat-option *ngFor="let category of CategoryValues" [value]="category">
-                    <span>{{ category }}</span>
-                </mat-option>
-            </mat-autocomplete>
         </div>
         <div class="col-md-2">
             <mat-form-field class="full-width">
