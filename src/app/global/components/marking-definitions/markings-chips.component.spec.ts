@@ -20,8 +20,6 @@ describe('MarkingsChipsComponent', () => {
             id: 'mdr-1',
             type: StixCoreEnum.MARKING_DEFINITION,
             created: new Date(),
-            created_by_ref: null,
-            description: null,
             definition_type: 'rating',
             definition: {
                 rating: 1,
@@ -32,8 +30,6 @@ describe('MarkingsChipsComponent', () => {
             id: 'mdr-10',
             type: StixCoreEnum.MARKING_DEFINITION,
             created: new Date(),
-            created_by_ref: null,
-            description: null,
             definition_type: 'rating',
             definition: {
                 rating: 10,
