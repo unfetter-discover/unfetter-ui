@@ -1,3 +1,5 @@
+import { StixUrls } from '../global/enums/stix-urls.enum';
+
 export const Constance = {
   // TODO store these on server?
   KILL_CHAIN_PHASES: [
@@ -14,19 +16,19 @@ export const Constance = {
   ],
 
   DATE_FORMATE: 'MMM-DD-YYYY',
-  REPORTS_URL: 'api/reports',
+  REPORTS_URL: StixUrls.REPORT as string,
   REPORTS_TYPE: 'report',
   REPORTS_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
-  CAMPAIGN_URL: 'api/campaigns',
+  CAMPAIGN_URL: StixUrls.CAMPAIGN as string,
   CAMPAIGN_TYPE: 'campaign',
   CAMPAIGN_ICON: 'assets/icon/stix-icons/svg/campaign-b.svg',
 
-  COURSE_OF_ACTION_URL: 'api/course-of-actions',
+  COURSE_OF_ACTION_URL: StixUrls.COURSE_OF_ACTION as string,
   COURSE_OF_ACTION_TYPE: 'course-of-action',
   COURSE_OF_ACTION_ICON: 'assets/icon/stix-icons/svg/course-of-action-b.svg',
 
-  RELATIONSHIPS_URL: 'api/relationships',
+  RELATIONSHIPS_URL: StixUrls.RELATIONSHIP as string,
   RELATIONSHIPS_ICON: 'assets/icon/stix-icons/svg/relationship-b.svg',
   RELATIONSHIPS_TYPE: 'relationship',
   RELATIONSHIPS_TYPES: {
@@ -34,21 +36,24 @@ export const Constance = {
     INDICATES: 'indicates'
   },
 
-  IDENTITIES_URL: 'api/identities',
+  IDENTITIES_URL: StixUrls.IDENTITY as string,
 
-  INDICATOR_URL: 'api/indicators',
+  MARKINGS_URL: 'api/marking-definitions',
+  MARKING_ICON: 'assets/icon/stix-icons/svg/shield.svg',
+
+  INDICATOR_URL: StixUrls.INDICATOR as string,
   INDICATOR_TYPE: 'indicator',
   INDICATOR_ICON: 'assets/icon/stix-icons/svg/indicator-b.svg',
 
-  ATTACK_PATTERN_URL: 'api/attack-patterns',
+  ATTACK_PATTERN_URL: StixUrls.ATTACK_PATTERN as string,
   ATTACK_PATTERN_TYPE: 'attack-pattern',
   ATTACK_PATTERN_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
 
-  THREAT_ACTORS_URL: 'api/threat-actors',
+  THREAT_ACTORS_URL: StixUrls.THREAT_ACTOR as string,
   THREAT_ACTORS_TYPE: 'threat-actor',
   THREAT_ACTORS_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
 
-  IDENTITY_URL: 'api/identities',
+  IDENTITY_URL: StixUrls.IDENTITY as string,
   IDENTITY_TYPE: 'identity',
   IDENTITY_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
 
@@ -56,23 +61,24 @@ export const Constance = {
   INTRUSION_SET_TYPE: 'intrusion-set',
   INTRUSION_SET_ICON: 'assets/icon/stix-icons/svg/threat-actor-b.svg',
 
-  SIGHTING_URL: 'api/sightings',
+  SIGHTING_URL: StixUrls.SIGHTING as string,
   SIGHTING_TYPE: 'sighting',
   SIGHTING_ICON: 'assets/icon/stix-icons/svg/campaign-b.svg',
 
   THREAT_DASHBOARD_NAVIGATE_URL: 'threat-dashboard/navigate',
   LATEST_THREAT_REPORTS_URL: `api/latest/threat-reports`,
 
-  MALWARE_URL: 'api/malwares',
+  MALWARE_URL: StixUrls.MALWARE as string,
   MALWARE_TYPE: 'malware',
   MALWARE_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
 
   MULTIPLES_URL: 'api/multiples',
 
-  OBSERVED_DATA_URL: 'api/observed-data',
+  OBSERVED_DATA_URL: StixUrls.OBSERVED_DATA as string,
   OBSERVED_DATA_TYPE: 'observed-data',
   OBSERVED_DATA_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
-  TOOL_URL: 'api/tools',
+
+  TOOL_URL: StixUrls.TOOL as string,
   TOOL_TYPE: 'tool',
   TOOL_ICON: 'assets/icon/stix-icons/svg/tool-b.svg',
 
@@ -88,22 +94,15 @@ export const Constance = {
   X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
 
   X_UNFETTER_ASSESSMENT3_NAVIGATE_URL: 'assess-beta/navigate',
-  X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL: 'baseline/navigate',
-  X_UNFETTER_BASELINE_URL: 'api/v3/x-unfetter-assessment-sets', // matches assessment sets url below
-  X_UNFETTER_ASSESSMENT3_TYPE: 'x-unfetter-object-assessment',
-
+  
+  X_UNFETTER_BASELINE_NAVIGATE_URL: 'baseline/navigate',
+  
+  X_UNFETTER_BASELINE_URL: 'api/v3/x-unfetter-assessment-sets', // matches assessment sets url below\
   X_UNFETTER_CAPABILITY_URL: 'api/v3/x-unfetter-capabilities',
-  X_UNFETTER_CAPABILITY_TYPE: 'x-unfetter-capability',
-
   X_UNFETTER_ASSESSMENT_SETS_URL: 'api/v3/x-unfetter-assessment-sets',
-  X_UNFETTER_ASSESSMENT_SETS_TYPE: 'x-unfetter-assessment-sets',
-
   X_UNFETTER_CATEGORY_URL: 'api/v3/x-unfetter-categories',
-  X_UNFETTER_CATEGORY_TYPE: 'x-unfetter-category',
-
   X_UNFETTER_OBJECT_ASSESSMENTS_URL: 'api/v3/x-unfetter-object-assessments',
-  X_UNFETTER_OBJECT_ASSESSMENTS_TYPE: 'x-unfetter-object-assessments',
-
+  
   AUTH_URL: 'api/auth',
   USER_FROM_TOKEN_URL: 'api/auth/user-from-token',
   FINALIZE_REGISTRATION_URL: 'api/auth/finalize-registration',
@@ -115,6 +114,8 @@ export const Constance = {
   CONFIG_URL: 'api/config',
   WEB_ANALYTICS_URL: 'api/web-analytics',
   PATTERN_HANDLER_URL: 'api/pattern-handler',
+  DOWNLOAD_URL: 'api/download',
+  UPLOAD_URL: 'api/upload',
 
   IPGEO_LOOKUP_URL: 'api/lookup',
 
@@ -131,7 +132,8 @@ export const Constance = {
   LOGO_IMG_ASSESSMENTS: 'assets/icon/dashboard-logos/icon-Assessments.png',
   LOGO_IMG_ASSESSMENTS_BETA: 'assets/icon/dashboard-logos/icon-Assessments_beta.png',
   LOGO_IMG_THREAT_DASHBOARD: 'assets/icon/dashboard-logos/icon-Threat_Dashboard.png',
-  LOGO_IMG_EVENTS_DASHBOARD: 'assets/icon/dashboard-logos/icon-event_Dashboard_beta.png',
+  LOGO_IMG_BASELINES: 'assets/icon/dashboard-logos/icon-Baselines.png',
+  LOGO_IMG_EVENTS_DASHBOARD: 'assets/icon/dashboard-logos/icon-event_sightings_beta.png',
   LOGO_IMG_API_EXPLORER: 'assets/icon/dashboard-logos/icon-api.png',
   LOGO_IMG_STIX: 'assets/icon/dashboard-logos/icon-STIX_Dashboard.png',
   LOGO_IMG_INTRUSION_SET: 'assets/icon/dashboard-logos/icon-Int_Set_Dashboard.png',

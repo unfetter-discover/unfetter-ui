@@ -1,11 +1,9 @@
-
-import { empty as observableEmpty, of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subscription  } from 'rxjs';
-
-import { finalize, take, pluck, tap, map } from 'rxjs/operators';
 import { Component, EventEmitter, OnDestroy, OnInit, Output, Renderer2 } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { EMPTY, forkJoin as observableForkJoin, Observable, of as observableOf, Subscription } from 'rxjs';
+import { finalize, map, pluck, take, tap } from 'rxjs/operators';
 import { ConfirmationDialogComponent } from '../components/dialogs/confirmation/confirmation-dialog.component';
 import { AttackPatternService } from '../core/services/attack-pattern.service';
 import { GenericApi } from '../core/services/genericapi.service';
@@ -22,6 +20,7 @@ import { AttackPatternChild } from './collapsible-tree/attack-pattern-child';
 import { CourseOfActionChild } from './collapsible-tree/course-of-action-child';
 import { KillChainPhaseChild } from './collapsible-tree/kill-chain-phase-child';
 import { TreeNode } from './collapsible-tree/tree-node';
+import { KillChainEntry } from './models/kill-chain-entry';
 import { SelectOption } from './models/select-option';
 import { ThreatDashboard } from './models/threat-dashboard';
 import { ThreatDashboardIntrusion } from './models/threat-dashboard-intrusion';
@@ -30,7 +29,6 @@ import { RadarChartDataPoint } from './radar-chart/radar-chart-datapoint';
 import { ThreatReportOverviewService } from './services/threat-report-overview.service';
 import { ThreatReportSharedService } from './services/threat-report-shared.service';
 import { ThreatReportOverviewDataSource } from './threat-report-overview.datasource';
-import { KillChainEntry } from './models/kill-chain-entry';
 
 type troColName = keyof ThreatReport | 'actions';
 
@@ -112,8 +110,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
         (id: string) => {
           const getUser$ = this.userStore
             .select('users').pipe(
-            pluck('userProfile'),
-            take(1))
+              pluck('userProfile'),
+              take(1))
             .subscribe((user: UserProfile) => {
               this.user = user;
               this.threatReport = null;
@@ -486,6 +484,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public buildRadarData(): RadarChartDataPoint[][] {
     const phases = this.intrusionSetsDashboard.killChainPhases;
+    const roundedLogBase2 = (n) => Math.round(Math.log2(n));
     const dataPoints = phases
       .map((phase) => {
         const total = phase.attack_patterns.length || 0;
@@ -494,12 +493,14 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
           .filter((attackPattern) => this.isTruthy(attackPattern.isSelected));
         const dataPoint = new RadarChartDataPoint();
         dataPoint.area = phase.name;
-        // const val = selectedAttackPatterns.length > 0 ?
-        //     (Math.log(selectedAttackPatterns.length) / Math.LN10) : 0;
-        // dataPoint.value = val;
+        // calc percent
         dataPoint.value = Math.round((selectedAttackPatterns.length / total) * 100);
-        // log does not work well for few elements
-        // dataPoint.value = dataPoint.value > 0 ? Math.log(dataPoint.value) : 0;
+        // log base 2 scale
+        dataPoint.value = dataPoint.value > 0 ? roundedLogBase2(dataPoint.value) : 0;
+        // log base 2 up to 100% has 0-7 segments
+        dataPoint.value = dataPoint.value * 10;
+        // for testing
+        // dataPoint.value = dataPoint.value > 10 ? dataPoint.value : 10;
         return dataPoint;
       });
 
@@ -614,7 +615,7 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
    */
   public load(workProductId: string): Observable<Partial<ThreatReport>> {
     if (!workProductId || workProductId.trim().length === 0) {
-      return observableEmpty();
+      return EMPTY;
     }
     return this.threatReportService.load(workProductId);
   }

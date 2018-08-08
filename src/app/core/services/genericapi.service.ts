@@ -1,9 +1,9 @@
 
 import { throwError as observableThrowError, of as observableOf,  Observable  } from 'rxjs';
 
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, filter, tap, pluck } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest, HttpResponse, HttpEventType } from '@angular/common/http';
 import { Constance } from '../../utils/constance';
 import { JsonApiData } from '../../models/json/jsonapi-data';
 import { JsonApi } from '../../models/json/jsonapi';
@@ -11,6 +11,11 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { LastModifiedStix } from '../../global/models/last-modified-stix';
 import { StixLabelEnum } from '../../models/stix/stix-label.enum';
 import { NavigateToErrorPage } from '../../root-store/utility/utility.actions';
+import { StixCore } from 'stix';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
+import { StixApiOptions } from '../../global/models/stix-api-options';
+import { StixUrls } from '../../global/enums/stix-urls.enum';
+import { GridFSFile } from '../../global/models/grid-fs-file';
 
 @Injectable()
 export class GenericApi {
@@ -55,6 +60,39 @@ export class GenericApi {
             .pipe(
                 catchError(this.handleNgrxError),
                 map((dat): any => this.extractData(dat))
+            );
+    }
+
+    /**
+     * @description fetch stix, and unwrap all json api stuff
+     *  usage: 
+     *      - Get all attack patterns: getStix<AttackPattern[]>(StixUrls.ATTACK_PATTERNS)
+     *      - Get all attack patterns with options: getStix<AttackPattern[]>(StixUrls.ATTACK_PATTERNS, null, { sort: {'stix.name': -1} })
+     *      - Get attack pattern by ID: getStix<AttackPattern[]>(StixUrls.ATTACK_PATTERNS, 'attack-pattern--123')
+     * @param {StixUrls} url
+     * @param {string} id
+     * @param {StixApiOptions} options
+     * @return {Observable<T>} 
+     */
+    public getStix<T extends StixCore[] | StixCore>(url: StixUrls, id?: string, options?: StixApiOptions): Observable<T> {
+        let builtUrl = this.baseUrl + url;
+
+        if (id) {
+            builtUrl = builtUrl.concat(`/${id}`);
+        }
+
+        if (options) {
+            builtUrl = builtUrl.concat('?');
+            Object.entries(options).forEach((option) => {
+                builtUrl = builtUrl.concat(`${option[0]}=${encodeURI(JSON.stringify(option[1]))}&`);
+            });
+        }
+
+        return this.http.get<JsonApi<T>>(builtUrl)
+            .pipe(
+                map((dat): any => this.extractData(dat)),
+                RxjsHelpers.unwrapJsonApi(),
+                catchError(this.handleError)
             );
     }
 
@@ -181,6 +219,34 @@ export class GenericApi {
                     map((dat): any => this.extractData(dat)),
                     catchError(this.handleError)
                 );
+    }
+
+    /**
+     * @param  {FileList} files
+     * @param  {(number)=>void} progressCallback?
+     * @returns Observable<[GridFSFile]>
+     * @description This is the observable to upload a list of files to the upload/files route.
+     * The optional callback will assist in driving progress bars.
+     */
+    public uploadAttachments(files: File[], progressCallback?: (number) => void): Observable<GridFSFile[]> {
+        const formData: FormData = new FormData();
+        files.forEach((file) => formData.append('attachments', file));
+        const req = new HttpRequest('POST', `${Constance.UPLOAD_URL}/files`, formData, {
+            reportProgress: true
+        }); 
+        return this.http.request(req)
+            .pipe(
+                tap((event) => {
+                    if (event.type === HttpEventType.UploadProgress && progressCallback) {
+                        progressCallback(Math.round(100 * event.loaded / event.total));
+                    }
+                }),
+                filter((event) => event instanceof HttpResponse),
+                pluck('body'),
+                map(this.extractData),
+                RxjsHelpers.unwrapJsonApi(),
+                catchError(this.handleError)
+            );
     }
 
     /**

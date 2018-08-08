@@ -34,33 +34,35 @@ export class ProfileComponent implements OnInit {
                 const getData$ = observableForkJoin(
                     this.usersService.getUserProfileById(routeId),
                     this.usersService.getOrganizations()
-                ).pipe(
-                    map(RxjsHelpers.mapArrayAttributes))
-                    .subscribe(([userResults, allOrgs]) => {
-                        this.user = userResults;
-                        this.user.avatar_url = UserHelpers.getAvatarUrl(this.user);
+                )
+                .pipe(
+                    RxjsHelpers.unwrapJsonApi()
+                )
+                .subscribe(([userResults, allOrgs]) => {
+                    this.user = userResults;
+                    this.user.avatar_url = UserHelpers.getAvatarUrl(this.user);
 
-                        this.organizations = this.user.organizations
-                            .filter((org) => org.approved)
-                            .map((org) => {
-                                const retVal = new ProfileOrg();
-                                retVal.role = org.role;
-                                const matchingOrg = allOrgs.find((o) => o.id === org.id);
-                                if (matchingOrg) {
-                                    retVal.name = matchingOrg.name;
-                                } else {
-                                    retVal.name = 'Name Unknown';
-                                }
-                                return retVal;
-                            });
+                    this.organizations = this.user.organizations
+                        .filter((org) => org.approved)
+                        .map((org) => {
+                            const retVal = new ProfileOrg();
+                            retVal.role = org.role;
+                            const matchingOrg = allOrgs.find((o) => o.id === org.id);
+                            if (matchingOrg) {
+                                retVal.name = matchingOrg.name;
+                            } else {
+                                retVal.name = 'Name Unknown';
+                            }
+                            return retVal;
+                        });
+                },
+                    (err) => {
+                        console.log(err);
                     },
-                        (err) => {
-                            console.log(err);
-                        },
-                        () => {
-                            getData$.unsubscribe();
-                        }
-                    );
+                    () => {
+                        getData$.unsubscribe();
+                    }
+                );
             },
                 (err) => {
                     console.log(err);

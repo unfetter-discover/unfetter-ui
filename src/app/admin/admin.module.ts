@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule, MatInputModule } from '@angular/material';
-import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatInputModule, MatSelectModule } from '@angular/material';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { routing } from './admin-routing.module';
 import { GlobalModule } from '../global/global.module';
 import { AdminService } from './admin.service';
@@ -20,6 +20,8 @@ import { CurrentUsersComponent } from './current-users/current-users.component';
         GlobalModule,
         routing,
         FormsModule,
+        ReactiveFormsModule,
+        MatSelectModule,
         MatButtonModule,
         MatInputModule,
         ChartsModule

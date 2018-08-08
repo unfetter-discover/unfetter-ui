@@ -1,10 +1,13 @@
 import { ConfigKeys } from '../enums/config-keys.enum';
+import { Observable } from 'rxjs';
+import { JsonApiData, StixCore } from 'stix';
 
 export class RxjsHelpers {
 
     /**
      * @param  {any[]=[]} arr
      * @returns any
+     * @deprecated This was made before Rxjs6 and is not pipeable
      */
     public static mapArrayAttributes(arr: any[] = []): any[] {
         return arr.map((el) => {
@@ -21,6 +24,7 @@ export class RxjsHelpers {
     /**
      * @param  {any[]|object|any} el
      * @returns any
+     * @deprecated This was made before Rxjs6 and is not pipeable
      */
     public static mapAttributes(el: any[] | object | any): any[] | object | any {
         if (el instanceof Array) {
@@ -33,20 +37,54 @@ export class RxjsHelpers {
     }
 
     /**
-     * @param  {any[]} relationshipArray
+     * @returns {() => Observable}
+     * @description Takes a JsonApi wrapped Object or Array objects and unwraps the attributes
+     *  Usage: obs$.pipe(RxjsHelpers.unwrapJsonApi()), or obs$.pipe(RxjsHelpers.unwrapJsonApi<AttackPattern>())
+     */
+    public static unwrapJsonApi<T extends StixCore = any>() {
+        return (source: Observable<any>) => {
+            return new Observable<T[]>((observer) => {
+                return source.subscribe({
+                    next(data) {
+                        if (data instanceof Array) {
+                            observer.next(RxjsHelpers.mapArrayAttributes(data));
+                        } else if (data instanceof Object) {
+                            observer.next((data as any).attributes || data);
+                        } else {
+                            observer.next(data);
+                        }
+                    },
+                    error(err) { observer.error(err); },
+                    complete() { observer.complete(); }
+                })
+            });
+        };
+    }
+
+    /**
      * @param  {string} relatedProperty
-     * @returns {object}
+     * @returns {(Observable<T>) => Observable<any>}
      * @description This is for attack patterns by indicator and intrusion sets by attack pattern unwrapping
      */
-    public static relationshipArrayToObject(relationshipArray: any[], relatedProperty: string): object {
-        const mapObj: any = {};
-        relationshipArray.forEach((item) => {
-            mapObj[item._id] = item[relatedProperty];
-            if (mapObj[item._id] === undefined) {
-                console.log('WARNING:', relatedProperty, 'not found on relationhip array');
-            }
-        });
-        return mapObj;
+    public static relationshipArrayToObject(relatedProperty: string) {
+        return <T>(source: Observable<T>) => {
+            return new Observable<any>((observer) => {
+                return source.subscribe({
+                    next(data) {
+                        const mapObj: any = {};
+                        (data as any).forEach((item) => {
+                            mapObj[item._id] = item[relatedProperty];
+                            if (mapObj[item._id] === undefined) {
+                                console.log('WARNING:', relatedProperty, 'not found on relationhip array');
+                            }
+                        });
+                        observer.next(mapObj);
+                    },
+                    error(err) { observer.error(err); },
+                    complete() { observer.complete(); }
+                });
+            });
+        };
     }
     
     /**
@@ -65,30 +103,38 @@ export class RxjsHelpers {
     /**
      * @param  {string|number} field
      * @param  {'ASCENDING'|'DESCENDING'='DESCENDING'} direction
-     * @returns {(T[]) => T[]}
+     * @returns {(Observable<T>) => Observable<T>}
      * @description Sorts an array of objects based on a field inside of those objects.
-     *  Usage: arrayObservable$.map(RxjsHelpers.sortByField('created'))
+     *  Usage: arrayObservable$.pipe(RxjsHelpers.sortByField('created'))
      */
-    public static sortByField<T = any>(field: string | number, direction: 'ASCENDING' | 'DESCENDING' = 'DESCENDING') {
-        return (arr: T[]): T[] => {
-            arr.sort((a: any, b: any) => {
-                if (a[field].toString().toUpperCase() > b[field].toString().toUpperCase()) {
-                    if (direction === 'ASCENDING') {
-                        return 1;
-                    } else {
-                        return -1;
-                    };
-                } else if (a[field].toString().toUpperCase() < b[field].toString().toUpperCase()) {
-                    if (direction === 'ASCENDING') {
-                        return -1;
-                    } else {
-                        return 1;
-                    };
-                } else {
-                    return 0;
-                }
+    public static sortByField(field: string | number, direction: 'ASCENDING' | 'DESCENDING' = 'DESCENDING') {
+        return <T>(source: Observable<T>) => {
+            return new Observable<T>((observer) => {
+                return source.subscribe({
+                    next(data) {
+                        (data as any).sort((a: any, b: any) => {
+                            if (a[field].toString().toUpperCase() > b[field].toString().toUpperCase()) {
+                                if (direction === 'ASCENDING') {
+                                    return 1;
+                                } else {
+                                    return -1;
+                                };
+                            } else if (a[field].toString().toUpperCase() < b[field].toString().toUpperCase()) {
+                                if (direction === 'ASCENDING') {
+                                    return -1;
+                                } else {
+                                    return 1;
+                                };
+                            } else {
+                                return 0;
+                            }
+                        });
+                        observer.next(data);
+                    },
+                    error(err) { observer.error(err); },
+                    complete() { observer.complete(); }
+                })
             });
-            return arr;
-        }        
+        };     
     }
 }

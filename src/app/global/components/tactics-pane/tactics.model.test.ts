@@ -36,17 +36,12 @@ export const mockUser = {
         preferences: {
             killchain: 'the_org'
         },
-        oauth: 'github',
-        github: {
+        auth: {
+            service: 'github',
             id: '1234',
             userName: 'fake',
             avatar_url: 'https://avatars2.githubusercontent.com/u/1234?v=4'
-        },
-        gitlab: {
-            id: '1234',
-            userName: 'fake',
-            avatar_url: 'https://avatars2.gitlabusercontent.com/u/1234?v=4'
-        },
+        }
     },
     token: 'Bearer 123',
     authenticated: true,

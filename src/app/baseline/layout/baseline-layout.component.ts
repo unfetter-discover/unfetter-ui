@@ -6,6 +6,8 @@ import { Store } from '@ngrx/store';
 import { BehaviorSubject } from 'rxjs';
 import { fadeInOut } from '../../global/animations/fade-in-out';
 import * as baselineReducers from '../store/baseline.reducers';
+import { AssessmentSet } from 'stix/assess/v3/baseline';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'baseline-layout',
@@ -18,9 +20,13 @@ export class BaselineLayoutComponent implements OnInit, AfterViewInit {
   public title = new BehaviorSubject('').asObservable();
   public showBackButton = new BehaviorSubject(false).asObservable();
 
+  private baselineId;
+
+  
   public constructor(
     private store: Store<baselineReducers.BaselineState>,
     private location: Location,
+    private router: Router,
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
@@ -53,6 +59,16 @@ export class BaselineLayoutComponent implements OnInit, AfterViewInit {
         return el;
       }));
     this.changeDetectorRef.detectChanges();
+
+    const baselinesRetrieve$ = this.store
+    .select('baseline').pipe(
+    pluck('baseline'),
+    distinctUntilChanged())
+    .subscribe(
+      (baseline: AssessmentSet) => {
+        this.baselineId = baseline.id;
+      },
+      (err) => console.log(err));
   }
 
   /**
@@ -60,7 +76,8 @@ export class BaselineLayoutComponent implements OnInit, AfterViewInit {
    * @param event
    */
   onBack(event: UIEvent): void {
-    this.location.back();
+    // this.location.back();
+    this.router.navigate(['/baseline/result/summary/' + this.baselineId]);
   }
 
 }

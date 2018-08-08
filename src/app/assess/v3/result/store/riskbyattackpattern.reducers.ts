@@ -1,17 +1,20 @@
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import * as riskByAttackPatternActions from './riskbyattackpattern.actions';
+import {RiskByAttackPatternActions} from './riskbyattackpattern.actions';
 
 export interface RiskByAttackPatternState {
+    failedToLoad: boolean;
+    finishedLoading: boolean;
     riskByAttackPattern: RiskByAttack;
     riskByAttackPatterns: RiskByAttack[];
-    finishedLoading: boolean;
 };
 
 const genState = (state?: Partial<RiskByAttackPatternState>) => {
     const tmp = {
+        failedToLoad: false,
+        finishedLoading: false,
         riskByAttackPattern: new RiskByAttack(),
         riskByAttackPatterns: [],
-        finishedLoading: false,
     };
     if (state) {
         Object.assign(tmp, state);
@@ -20,7 +23,7 @@ const genState = (state?: Partial<RiskByAttackPatternState>) => {
 };
 const initialState: RiskByAttackPatternState = genState();
 
-export function riskByAttackPatternReducer(state = initialState, action: riskByAttackPatternActions.RiskByAttackPatternActions): RiskByAttackPatternState {
+export function riskByAttackPatternReducer(state = initialState, action: RiskByAttackPatternActions): RiskByAttackPatternState {
     switch (action.type) {
         case riskByAttackPatternActions.CLEAN_ASSESSMENT_RISK_BY_ATTACK_PATTERN_DATA:
             return genState();
@@ -40,8 +43,15 @@ export function riskByAttackPatternReducer(state = initialState, action: riskByA
         case riskByAttackPatternActions.FINISHED_LOADING:
             return genState({
                 ...state,
-                finishedLoading: action.payload
+                finishedLoading: action.payload,
+                failedToLoad: false,
             });
+        case riskByAttackPatternActions.FAILED_TO_LOAD:
+            return genState({
+                ...state,
+                finishedLoading: true,
+                failedToLoad: action.payload,
+            })
         default:
             return state;
     }

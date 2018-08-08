@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { trigger, state, transition, style, animate, query } from '@angular/animations';
 import { Observable ,  Subscription ,  BehaviorSubject } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { MatTooltip } from '@angular/material';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
@@ -13,7 +13,11 @@ import { generateStixRelationship } from '../../global/static/stix-relationship'
 import { StixRelationshipTypes } from '../../global/enums/stix-relationship-types.enum';
 import { canCrud } from '../../global/static/stix-permissions';
 import { SearchParameters } from '../models/search-parameters';
-import { finalize } from 'rxjs/operators';
+import { GridFSFile } from '../../global/models/grid-fs-file';
+import { Constance } from '../../utils/constance';
+import { MasterConfig } from '../../core/services/run-config.service';
+import { AppState } from '../../root-store/app.reducers';
+import { pluck, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
     selector: 'indicator-card',
@@ -31,6 +35,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input() public sensors: any;
     @Input() public searchParameters: Observable<SearchParameters>;
     @Input() public collapseAllCardsSubject: BehaviorSubject<boolean>;
+    @Input() public userToken: string;
     @Input() public highlightObj = {
         labels: {},
         intrusionSets: {},
@@ -53,6 +58,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     public canCrud: boolean = false;
     public collapseContents: boolean = false;
     public copyText: string = 'Copied';
+    public blockAttachments: boolean;
 
     public readonly runMode = environment.runMode;
 
@@ -65,8 +71,9 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
 
     constructor(
         private indicatorSharingService: IndicatorSharingService, 
+        private store: Store<AppState>,
         private authService: AuthService,
-        private renderer: Renderer2
+        private renderer: Renderer2,
     ) { }
 
     public ngOnInit() {
@@ -94,22 +101,34 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
             }
         }
 
-        if (this.collapseAllCardsSubject) {            
+        if (this.collapseAllCardsSubject) {
             this.collapseCard$ = this.collapseAllCardsSubject
-            .subscribe(
-                (collapseContents) => {
-                    this.collapseContents = collapseContents;
-                },
-                (err) => {
-                    console.log(err);
-                },
-                () => {
-                    if (this.collapseCard$) {
-                        this.collapseCard$.unsubscribe();
+                .subscribe(
+                    (collapseContents) => {
+                        this.collapseContents = collapseContents;
+                    },
+                    (err) => {
+                        console.log(err);
+                    },
+                    () => {
+                        if (this.collapseCard$) {
+                            this.collapseCard$.unsubscribe();
+                        }
                     }
+                );
+        }
+
+        this.store
+            .select('config')
+            .pipe(
+                pluck('runConfig'),
+                distinctUntilChanged(),
+            )
+            .subscribe(
+                (cfg: MasterConfig) => {
+                    this.blockAttachments = cfg.blockAttachments;
                 }
             );
-        }
     }
 
     public ngAfterViewInit() {
@@ -319,6 +338,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                 },
                 (err) => {
                     this.flashMessage('Unable to generate download.');
+                    console.log(err);
                 },
                 () => {
                     downloadData$.unsubscribe();
@@ -339,6 +359,10 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     public flashTooltip(toolTip: MatTooltip) {
         toolTip.show();
         setTimeout(() => toolTip.hide(), this.FLASH_TOOLTIP_TIMER);
+    }
+
+    public generateAttachmentLink(attachment: GridFSFile): string {
+        return `${Constance.DOWNLOAD_URL}/file/${this.indicator.id}/${attachment._id}?authorization=${this.userToken}`;
     }
 
     private flashMessage(msg: string) {

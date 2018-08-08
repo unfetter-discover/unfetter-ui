@@ -6,7 +6,6 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Category, Capability } from 'stix/assess/v3/baseline';
 import * as assessActions from '../../store/baseline.actions';
-import { SetBaselineGroups } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
 
 @Component({
@@ -19,7 +18,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   
   public isAddCategory: boolean = false;
   public addCategory: Category = new Category();
-  public selectedCapabilityGroups: Category[] = [];
+  public selectedCategories: Category[] = [];
   public categories: Category[];
   private baselineCapabilities: Capability[];
   private subscriptions: Subscription[] = [];
@@ -46,7 +45,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
       distinctUntilChanged())
       .subscribe(
         (selectedCapabilityGroups: Category[]) => {
-          this.selectedCapabilityGroups = selectedCapabilityGroups;
+          this.selectedCategories = selectedCapabilityGroups;
         },
         (err) => console.log(err));
   
@@ -63,6 +62,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.push(catSub1$, catSub2$, catSub3$);
 
     this.wizardStore.dispatch(new assessActions.FetchCapabilityGroups());
+    this.wizardStore.dispatch(new assessActions.FinishedLoading(true));
   }
 
   ngAfterViewInit() {
@@ -122,25 +122,29 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
    * @returns {void}
    */
   public updateCategory(option: any, index: number): void {
-    const newCategoryName = option.selected.value;
+    const newCategory = option.selected.value;
 
-    // Verify a selection and that this category doesn't already exist
-    const indexInList = this.selectedCapabilityGroups.indexOf(newCategoryName);
-    if (indexInList < 0 && option.value !== CategoryComponent.DEFAULT_VALUE) {
-      if (index === -1) {
-        this.selectedCapabilityGroups.push(newCategoryName);
-        option.value = CategoryComponent.DEFAULT_VALUE;
-      } else {
-        this.selectedCapabilityGroups[index] = newCategoryName;
+    // If this is replacing a selected group, do a replace
+    if (this.selectedCategories[index]) {
+      // First remove the existing group
+      const confirmed = this.confirmDelete(this.selectedCategories[index]);
+
+      if (!confirmed) {
+        return;
       }
-    } else {
-      // TODO: error message to user here saying this category is already selected
 
+      // Update wizard store with current category selections
+      this.wizardStore.dispatch(new assessActions.RemoveCapabilityGroupFromBaseline(this.selectedCategories[index]));
+
+      this.selectedCategories[index] = newCategory;
+    } else {
+      // Else, do an add
+      this.selectedCategories.push(newCategory);
       option.value = CategoryComponent.DEFAULT_VALUE;
     }
 
     // Update wizard store with current category selections
-    this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCapabilityGroups));
+    this.wizardStore.dispatch(new assessActions.SetBaselineGroups(this.selectedCategories));
   }
 
   /*
@@ -150,7 +154,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
    * @return {number}
    */
   public selectedCategory(option: any, index: number): Category {
-    const selValue = this.selectedCapabilityGroups[index];
+    const selValue = this.selectedCategories[index];
     if (selValue === undefined) {
       return CategoryComponent.DEFAULT_VALUE;
     } else {
@@ -160,41 +164,41 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * @description Delete category from the list, with confirmation
+   * @description Delete category and associated objects from the list, with confirmation
    * @param {LastModifiedAssessment} baseline
    * @return {void}
    */
   public onDeleteCategory(option: any): void {
-    const confirmed = this.confirmDelete(option.value);
+    let catToDelete = option.value as Category;
+    const confirmed = this.confirmDelete(catToDelete);
 
     if (confirmed) {
-      let catToDelete = option.value as Category;
-      const index = this.selectedCapabilityGroups.findIndex(category => category.id === catToDelete.id);
-      this.selectedCapabilityGroups.splice(index, 1); 
-
-      // Must remove any capabilities for which this category were associated
-      this.wizardStore.dispatch(new assessActions.SetBaselineCapabilities(this.baselineCapabilities.filter(capability => capability.category !== option.value.id)));
-
       // Update wizard store with current category selections
-      this.wizardStore.dispatch(new SetBaselineGroups(this.selectedCapabilityGroups.filter((capabilityGroup) => capabilityGroup !== undefined)));
+      this.wizardStore.dispatch(new assessActions.RemoveCapabilityGroupFromBaseline(catToDelete));
     }
   }
 
   /**
    * @description Confirm deletion of a category from the list
-   * @param {string} category the name of the category to remove
+   * @param {string} category the category to remove
    * @param {UIEvent} optional event
    * @return {boolean} true to delete, false otherwise
    */
-  public confirmDelete(category: string, event?: UIEvent): boolean {
+  public confirmDelete(category: Category, event?: UIEvent): boolean {
     // TODO: Add confirmation dialog
 
     return true;
   }
 
   public addCategoryEntry(): void {
-    this.selectedCapabilityGroups.push(CategoryComponent.DEFAULT_VALUE);
+    this.selectedCategories.push(CategoryComponent.DEFAULT_VALUE);
   }
 
+  private shouldCategoryBeDisabled(category: Category) {
+    return this.selectedCategories.findIndex((cat) => cat.id === category.id) !== -1;
+  }
 
+  public getCategoryDisabled(category: Category) {
+    return (this.shouldCategoryBeDisabled(category) ? 'true' : 'false');
+  }
 }

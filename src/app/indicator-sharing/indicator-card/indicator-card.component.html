@@ -1,6 +1,6 @@
 <mat-card class="indicatorCard uf-mat-card" *ngIf="indicator">
   <mat-card-header>
-    <mat-card-title>
+    <mat-card-title>        
         <span>{{ indicator.name }}</span>
         <span class="flex1">&nbsp;</span>
         <button mat-icon-button [matMenuTriggerFor]="menu" class="mat-24">
@@ -66,7 +66,7 @@
         </div>
 
         <label *ngIf="(attackPatterns && attackPatterns.length > 0) || canCrud">Indicated Techniques</label>
-        <add-attack-pattern [existingAttackPatterns]="attackPatterns" [indicatorId]="indicator.id" [createdByRef]="indicator.created_by_ref" [canCrud]="canCrud"></add-attack-pattern>
+        <add-attack-pattern [existingAttackPatterns]="attackPatterns" [indicator]="indicator" [createdByRef]="indicator.created_by_ref" [canCrud]="canCrud"></add-attack-pattern>
 
       <div *ngIf="attackPatterns && attackPatterns.length > 0">
         <div class="uf-collapsible-control mb-10 mt-6" (click)="showAttackPatternDetails = !showAttackPatternDetails">
@@ -78,7 +78,7 @@
             <h4 class="fw400">
               <a routerLink="/stix/attack-patterns/{{ap.id}}">{{ap.name}}</a>
             </h4>
-            <div *ngIf="ap.kill_chain_phases">
+            <div *ngIf="ap.kill_chain_phases && ap.kill_chain_phases.length">
               <label>Tactics</label>
               <p>
                 <span *ngFor="let phase of ap.kill_chain_phases; let i = index" class="text-muted">
@@ -111,8 +111,8 @@
             <label>Description</label>
             <markdown-editor [editing]="false" [flushed]="true" [truncate]="true"
                 [value]="indicator.description"></markdown-editor>
-          </div>
-          <div *ngIf="indicator.kill_chain_phases">
+          </div>          
+          <div *ngIf="indicator.kill_chain_phases && indicator.kill_chain_phases.length">
             <label>Tactics</label>
             <p>
               <span *ngFor="let phase of indicator.kill_chain_phases; let i = index" class="text-muted">
@@ -131,15 +131,6 @@
               </span>
             </p>
           </div>
-          <div *ngIf="indicator.external_references">
-            <label>External References</label>
-            <br>
-            <chip-links [data]="indicator.external_references" nameField="source_name" urlField="url"></chip-links>
-          </div>
-          <div *ngIf="indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length">
-            <label>Observed Data</label>
-            <observable-data-summary [observedData]="indicator.metaProperties.observedData"></observable-data-summary>
-          </div>
           <div *ngIf="indicator.x_mitre_data_sources">
             <label>Required Data Sources:&nbsp;</label>
             <p class="whiteSpaceNormal">
@@ -149,6 +140,19 @@
               </span>
             </p>
           </div>
+          <div *ngIf="indicator.object_marking_refs && indicator.object_marking_refs.length">
+            <label>Marking Definitions</label>
+            <markings-chips [model]="indicator" disableTooltips="true"></markings-chips>
+          </div>
+          <div *ngIf="indicator.external_references">
+            <label>External References</label>
+            <br>
+            <chip-links [data]="indicator.external_references" nameField="source_name" urlField="url"></chip-links>
+          </div>
+          <div *ngIf="indicator.metaProperties && indicator.metaProperties.observedData && indicator.metaProperties.observedData.length">
+            <label>Observed Data</label>
+            <observable-data-summary [observedData]="indicator.metaProperties.observedData"></observable-data-summary>
+          </div>          
           <div class="mt-3">
             <label>Unfetter User Interactions: </label>
             <span *ngIf="indicator.metaProperties && indicator.metaProperties.interactions">{{ indicator.metaProperties.interactions.length }}</span>
@@ -217,6 +221,30 @@
             </h4>
             <p *ngIf="sensor.description">{{ sensor.description }}</p>
           </div>
+        </mat-tab>
+
+        <mat-tab label="Attachments" *ngIf="!blockAttachments && indicator.metaProperties && indicator.metaProperties.attachments && indicator.metaProperties.attachments.length">
+          <br>
+          <table class="uf-table">
+            <thead>
+              <tr>
+                <th>Filename</th>
+                <th>Size</th>
+                <th>Download</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let attachment of indicator.metaProperties.attachments">
+                <td>{{ attachment.filename }}</td>
+                <td>{{ attachment.length | readableBytes }}</td>
+                <td>
+                  <div class="mat-icon-button-cell-wrapper">
+                    <a href="{{ generateAttachmentLink(attachment) }}" mat-icon-button><i class="material-icons mat-24">cloud_download</i></a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </mat-tab>
 
       </mat-tab-group>

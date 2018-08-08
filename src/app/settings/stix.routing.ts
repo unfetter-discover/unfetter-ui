@@ -19,6 +19,7 @@ import { SensorComponent, SensorEditComponent, SensorHomeComponent, SensorListCo
 import { SightingComponent, SightingEditComponent, SightingHomeComponent, SightingListComponent, SightingNewComponent } from './stix-objects/sightings';
 import { ThreatActorEditComponent, ThreatActorHomeComponent, ThreatActorListComponent, ThreatActorNewComponent, ThreatActorsComponent } from './stix-objects/threat-actors';
 import { ToolComponent, ToolEditComponent, ToolHomeComponent, ToolListComponent, ToolNewComponent } from './stix-objects/tools';
+import { MarkingsHomeComponent, MarkingsListComponent, MarkingsNewComponent } from './stix-objects/markings';
 
 const stixRoutes: Routes = [
   {
@@ -268,6 +269,20 @@ const stixRoutes: Routes = [
           path: 'edit/:id',
           component: MalwareEditComponent
         }
+        ]
+      },
+      {
+        path: 'markings',
+        component: MarkingsHomeComponent,
+        children: [
+          {
+            path: '',
+            component: MarkingsListComponent
+          },
+          {
+            path: 'new',
+            component: MarkingsNewComponent
+          },
         ]
       },
       {

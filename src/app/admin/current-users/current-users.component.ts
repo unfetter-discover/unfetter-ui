@@ -27,8 +27,8 @@ export class CurrentUsersComponent implements OnInit {
 
   ngOnInit() {
     this.fetchUsers();
-    const getOrganizaitons$ = this.adminService.getOrganizations().pipe(
-      map(RxjsHelpers.mapArrayAttributes))
+    const getOrganizaitons$ = this.adminService.getOrganizations()
+      .pipe(RxjsHelpers.unwrapJsonApi())
       .subscribe(
         (organizations: any[]) => {
           this.organizations = organizations;

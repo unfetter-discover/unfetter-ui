@@ -1,23 +1,19 @@
 
-import { throwError as observableThrowError,  Observable  } from 'rxjs';
-
-import { catchError, map } from 'rxjs/operators';
+import { HttpClient, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHeaders, HttpEvent, HttpEventType, HttpResponse, HttpClient } from '@angular/common/http';
-
-import { Constance } from '../../../utils/constance';
+import { Observable, throwError as observableThrowError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Report } from '../../../models/report';
 import { JsonApiObject } from '../../../threat-dashboard/models/adapter/json-api-object';
+import { Constance } from '../../../utils/constance';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root',
+})
 export class ReportUploadService {
-
     private data: any = null;
-
     private headers: HttpHeaders;
-
     public readonly baseUrl = Constance.API_HOST || '';
-
     public readonly path = `/api/ctf/upload`;
 
     constructor(private http: HttpClient) {
@@ -40,19 +36,21 @@ export class ReportUploadService {
             reportProgress: true,
             headers
         });
-        return this.http.request<Array<JsonApiObject<Report>>>(req).pipe(
-            map((event) => {
-                if (event.type === HttpEventType.UploadProgress) {
-                    const percentDone = Math.round(100 * event.loaded / event.total);
-                    console.log(`File is ${percentDone}% uploaded`);
-                } else if (event instanceof HttpResponse) {
-                    console.log('File is completly uploaded');
-                    return event;
-                }
-            }),
-            map((event) => (event instanceof HttpResponse) ? event.body : []),
-            map((reports) => reports.map((report) => report.data)),
-            catchError(this.handleError));
+        return this.http.request<Array<JsonApiObject<Report>>>(req)
+            .pipe(
+                map((event) => {
+                    if (event.type === HttpEventType.UploadProgress) {
+                        const percentDone = Math.round(100 * event.loaded / event.total);
+                        console.log(`File is ${percentDone}% uploaded`);
+                    } else if (event instanceof HttpResponse) {
+                        console.log('File is completly uploaded');
+                        return event;
+                    }
+                }),
+                map((event) => (event instanceof HttpResponse) ? event.body : []),
+                map((reports) => reports.map((report) => report.data)),
+                catchError(this.handleError)
+            );
     }
 
     /**

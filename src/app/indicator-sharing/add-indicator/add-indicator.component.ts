@@ -1,14 +1,15 @@
-
-import { of as observableOf, forkJoin as observableForkJoin,  Observable ,  Subject  } from 'rxjs';
-
-import { distinctUntilChanged, debounceTime, switchMap, pluck } from 'rxjs/operators';
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { of as observableOf, forkJoin as observableForkJoin, Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, debounceTime, switchMap, pluck, tap, finalize } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatStep } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
+import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { PatternHandlerTranslateAll, PatternHandlerGetObjects, PatternHandlerPatternObject } from '../../global/models/pattern-handlers';
@@ -17,6 +18,11 @@ import { cleanObjectProperties } from '../../global/static/clean-object-properti
 import { ExternalReferencesForm } from '../../global/form-models/external-references';
 import { KillChainPhasesForm } from '../../global/form-models/kill-chain-phases';
 import { FormatHelpers } from '../../global/static/format-helpers';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { GridFSFile } from '../../global/models/grid-fs-file';
+import { MasterConfig } from '../../core/services/run-config.service';
+import { MarkingDefinition } from '../../models';
+import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
 
 @Component({
     selector: 'add-indicator',
@@ -41,6 +47,14 @@ export class AddIndicatorComponent implements OnInit {
     public patternObjs: PatternHandlerPatternObject[] = [];
     public patternObjSubject: Subject<PatternHandlerPatternObject[]> = new Subject();
     public editMode: boolean = false;
+    public files: File[];
+    public uploadProgress: number;
+    public submitErrorMsg: string;
+    public blockAttachments: boolean;
+    public marking$: Observable<MarkingDefinition[]>;
+    public markings = {
+        object_marking_refs: []
+    };
 
     @ViewChild('associatedDataStep') 
     public associatedDataStep: MatStep;
@@ -63,7 +77,9 @@ export class AddIndicatorComponent implements OnInit {
         public dialogRef: MatDialogRef<any>,
         @Inject(MAT_DIALOG_DATA) public editData: any,
         private indicatorSharingService: IndicatorSharingService,
-        private authService: AuthService
+        private authService: AuthService,
+        private genericApi: GenericApi,
+        private store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
     ) { }    
 
     public ngOnInit() {
@@ -172,6 +188,50 @@ export class AddIndicatorComponent implements OnInit {
                     patternChange$.unsubscribe();
                 }
             );
+
+        this.store
+            .select('config')
+            .pipe(
+                pluck('runConfig'),
+                distinctUntilChanged(),
+            )
+            .subscribe(
+                (cfg: MasterConfig) => {
+                    this.blockAttachments = cfg.blockAttachments;
+                }
+            );
+
+        this.form.get('metaProperties').get('relationships').valueChanges
+            .subscribe(
+                (apIds) => {
+                    const killChainPhaseSet = new Set();
+                    this.attackPatterns
+                        .filter((ap) => apIds.includes(ap.id) && ap.kill_chain_phases && ap.kill_chain_phases.length)
+                        .map((ap) => ap.kill_chain_phases.map((kcp) => JSON.stringify(kcp)))
+                        .forEach((kcpStrings) => kcpStrings.forEach((kcpString) => killChainPhaseSet.add(kcpString)));
+
+                    while (this.form.get('kill_chain_phases').length !== 0) {
+                        this.form.get('kill_chain_phases').removeAt(0)
+                    }
+
+                    Array.from(killChainPhaseSet)
+                        .map((kcpString) => JSON.parse(kcpString))
+                        .forEach((kcp) => {
+                            const kcpForm = KillChainPhasesForm();
+                            kcpForm.patchValue(kcp);
+                            this.form.get('kill_chain_phases').push(kcpForm);
+                        });
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
+
+        this.marking$ = this.store
+            .select('stix')
+            .pipe(
+                pluck('markingDefinitions')
+            );
     }
 
     public resetForm(e = null) {
@@ -185,16 +245,54 @@ export class AddIndicatorComponent implements OnInit {
         return this.form.get('name').status !== 'VALID' || this.form.get('created_by_ref').status !== 'VALID' || this.form.get('valid_from').status !== 'VALID';
     }
 
-    public submitIndicator() {
-        const tempIndicator: any = cleanObjectProperties({}, this.form.value);
-
+    public async submitIndicator() {
+        this.submitErrorMsg = '';
+        const tempIndicator: any = cleanObjectProperties({}, this.form.value);        
         this.pruneQueries(tempIndicator);
+
+        if (tempIndicator.metaProperties && !tempIndicator.metaProperties.relationships) {
+            tempIndicator.metaProperties.relationships = [];
+        }
+
+        const [uploadError, filesToUpload] = await this.uploadFiles();
+        if (!uploadError && filesToUpload && filesToUpload.length) {
+            if (!tempIndicator.metaProperties) {
+                tempIndicator.metaProperties = {};
+            }
+            if (this.editMode && this.editData.metaProperties && this.editData.metaProperties.attachments && this.editData.metaProperties.attachments.length) {
+                const attachmentsToKeep = this.editData.metaProperties.attachments
+                    .filter((att) => {
+                        return this.files
+                            .filter((file) => (file as any)._id)
+                            .find((file) => (file as any)._id === att._id)
+                    });
+                tempIndicator.metaProperties.attachments = attachmentsToKeep.concat(filesToUpload);
+            } else {
+                tempIndicator.metaProperties.attachments = filesToUpload;
+            }
+        } else if (this.editMode && this.editData.metaProperties && this.editData.metaProperties.attachments) {
+            const attachmentsToKeep = this.editData.metaProperties.attachments
+                .filter((att) => {
+                    return this.files
+                        .filter((file) => (file as any)._id)
+                        .find((file) => (file as any)._id === att._id)
+                });
+            tempIndicator.metaProperties.attachments = attachmentsToKeep;
+        }
+
+        if (uploadError) {
+            this.submitErrorMsg = 'Unable to upload attachments.'
+        }
         
         if (this.editMode) {
+            if (this.editData.kill_chain_phases && !tempIndicator.kill_chain_phases) {
+                // force removal of kill chain faces
+                tempIndicator.kill_chain_phases = [];
+            }
             tempIndicator.id = this.editData.id;
             if (this.editData.metaProperties && this.editData.metaProperties.interactions) {
                 tempIndicator.metaProperties.interactions = this.editData.metaProperties.interactions;
-            }
+            }            
             this.dialogRef.close({
                 'indicator': tempIndicator,
                 'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined),
@@ -222,11 +320,43 @@ export class AddIndicatorComponent implements OnInit {
 
     }
 
+    public filesChange(files: File[]) {
+        this.files = files;
+    }
+
     public stepperChanged(event: StepperSelectionEvent) {
         if (event.selectedIndex === this.ASSOCIATED_DATA_STEPPER_INDEX) {
             // This is to prevent external reference and kill chain forms from showing errors if already visited
             this.associatedDataStep.interacted = false;
         }
+    }
+
+    private uploadFiles(): Promise<[any, GridFSFile[]]> {
+        this.uploadProgress = 0;
+        return new Promise((resolve) => {
+            if (this.blockAttachments) {
+                console.log('Attachments are blocked');
+                resolve([null, null]);
+                return;
+            }
+            const newFiles = this.files && this.files.length ? this.files.filter((file) => !(file as any).existingFile) : [];
+            if (newFiles.length) {
+                const uploadFile$ = this.genericApi.uploadAttachments(newFiles, (prog) => this.uploadProgress = prog)
+                    .pipe(
+                        finalize(() => this.uploadProgress = 0 || uploadFile$ && uploadFile$.unsubscribe())
+                    )
+                    .subscribe(
+                        (response) => {
+                            resolve([null, response]);     
+                        },
+                        (err) => {
+                            resolve([err, null]);
+                        }
+                    );
+            } else {
+                resolve([null, null]);
+            }
+        });
     }
 
     private setEditValues() {
@@ -303,4 +433,9 @@ export class AddIndicatorComponent implements OnInit {
         const originalValue = formCtrl.value;
         formCtrl.setValue(FormatHelpers.normalizeQuotes(originalValue));
     }
+
+    public getMarkingLabel(marking) {
+        return MarkingDefinitionHelpers.getMarkingLabel(marking);
+    }
+
 }

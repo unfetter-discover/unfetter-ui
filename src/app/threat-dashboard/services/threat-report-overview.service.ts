@@ -1,9 +1,9 @@
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { empty as observableEmpty, forkJoin as observableForkJoin, from as observableFrom, merge as observableMerge, Observable, of as observableOf, throwError as observableThrowError, zip as observableZip } from 'rxjs';
+import { EMPTY, forkJoin as observableForkJoin, from as observableFrom, merge as observableMerge, Observable, of as observableOf, throwError as observableThrowError, zip as observableZip } from 'rxjs';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
-import { catchError, filter, first, map, mergeMap, reduce } from 'rxjs/operators';
+import { catchError, filter, first, map, mergeMap, reduce, tap } from 'rxjs/operators';
 import * as UUID from 'uuid';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { SortHelper } from '../../global/static/sort-helper';
@@ -15,13 +15,17 @@ import { Boundaries } from '../models/boundaries';
 import { LastModifiedThreatReport } from '../models/last-modified-threat-report';
 import { ThreatReport } from '../models/threat-report.model';
 
-
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class ThreatReportOverviewService {
 
   private readonly headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Accept': 'application/vnd.api+json' });
   private readonly reportsUrl = `${Constance.API_HOST}${Constance.REPORTS_URL}`;
-  constructor(private http: HttpClient, private genericService: GenericApi) { }
+  constructor(
+    private http: HttpClient,
+    private genericService: GenericApi
+  ) { }
 
   public setGenericApiService(service: GenericApi): ThreatReportOverviewService {
     this.genericService = service;
@@ -81,7 +85,7 @@ export class ThreatReportOverviewService {
    */
   public loadReport(id: string): Observable<Report> {
     if (!id) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     const query = { 'stix.type': 'report', 'stix.id': id };
@@ -137,6 +141,7 @@ export class ThreatReportOverviewService {
           // we are ensured only on workproduct due filter and flatMaps above, ...riggghht?
           const workProduct = attribs.metaProperties.work_products[0];
           const name = workProduct.name;
+          const description = workProduct.description;
           const author = workProduct.author || '';
           const date = workProduct.date || '';
           const published = workProduct.published;
@@ -151,6 +156,7 @@ export class ThreatReportOverviewService {
             memo[key] = tr;
           }
           tr.name = name;
+          tr.description = description;
           tr.author = author;
           tr.published = published;
           tr.date = date;
@@ -191,47 +197,36 @@ export class ThreatReportOverviewService {
     // }
 
     const sourceReports$ = observableFrom(reports);
-    const hasIdPredicate = (report) => report.id === undefined;
-    const reportsForUpdate$: Observable<Report> = sourceReports$.pipe(filter(hasIdPredicate));
-    const reportsForInsert$: Observable<Report> = sourceReports$.pipe(filter(((x) => !hasIdPredicate(x))));
+    const hasId = (report: Report) => report.id !== undefined;
+    const reportsForUpdate$: Observable<Report> = sourceReports$.pipe(filter(hasId));
+    const reportsForInsert$: Observable<Report> = sourceReports$.pipe(filter((x) => !hasId(x)));
     // pull fresh copies of the reports
     const updates$ = reportsForUpdate$.pipe(mergeMap((report) => this.loadReport(report.id)));
     // assign the correct workproduct to these new reports
-    const inserts$ = reportsForInsert$.pipe(map((report: any) => {
-      if (threatReportMeta) {
-        const meta = report.attributes.metaProperties || {};
-        meta.work_products = meta.work_products || [];
-        meta.work_products = meta.work_products.concat({ ...threatReportMeta });
-        meta.published = threatReportMeta.published;
-        report.attributes.metaProperties = { ...report.attributes.metaProperties, ...meta };
-      }
-      return report;
-    }));
-    const updateReports$ = observableMerge(inserts$, updates$).pipe(
-      mergeMap((el) => {
-        // I cant explain why this an array of single element arrays
-        //  but lets unwrap
-        if (el instanceof Array) {
-          el = el[0];
-        }
-        return this.upsertReport(el, threatReportMeta);
-      }))
-    // .exhaustMap((val) => val)
-    // return updateReports$
-    //   // unroll fetch for latest reports
-    //   .mergeMap((latestReports) => {
-    //     // I cant explain why this an array of single element arrays
-    //     //  but lets unwrap
-    //     latestReports = latestReports.map((el) => {
-    //       if (el instanceof Array) {
-    //         return el[0];
-    //       }
-    //       return el;
-    //     });
-    //     // update/insert
-    //     const calls = latestReports.map((el) => this.upsertReport(el, threatReportMeta));
-    //     return Observable.forkJoin(...calls);
-    //   });
+    const inserts$ = reportsForInsert$
+      .pipe(
+        map((report: Report) => {
+          if (threatReportMeta) {
+            const meta = report.attributes.metaProperties || {};
+            meta.work_products = meta.work_products || [];
+            meta.work_products = meta.work_products.concat({ ...threatReportMeta });
+            meta.published = threatReportMeta.published;
+            report.attributes.metaProperties = { ...report.attributes.metaProperties, ...meta };
+          }
+          return report;
+        })
+      );
+    const updateReports$ = observableMerge(inserts$, updates$)
+      .pipe(
+        mergeMap((el) => {
+          // I cant explain why this an array of single element arrays
+          //  but lets unwrap
+          if (el instanceof Array) {
+            el = el[0];
+          }
+          return this.upsertReport(el, threatReportMeta);
+        })
+      );
     return updateReports$;
   }
 
@@ -301,6 +296,7 @@ export class ThreatReportOverviewService {
     workProduct.boundaries.malware = Array.from(threatReport.boundaries.malware || []);
     workProduct.boundaries.targets = Array.from(threatReport.boundaries.targets || []);
     workProduct.name = threatReport.name;
+    workProduct.description = threatReport.description;
     workProduct.date = threatReport.date;
     workProduct.author = threatReport.author;
     workProduct.published = threatReport.published;
@@ -318,7 +314,7 @@ export class ThreatReportOverviewService {
    */
   public saveThreatReport(threatReport: Partial<ThreatReport>): Observable<Partial<ThreatReport>> {
     if (!threatReport) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     const url = this.reportsUrl;
@@ -327,9 +323,12 @@ export class ThreatReportOverviewService {
     const id = threatReport.id || UUID.v4();
     threatReport.id = id;
     const reports = threatReport.reports;
-    const saveReports$ = this.upsertReports(reports as Report[], threatReport).pipe(
-      reduce((acc, val) => acc.concat(val), []),
-      map((el) => threatReport));
+    const saveReports$ = this.upsertReports(reports as Report[], threatReport)
+      .pipe(
+        tap((el) => console.log('upserted report', el)),
+        reduce((acc, val) => acc.concat(val), []),
+        map((el) => threatReport)
+      );
     return saveReports$;
   }
 
@@ -340,7 +339,7 @@ export class ThreatReportOverviewService {
    */
   public deleteReport(id: string): Observable<Report> {
     if (!id || id.trim().length === 0) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     const url = this.reportsUrl + '/' + id;
@@ -356,7 +355,7 @@ export class ThreatReportOverviewService {
    */
   public removeReport(report: Report, threatReport: ThreatReport): Observable<Report> {
     if (!report || !threatReport) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     const url = this.reportsUrl;
@@ -416,7 +415,7 @@ export class ThreatReportOverviewService {
    */
   public deleteThreatReport(id: string): Observable<Observable<Report[]>> {
     if (!id || id.trim().length === 0) {
-      return observableEmpty();
+      return EMPTY;
     }
 
     const url = this.reportsUrl;

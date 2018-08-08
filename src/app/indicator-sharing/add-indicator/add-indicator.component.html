@@ -16,12 +16,23 @@
                         Name is <strong>required</strong>
                     </mat-error>
                 </mat-form-field>
-                
+
                 <mat-form-field class="full-width mb-6" *ngIf="!editMode">
                     <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
                         <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
                     </mat-select>
                 </mat-form-field>
+
+                <div class="flex">
+                    <mat-form-field class="flex1 full-width mb-6">
+                        <mat-select multiple placeholder="Marking Definitions" formControlName="object_marking_refs">
+                            <mat-option *ngFor="let marking of marking$ | async" [value]="marking.id">
+                                {{getMarkingLabel(marking)}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <markings-chips class="flex1" [model]="form.value" disableTooltips="true"></markings-chips>
+                </div>
 
                 <markdown-editor 
                     [editing]="true" 
@@ -71,14 +82,15 @@
                     </mat-error>
                 </mat-form-field>
 
-                <p id="patternWarning" 
+                <!-- TODO delete this if its determine that only showing valid stix pattern is ok -->
+                <!-- <p id="patternWarning" 
                     [style.opacity]="form.get('pattern').dirty && !form.get('metaProperties').get('validStixPattern').value && form.get('pattern').value.length > 0 ? 1 : 0"
                     [style.marginTop]="!form.get('pattern').hasError('required') ? '-20px' : '-5px'" 
-                    [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">(Warning) Optional STIX patterning validation failed</p>
+                    [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">(Warning) Optional STIX patterning validation failed</p> -->
 
                 <p id="patternSuccess" 
                     [style.opacity]="form.get('metaProperties').get('validStixPattern').value && form.get('pattern').dirty && form.get('pattern').value.length > 0 ? 1 : 0"                    
-                    [style.marginTop]="!form.get('pattern').hasError('required') ? '-30px' : '-5px'" 
+                    [style.marginTop]="!form.get('pattern').hasError('required') ? '-20px' : '-5px'" 
                     [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'"><i class="material-icons">check</i> Valid STIX Pattern</p>
                     
                 <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message>
@@ -157,18 +169,6 @@
                     </mat-chip-list>
                 </div>
                 
-                <!-- ~~~ Kill Chain Phases ~~~ -->
-                <div>
-                    <kill-chain-phases-reactive [parentForm]="form"></kill-chain-phases-reactive>
-                    <mat-chip-list formArrayName="kill_chain_phases" *ngIf="form.get('kill_chain_phases').value.length > 0" class="chipListPadding">
-                        <mat-chip *ngFor="let kill_chain of form.get('kill_chain_phases').value; let i = index" class="cursor-pointer chipListChip"
-                            color="primary" selected="true" removable="true">
-                            <span class="flex1 flexNowrap">{{ kill_chain.phase_name | capitalize}}</span>
-                            <mat-icon matChipRemove (click)="form.get('kill_chain_phases').removeAt(i)">cancel</mat-icon>
-                        </mat-chip>
-                    </mat-chip-list>
-                </div>
-                
                 <!-- ~~~ Labels ~~~ -->
                 <h5>Add Labels</h5>
                 <div class="flex flexItemsCenter" id="labelsWrapper">
@@ -181,31 +181,34 @@
                     <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
                 </div>
 
+                <div *ngIf="!blockAttachments">
+                    <h5>Attachments</h5>
+                    <file-list [existingFiles]="editData && editData.metaProperties && editData.metaProperties.attachments" (filesChange)="filesChange($event)"></file-list>
+                    <br>
+                </div>
+
                 <div class="mt-6">
                     <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
                     <button mat-button matStepperPrevious type="button">BACK</button>
                 </div>
             </mat-step>
             
-            <!-- TODO remove ngif once edit mode can update relationships -->
             <mat-step label="Relationships">
                 <div formGroupName="metaProperties" *ngIf="attackPatterns && attackPatterns.length">
                     <h5>Indicated Techniques</h5>
                     <unf-selection-list [stix]="attackPatterns" [formCtrl]="form.get('metaProperties').get('relationships')"></unf-selection-list>
-                    <!-- <mat-selection-list formControlName="relationships">
-                        <mat-list-option *ngFor="let ap of attackPatterns | sortByField:'name':'ascending'" [value]="ap.id">
-                        {{ap.name}}
-                        </mat-list-option>
-                    </mat-selection-list> -->
-                    <!-- <mat-form-field class="full-width mt-10">
-                        <mat-select placeholder="Indicated Techniques" [multiple]="true" formControlName="relationships">
-                            <mat-option [value]="ap.id" *ngFor="let ap of attackPatterns | sortByField:'name':'ascending'">{{ ap.name }}</mat-option>
-                        </mat-select>
-                    </mat-form-field> -->
                     <div class="mt-6">
                         <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
                         <button mat-button matStepperPrevious type="button">BACK</button>
                     </div>
+                </div>
+                <div *ngIf="form.get('kill_chain_phases').value.length">
+                    <h5>Derived Tactics</h5>
+                    <mat-chip-list class="chipListPadding">
+                        <mat-chip *ngFor="let kcp of form.get('kill_chain_phases').value" class="cursor-pointer chipListChip">
+                            {{ kcp.phase_name | capitalize }}
+                        </mat-chip>
+                    </mat-chip-list>   
                 </div>
             </mat-step>
             
@@ -215,6 +218,7 @@
                 <div class="mt-10">
                     <observable-data-tree [parentForm]="form" [patternObjSubject]="patternObjSubject"></observable-data-tree>
                 </div>
+                <h5>Data Sources</h5>
                 <div class="mt-15">
                     <data-sources [formCtrl]="form.get('x_mitre_data_sources')"></data-sources>
                 </div>
@@ -225,6 +229,15 @@
             
         </mat-vertical-stepper>
 
+        <div *ngIf="uploadProgress > 0">
+            <label>Uploading Files...</label>
+            <mat-progress-bar mode="determinate" [value]="uploadProgress" *ngIf="uploadProgress < 100"></mat-progress-bar>
+            <mat-progress-bar mode="indeterminate" *ngIf="uploadProgress === 100"></mat-progress-bar>
+        </div>
+        <div *ngIf="submitErrorMsg" class="uf-well-warn">
+            <h5>An Error Occured</h5>
+            <p>{{ submitErrorMsg }}</p>
+        </div>
         <p class="text-right mt-6">
             <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
             <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit">SAVE</button>

@@ -37,7 +37,7 @@ export class SummaryCalculationService {
   blGroups: string[] = [];
   blAttackPatterns: string[] = [];
   blCompleteAPs: number;
-  blCompleteWeightings: number;
+  blPercentComplete: number;
   allWeightings: number = 500;
   blWeightings: { protPct: 0, detPct: 0, respPct: 0 };
 
@@ -116,8 +116,8 @@ export class SummaryCalculationService {
     this.blCompleteAPs = blCompleteAPs;
   }
 
-  public set baselineIncompleteWeightings(blCompleteWeightings: number) {
-    this.blCompleteWeightings = blCompleteWeightings;
+  public set baselinePercentComplete(blPercentComplete: number) {
+    this.blPercentComplete = blPercentComplete;
   }
 
   public set baselineWeightings(blWeightings: { protPct, detPct, respPct }) {
@@ -187,8 +187,8 @@ export class SummaryCalculationService {
     return this.baselineIncompleteAPs;
   }
 
-  public get baselineIncompleteWeights(): number {
-    return this.baselineIncompleteWeightings;
+  public get baselinePercentComplete(): number {
+    return this.baselinePercentComplete;
   }
 
   public get baselineWeightings(): { protPct, detPct, respPct } {

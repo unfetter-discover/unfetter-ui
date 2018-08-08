@@ -16,17 +16,19 @@ import { AuthService } from '../../../core/services/auth.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
+import * as configActions from '../../../root-store/config/config.actions';
 import { environment } from '../../../../environments/environment';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { FieldSortPipe } from '../../pipes/field-sort.pipe';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
-import { RunConfigService } from '../../../core/services/run-config.service';
 
 describe('HeaderNavigationComponent', () => {
 
-    let component: HeaderNavigationComponent;
     let fixture: ComponentFixture<HeaderNavigationComponent>;
-    const config = {
+    let component: HeaderNavigationComponent;
+    let store: Store<fromApp.AppState>;
+
+    const runConfig = {
         'showBanner': false,
         'bannerText': '',
         'authServices': [ 'github' ]
@@ -53,10 +55,6 @@ describe('HeaderNavigationComponent', () => {
                     AuthService,
                     GenericApi,
                     ConfigService,
-                    {
-                        provide: RunConfigService,
-                        useValue: { config: observableOf(config) }
-                    },
                 ],
                 schemas: [ NO_ERRORS_SCHEMA ]
             })
@@ -67,6 +65,8 @@ describe('HeaderNavigationComponent', () => {
         environment.runMode = 'UAC';
         fixture = TestBed.createComponent(HeaderNavigationComponent);
         component = fixture.componentInstance;
+        store = component['store'];
+        store.dispatch(new configActions.LoadRunConfig(runConfig));
         fixture.detectChanges();
     });
 
@@ -97,12 +97,12 @@ describe('HeaderNavigationComponent', () => {
 
         {
             expect(component.topPx).toEqual('0px');
-            config.showBanner = true;
+            runConfig.showBanner = true;
             const titledFixture = TestBed.createComponent(HeaderNavigationComponent);
             const titledComponent = titledFixture.componentInstance;
             titledFixture.detectChanges();
             expect(titledComponent.topPx).toEqual('17px');
-            config.showBanner = false;
+            runConfig.showBanner = false;
         }
     });
 
@@ -130,7 +130,6 @@ describe('HeaderNavigationComponent', () => {
 
     describe('with a logged in user', () => {
 
-        let store: Store<fromApp.AppState>;
         let authService: AuthService;
 
         const demoUser = {
@@ -139,8 +138,11 @@ describe('HeaderNavigationComponent', () => {
             firstName: 'Demo',
             lastName: 'User',
             role: 'STANDARD_USER',
-            oauth: 'lderp',
-            lderp: {id: 1, userName: 'demo'},
+            auth: {
+                service: 'testauth',
+                id: 1,
+                userName: 'demo'
+            },
             approved: true
         };
         const adminUser = {
@@ -149,8 +151,12 @@ describe('HeaderNavigationComponent', () => {
             firstName: 'Admin',
             lastName: 'User',
             role: 'ADMIN',
-            oauth: 'lderp',
-            lderp: {id: 2, userName: 'admin', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
+            auth: {
+                service: 'testauth',
+                id: 2,
+                userName: 'admin',
+                avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'
+            },
             approved: true
         };
         const orgUser = {
@@ -160,8 +166,12 @@ describe('HeaderNavigationComponent', () => {
             lastName: 'Chief',
             organizations : [{ 'approved': true, 'role': 'STANDARD_USER' }],
             role: 'ORG_LEADER',
-            oauth: 'lderp',
-            lderp: {id: 3, userName: 'chief', avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'},
+            auth: {
+                service: 'testauth',
+                id: 3,
+                userName: 'chief',
+                avatar_url: 'assets/icon/stix-icons/svg/identity-b.svg'
+            },
             approved: true
         };
     
@@ -190,7 +200,7 @@ describe('HeaderNavigationComponent', () => {
                 expect(fixture.debugElement.query(By.css('#accountWrapper')).nativeElement).toBeDefined();
                 // @todo fix this later; can't get a handle on the avatar any more
                 // expect(fixture.debugElement.query(By.css('#accountWrapper div img#avatar')).nativeElement.src)
-                //     .toMatch(new RegExp(`${demoUser.oauth.avatar_url}$`));
+                //     .toMatch(new RegExp(`${demoUser.auth.avatar_url}$`));
                 expect(fixture.debugElement.query(By.css('#accountMenuWindow'))).toBeNull();
                 fixture.debugElement.query(By.css('#accountWrapper div.cursor-pointer'))
                     .triggerEventHandler('click', null);

@@ -155,7 +155,7 @@ export class IndicatorSharingService {
         const url = `${this.baseUrl}/search?searchparameters=${encodeURIComponent(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`;
         return this.genericApi.getNgrx<any>(url)
             .pipe(
-                map(RxjsHelpers.mapArrayAttributes)
+                RxjsHelpers.unwrapJsonApi()
             );
     }
 
@@ -186,9 +186,9 @@ export class IndicatorSharingService {
         };
 
         return observableForkJoin(
-                this.genericApi.get(`${this.relationshipUrl}?filter=${encodeURI(JSON.stringify(relFilterObj))}`).pipe(map(RxjsHelpers.mapArrayAttributes)),
-                this.genericApi.get(`${this.attackPatternsUrl}?filter=${encodeURI(JSON.stringify(apFilter))}`).pipe(map(RxjsHelpers.mapArrayAttributes)),
-                this.genericApi.get(`${this.sensorsUrl}?filter=${encodeURI(JSON.stringify(sensorFilter))}`).pipe(map(RxjsHelpers.mapArrayAttributes))
+                this.genericApi.get(`${this.relationshipUrl}?filter=${encodeURI(JSON.stringify(relFilterObj))}`).pipe(RxjsHelpers.unwrapJsonApi()),
+                this.genericApi.get(`${this.attackPatternsUrl}?filter=${encodeURI(JSON.stringify(apFilter))}`).pipe(RxjsHelpers.unwrapJsonApi()),
+                this.genericApi.get(`${this.sensorsUrl}?filter=${encodeURI(JSON.stringify(sensorFilter))}`).pipe(RxjsHelpers.unwrapJsonApi())
             ).pipe(
             map((results: [any[], any[], any[]]): any[] => results.reduce((prev, cur) => prev.concat(cur), [])));
     }

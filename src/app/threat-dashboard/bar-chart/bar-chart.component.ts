@@ -1,17 +1,6 @@
-import {
-        Component,
-        OnInit,
-        ChangeDetectionStrategy,
-        Renderer2,
-        EventEmitter,
-        Output,
-        Input,
-        OnDestroy,
-        OnChanges,
-    } from '@angular/core';
-import { Subscription } from 'rxjs';
-
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, Renderer2 } from '@angular/core';
 import * as d3 from 'd3';
+import { Subscription } from 'rxjs';
 import { BarChartItem } from './bar-chart-item';
 
 @Component({
@@ -147,8 +136,19 @@ export class BarChartComponent implements OnInit, OnDestroy, OnChanges {
                 return height - yVal;
             })
             .on('mouseover', function(d) {
-                tooltipDiv.html('<ul style="max-height: ' + (height - 10) + 'px;">'
-                        + d.patterns.map(pattern => '<li>' + pattern.name + '</li>').join('') + '</ul>');
+                const maxItems = 4;
+                const numItems = d.patterns.length;
+                const numLinesToShow = (numItems <= maxItems) ? numItems : maxItems;
+                const listItems = d.patterns.slice(0, numLinesToShow).map((pattern) => `<li>${pattern.name}</li>`).join('');
+                let innerHtml = '<ul style="max-height: ' + (height - 10) + 'px;">' + listItems;
+                if (numItems !== numLinesToShow) {
+                   const numItemsHidden = numItems - numLinesToShow;
+                   if (numItemsHidden > 0) {
+                       innerHtml += `<li>...and ${numItemsHidden} more</li>`;
+                   }
+                }
+                innerHtml += '</ul>';
+                tooltipDiv.html(innerHtml);
                 const ht: number = parseInt(tooltipDiv.style('height'), 10);
                 const widthOffset = 2 * x.bandwidth() - 15;
                 const scrollOffset = graphElement.property('scrollLeft');

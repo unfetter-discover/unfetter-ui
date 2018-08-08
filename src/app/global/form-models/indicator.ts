@@ -10,6 +10,7 @@ export const IndicatorForm = () => {
         created_by_ref: new FormControl('', Validators.required),
         valid_from: new FormControl(new Date(), Validators.required),
         valid_until: new FormControl(),
+        object_marking_refs: new FormControl([]),
         external_references: new FormArray([]),
         kill_chain_phases: new FormArray([]),
         x_mitre_data_sources: new FormControl([]),

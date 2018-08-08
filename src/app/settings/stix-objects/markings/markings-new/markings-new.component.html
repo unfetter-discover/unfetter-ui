@@ -1,0 +1,112 @@
+<div class="row">
+    <div class="col-xs-12">       
+        <created-by-ref [model]="marking"></created-by-ref>       
+    </div>
+</div>
+
+<div class="row selectRow">
+    <div class="col-md-12">
+        <form>
+            <mat-form-field class="full-width">
+                <mat-select [(value)]="definitionType" required placeholder="Definition Type">
+                    <mat-option *ngFor="let definitionType of markingDefinitionTypes" [value]="definitionType">
+                        <span>{{ definitionType.label }}</span>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </form>
+    </div>
+</div>
+
+<ng-container [ngSwitch]="definitionType.value">
+
+    <div *ngSwitchCase="'tlp'" class="row selectRow">
+        <div class="col-md-12">
+            <form>
+                <mat-form-field class="full-width">
+                    <mat-select [(value)]="tlpCtrl" required placeholder="TLP"
+                            (selectionChange)="tlpValue.tlp = tlpCtrl">
+                        <mat-option *ngFor="let TLPValue of TLPValues" [value]="TLPValue">
+                            <span>{{ TLPValue }}</span>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </form>
+        </div>
+    </div>
+
+    <div *ngSwitchCase="'statement'" class="row selectRow">
+        <div class="col-md-12">
+            <mat-form-field class="full-width">
+                <textarea matInput required [(ngModel)]="statement.statement"
+                        autocomplete="off" matTextareaAutosize placeholder="Statement">{{statement}}</textarea>
+                <button mat-button *ngIf="statement.statement" matSuffix mat-icon-button aria-label="Clear"
+                        (click)="statement.statement = ''"><mat-icon>close</mat-icon></button>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div *ngSwitchCase="'rating'" class="row selectRow">
+        <div class="col-md-3">
+            <mat-form-field class="full-width">
+                <input matInput required [(ngModel)]="rating.rating"
+                        type="number" autocomplete="off" placeholder="Rating Value" aria-label="Rating">
+            </mat-form-field>
+        </div>
+        <div class="col-md-9">
+            <mat-form-field class="full-width">
+                <input matInput required [(ngModel)]="rating.label"
+                        autocomplete="off" placeholder="Rating Label" aria-label="Label">
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div *ngSwitchCase="'capco'" class="row selectRow">
+        <div class="col-md-2">
+            <form>
+                <mat-form-field class="full-width">
+                    <mat-select [(value)]="capco.category" required placeholder="CAPCO Category">
+                        <mat-option *ngFor="let category of CategoryValues" [value]="category">
+                            <span>{{ category }}</span>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </form>
+        </div>
+        <div class="col-md-2">
+            <mat-form-field class="full-width">
+                <input matInput required [(ngModel)]="capco.precedence"
+                        type="number" autocomplete="off" placeholder="Precedence" aria-label="Precedence within category">
+            </mat-form-field>
+        </div>
+        <div class="col-md-2">
+            <mat-form-field class="full-width">
+                <input matInput required class="capco-input" [(ngModel)]="capco.portion"
+                        autocomplete="off" placeholder="Portion Marking" aria-label="CAPCO Portion Marking">
+            </mat-form-field>
+        </div>
+        <div class="col-md-6">
+            <mat-form-field class="full-width">
+                <input matInput required class="capco-input" [(ngModel)]="capco.text"
+                        autocomplete="off" placeholder="Banner Text" aria-label="CAPCO Banner">
+                <button mat-button *ngIf="capco.text" matSuffix mat-icon-button aria-label="Clear"
+                        (click)="capco.text = ''"><mat-icon>close</mat-icon></button>
+            </mat-form-field>
+        </div>
+    </div>
+
+</ng-container>
+
+<!--<external-reference [(model)]="marking"></external-reference>-->
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="button-row pull-right">
+            <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
+            <button mat-raised-button color="primary" [disabled]="invalidate(marking)"
+                    (click)="saveButtonClicked()">SAVE</button>
+        </div>
+    </div>
+</div>
+
+<validation-errors [validationErrorMessages]="validationErrorMessages"></validation-errors>

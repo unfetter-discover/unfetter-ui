@@ -1,17 +1,17 @@
 
-import { Component, OnInit, Input, OnDestroy, EventEmitter, Output, Renderer2, OnChanges, ChangeDetectionStrategy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import * as d3 from 'd3';
-
+import { fromEvent, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { RadarChartDataPoint } from './radar-chart-datapoint';
 
 @Component({
     selector: 'unf-radar-chart',
     templateUrl: 'radar-chart.component.html',
     styleUrls: ['./radar-chart.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,    
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
+export class RadarChartComponent implements OnInit, OnDestroy {
     @Input()
     public data: RadarChartDataPoint[][];
     public loading = true;
@@ -22,12 +22,23 @@ export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
     private svg: any;
     private readonly graphId = '#radarChart';
 
-    constructor(protected renderer: Renderer2) { }
+    constructor(
+        protected changeDetectorRef: ChangeDetectorRef,
+    ) { }
 
     /**
      * @description initialize this component
      */
     public ngOnInit(): void {
+        // window may be a better alternative than ngOnChanges
+        fromEvent(window, 'resize')
+            .pipe(
+                debounceTime(500)
+            )
+            .subscribe((event) => {
+                d3.select(this.graphId).selectAll('*').remove();
+                this.buildGraph();
+            });
         this.buildGraph();
     }
 
@@ -51,33 +62,31 @@ export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
      *
      * @memberof RadarChartComponent
      */
-    public ngOnChanges(changes: any): void {
-        d3.select(this.graphId).selectAll('*').remove();
-        this.data = changes.data.currentValue;
-        this.buildGraph();
-    }
+    // public ngOnChanges(changes: any): void {
+    //     d3.select(this.graphId).selectAll('*').remove();
+    //     this.data = changes.data.currentValue;
+    //     this.buildGraph();
+    // }
 
     /**
      * @description
      */
     public buildGraph(): void {
-        const width = 475;
-        const height = 400;
+        const width = 500;
+        const height = 550;
+        // assuming data in log base 2 calculated from the percentage
+        const maxValue = 70;
+        const levels = 7;
 
         // Config for the Radar chart
         const config = {
             w: width,
             h: height,
-            maxValue: 200,
-            levels: 5,
-            ExtraWidthX: 300
+            maxValue,
+            levels,
+            ExtraWidthX: 50,
+            ExtraWidthY: 50,
         };
-
-        // const svg = d3.select(this.graphId)
-        //     .selectAll('svg')
-        //     .append('svg')
-        //     .attr('width', width)
-        //     .attr('height', height);
 
         this.draw(this.graphId, this.data, config);
     }
@@ -89,6 +98,7 @@ export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
      * @param options
      */
     public draw(id: string, data: RadarChartDataPoint[][], options): void {
+        // base config, can be overridden by options passed into this methods
         const cfg = {
             radius: 5,
             w: 800,
@@ -102,9 +112,9 @@ export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
             ToRight: 5,
             TranslateX: 80,
             TranslateY: 30,
-            ExtraWidthX: 100,
-            ExtraWidthY: 100,
-            color: d3.scaleOrdinal().range(['#6F257F', '#CA0D59'])
+            ExtraWidthX: 0,
+            ExtraWidthY: 0,
+            color: d3.scaleOrdinal().range(['#42A5F5', '#1E88E5'])
         };
 
         if ('undefined' !== typeof options) {
@@ -115,17 +125,18 @@ export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
             }
         }
 
-        cfg.maxValue = 100;
-
+        data = this.normalizeOutOfBoundsData(data, cfg.maxValue);
         const allAxis = (data[0].map((i, j) => i.area));
         const total = allAxis.length;
         const radius = cfg.factor * Math.min(cfg.w / 2, cfg.h / 2);
+
         const Format = d3.format('%');
         d3.select(id).select('svg').remove();
 
         const g = d3.select(id)
             .append('svg')
-            .attr('width', cfg.w + cfg.ExtraWidthX)
+            // .attr('width', cfg.w + cfg.ExtraWidthX)
+            .attr('width', '100%')
             .attr('height', cfg.h + cfg.ExtraWidthY)
             .append('g')
             .attr('transform', 'translate(' + cfg.TranslateX + ',' + cfg.TranslateY + ')');
@@ -151,21 +162,21 @@ export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
         }
 
         // Text indicating at what % each level is
-        for (let j = 0; j < cfg.levels; j++) {
-            const levelFactor = cfg.factor * radius * ((j + 1) / cfg.levels);
-            g.selectAll('.levels')
-                .data([1]) // dummy data
-                .enter()
-                .append('svg:text')
-                .attr('x', (d) => levelFactor * (1 - cfg.factor * Math.sin(0)))
-                .attr('y', (d) => levelFactor * (1 - cfg.factor * Math.cos(0)))
-                .attr('class', 'legend')
-                // .style('font-family', 'sans-serif')
-                // .style('font-size', '10px')
-                .attr('transform', 'translate(' + (cfg.w / 2 - levelFactor + cfg.ToRight) + ', ' + (cfg.h / 2 - levelFactor) + ')')
-                .attr('fill', '#737373')
-                .text((j + 1) * 100 / cfg.levels);
-        }
+        // for (let j = 0; j < cfg.levels; j++) {
+        //     const levelFactor = cfg.factor * radius * ((j + 1) / cfg.levels);
+        //     g.selectAll('.levels')
+        //         .data([1]) // dummy data
+        //         .enter()
+        //         .append('svg:text')
+        //         .attr('x', (d) => levelFactor * (1 - cfg.factor * Math.sin(0)))
+        //         .attr('y', (d) => levelFactor * (1 - cfg.factor * Math.cos(0)))
+        //         .attr('class', 'legend')
+        //         // .style('font-family', 'sans-serif')
+        //         // .style('font-size', '10px')
+        //         .attr('transform', 'translate(' + (cfg.w / 2 - levelFactor + cfg.ToRight) + ', ' + (cfg.h / 2 - levelFactor) + ')')
+        //         .attr('fill', '#737373')
+        //         .text((j + 1) * 100 / cfg.levels);
+        // }
 
         let series = 0;
 
@@ -222,28 +233,40 @@ export class RadarChartComponent implements OnInit, OnDestroy, OnChanges {
                 .style('stroke', cfg.color(series.toString()) as string)
                 .style('fill', (j, i) => cfg.color(series.toString()) as string)
                 .style('fill-opacity', cfg.opacityArea)
-                // .on('mouseover', (d) => {
-                //     let z = 'polygon.' + d3.select(this.svg).attr('class');
-                //     g.selectAll('polygon')
-                //         .transition()
-                //         .duration(200)
-                //         .style('fill-opacity', 0.1);
-                //     g.selectAll(z)
-                //         .transition()
-                //         .duration(200)
-                //         .style('fill-opacity', .7);
-                // })
-                // .on('mouseout', () => {
-                //     g.selectAll('polygon')
-                //         .transition()
-                //         .duration(200)
-                //         .style('fill-opacity', cfg.opacityArea);
-                // });
+            // .on('mouseover', (d) => {
+            //     let z = 'polygon.' + d3.select(this.svg).attr('class');
+            //     g.selectAll('polygon')
+            //         .transition()
+            //         .duration(200)
+            //         .style('fill-opacity', 0.1);
+            //     g.selectAll(z)
+            //         .transition()
+            //         .duration(200)
+            //         .style('fill-opacity', .7);
+            // })
+            // .on('mouseout', () => {
+            //     g.selectAll('polygon')
+            //         .transition()
+            //         .duration(200)
+            //         .style('fill-opacity', cfg.opacityArea);
+            // });
             series++;
         });
         series = 0;
 
+        this.changeDetectorRef.markForCheck();
         this.renderComplete.emit();
+    }
+
+    public normalizeOutOfBoundsData(data: RadarChartDataPoint[][], max = 100): RadarChartDataPoint[][] {
+        // normalize out of bounds data
+        data.forEach((arr) => {
+            arr.forEach((el) => {
+                el.value = el.value < 0 ? 0 : el.value;
+                el.value = el.value <= max ? el.value : max;
+            })
+        });
+        return data;
     }
 
 }

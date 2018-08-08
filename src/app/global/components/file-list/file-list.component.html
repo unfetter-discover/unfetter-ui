@@ -1,0 +1,26 @@
+<div id="fileListComponent">
+  <input type="file" name="attachments" id="attachments" class="displayNone" (change)="fileInputChange($event)" multiple #fileInput>
+  <div class="mb-5 mt-5">
+    <button type="button" mat-raised-button (click)="selectFiles()" color="accent">Select Files</button>
+  </div>
+  <table class="uf-table mb-10" *ngIf="this.files && this.files.length">
+    <thead>
+      <th>Files</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let file of files; let i = index">
+        <td>
+          <div class="flex flexItemsCenter mat-icon-button-cell-wrapper">
+            <span>{{file.name}}</span>
+            <span class="flex1">&nbsp;</span>
+            <span>
+              <button type="button" mat-icon-button (click)="removeFile(i)">
+                <i class="material-icons mat-24">delete</i>
+              </button>
+            </span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

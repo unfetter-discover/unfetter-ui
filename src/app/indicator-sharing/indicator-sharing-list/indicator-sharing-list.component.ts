@@ -37,7 +37,8 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public filterOpened: boolean = false;
     public collapseAllCards: boolean = false;
     public activeMainWell: mainWell = 'tactics';
-    public totalIndicatorCount$: Observable<number>
+    public totalIndicatorCount$: Observable<number>;
+    public userToken$: Observable<string>;
     public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
     public initialHighlightObj = {
         labels: {},
@@ -83,7 +84,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                     console.log(err);
                 },
                 () => {
-                    filteredIndicatorSub$.unsubscribe();
+                    displayedIndicatorSub$.unsubscribe();
                 }
             );
 
@@ -154,6 +155,11 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                         getUser$.unsubscribe();
                     }
                 }
+            );
+
+        this.userToken$ = this.store.select('users')
+            .pipe(
+                pluck('token')
             );
     }
 

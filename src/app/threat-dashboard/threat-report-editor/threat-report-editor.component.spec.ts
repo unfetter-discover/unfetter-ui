@@ -1,33 +1,19 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { of as observableOf, from as observableFrom, Observable, empty } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatChipsModule, MatDatepickerModule, MatFormFieldModule, MatIconModule, MatOptionModule, MatProgressSpinnerModule, MatSelectModule, MatSnackBarModule, MatTableDataSource, MatTableModule } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EMPTY, from as observableFrom, Observable, of as observableOf } from 'rxjs';
 import * as UUID from 'uuid';
-import * as clone from 'clone';
-
-import { FormsModule } from '@angular/forms';
-import {
-        MatChipsModule,
-        MatDatepickerModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatOptionModule,
-        MatProgressSpinnerModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        MatTableModule,
-        MatTableDataSource,
-    } from '@angular/material';
-
-import { Report } from '../../models/report';
-import { ThreatReport } from '../models/threat-report.model';
-import { ExternalReference } from '../../models/stix/external_reference';
-import { ThreatReportEditorComponent } from './threat-report-editor.component';
-import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
-import { ThreatReportSharedService } from '../services/threat-report-shared.service';
-import { LoadingSpinnerComponent } from '../../global/components/loading-spinner/loading-spinner.component';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { GlobalModule } from '../../global/global.module';
+import { Report } from '../../models/report';
+import { ExternalReference } from '../../models/stix/external_reference';
+import { ThreatReportOverviewService } from '../../threat-dashboard/services/threat-report-overview.service';
+import { SelectOption } from '../models/select-option';
+import { ThreatReport } from '../models/threat-report.model';
+import { ThreatReportEditorComponent } from './threat-report-editor.component';
 
 class MockThreatReport {
     public static empty(): ThreatReport {
@@ -53,7 +39,7 @@ describe('ThreatReportEditorComponent', () => {
 
         saveThreatReport(report: ThreatReport): Observable<ThreatReport> {
             if (!report) {
-                return empty();
+                return EMPTY;
             }
             report.id = report.id || UUID.v4();
             const saveReports$ = this.upsertReports(report.reports as Report[], report)
@@ -68,9 +54,9 @@ describe('ThreatReportEditorComponent', () => {
                 reports.map((report) => {
                     report.attributes.metaProperties = report.attributes.metaProperties || {};
                     report.attributes.metaProperties.work_products =
-                            report.attributes.metaProperties.work_products || [];
+                        report.attributes.metaProperties.work_products || [];
                     report.attributes.metaProperties.work_products =
-                            report.attributes.metaProperties.work_products.concat({ ...threatReport });
+                        report.attributes.metaProperties.work_products.concat({ ...threatReport });
                 });
             }
             return observableFrom(reports);
@@ -87,7 +73,7 @@ describe('ThreatReportEditorComponent', () => {
             };
             if (report.attributes.metaProperties && report.attributes.metaProperties.work_products) {
                 const associatedWorkProducts =
-                        report.attributes.metaProperties.work_products.filter((wp) => wp.id !== id);
+                    report.attributes.metaProperties.work_products.filter((wp) => wp.id !== id);
                 meta.work_products = [...associatedWorkProducts];
             }
             attributes.metaProperties = meta;
@@ -105,14 +91,6 @@ describe('ThreatReportEditorComponent', () => {
     mockReport.attributes.name = 'Bad Thing Happened';
     mockReport.attributes.external_references.push(mockReference);
 
-    const mockSharedService = {
-        threatReportOverview: new ThreatReport()
-    };
-    mockSharedService.threatReportOverview.id = UUID.v4();
-    mockSharedService.threatReportOverview.name = 'A Shared Threat Report';
-    mockSharedService.threatReportOverview.boundaries.targets.add('SomePoorSoul');
-    mockSharedService.threatReportOverview.reports.push(mockReport);
-
     beforeEach(() => {
         const materialModules = [
             MatChipsModule,
@@ -127,17 +105,23 @@ describe('ThreatReportEditorComponent', () => {
         ];
 
         TestBed.configureTestingModule({
-            declarations: [ ThreatReportEditorComponent, LoadingSpinnerComponent ],
-            imports: [ HttpClientTestingModule, FormsModule, ...materialModules ],
+            declarations: [
+                ThreatReportEditorComponent,
+            ],
+            imports: [
+                HttpClientTestingModule,
+                FormsModule,
+                ReactiveFormsModule,
+                GlobalModule,
+                ...materialModules
+            ],
             providers: [
                 GenericApi,
                 {
                     provide: ThreatReportOverviewService,
                     useValue: mockThreatReportService
-                }, {
-                    provide: ThreatReportSharedService,
-                    useValue: mockSharedService
-                }, {
+                },
+                {
                     provide: ActivatedRoute,
                     useValue: {
                         snapshot: { params: { id: 'test_id' } }
@@ -156,35 +140,13 @@ describe('ThreatReportEditorComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should be able to safely deep clone a threat report', () => {
-        // for circular reference test wrt cloning, adding a parent reference here
-        mockReport.attributes.metaProperties = {
-            parent: mockSharedService.threatReportOverview
-        };
-
-        component.cloneThreatReport();
-        expect(component.threatReport).not.toBe(mockSharedService.threatReportOverview);
-        expect(component.threatReport.id).toEqual(mockSharedService.threatReportOverview.id);
-        expect(component.threatReport.name).toEqual(mockSharedService.threatReportOverview.name);
-        expect(component.threatReport.reports[0].id).toEqual(mockSharedService.threatReportOverview.reports[0].id);
-        expect(component.threatReport.boundaries).not.toBe(mockSharedService.threatReportOverview.boundaries);
-        component.threatReport.boundaries.targets.forEach(tgt => {
-            expect(mockSharedService.threatReportOverview.boundaries.targets.has(tgt)).toBeTruthy()
-        });
-        expect(component.threatReport.reports[0].attributes.metaProperties.parent).toBe(component.threatReport);
-    });
-
     it('should load a work product', () => {
-        component.load();
-        expect(component.threatReport).toBe(mockSharedService.threatReportOverview);
-
+        const id = 'workproduct--123';
+        component.load('workproduct--123');
+        expect(component.threatReport).toBeDefined();
+        expect(component.threatReport.id).toBe(id);
         component.threatReport = new ThreatReport();
-        mockSharedService.threatReportOverview = undefined;
         expect(component.threatReport.id).toBeFalsy();
-
-        const someRandomThreatID = 'a0123456789';
-        component.load(someRandomThreatID);
-        expect(component.threatReport.id).toBe(someRandomThreatID);
     });
 
     it('should change start date', () => {
@@ -268,12 +230,20 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.intrusions.size).toBe(0);
 
         // Add one
-        const intrusion1 = 'intrusion1';
+        const i1 = 'intrusion1';
+        const intrusion1 = {
+            value: i1,
+            displayValue: i1,
+        } as SelectOption;
         component.addChip(intrusion1, intrusions);
         expect(component.threatReport.boundaries.intrusions.size).toBe(1);
 
         // Add another
-        const intrusion2 = 'intrusion2';
+        const i2 = 'intrusion2';
+        const intrusion2 = {
+            value: i2,
+            displayValue: i2,
+        } as SelectOption;
         component.addChip(intrusion2, intrusions);
         expect(component.threatReport.boundaries.intrusions.size).toBe(2);
 
@@ -288,7 +258,11 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.intrusions.size).toBe(2);
 
         // Add a third
-        const intrusion3 = 'intrusion3';
+        const i3 = 'intrusion3';
+        const intrusion3 = {
+            value: i3,
+            displayValue: i3,
+        } as SelectOption;
         component.addChip(intrusion3, intrusions);
         expect(component.threatReport.boundaries.intrusions.size).toBe(3);
 
@@ -301,7 +275,11 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.intrusions.size).toBe(1);
 
         // And a fourth
-        const intrusion4 = 'intrusion4';
+        const i4 = 'intrusion4';
+        const intrusion4 = {
+            value: i4,
+            displayValue: i4,
+        } as SelectOption;
         component.addChip(intrusion4, intrusions);
         expect(component.threatReport.boundaries.intrusions.size).toBe(2);
 
@@ -326,12 +304,20 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.intrusions.size).toBe(0);
 
         // Add one
-        const malware1 = 'malware1';
+        const m1 = 'malware1';
+        const malware1 = {
+            value: m1,
+            displayValue: m1,
+        } as SelectOption;
         component.addChip(malware1, malwares);
         expect(component.threatReport.boundaries.malware.size).toBe(1);
 
         // Add another
-        const malware2 = 'malware2';
+        const m2 = 'malware2';
+        const malware2 = {
+            value: m2,
+            displayValue: m2,
+        } as SelectOption;
         component.addChip(malware2, malwares);
         expect(component.threatReport.boundaries.malware.size).toBe(2);
 
@@ -346,7 +332,11 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.malware.size).toBe(2);
 
         // Add a third
-        const malware3 = 'malware3';
+        const m3 = 'malware3';
+        const malware3 = {
+            value: m3,
+            displayValue: m3,
+        } as SelectOption;
         component.addChip(malware3, malwares);
         expect(component.threatReport.boundaries.malware.size).toBe(3);
 
@@ -359,7 +349,11 @@ describe('ThreatReportEditorComponent', () => {
         expect(component.threatReport.boundaries.malware.size).toBe(1);
 
         // And a fourth
-        const malware4 = 'malware4';
+        const m4 = 'malware4';
+        const malware4 = {
+            value: m4,
+            displayValue: m4,
+        } as SelectOption;
         component.addChip(malware4, malwares);
         expect(component.threatReport.boundaries.malware.size).toBe(2);
 
@@ -434,10 +428,6 @@ describe('ThreatReportEditorComponent', () => {
         component.onRemoveReport(newerReport);
         expect(component.threatReport.reports.length).toBe(1);
         expect(component.threatReport.reports[0]).toBe(newReport);
-    });
-
-    it('should share reports', () => {
-        // Not yet implemented
     });
 
     it('should know valid from invalid', () => {

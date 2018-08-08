@@ -27,10 +27,10 @@ export class CapabilityComponent implements OnInit {
   pageToggle: number = 2;    // 1 for heatmap, 2 for pdr score picker
 
   // Attack Matrix
-  public attackMatrix: string = 'ATT&CK MATRIX';
+  public heatMapMatrix: string = 'HEAT MAP MATRIX';
   public noAttackPatterns: string = 'You have no Attack Patterns yet';
   public addAttackPatterns: string = 'Add a Kill Chain Phase and Attack Patterns and they will show up here';
-  public openAttackMatrix: string = 'Open Att&ck Matrix';
+  public openHeatMapMatrix: string = 'Open Heat Map Matrix';
 
 
   @Output()
@@ -83,7 +83,7 @@ export class CapabilityComponent implements OnInit {
       .select('baseline')
       .pipe(
         pluck('allAttackPatterns'),
-        map(RxjsHelpers.sortByField('name', 'ASCENDING')),
+        RxjsHelpers.sortByField('name', 'ASCENDING'),
         distinctUntilChanged()
       )
       .subscribe(

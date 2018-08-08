@@ -3,12 +3,12 @@ import { Store } from '@ngrx/store';
 
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
-import { RunConfigService } from '../../../core/services/run-config.service';
+import { MasterConfig } from '../../../core/services/run-config.service';
 import * as fromApp from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
 import { Constance } from '../../../utils/constance';
 import { fadeInOut } from '../../animations/fade-in-out';
-import { filter, pluck } from 'rxjs/operators';
+import { filter, pluck, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'header-navigation',
@@ -30,19 +30,14 @@ export class HeaderNavigationComponent {
       icon: Constance.LOGO_IMG_ANALYTIC_HUB
     },
     {
-      url: Constance.X_UNFETTER_ASSESSMENT_NAVIGATE_URL,
+      url: Constance.X_UNFETTER_ASSESSMENT3_NAVIGATE_URL,
       title: 'Assessments',
       icon: Constance.LOGO_IMG_ASSESSMENTS
     },
     {
-      url: Constance.X_UNFETTER_ASSESSMENT3_NAVIGATE_URL,
-      title: 'Assessments Beta',
-      icon: Constance.LOGO_IMG_ASSESSMENTS_BETA
-    },
-    {
-      url: Constance.X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL,
+      url: Constance.X_UNFETTER_BASELINE_NAVIGATE_URL,
       title: 'Baselines',
-      icon: Constance.LOGO_IMG_ASSESSMENTS_BETA
+      icon: Constance.LOGO_IMG_BASELINES
     },
     {
       url: 'intrusion-set-dashboard',
@@ -74,20 +69,25 @@ export class HeaderNavigationComponent {
 
   constructor(
     public authService: AuthService,
-    private runConfigService: RunConfigService,
     private store: Store<fromApp.AppState>,
     private el: ElementRef
   ) {
     this.user$ = this.store.select('users');
 
-    this.runConfigService.config.subscribe(
-      (cfg) => {
-        if (cfg.showBanner === true) {
-          this.topPx = '17px';
+    this.store
+      .select('config')
+      .pipe(
+        pluck('runConfig'),
+        distinctUntilChanged(),
+      )
+      .subscribe(
+        (cfg: MasterConfig) => {
+          if (cfg.showBanner === true) {
+            this.topPx = '17px';
+          }
+          this._authServices = cfg.authServices || ['github'];
         }
-        this._authServices = cfg.authServices || ['github'];
-      }
-    );
+      );
 
     const getToken$ = this.user$
       .pipe(

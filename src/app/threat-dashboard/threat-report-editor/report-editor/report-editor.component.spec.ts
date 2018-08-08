@@ -1,15 +1,17 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatChipsModule, MatDialogModule, MatDialogRef, MatFormFieldModule, MatIconModule, MatOptionModule, MatSelectModule } from '@angular/material';
-import { ActionReducerMap, StoreModule } from '@ngrx/store';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatChipsModule, MatDialogModule, MatDialogRef, MatFormFieldModule, MatIconModule, MatOptionModule, MatSelectModule, MAT_DIALOG_DATA } from '@angular/material';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { StoreModule } from '@ngrx/store';
 import { BaseComponentService } from '../../../components/base-service.component';
 import { AttackPatternService } from '../../../core/services/attack-pattern.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
-import { CreatedByRefComponent } from '../../../global/components/created-by-ref/created-by-ref.component';
+import { GlobalModule } from '../../../global/global.module';
 import { AttackPattern } from '../../../models/attack-pattern';
 import { Report } from '../../../models/report';
 import { ExternalReference } from '../../../models/stix/external_reference';
+import * as fromRoot from '../../../root-store/app.reducers';
 import { ReportEditorComponent } from './report-editor.component';
 
 describe('ReportEditorComponent', () => {
@@ -30,7 +32,7 @@ describe('ReportEditorComponent', () => {
     reportX.attributes.metaProperties = {};
     reportX.attributes.labels = [];
 
-    beforeEach(() => {
+    beforeEach(async(() => {
         const materialModules = [
             MatChipsModule,
             MatDialogModule,
@@ -40,37 +42,42 @@ describe('ReportEditorComponent', () => {
             MatSelectModule,
         ];
 
-        let mockReducer: ActionReducerMap<any> = {
-        };
+        TestBed
+            .configureTestingModule({
+                declarations: [
+                    ReportEditorComponent,
+                ],
+                imports: [
+                    NoopAnimationsModule,
+                    HttpClientTestingModule,
+                    FormsModule,
+                    ReactiveFormsModule,
+                    GlobalModule,
+                    ...materialModules,
+                    StoreModule.forRoot(fromRoot.reducers),
+                ],
+                providers: [
+                    AttackPatternService,
+                    BaseComponentService,
+                    GenericApi,
+                    { provide: MAT_DIALOG_DATA, useValue: {} },
+                    {
+                        provide: MatDialogRef,
+                        useValue: {
+                            close: function () { }
+                        }
+                    },
+                ]
+            })
+            .compileComponents();
+    }));
 
-        TestBed.configureTestingModule({
-            declarations: [
-                ReportEditorComponent,
-                CreatedByRefComponent,
-            ],
-            imports: [
-                HttpClientTestingModule,
-                FormsModule,
-                ...materialModules,
-                StoreModule.forRoot(mockReducer),
-            ],
-            providers: [
-                AttackPatternService,
-                BaseComponentService,
-                GenericApi,
-                { provide: MAT_DIALOG_DATA, useValue: {} },
-                {
-                    provide: MatDialogRef,
-                    useValue: {
-                        close: function () { }
-                    }
-                },
-            ]
-        });
-
+    beforeEach(() => {
         fixture = TestBed.createComponent(ReportEditorComponent);
         component = fixture.componentInstance;
-    });
+        // tick forward for the asynchronous reactive forms element
+        fixture.detectChanges();
+    })
 
     it('should be readily initialized', () => {
         expect(component).toBeTruthy();
@@ -89,30 +96,32 @@ describe('ReportEditorComponent', () => {
         expect(component.editing).toBeTruthy();
     });
 
-    it('should add and remove attack patterns', () => {
-        expect(component.reportPatterns.length).toBe(0);
-
-        // add a pattern
-        const ap1 = new AttackPattern();
-        ap1.id = 'a1';
-        ap1.attributes.name = 'AP1';
-        component.addAttackPattern(ap1);
-        expect(component.reportPatterns.length).toBe(1);
-        expect(component.reportPatterns[0].id).toBe(ap1.id);
-        expect(component.reportPatterns[0].name).toBe(ap1.attributes.name);
-
-        // attempt to add it again
-        component.addAttackPattern(ap1);
-        expect(component.reportPatterns.length).toBe(1);
-
-        // attempt to delete nothing, and prove it
-        component.removeAttackPattern(undefined);
-        expect(component.reportPatterns.length).toBe(1);
-
-        // now attempt to really delete it
-        component.removeAttackPattern(ap1.id);
-        expect(component.reportPatterns.length).toBe(0);
-    });
+    it('should add attack patterns', async(() => {
+        fixture.whenStable().then(() => {
+            expect(component.selectedPatternsFormControl).toBeDefined();
+            expect(component.selectedPatternsFormControl.value.length).toBe(0);
+    
+            // add a pattern
+            const ap1 = new AttackPattern();
+            ap1.id = 'a1';
+            ap1.attributes.name = 'AP1';
+            component.selectedPatternsFormControl.setValue([ap1]);
+    
+            component.report.attributes.name = 'test report';
+            component.references.source_name = 'source1';
+            component.references.url = 'url1';
+            // build the form
+            component.onSave();
+    
+            // get the components report
+            const report = component.report;
+            expect(report).toBeDefined();
+            expect(report.attributes).toBeDefined();
+            expect(report.attributes.object_refs).toBeDefined();
+            expect(report.attributes.object_refs.length).toBe(1);
+            expect(report.attributes.object_refs[0]).toEqual('a1');
+        });
+    }));
 
     it('should know if a created report is valid or invalid', () => {
         // confirm this is a report we are creating
@@ -156,13 +165,29 @@ describe('ReportEditorComponent', () => {
         expect(component.report.attributes.modified).toBeTruthy();
 
         // let's save it as a new report
-        component.reportPatterns.push({ id: 'X2', name: 'X-Squared' });
+        component.selectedPatternsFormControl.value.push({ id: 'X2', name: 'X-Squared' });
         component.report.id = component.report.attributes.id;
         component.report.attributes.modified = undefined;
         component.report.attributes.name = 'Clone of The X File';
         component.onSaveAs();
         expect(component.report.id).toBeUndefined();
         expect(component.report.attributes.modified).toBeTruthy();
+    });
+
+    it('should know how to sort attack patterns', () => {
+        const sorter = component.genAttackPatternSorter();
+
+        const attackPattern1 = new AttackPattern();
+        attackPattern1.attributes.name = 'attack pattern 1';
+        const attackPattern2 = new AttackPattern();
+        attackPattern2.attributes.name = 'attack pattern 2';
+
+        const arr = [attackPattern2, attackPattern1];
+        const sorted = arr.sort(sorter);
+        expect(sorted).toBeDefined();
+        expect(sorted.length).toBe(2);
+        expect(sorted[0].attributes.name).toEqual('attack pattern 1');
+        expect(sorted[1].attributes.name).toEqual('attack pattern 2');
     });
 
 });

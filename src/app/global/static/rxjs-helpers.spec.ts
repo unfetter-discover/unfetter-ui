@@ -19,6 +19,27 @@ describe('RxjsHelpers class', () => {
         });
     });
 
+    describe('unwrapJsonApi function', () => {
+        const jsonApiArr = [
+            {
+                attributes: {
+                    foo: 1
+                }
+            }
+        ];
+
+        it('should map JSON API arrays', (done) => {
+            observableOf(jsonApiArr)
+                .pipe(
+                    RxjsHelpers.unwrapJsonApi()
+                )
+                .subscribe((res) => {
+                    expect(res[0].attributes).toBeUndefined();
+                    done();
+                });
+        });
+    });
+
     describe('relationshipArrayToObject function', () => {
         const relArr = [
             {
@@ -31,16 +52,28 @@ describe('RxjsHelpers class', () => {
             }
         ]
 
-        it('should transform relationship array to object', () => {
-            const relObj = RxjsHelpers.relationshipArrayToObject(relArr, 'mockData');
-            expect(relObj['1234'].length).toBe(3);
-            expect(relObj['4567'].length).toBe(2);
+        it('should transform relationship array to object', (done) => {
+            observableOf(relArr)
+                .pipe(
+                    RxjsHelpers.relationshipArrayToObject('mockData')
+                )
+                .subscribe((relObj) => {
+                    expect(relObj['1234'].length).toBe(3);
+                    expect(relObj['4567'].length).toBe(2);
+                    done();
+                });
         });
 
-        it('should return undefined when given wrong property', () => {
-            const relObj = RxjsHelpers.relationshipArrayToObject(relArr, 'wrongProperty');
-            expect(relObj['1234']).toBe(undefined);
-            expect(relObj['4567']).toBe(undefined);
+        it('should return undefined when given wrong property', (done) => {
+            observableOf(relArr)
+                .pipe(
+                    RxjsHelpers.relationshipArrayToObject('wrongProperty')
+                )
+                .subscribe((relObj) => {
+                    expect(relObj['1234']).toBe(undefined);
+                    expect(relObj['4567']).toBe(undefined);
+                    done();
+                });
         });
     });
 
@@ -68,6 +101,42 @@ describe('RxjsHelpers class', () => {
             const zfilter = RxjsHelpers.filterByConfigKey('fakekey' as any);
             const result = zfilter(fakeConfigurations);
             expect(result).toBeFalsy();
+        });
+    });
+
+    describe('sortByField function', () => {
+        const objArray = [
+            {
+                foo: 5
+            },
+            {
+                foo: 3
+            },
+            {
+                foo: 7
+            }
+        ];
+
+        it('should sort by a field in ascending order', (done) => {
+            observableOf(objArray)
+                .pipe(
+                    RxjsHelpers.sortByField('foo', 'ASCENDING')
+                )
+                .subscribe((res) => {
+                    expect(res[0].foo).toBe(3);
+                    done();
+                });
+        });
+
+        it('should sort by a field in descending order', (done) => {
+            observableOf(objArray)
+                .pipe(
+                    RxjsHelpers.sortByField('foo')
+                )
+                .subscribe((res) => {
+                    expect(res[0].foo).toBe(7);
+                    done();
+                });
         });
     });
 });

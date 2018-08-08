@@ -59,7 +59,7 @@ export class SummaryStatisticsComponent implements OnInit {
   ngOnInit() {
     const getStats$ = observableForkJoin(
       this.indicatorSharingService.getSummaryStatistics(), 
-      this.indicatorSharingService.getIdentities().pipe(map(RxjsHelpers.mapArrayAttributes))
+      this.indicatorSharingService.getIdentities().pipe(RxjsHelpers.unwrapJsonApi())
     )
       .subscribe(
         ([stats, identities]: [IndicatorSharingSummaryStatistics[], any[]]) => {

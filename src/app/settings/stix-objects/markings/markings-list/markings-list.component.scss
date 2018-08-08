@@ -1,0 +1,40 @@
+.markings-header, .marking-definition {
+    display: flex;
+    align-items: center;
+}
+
+:host ::ng-deep {
+    filter-search-box label {
+        margin-right: 8px;
+        font-weight: normal;
+        color: #333;
+    }
+
+    filter-search-box label::after {
+        content: ':';
+    }
+}
+
+.filter-results {
+    display: inline-block;
+    margin: auto 0;
+}
+
+.margin-right-20 {
+    margin-right: 20px;
+}
+
+.capco-portion {
+    padding: 0 5px;
+}
+
+.capco-text {
+    font-size: larger;
+    font-weight: bolder;
+}
+
+.marking-id {
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}

@@ -21,7 +21,7 @@ import { AssessState } from '../../store/assess.reducers';
 import { getSortedCategories } from '../../store/assess.selectors';
 import { CleanAssessmentResultData, LoadAssessmentById, LoadGroupData } from '../store/full-result.actions';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
-import { getAllFinishedLoading, getFailedToLoadAssessment, getFullAssessment, getFullAssessmentName, getGroupState, getUnassessedPhasesForCurrentFramework } from '../store/full-result.selectors';
+import { getAllFinishedLoading, getFailedToLoadAssessment, getFullAssessment, getFullAssessmentName, getGroupState, getUnassessedPhasesForCurrentFramework, getAllFinishedLoadingOrFailure } from '../store/full-result.selectors';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullAssessmentGroup } from './group/models/full-assessment-group';
 
@@ -115,7 +115,7 @@ export class FullComponent implements OnInit, OnDestroy {
       );
 
     this.finishedLoading$ = this.store
-      .select(getAllFinishedLoading)
+      .select(getAllFinishedLoadingOrFailure)
       .pipe(distinctUntilChanged());
 
     this.failedToLoad$ = this.store

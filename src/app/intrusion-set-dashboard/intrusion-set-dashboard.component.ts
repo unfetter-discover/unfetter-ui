@@ -1,7 +1,7 @@
 
 import { forkJoin as observableForkJoin,  Observable  } from 'rxjs';
 
-import { filter, pluck, distinctUntilChanged, finalize, take } from 'rxjs/operators';
+import { filter, pluck, distinctUntilChanged, finalize, take, tap } from 'rxjs/operators';
 import { Component, OnInit, ChangeDetectorRef, } from '@angular/core';
 import { Store } from '@ngrx/store';
 
@@ -50,11 +50,13 @@ export class IntrusionSetDashboardComponent implements OnInit {
 
     public ngOnInit() {
         const initAttackPatterns$ = this.tacticsStore
-            .select('config').pipe(
-            pluck('tactics'),
-            filter((t: Tactic[]) => t.length !== 0),
-            distinctUntilChanged(),
-            take(1));
+            .select('stix')
+            .pipe(
+                pluck('attackPatterns'),
+                filter((aps: any[]) => aps && aps.length > 0),
+                distinctUntilChanged(),
+                take(1)
+            );
 
         const intrusionsProperties = {
             'stix.id': 1,

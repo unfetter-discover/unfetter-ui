@@ -1,7 +1,6 @@
-
 import { of as observableOf,  Observable ,  Subscription  } from 'rxjs';
 
-import { take, filter, distinctUntilChanged, pluck } from 'rxjs/operators';
+import { take, filter, distinctUntilChanged, pluck, tap } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren, ViewChild } from '@angular/core';
 import { MatDialog, MatSelect, MatSnackBar } from '@angular/material';
@@ -20,6 +19,9 @@ import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-p
 import { Measurements } from './models/measurements';
 import { Assess3Meta } from 'stix/assess/v3';
 import { CapabilityComponent } from './capability/capability.component';
+import { MarkingDefinition } from '../../models';
+import { MarkingsChipsComponent } from '../../global/components/marking-definitions/markings-chips.component';
+import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -60,6 +62,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public currentCapability = {} as Capability;
   @ViewChild('capabilityPane') capabilityPane: CapabilityComponent;
   private baselineObjAssessments: ObjectAssessment[] = [];
+
+  public marking$: Observable<MarkingDefinition[]>;
+  @ViewChild('markingsChips') markingsChips: MarkingsChipsComponent;
 
   public showHeatmap = false;
   public allAttackPatterns: Observable<AttackPattern[]> = observableOf([]);
@@ -142,6 +147,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       distinctUntilChanged())
       .subscribe(
         (assessmentSet: AssessmentSet) => {
+          if (!assessmentSet['object_marking_refs']) {
+            assessmentSet['object_marking_refs'] = [];
+          }
           this.currentBaseline = assessmentSet;
           this.meta = new Assess3Meta();
           this.meta.title = this.currentBaseline.name;
@@ -198,7 +206,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
       const sub12$ = this.wizardStore
         .select('baseline').pipe(
-        pluck('baselineCapabilities'))
+        pluck('baselineCapabilities'),
+        distinctUntilChanged())
         .subscribe(
           (capabilities: Capability[]) => {
             this.baselineCapabilities = (capabilities) ? capabilities.slice() : [];
@@ -246,7 +255,13 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         .select('baseline').pipe(
         pluck<{}, AttackPattern[]>('selectedFrameworkAttackPatterns'),
         distinctUntilChanged());
-    
+
+      this.marking$ = this.userStore
+        .select('stix')
+        .pipe(
+          pluck('markingDefinitions')
+        );
+
       this.subscriptions.push(sub4$, sub5$, sub6$, sub7$, sub8$, sub9$, sub10$, sub11$, sub12$, sub13$, sub14$, sub15$);
 
       // Fetch categories and capabilities to power this wizard
@@ -309,8 +324,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
     if (group) {
       // Adjust page based on given group
-      this.page = this.navigations.find(navigation => navigation.id === group.id).page;
-
       this.wizardStore.dispatch(new SetCurrentBaselineGroup(group));
     } else {
       // If Group Setup or Summary, indicate as such
@@ -538,6 +551,22 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     return !this.currentBaseline.name || this.currentBaseline.name.trim() === '';
   }
 
+  /*
+   * @description
+   * @return {boolean} true if no groups have been selected, otherwise false
+   */
+  public isGroupsNone(): boolean {
+    return this.baselineGroups.length <= 0;
+  }
+
+  /*
+   * @description
+   * @return {boolean} true if no capabilities have been selected otherwise false
+   */
+  public isCapabilitiesNone(): boolean {
+    return this.baselineCapabilities.length <= 0;
+  }
+
   /**
    * @description angular track by list function, uses the items id if
    *  it exists, otherwise uses the index
@@ -653,6 +682,15 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       split[i] = s;
     }
     return split.join(' ');
+  }
+
+  public getMarkingLabel(marking) {
+    return MarkingDefinitionHelpers.getMarkingLabel(marking);
+  }
+
+  public onMarkingChange(marking) {
+    this.markingsChips['setMarkings'](this.currentBaseline);
+    this.markingsChips['changeDetection'].markForCheck();
   }
 
   /*

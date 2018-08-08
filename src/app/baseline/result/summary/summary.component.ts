@@ -132,7 +132,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     const subIdentitie$ = this.userStore
-      .select('identities').pipe(
+      .select('stix').pipe(
       pluck('identities'),
       finalize(() => subIdentitie$ && subIdentitie$.unsubscribe()))
       .subscribe(
@@ -183,7 +183,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .select('summary').pipe(
       pluck('blAttackPatterns'),
       distinctUntilChanged(),
-      filter((arr: string[]) => arr && arr.length > 0))
+      filter((arr: string[]) => arr && arr.length >= 0))
       .subscribe((arr: string[]) => this.blAttackPatterns = arr,
         (err) => console.log(err));
 
@@ -201,11 +201,11 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe((incWgt: number) => this.blCompleteWeightings = incWgt,
         (err) => console.log(err));
 
-        const groupRetrieve$ = this.store
+    const groupRetrieve$ = this.store
       .select('summary').pipe(
       pluck('blGroups'),
       distinctUntilChanged(),
-      filter((arr: string[]) => arr && arr.length > 0))
+      filter((arr: string[]) => arr && arr.length >= 0))
       .subscribe((arr: string[]) => this.blGroups = arr,
         (err) => console.log(err));
 
@@ -375,7 +375,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
                 // we deleted the current baseline
                 if (isCurrentlyViewed) {
-                  return this.router.navigate([Constance.X_UNFETTER_ASSESSMENT3_BASELINE_NAVIGATE_URL]);
+                  return this.router.navigate([Constance.X_UNFETTER_BASELINE_NAVIGATE_URL]);
                 }
               });
         },
@@ -433,7 +433,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.calculationService.baseline = this.currentBaseline;
     this.calculationService.blAttackPatterns = this.blAttackPatterns;
     this.calculationService.blCompleteAPs = this.blCompleteAPs / (this.currentBaseline.assessments.length * this.attackPatternCount);
-    this.calculationService.blCompleteWeightings = ((this.blCompleteWeightings / (3 * this.currentBaseline.assessments.length * this.attackPatternCount)) / 100) * 100;
+    this.calculationService.blPercentComplete = (((this.blCompleteWeightings / (3 * this.currentBaseline.assessments.length * this.attackPatternCount)) / 100) * 100) * 100;
     this.calculationService.totalWeightings = this.attackPatternCount;
     this.calculationService.blGroups = this.blGroups;
     this.calculationService.blWeightings = this.blWeightings;

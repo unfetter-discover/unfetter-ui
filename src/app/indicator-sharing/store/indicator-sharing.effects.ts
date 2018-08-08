@@ -46,21 +46,29 @@ export class IndicatorSharingEffects {
             switchMap(() => observableForkJoin(
                 this.indicatorSharingService.getIdentities(),
                 this.indicatorSharingService.getIndicators(),
-                this.indicatorSharingService.getAttackPatternsByIndicator(),
+                this.indicatorSharingService.getAttackPatternsByIndicator()
+                    .pipe(
+                        RxjsHelpers.unwrapJsonApi(),
+                        RxjsHelpers.relationshipArrayToObject('attackPatterns')
+                    ),
                 this.indicatorSharingService.getSensors(),
                 this.indicatorSharingService.getAttackPatterns(),
                 this.indicatorSharingService.getTotalIndicatorCount(),
-                this.indicatorSharingService.getInstrusionSetsByAttackPattern(),
+                this.indicatorSharingService.getInstrusionSetsByAttackPattern()
+                    .pipe(
+                        RxjsHelpers.unwrapJsonApi(),
+                    RxjsHelpers.relationshipArrayToObject('intrusionSets')
+                    ),
                 this.indicatorSharingService.getIntrusionSets()
             )),
             map((results: any[]) => [
                 results[0].map((r) => r.attributes),
                 results[1].map((r) => r.attributes),
-                RxjsHelpers.relationshipArrayToObject(results[2].attributes, 'attackPatterns'),
+                results[2],
                 results[3].map((r) => r.attributes),
                 results[4].map((r) => r.attributes),
                 results[5],
-                RxjsHelpers.relationshipArrayToObject(results[6].attributes, 'intrusionSets'),
+                results[6],
                 results[7].map((r) => r.attributes)
             ]),
             mergeMap(([identities, indicators, indicatorToApMap, sensors, attackPatterns, indCount, intrToApMap, intrusionSets]) => [
@@ -126,13 +134,44 @@ export class IndicatorSharingEffects {
 
     @Effect()
     public createIndicatorToAttackPatternRelationship = this.actions$
-        .ofType(indicatorSharingActions.CREATE_IND_TO_AP_RELATIONSHIP)
+        .ofType(indicatorSharingActions.CREATE_IND_TO_AP_RELATIONSHIPS)
         .pipe(
             pluck('payload'),
-            switchMap((payload: { indicatorId: string, attackPatternId: string, createdByRef: string }) => {
-                return this.indicatorSharingService.createIndToApRelationship(payload.indicatorId, payload.attackPatternId, payload.createdByRef);
+            switchMap((payload: { indicatorId: string, attackPatternIds: string[], createdByRef: string }) => {
+                const obs$ = [];
+                payload.attackPatternIds.forEach((attackPatternId) => {
+                    obs$.push(this.indicatorSharingService.createIndToApRelationship(payload.indicatorId, attackPatternId, payload.createdByRef));
+                });
+                return observableForkJoin(...obs$);
             }),
-            map((_) => new indicatorSharingActions.RefreshApMap())
+            withLatestFrom(this.store.select('indicatorSharing')),
+            map(([responses, indicatorSharingStore]: [any, fromIndicators.IndicatorSharingState]) => {
+                const killChainPhaseSet = new Set();
+
+                const indicatorId = responses.length > 0 && responses[0].length > 0 && responses[0][0].attributes && responses[0][0].attributes.source_ref;
+                const indicator = indicatorSharingStore.indicators.find((ind) => ind.id === indicatorId);
+                if (indicator && indicator.kill_chain_phases && indicator.kill_chain_phases.length) {
+                    indicator.kill_chain_phases.forEach((kcp) => killChainPhaseSet.add(JSON.stringify(kcp)));
+                }
+                const originalKcpSize = killChainPhaseSet.size;
+
+                responses
+                    .filter((response) => response.length && response[0].attributes && response[0].attributes.target_ref)
+                    .map((response) => indicatorSharingStore.attackPatterns.find((attackPattern) => attackPattern.id === response[0].attributes.target_ref))
+                    .filter((attackPattern) => !!attackPattern && attackPattern.kill_chain_phases && attackPattern.kill_chain_phases.length)
+                    .forEach((attackPattern) => {
+                        attackPattern.kill_chain_phases.forEach((kcp) => killChainPhaseSet.add(JSON.stringify(kcp)));
+                    });
+                
+                if (killChainPhaseSet.size > originalKcpSize) {
+                    indicator.kill_chain_phases = Array.from(killChainPhaseSet)
+                        .map((kcp) => JSON.parse(kcp));
+
+                    return new indicatorSharingActions.StartUpdateIndicator(indicator);
+                } else {
+                    return new indicatorSharingActions.RefreshApMap();
+                }
+            })
         );
         
     @Effect()
@@ -140,7 +179,8 @@ export class IndicatorSharingEffects {
         .ofType(indicatorSharingActions.REFRESH_AP_MAP)
         .pipe(
             switchMap((_) => this.indicatorSharingService.getAttackPatternsByIndicator()),
-            map((res: any) => RxjsHelpers.relationshipArrayToObject(res.attributes, 'attackPatterns')),
+            RxjsHelpers.unwrapJsonApi(),
+            RxjsHelpers.relationshipArrayToObject('attackPatterns'),
             map((indicatorToApMap) => new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap))
         );
 

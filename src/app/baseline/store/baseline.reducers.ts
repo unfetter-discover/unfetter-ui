@@ -74,6 +74,13 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 ...state,
                 baselineObjAssessments: action.payload,
             });
+        case baselineActions.REMOVE_CAPABILITY_GROUP_FROM_BASELINE:
+            const catToDelete = action.payload;
+            const updatedGroupList = state.baselineGroups.filter((group) => group.id !== catToDelete.id);
+            return genAssessState({
+                ...state,
+                baselineGroups: [...updatedGroupList],
+            });
         case baselineActions.SET_CAPABILITY_GROUPS:
             return genAssessState({
                 ...state,
@@ -95,7 +102,7 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 capabilities: [...action.payload],
             });
         case baselineActions.ADD_CAPABILITY_TO_BASELINE:
-            const capList1 = state.baselineCapabilities;
+            const capList1 = [...state.baselineCapabilities];
             capList1.push(action.payload);
             return genAssessState({
                 ...state,
@@ -104,17 +111,20 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
         case baselineActions.REPLACE_CAPABILITY_IN_BASELINE:
             const oldCap = action.payload[0];
             const newCap = action.payload[1];    
-            const capList2 = state.baselineCapabilities;
+            const capList2 = [...state.baselineCapabilities];
             const replIndex = capList2.indexOf(oldCap);
             capList2[replIndex] = newCap;
             return genAssessState({
                 ...state,
                 baselineCapabilities: capList2,
             });
-        case baselineActions.REMOVE_CAPABILITY_FROM_BASELINE:
-            const capList3 = state.baselineCapabilities;
-            const remIndex = capList3.indexOf(action.payload);
-            capList3.splice(remIndex, 1);
+        case baselineActions.REMOVE_CAPABILITIES_FROM_BASELINE:
+            const capsToRemove = [...action.payload];
+            const capList3 = [...state.baselineCapabilities];
+            capsToRemove.forEach((cap) => {
+                const remIndex = capList3.indexOf(cap);
+                capList3.splice(remIndex, 1);
+            });
             return genAssessState({
                 ...state,
                 baselineCapabilities: capList3,
@@ -129,20 +139,13 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 ...state,
                 currentCapability: action.payload,
             });
-        case baselineActions.ADD_OBJECT_ASSESSMENT:
-            const objAssessments = state.baselineObjAssessments;
-            objAssessments.push(action.payload);
-            return genAssessState({
-                ...state,
-                baselineObjAssessments: objAssessments,
-            });
         case baselineActions.ADD_OBJECT_ASSESSMENT_TO_BASELINE:
             const objAssessment = action.payload;
 
             // Add object assessment to baseline and list of object assessments in this baseline
             const currBaseline = state.baseline;
             currBaseline.assessments.push(objAssessment.id);
-            const objAssessments2 = state.baselineObjAssessments;
+            const objAssessments2 = [...state.baselineObjAssessments];
             objAssessments2.push(objAssessment);
 
             return genAssessState({
@@ -150,19 +153,20 @@ export function baselineReducer(state = initialState, action: baselineActions.Ba
                 baseline: currBaseline,
                 baselineObjAssessments: objAssessments2,
             });
-        case baselineActions.REMOVE_OBJECT_ASSESSMENT_FROM_BASELINE:
-            const oaToRemove = action.payload;
-
-            // Remove object assessment from OAs in this baseline
-            const oasInBL = state.baselineObjAssessments;
-            const oaBLIndex = oasInBL.findIndex((oa) => oa.id === oaToRemove.id);
-            oasInBL.splice(oaBLIndex, 1);
-
-            // Remove object assessment from baseline
+        case baselineActions.REMOVE_OBJECT_ASSESSMENTS_FROM_BASELINE:
+            const oasToRemove = action.payload;
             const currBaseline2 = state.baseline;
-            const oaIndex = currBaseline2.assessments.findIndex((oaId) => oaId === oaToRemove.id);
-            currBaseline2.assessments.splice(oaIndex, 1);
-            
+
+            const oasInBL = state.baselineObjAssessments;
+            oasToRemove.forEach((oaToRemove) => {
+                // Remove object assessment from OAs in this baseline
+                const oaBLIndex = oasInBL.findIndex((oa) => oa.id === oaToRemove.id);
+                oasInBL.splice(oaBLIndex, 1);    
+                // Remove object assessment from baseline
+                const oaIndex = currBaseline2.assessments.findIndex((oaId) => oaId === oaToRemove.id);
+                currBaseline2.assessments.splice(oaIndex, 1);
+            })
+
             return genAssessState({
                 ...state,
                 baseline: currBaseline2,
