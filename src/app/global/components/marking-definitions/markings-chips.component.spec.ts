@@ -24,16 +24,8 @@ describe('MarkingsChipsComponent', () => {
             definition: {
                 rating: 1,
                 label: 'WEAK'
-            },
-            attributes: {
-                id: 'mdr-1',
-                definition_type: 'rating',
-                definition: {
-                    rating: 1,
-                    label: 'WEAK'
-                }
             }
-        } as MarkingDefinition,
+        } as any,
         {
             id: 'mdr-10',
             type: StixCoreEnum.MARKING_DEFINITION,
@@ -42,16 +34,8 @@ describe('MarkingsChipsComponent', () => {
             definition: {
                 rating: 10,
                 label: 'STRONG'
-            },
-            attributes: {
-                id: 'mdr-10',
-                definition_type: 'rating',
-                definition: {
-                    rating: 10,
-                    label: 'STRONG'
-                }
             }
-        } as MarkingDefinition,
+        } as any,
     ];
 
     beforeEach(async(() => {
