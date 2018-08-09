@@ -1,5 +1,5 @@
 
-import { filter, pluck, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { filter, pluck, debounceTime, distinctUntilChanged, take } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -22,6 +22,23 @@ export class SearchBarComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.store.select('indicatorSharing')
+      .pipe(
+        pluck('searchParameters'),
+        pluck('indicatorName'),
+        take(1)
+      )
+      .subscribe(
+        (indicatorName: string) => {
+          if (this.searchTerm.value === '' && indicatorName !== '') {
+            this.searchTerm.patchValue(indicatorName);
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    
     const searchChanges$ = this.searchTerm.valueChanges.pipe(debounceTime(300),
       distinctUntilChanged())
       .subscribe(
