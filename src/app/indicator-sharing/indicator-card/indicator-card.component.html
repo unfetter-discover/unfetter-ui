@@ -1,4 +1,4 @@
-<mat-card class="indicatorCard uf-mat-card" *ngIf="indicator">
+<mat-card class="indicatorCard uf-mat-card" *ngIf="indicator" [class.collapsed]="collapseContents">
   <mat-card-header>
     <mat-card-title>        
         <span>{{ indicator.name }}</span>

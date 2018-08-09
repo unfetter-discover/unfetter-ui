@@ -35,7 +35,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public DEFAULT_LENGTH: number = Constance.INDICATOR_SHARING.DEFAULT_LIST_LENGTH;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
-    public collapseAllCards: boolean = false;
+    public collapseAllCards: boolean = true;
     public activeMainWell: mainWell = 'tactics';
     public totalIndicatorCount$: Observable<number>;
     public userToken$: Observable<string>;

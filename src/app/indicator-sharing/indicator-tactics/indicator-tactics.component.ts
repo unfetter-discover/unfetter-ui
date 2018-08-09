@@ -72,8 +72,6 @@ export class IndicatorTacticsComponent implements OnInit, OnChanges {
         toolboxTheme: 'theme-bg-primary-lightest analytic-carousel-button'
     };
 
-    @Input() public collapseSubject: BehaviorSubject<boolean>;
-
     constructor() { }
 
     /**

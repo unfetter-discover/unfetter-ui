@@ -51,6 +51,10 @@ markings-chips {
 }
 
 :host ::ng-deep {
+    .indicatorCard.collapsed .mat-card-actions {
+        margin-top: -40px;
+    }
+
     .mat-card-header-text {
         width: 100%;
 
