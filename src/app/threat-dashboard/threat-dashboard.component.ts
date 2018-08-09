@@ -109,7 +109,8 @@ export class ThreatDashboardComponent implements OnInit, OnDestroy {
       .subscribe(
         (id: string) => {
           const getUser$ = this.userStore
-            .select('users').pipe(
+            .select('users')
+            .pipe(
               pluck('userProfile'),
               take(1))
             .subscribe((user: UserProfile) => {
