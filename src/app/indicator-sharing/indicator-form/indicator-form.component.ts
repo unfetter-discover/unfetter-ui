@@ -1,8 +1,9 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { of as observableOf, forkJoin as observableForkJoin, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, debounceTime, switchMap, pluck, tap, finalize } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize, take, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { MatStep } from '@angular/material';
@@ -25,7 +26,6 @@ import { GridFSFile } from '../../global/models/grid-fs-file';
 import { MasterConfig } from '../../core/services/run-config.service';
 import { MarkingDefinition } from '../../models';
 import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
-
 
 @Component({
   selector: 'indicator-form',
@@ -83,14 +83,37 @@ export class IndicatorFormComponent implements OnInit {
     private authService: AuthService,
     private genericApi: GenericApi,
     private store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
-    public location: Location
+    public location: Location,
+    private route: ActivatedRoute
   ) { }
 
   public ngOnInit() {
     this.resetForm();
-    if (this.editData) {
-      this.editMode = true;
-      this.setEditValues();
+    const route = this.route.snapshot.url.length && this.route.snapshot.url[0].path;
+    if (route === 'edit') {
+      this.route.params
+        .pipe(
+          pluck('id'),
+          take(1),
+          withLatestFrom(
+            this.store.select('indicatorSharing').pipe(pluck('indicators'))
+          )
+        )
+        .subscribe(
+          ([indicatorId, indicators]: [string, any[]]) => {
+            const indicatorToEdit = indicators.find((indicator) => indicator.id === indicatorId);
+            if (indicatorToEdit) {
+              this.editData = indicatorToEdit;
+              this.editMode = true;
+              this.setEditValues();
+            } else {
+              // TODO handle error
+            }
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
     }
 
     const userId = this.authService.getUser()._id;

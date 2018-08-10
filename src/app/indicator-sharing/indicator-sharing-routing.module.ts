@@ -28,7 +28,7 @@ const routes = [
                 component: IndicatorFormComponent
             },
             {
-                path: 'edit',
+                path: 'edit/:id',
                 component: IndicatorFormComponent
             }
         ]

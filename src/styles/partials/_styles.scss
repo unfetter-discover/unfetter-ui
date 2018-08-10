@@ -44,6 +44,13 @@ label {
     background-color: #F44336 !important
 }
 
+.plainLink {
+    &:focus {
+        outline: none !important;
+    }
+    text-decoration: none !important;
+}
+
 .theme-bg-primary {
     @include themePrimaryColors('background-color');
 }

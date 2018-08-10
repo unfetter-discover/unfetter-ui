@@ -4,7 +4,6 @@ import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable ,  BehaviorSubject } from 'rxjs';
 
-import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { Constance } from '../../utils/constance';
@@ -167,38 +166,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         this.dialog.closeAll();
     }
 
-    public openDialog(data?: any) {
-        const configObj = {
-            width: Constance.DIALOG_WIDTH_MEDIUM,
-            height: Constance.DIALOG_HEIGHT_TALL
-        };
-        if (data) {
-            configObj['data'] = data;
-        }
-        const dialogRef = this.dialog.open(AddIndicatorComponent, configObj);
-
-        const dialogRefClose$ = dialogRef.afterClosed()
-            .subscribe(
-                (res) => {
-                    if (res && !res.editMode) {
-                        this.store.dispatch(new indicatorSharingActions.AddIndicator(res.indicator));
-                        this.store.dispatch(new indicatorSharingActions.FetchIndicators());
-                        if (res.newRelationships) {
-                            this.store.dispatch(new indicatorSharingActions.RefreshApMap());
-                        }
-                    } else if (res && res.editMode) {
-                        this.store.dispatch(new indicatorSharingActions.StartUpdateIndicator(res.indicator));
-                    }
-                },
-                (err) => {
-                    console.log(err);
-                },
-                () => {
-                    dialogRefClose$.unsubscribe();
-                }
-            );
-    }
-
     public showMoreIndicators() {
         this.store.dispatch(new indicatorSharingActions.ShowMoreIndicators());
         this.changeDetectorRef.markForCheck();
@@ -235,10 +202,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 },
                 () => closeDialog$.unsubscribe()
             );
-    }
-
-    public editIndicator(indicatorToEdit: any) {
-        this.openDialog(indicatorToEdit);
     }
 
     public setMainWell(wellTab: mainWell) {

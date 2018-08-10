@@ -15,10 +15,10 @@
                 <mat-icon>file_download</mat-icon>
                 <span>Download</span>
             </button>
-            <button mat-menu-item (click)="editIndicator()" *ngIf="canCrud">
+            <a mat-menu-item class="plainLink" routerLink="/indicator-sharing/edit/{{ indicator.id }}" *ngIf="canCrud">
                 <mat-icon>create</mat-icon>
                 <span>Edit</span>
-            </button>
+            </a>
             <button mat-menu-item (click)="deleteIndicator()" *ngIf="canCrud">
                 <mat-icon>delete</mat-icon>
                 <span>Delete</span>
