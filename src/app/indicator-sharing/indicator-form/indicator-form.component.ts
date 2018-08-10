@@ -5,12 +5,13 @@ import { Store } from '@ngrx/store';
 import { Location } from '@angular/common';
 
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA, MatStep } from '@angular/material';
+import { MatStep } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
+import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { AuthService } from '../../core/services/auth.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
 import { PatternHandlerTranslateAll, PatternHandlerGetObjects, PatternHandlerPatternObject } from '../../global/models/pattern-handlers';
@@ -300,17 +301,19 @@ export class IndicatorFormComponent implements OnInit {
       //   'indicator': tempIndicator,
       //   'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined),
       //   editMode: this.editMode
-      // });
+      // }); 
+      this.store.dispatch(new indicatorSharingActions.StartUpdateIndicator(tempIndicator));
+      this.location.back();
     } else {
       const addIndicator$ = this.indicatorSharingService.addIndicator(tempIndicator)
         .subscribe(
           (res) => {
-            this.resetForm();
-            // this.dialogRef.close({
-            //   'indicator': res[0].attributes,
-            //   'newRelationships': (tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined),
-            //   editMode: this.editMode
-            // });
+            this.store.dispatch(new indicatorSharingActions.AddIndicator(res[0].attributes));
+            this.store.dispatch(new indicatorSharingActions.FetchIndicators());
+            if ((tempIndicator.metaProperties !== undefined && tempIndicator.metaProperties.relationships !== undefined)) {
+              this.store.dispatch(new indicatorSharingActions.RefreshApMap());
+            }
+            this.location.back();
           },
           (err) => {
             console.log(err);

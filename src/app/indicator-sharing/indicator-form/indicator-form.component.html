@@ -10,7 +10,7 @@
     </p>
   </span>
   <span id="formWrapper" class="flex1 container">
-     <form [formGroup]="form" novalidate (ngSubmit)="submitIndicator()">
+     <form [formGroup]="form" novalidate>
         <mat-horizontal-stepper (selectionChange)="stepperChanged($event)">
 
             <mat-step label="Base Data {{ stepOneInvalid() ? '(Required Fields Remaining)' : '' }}">
@@ -248,7 +248,7 @@
   <span class="container">
     <p class="text-right mt-6">
       <button mat-button type="button" (click)="location.back()">CANCEL</button>
-      <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit">SAVE</button>
+      <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit" (click)="submitIndicator()">SAVE</button>
     </p>
   </span>
 

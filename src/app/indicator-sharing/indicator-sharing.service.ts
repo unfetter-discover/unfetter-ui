@@ -114,7 +114,10 @@ export class IndicatorSharingService {
                 }
             }
         };
-        return this.genericApi.get(`${this.sensorsUrl}?project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}&metaproperties=true`);
+        const sortObj = {
+            'stix.name': 1
+        };
+        return this.genericApi.get(`${this.sensorsUrl}?project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}&sort=${JSON.stringify(sortObj)}&metaproperties=true`);
     }
 
     public getTotalIndicatorCount(): Observable<number> {
@@ -214,6 +217,9 @@ export class IndicatorSharingService {
             'stix.name': 1,
             'stix.id': 1
         }
-        return this.genericApi.get(`${this.intrusionSetsUrl}?project=${encodeURI(JSON.stringify(projectObj))}`);
+        const sortObj = {
+            'stix.name': 1
+        };
+        return this.genericApi.get(`${this.intrusionSetsUrl}?project=${encodeURI(JSON.stringify(projectObj))}&sort=${encodeURI(JSON.stringify(sortObj))}`);
     }
 }

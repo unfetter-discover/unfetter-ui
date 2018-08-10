@@ -1,12 +1,11 @@
 
-import { filter, pluck, debounceTime, distinctUntilChanged, take } from 'rxjs/operators';
+import { filter, pluck, debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
-import { SearchParameters } from '../models/search-parameters';
 
 @Component({
   selector: 'search-bar',
@@ -22,54 +21,39 @@ export class SearchBarComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.store.select('indicatorSharing')
+    const getIndicatorName$ = this.store.select('indicatorSharing')
       .pipe(
         pluck('searchParameters'),
         pluck('indicatorName'),
-        take(1)
+        distinctUntilChanged<string>(),
+        filter((indicatorName) => indicatorName !== this.searchTerm.value),
+        finalize(() => getIndicatorName$ && getIndicatorName$.unsubscribe())
       )
       .subscribe(
-        (indicatorName: string) => {
-          if (this.searchTerm.value === '' && indicatorName !== '') {
-            this.searchTerm.patchValue(indicatorName);
-          }
+        (indicatorName) => {
+          console.log('Setting search term based off of change in NGRX');
+          this.searchTerm.patchValue(indicatorName);
         },
         (err) => {
           console.log(err);
         }
       );
     
-    const searchChanges$ = this.searchTerm.valueChanges.pipe(debounceTime(300),
-      distinctUntilChanged())
+    const searchChanges$ = this.searchTerm.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged<string>(),
+        finalize(() => searchChanges$ && searchChanges$.unsubscribe())
+      )
       .subscribe(
-        (indicatorName: string) => {
+        (indicatorName) => {
           this.store.dispatch(new indicatorSharingActions.SetSearchParameters({ indicatorName }));
           this.store.dispatch(new indicatorSharingActions.FetchIndicators());
         },
         (err) => {
           console.log(err);
-        },
-        () => {
-          searchChanges$.unsubscribe();
         }
-      );
-
-    const indicatorName$ = this.store.select('indicatorSharing').pipe(
-      pluck('searchParameters'),
-      pluck('indicatorName'),
-      distinctUntilChanged(),
-      filter((indicatorName: string) => indicatorName === ''))
-      .subscribe(
-        (_) => {
-          this.searchTerm.setValue('');
-        },
-        (err) => {
-          console.log(err);
-        },
-        () => {
-          indicatorName$.unsubscribe();
-        }
-      );    
+      );   
   }
 
 }
