@@ -426,10 +426,12 @@ export abstract class HeatmapRenderer {
         const scale = d3.zoomTransform(this.minimap.workspace.panner.node()).k;
         if (scale < 1) { // don't bother if we are already zoomed all the way out
             const ev = event.sourceEvent || event;
+            const offsetX = ev.layerX || ev.offsetX;
+            const offsetY = ev.layerY || ev.offsetY;
             const pannerRect = this.minimap.workspace.panner.node().getBoundingClientRect();
             const transform = d3.zoomIdentity
-                .translate(ev.offsetX - this.minimap.workspace.startX - pannerRect.width / 2,
-                    ev.offsetY - this.minimap.workspace.startY - pannerRect.height / 2)
+                .translate(offsetX - this.minimap.workspace.startX - pannerRect.width / 2,
+                    offsetY - this.minimap.workspace.startY - pannerRect.height / 2)
                 .scale(scale);
             const tx = Math.min(Math.max(0, transform.x), this.minimap.view.width * (1 - transform.k));
             const ty = Math.min(Math.max(0, transform.y), this.minimap.view.height * (1 - transform.k));
