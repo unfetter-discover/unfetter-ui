@@ -10,6 +10,7 @@ import {
     Renderer2,
     EventEmitter,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { OverlayRef, Overlay } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
@@ -17,7 +18,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { Tactic } from '../tactics.model';
 import { TacticsTooltipService, TooltipEvent } from './tactics-tooltip.service';
 import { AuthService } from '../../../../core/services/auth.service';
-import { Subscription } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
     selector: 'tactics-tooltip',
@@ -172,7 +173,7 @@ export class TacticsTooltipComponent implements OnInit, OnDestroy {
      * @description
      */
     public isAdminUser(): boolean {
-        return this.authService.isAdmin();
+        return environment.runMode === 'DEMO' ||  this.authService.isAdmin();
     }
 
 }
