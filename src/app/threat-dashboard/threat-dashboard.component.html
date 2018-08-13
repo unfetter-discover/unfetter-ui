@@ -85,11 +85,11 @@
                             <unf-radar-chart #radarChart *ngIf="radarData" [data]="radarData" (renderComplete)="radarRendered()"></unf-radar-chart>
                         </div>
                     </mat-tab>
-                    <mat-tab label="MITIGATIONS" disabled="true">
-                        <p>Mitigations goes here!</p>
+                    <mat-tab label="MITIGATIONS">
+                        <unf-mitigation-component [threatReport]="threatReport" [coursesOfAction]="intrusionSetsDashboard?.coursesOfAction"></unf-mitigation-component>
                     </mat-tab>
                     <mat-tab label="EXPORT" disabled="false">
-                        <div class="mb-18 mt-18 ml-16 mr-16 mat-card cardHoverShadow">
+                        <div class="mb-18 mt-18 ml-16 mr-16 mat-card mat-elevation-z3 cardHoverShadow">
                             <unf-export-component [threatReport]="threatReport"></unf-export-component>
                         </div>
                     </mat-tab>

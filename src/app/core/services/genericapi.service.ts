@@ -11,7 +11,7 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { LastModifiedStix } from '../../global/models/last-modified-stix';
 import { StixLabelEnum } from '../../models/stix/stix-label.enum';
 import { NavigateToErrorPage } from '../../root-store/utility/utility.actions';
-import { StixCore, MarkingDefinition } from 'stix';
+import { StixCore } from 'stix';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { StixApiOptions } from '../../global/models/stix-api-options';
 import { StixUrls } from '../../global/enums/stix-urls.enum';
@@ -74,7 +74,7 @@ export class GenericApi {
      * @param {StixApiOptions} options
      * @return {Observable<T>} 
      */
-    public getStix<T extends StixCore[] | StixCore | MarkingDefinition | MarkingDefinition[]>(url: StixUrls, id?: string, options?: StixApiOptions): Observable<T> {
+    public getStix<T extends StixCore[] | StixCore>(url: StixUrls, id?: string, options?: StixApiOptions): Observable<T> {
         let builtUrl = this.baseUrl + url;
 
         if (id) {
