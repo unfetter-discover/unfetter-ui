@@ -98,10 +98,11 @@ describe('IndicatorTacticsComponent', () => {
 
     it('should handle input data', () => {
         component.indicators = [0, 1, 2, 3].map(i => ({id: `A${i}`}));
-        component.mappings = [0, 1, 2].reduce((maps, i) => {
-            maps[`A${i}`] = [mockAttackPatternData[i]];
+        component.mappings = [0, 1].reduce((maps, i) => {
+            maps[`A${i}`] = [mockAttackPatternData[i], mockAttackPatternData[i + 1]];
             return maps;
         }, {});
+        component.mappings['A2'] = [mockAttackPatternData[2]];
         component.targets = mockTargets;
         component.ngOnChanges();
         fixture.detectChanges();

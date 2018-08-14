@@ -95,7 +95,7 @@ export class TacticsTooltipComponent implements OnInit, OnDestroy {
             return;
         }
         if (!event || !event.data || !event.data.id) {
-            if (event.source) {
+            if (event && event.source) {
                 this.hideTacticTooltip(this.tooltipTarget);
             }
         } else {
