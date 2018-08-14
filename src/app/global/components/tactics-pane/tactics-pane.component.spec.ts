@@ -118,15 +118,33 @@ describe('TacticsPaneComponent', () => {
     });
 
     it('should pass hover events', () => {
-        const spy = spyOn(component.tooltips, 'handleTacticTooltip').and.callFake(() => {});
+        const passingSpy = spyOn(component.tooltips, 'handleTacticTooltip').and.callFake(() => {});
         component.onHover({type: 'hover'} as TooltipEvent);
-        expect(spy).toHaveBeenCalled();
+        expect(passingSpy).toHaveBeenCalled();
+
+        const emittingSpy = spyOn(component.hover, 'emit').and.callThrough();
+        component.hover.observers.push({
+            next: ev => console.log('next', ev),
+            error: err => console.log('error', err),
+            complete: () => {}
+        });
+        component.onHover({type: 'hover'} as TooltipEvent);
+        expect(emittingSpy).toHaveBeenCalled();
     });
 
     it('should pass click events', () => {
-        const spy = spyOn(component.tooltips, 'handleTacticTooltip').and.callFake(() => {});
+        const passingSpy = spyOn(component.tooltips, 'handleTacticTooltip').and.callFake(() => {});
         component.onClick({type: 'click'} as TooltipEvent);
-        expect(spy).toHaveBeenCalled();
+        expect(passingSpy).toHaveBeenCalled();
+
+        const emittingSpy = spyOn(component.click, 'emit').and.callThrough();
+        component.click.observers.push({
+            next: ev => console.log('next', ev),
+            error: err => console.log('error', err),
+            complete: () => {}
+        });
+        component.onClick({type: 'click'} as TooltipEvent);
+        expect(emittingSpy).toHaveBeenCalled();
     });
 
     it('should handle collapse events', () => {

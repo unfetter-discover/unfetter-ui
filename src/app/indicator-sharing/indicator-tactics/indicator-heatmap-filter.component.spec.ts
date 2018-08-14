@@ -189,10 +189,6 @@ describe('IndicatorHeatMapFilterComponent', () => {
             expect(component).toBeTruthy();
             expect(Object.values(component.attackPatterns).length).toBe(2);
             fixture.detectChanges();
-            // fixture.whenStable().then(() => {
-            //     const first = fixture.nativeElement.querySelector('g.heat-map-cell');
-            //     expect(first).not.toBeNull();
-            // });
         });
     }));
 
@@ -207,6 +203,26 @@ describe('IndicatorHeatMapFilterComponent', () => {
             const spy = spyOn(component, 'toggleAttackPattern').and.callThrough();
             first.dispatchEvent(new Event('click'));
             expect(spy).toHaveBeenCalled();
+            first.dispatchEvent(new Event('click'));
+            expect(spy).toHaveBeenCalledTimes(2);
+            first.dispatchEvent(new Event('click'));
+            expect(spy).toHaveBeenCalledTimes(3);
+            component.close();
+            expect(component.selections.length).toBe(2);
+        });
+    }));
+
+    it('should clear selections', async(() => {
+        fixture.whenStable().then(() => {
+            component.heatmapOptions.hover = {delay: 2};
+            fixture.detectChanges();
+
+            const first = fixture.nativeElement.querySelector('g.heat-map-cell');
+            expect(first).not.toBeNull();
+            first.dispatchEvent(new Event('click'));
+            component.clearSelections();
+            component.close();
+            expect(component.selections.length).toBe(0);
         });
     }));
 
