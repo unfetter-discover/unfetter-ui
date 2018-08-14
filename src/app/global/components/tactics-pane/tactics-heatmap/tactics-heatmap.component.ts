@@ -98,6 +98,7 @@ export class TacticsHeatmapComponent extends TacticsView<HeatmapComponent, Heatm
             if (this.heatmap && this.heatmap.options && this.heatmap.options.color) {
                 this.heatmap.options.color.heatColors = heats;
                 console['debug'](`(${new Date().toISOString()}) heatmap heats`, this.heatmap.options.color.heatColors);
+                this.heatmap.redraw();
             }
         });
     }
