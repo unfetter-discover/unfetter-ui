@@ -118,7 +118,9 @@ export class HeatmapComponent implements OnInit, AfterViewInit, OnChanges, Heatm
      * @description Force a complete redraw of the heatmap.
      */
     public redraw() {
-        this.resizer.sensor.reset();
+        if (this.resizer && this.resizer.sensor) {
+            this.resizer.sensor.reset();
+        }
         this.helper.createHeatmap();
         this.changeDetector.markForCheck();
     }
