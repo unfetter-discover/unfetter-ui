@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'sighting-home',
@@ -6,6 +7,6 @@ import { Component } from '@angular/core';
 })
 export class SightingHomeComponent {
   public pageTitle = 'Sighting';
-  public pageIcon = 'assets/icon/stix-icons/svg/relationship-b.svg';
+  public pageIcon = Constance.SIGHTING_ICON;
   public description = 'A sighting is a time in which a particular Campaign, Intrusion Set, or Incident was observed.';
 }

@@ -18,15 +18,15 @@ export const Constance = {
   DATE_FORMATE: 'MMM-DD-YYYY',
   REPORTS_URL: StixUrls.REPORT as string,
   REPORTS_TYPE: 'report',
-  REPORTS_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
+  REPORTS_ICON: 'assets/icon/stix-icons/2018/report.svg',
 
   CAMPAIGN_URL: StixUrls.CAMPAIGN as string,
   CAMPAIGN_TYPE: 'campaign',
-  CAMPAIGN_ICON: 'assets/icon/stix-icons/svg/campaign-b.svg',
+  CAMPAIGN_ICON: 'assets/icon/stix-icons/2018/campaign.svg',
 
   COURSE_OF_ACTION_URL: StixUrls.COURSE_OF_ACTION as string,
   COURSE_OF_ACTION_TYPE: 'course-of-action',
-  COURSE_OF_ACTION_ICON: 'assets/icon/stix-icons/svg/course-of-action-b.svg',
+  COURSE_OF_ACTION_ICON: 'assets/icon/stix-icons/2018/coa.svg',
 
   RELATIONSHIPS_URL: StixUrls.RELATIONSHIP as string,
   RELATIONSHIPS_ICON: 'assets/icon/stix-icons/svg/relationship-b.svg',
@@ -43,55 +43,55 @@ export const Constance = {
 
   INDICATOR_URL: StixUrls.INDICATOR as string,
   INDICATOR_TYPE: 'indicator',
-  INDICATOR_ICON: 'assets/icon/stix-icons/svg/indicator-b.svg',
+  INDICATOR_ICON: 'assets/icon/stix-icons/2018/indicator.svg',
 
   ATTACK_PATTERN_URL: StixUrls.ATTACK_PATTERN as string,
   ATTACK_PATTERN_TYPE: 'attack-pattern',
-  ATTACK_PATTERN_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
+  ATTACK_PATTERN_ICON: 'assets/icon/stix-icons/2018/attack-pattern.svg',
 
   THREAT_ACTORS_URL: StixUrls.THREAT_ACTOR as string,
   THREAT_ACTORS_TYPE: 'threat-actor',
-  THREAT_ACTORS_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
+  THREAT_ACTORS_ICON: 'assets/icon/stix-icons/2018/threat-actor.svg',
 
   IDENTITY_URL: StixUrls.IDENTITY as string,
   IDENTITY_TYPE: 'identity',
-  IDENTITY_ICON: 'assets/icon/stix-icons/svg/attack-pattern-b.svg',
+  IDENTITY_ICON: 'assets/icon/stix-icons/2018/identity.svg',
 
   INTRUSION_SET_URL: 'api/intrusion-sets',
   INTRUSION_SET_TYPE: 'intrusion-set',
-  INTRUSION_SET_ICON: 'assets/icon/stix-icons/svg/threat-actor-b.svg',
+  INTRUSION_SET_ICON: 'assets/icon/stix-icons/2018/intrusion-set.svg',
 
   SIGHTING_URL: StixUrls.SIGHTING as string,
   SIGHTING_TYPE: 'sighting',
-  SIGHTING_ICON: 'assets/icon/stix-icons/svg/campaign-b.svg',
+  SIGHTING_ICON: 'assets/icon/stix-icons/2018/sighting.svg',
 
   THREAT_DASHBOARD_NAVIGATE_URL: 'threat-dashboard/navigate',
   LATEST_THREAT_REPORTS_URL: `api/latest/threat-reports`,
 
   MALWARE_URL: StixUrls.MALWARE as string,
   MALWARE_TYPE: 'malware',
-  MALWARE_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
+  MALWARE_ICON: 'assets/icon/stix-icons/2018/malware.svg',
 
   MULTIPLES_URL: 'api/multiples',
 
   OBSERVED_DATA_URL: StixUrls.OBSERVED_DATA as string,
   OBSERVED_DATA_TYPE: 'observed-data',
-  OBSERVED_DATA_ICON: 'assets/icon/stix-icons/svg/malware-b.svg',
+  OBSERVED_DATA_ICON: 'assets/icon/stix-icons/2018/malware.svg',
 
   TOOL_URL: StixUrls.TOOL as string,
   TOOL_TYPE: 'tool',
-  TOOL_ICON: 'assets/icon/stix-icons/svg/tool-b.svg',
+  TOOL_ICON: 'assets/icon/stix-icons/2018/tool.svg',
 
   X_UNFETTER_SENSOR_URL: 'api/x-unfetter-sensors',
   X_UNFETTER_SENSOR_TYPE: 'x-unfetter-sensor',
   // TODO change icon
-  X_UNFETTER_SENSOR_ICON: 'assets/icon/stix-icons/svg/tool-b.svg',
+  X_UNFETTER_SENSOR_ICON: 'assets/icon/stix-icons/2018/tool.svg',
 
   X_UNFETTER_ASSESSMENT_NAVIGATE_URL: 'assess/navigate',
   X_UNFETTER_ASSESSMENT_URL: 'api/x-unfetter-assessments',
   X_UNFETTER_ASSESSMENT_TYPE: 'x-unfetter-assessment',
   // TODO change icon
-  X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/svg/report-b.svg',
+  X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/2018/report.svg',
 
   X_UNFETTER_ASSESSMENT3_NAVIGATE_URL: 'assess-beta/navigate',
   

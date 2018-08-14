@@ -1,5 +1,6 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'identity-home',
@@ -8,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class IdentityHomeComponent {
 
     public pageTitle = 'Identity';
-    public pageIcon = 'assets/icon/stix-icons/svg/identity-b.svg';
+    public pageIcon = Constance.IDENTITY_ICON;
     public description = 'An identity can represent actual individuals, organizaitons or groups as well as classes of individuals, organizations or groups.';
 
 }

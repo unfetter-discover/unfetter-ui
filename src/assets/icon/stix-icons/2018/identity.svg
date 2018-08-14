@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="45px" viewBox="0 0 48 45" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>STIX/black/identity</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="STIX/black/identity" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Page-1" transform="translate(8.000000, 7.000000)" fill="#231F20">
+            <path d="M15.9998,14.582 C20.0168,14.582 23.2708,11.329 23.2708,7.311 C23.2708,3.295 20.0168,0.041 15.9998,0.041 C11.9828,0.041 8.7298,3.295 8.7298,7.311 C8.7298,11.329 11.9828,14.582 15.9998,14.582" id="Fill-1"></path>
+            <path d="M15.9998,16.0405 C10.6758,16.0405 0.0458,18.7125 0.0458,24.0175 L0.0458,31.9485 L31.9538,31.9485 L31.9538,24.0175 C31.9538,18.7125 21.3248,16.0405 15.9998,16.0405" id="Fill-3"></path>
+        </g>
+    </g>
+</svg>

@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component } from '@angular/core';
+import { Constance } from '../../../utils/constance';
 
 @Component({
   selector: 'reports',
@@ -6,7 +7,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 })
 export class ReportsComponent {
     public pageTitle = 'Reports';
-    public pageIcon = 'assets/icon/stix-icons/svg/report-b.svg';
+    public pageIcon = Constance.REPORTS_ICON;
     public description = 'A report is a survey of the Courses of Actions that your organization implements, ' +
             'and to what level (High, Medium, or Low).  Unfetter|Discover will use the survey to help you ' +
             'understand your gaps, how important they are and which should be addressed.  You may create ' +
