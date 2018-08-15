@@ -1,6 +1,6 @@
-<div class="piiCheckMessageComponent" *ngIf="piiWarnings.length && piiWarnings.length">
+<div class="piiCheckMessageComponent" *ngIf="showWarnings">
   <span>Please verify there is not a disclosure of Personally Identifiable Information (PII) in the following:</span>
   <ul>
-    <li *ngFor="let piiWarning of piiWarnings">{{ piiWarning.name }}: {{ piiWarning.matches.join(', ') }}</li>
+    <li *ngFor="let piiWarning of piiWarnings$ | async">{{ piiWarning.name }}: {{ piiWarning.matches.join(', ') }}</li>
   </ul>
 </div>

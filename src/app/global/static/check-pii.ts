@@ -10,10 +10,6 @@ export class CheckPII {
             name: 'IP Address'
         },
         {
-            regex: /user(name)?=\w+/ig,
-            name: 'User Name'
-        },
-        {
             regex: /\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+/g,
             name: 'Email'
         }
