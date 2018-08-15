@@ -93,7 +93,8 @@
                     [style.marginTop]="!form.get('pattern').hasError('required') ? '-20px' : '-5px'" 
                     [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'"><i class="material-icons">check</i> Valid STIX Pattern</p>
                     
-                <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message>
+                <!-- TODO uncomment when performance is improved -->
+                <!-- <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message> -->
                 
                 <div class="mb-6">
                     <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">

@@ -20,7 +20,8 @@
         </mat-error>
       </mat-form-field>
       
-      <pii-check-message [formCtrl]="localForm.get('query')"></pii-check-message>
+      <!-- TODO uncomment when performance is improved -->
+      <!-- <pii-check-message [formCtrl]="localForm.get('query')"></pii-check-message> -->
 
       <button mat-button color="accent" [disabled]="localForm.status === 'INVALID'" type="submit" class="mb-3">Attach Query to {{ parentDocumentType | capitalize }}</button>
     </form>

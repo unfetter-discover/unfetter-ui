@@ -7,7 +7,6 @@ describe('CheckPII', () => {
         192.168.1.12
         lorem ipsum
         lorem ipsum lorem@ipsum.com
-        USER=LOREM_ipsum2
         lorem ipsum 8.8.8.8 lorem ipsum
     `;
 

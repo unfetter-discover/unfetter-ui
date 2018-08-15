@@ -1,8 +1,6 @@
-<div class="piiCheckMessageComponent" *ngIf="formCtrl">
-  <div [style.display]="formCtrl.dirty && getPiiWarning(formCtrl.value) && getPiiWarning(formCtrl.value).length && formCtrl.value.length > 0 ? 'block' : 'none'">
-    <span>Please verify there is not a disclosure of Personally Identifiable Information (PII) in the following:</span>
-    <ul>
-      <li *ngFor="let piiWarning of getPiiWarning(formCtrl.value)">{{ piiWarning.name }}: {{ piiWarning.matches.join(', ') }}</li>
-    </ul>
-  </div>
+<div class="piiCheckMessageComponent" *ngIf="showWarnings">
+  <span>Please verify there is not a disclosure of Personally Identifiable Information (PII) in the following:</span>
+  <ul>
+    <li *ngFor="let piiWarning of piiWarnings$ | async">{{ piiWarning.name }}: {{ piiWarning.matches.join(', ') }}</li>
+  </ul>
 </div>
