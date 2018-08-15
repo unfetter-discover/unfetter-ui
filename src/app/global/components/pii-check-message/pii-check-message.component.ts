@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { debounceTime, map, tap } from 'rxjs/operators';
 
 import { CheckPII } from '../../static/check-pii';
-import { debounceTime, map, tap } from '../../../../../node_modules/rxjs/operators';
 
 @Component({
   selector: 'pii-check-message',

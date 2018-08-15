@@ -1,6 +1,8 @@
-<div class="piiCheckMessageComponent" *ngIf="showWarnings">
+<!-- Disabled until performance improves -->
+
+<!-- <div class="piiCheckMessageComponent" [style.display]="showWarnings ? 'block' : 'none'">
   <span>Please verify there is not a disclosure of Personally Identifiable Information (PII) in the following:</span>
   <ul>
     <li *ngFor="let piiWarning of piiWarnings$ | async">{{ piiWarning.name }}: {{ piiWarning.matches.join(', ') }}</li>
   </ul>
-</div>
+</div> -->
