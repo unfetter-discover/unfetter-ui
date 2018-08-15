@@ -41,7 +41,6 @@ import { IndicatorSharingEffects } from './store/indicator-sharing.effects';
 import { IndicatorSharingLayoutComponent } from './indicator-sharing-layout/indicator-sharing-layout.component';
 import { IndicatorSharingListComponent } from './indicator-sharing-list/indicator-sharing-list.component';
 import { IndicatorCardComponent } from './indicator-card/indicator-card.component';
-import { AddIndicatorComponent } from './add-indicator/add-indicator.component';
 import { IndicatorDetailsComponent } from './indicator-details/indicator-details.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { IndicatorSharingSortComponent } from './indicator-sharing-sort/indicator-sharing-sort.component';
@@ -93,7 +92,6 @@ const matModules = [
         IndicatorSharingLayoutComponent,
         IndicatorSharingListComponent,
         IndicatorCardComponent,
-        AddIndicatorComponent,
         IndicatorDetailsComponent,
         SearchBarComponent,
         IndicatorSharingSortComponent,
@@ -109,7 +107,6 @@ const matModules = [
         IndicatorSharingService
     ],
     entryComponents: [
-        AddIndicatorComponent,
         IndicatorHeatMapFilterComponent,
         ObservedDataFilterComponent,
     ]

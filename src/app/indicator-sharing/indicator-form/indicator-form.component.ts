@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { of as observableOf, forkJoin as observableForkJoin, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize, take, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize, take, withLatestFrom, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -58,7 +58,6 @@ export class IndicatorFormComponent implements OnInit {
   public markings = {
     object_marking_refs: []
   };
-  // TODO DELETE THIS!!!!
   public editData: any = null;
 
   @ViewChild('associatedDataStep')
@@ -425,6 +424,21 @@ export class IndicatorFormComponent implements OnInit {
         requestAnimationFrame(() => this.patternObjSubject.next(this.editData.metaProperties.observedData));
       }
     }
+
+    this.store.select('indicatorSharing')
+      .pipe(
+        pluck('indicatorToApMap'),
+        take(1),
+        map((indicatorToApMap) => (indicatorToApMap[this.editData.id] && indicatorToApMap[this.editData.id].map((ap) => ap.id)) || [])
+      )
+      .subscribe(
+        (apIds) => {
+          this.form.get('metaProperties').get('relationships').setValue(apIds);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   }
 
   private pruneQueries(tempIndicator) {
