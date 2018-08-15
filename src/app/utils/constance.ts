@@ -85,7 +85,7 @@ export const Constance = {
   X_UNFETTER_SENSOR_URL: 'api/x-unfetter-sensors',
   X_UNFETTER_SENSOR_TYPE: 'x-unfetter-sensor',
   // TODO change icon
-  X_UNFETTER_SENSOR_ICON: 'assets/icon/stix-icons/2018/tool.svg',
+  X_UNFETTER_SENSOR_ICON: 'assets/icon/stix-icons/2018/sensor.svg',
 
   X_UNFETTER_ASSESSMENT_NAVIGATE_URL: 'assess/navigate',
   X_UNFETTER_ASSESSMENT_URL: 'api/x-unfetter-assessments',
