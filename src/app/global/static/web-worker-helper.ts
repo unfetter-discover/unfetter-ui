@@ -18,8 +18,6 @@ export interface WorkerMessage<T = any> {
  */
 export class WebWorkerHelpers {
 
-    // TODO handle ordering of messages
-
     /**
      * @param  {Observable<U>} messages$
      * @param  {WorkerUrls} workerUrl
@@ -27,7 +25,7 @@ export class WebWorkerHelpers {
      * @description Takes an observable of messages to be posted to a web worker,
      *      returns an observable of messages recieved from the web worker
      */
-    public static createWebWorkerSubject<T = any, U extends WorkerMessage = WorkerMessage>(messages$: Observable<U>, workerUrl: WorkerUrls): Observable<T> {
+    public static createWebWorkerSubject<T = any, U = any>(messages$: Observable<WorkerMessage<U>>, workerUrl: WorkerUrls): Observable<T> {
         if (typeof (Worker) !== 'undefined') {
             try {
                 const worker = new Worker(workerUrl);
@@ -56,7 +54,7 @@ export class WebWorkerHelpers {
                 return observableOf(null);
             }
         } else {
-            console.log('Unable to create webworker');
+            console.log('Web workers are not supported in this browser');
             return observableOf(null);
         }
     }
