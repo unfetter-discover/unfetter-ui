@@ -1,5 +1,14 @@
 @import '../../../styles/_variables.scss';
 
+#indicatorFormComponent {
+  height: calc(100vh - #{$navbar-height}px);
+  background: #fff;
+}
+
+#formWrapper {
+  overflow-y: auto;
+}
+
 #filterTitle {
   height: 64px;
   background: $analytic-exchange-primary-lighter;
@@ -51,17 +60,9 @@
   }
 }
 
-a:focus {
-  outline: none !important;
-}
-
 @media (min-width: 1500px) {
   .filterOpenBreakpoint {
     width: 80%;
-  }
-  
-  /* stylelint-disable no-duplicate-selectors */
-  .filterOpenBreakpoint {
     margin-left: 10%;
   }
 }
@@ -69,9 +70,6 @@ a:focus {
 @media (min-width: 1700px) {
   .filterOpenBreakpoint {
     width: 66.66666667%;
-  }
-
-  .filterOpenBreakpoint {
     margin-left: 16.66666667%;
   }
 }
@@ -80,8 +78,9 @@ a:focus {
   #listControlFlexWraper {
     flex-direction: column;
     align-items: flex-start;
-
-    #spacer1, #spacer2 {
+    
+    #spacer1,
+    #spacer2 {
       display: none;
     }
   }

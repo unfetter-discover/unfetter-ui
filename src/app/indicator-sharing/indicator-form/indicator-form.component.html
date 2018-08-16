@@ -1,13 +1,17 @@
-<p mat-dialog-title class="lead mb-6">
-    <span *ngIf="!editMode">Add</span>
-    <span *ngIf="editMode">Edit</span>
-    <span> Analytic</span>
-</p>
-
-<mat-dialog-content id="addIndicator">
-    <form [formGroup]="form" novalidate (ngSubmit)="submitIndicator()">
-
-        <mat-vertical-stepper (selectionChange)="stepperChanged($event)">
+<div id="indicatorFormComponent" class="flexCol">
+  <span class="container">
+    <button mat-icon-button class="mat-24 edit-close-button" (click)="location.back()">
+      <mat-icon>close</mat-icon>
+    </button>
+    <p class="lead mb-6">
+        <span *ngIf="!editMode">Add</span>
+        <span *ngIf="editMode">Edit</span>
+        <span> Analytic</span>
+    </p>
+  </span>
+  <span id="formWrapper" class="flex1 container">
+     <form [formGroup]="form" novalidate>
+        <mat-horizontal-stepper (selectionChange)="stepperChanged($event)">
 
             <mat-step label="Base Data {{ stepOneInvalid() ? '(Required Fields Remaining)' : '' }}">
                 <mat-form-field class="full-width mb-6 mt-10">
@@ -93,8 +97,7 @@
                     [style.marginTop]="!form.get('pattern').hasError('required') ? '-20px' : '-5px'" 
                     [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'"><i class="material-icons">check</i> Valid STIX Pattern</p>
                     
-                <!-- TODO uncomment when performance is improved -->
-                <!-- <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message> -->
+                <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message>
                 
                 <div class="mb-6">
                     <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">
@@ -138,7 +141,7 @@
                         </div>
                     </div>
                 </div>
-                 
+                  
                 <div class="mb-6" formGroupName="metaProperties">                
                     <additional-queries [parentForm]="form"></additional-queries>
                     <mat-chip-list formArrayName="additional_queries" *ngIf="form.get('metaProperties').get('additional_queries').value.length > 0" class="chipListPadding">
@@ -228,7 +231,7 @@
                 </div>
             </mat-step>
             
-        </mat-vertical-stepper>
+        </mat-horizontal-stepper>
 
         <div *ngIf="uploadProgress > 0">
             <label>Uploading Files...</label>
@@ -238,11 +241,15 @@
         <div *ngIf="submitErrorMsg" class="uf-well-warn">
             <h5>An Error Occured</h5>
             <p>{{ submitErrorMsg }}</p>
-        </div>
-        <p class="text-right mt-6">
-            <button mat-button mat-dialog-close (click)="resetForm($event); dialogRef.close(false);">CANCEL</button>
-            <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit">SAVE</button>
-        </p>
-    </form>
+        </div>        
+    </form> 
+  </span>
 
-</mat-dialog-content>
+  <span class="container">
+    <p class="text-right mt-6">
+      <button mat-button type="button" (click)="location.back()">CANCEL</button>
+      <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit" (click)="submitIndicator()">SAVE</button>
+    </p>
+  </span>
+
+</div>

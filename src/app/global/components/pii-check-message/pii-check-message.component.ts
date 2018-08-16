@@ -1,28 +1,38 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { debounceTime, map, tap } from 'rxjs/operators';
 
-import { CheckPII } from '../../static/check-pii';
-import { debounceTime, map, tap } from '../../../../../node_modules/rxjs/operators';
+import { WebWorkerHelpers, WorkerUrls } from '../../static/web-worker-helper';
 
 @Component({
   selector: 'pii-check-message',
   templateUrl: './pii-check-message.component.html',
   styleUrls: ['./pii-check-message.component.scss']
 })
-export class PiiCheckMessageComponent implements OnInit {
+export class PiiCheckMessageComponent implements OnInit, OnDestroy {
 
   @Input() public formCtrl: FormControl;
   public piiWarnings$;
   public showWarnings = false;
   
-  constructor() { }
+  constructor() { } 
 
   public ngOnInit() {
-    this.piiWarnings$ = this.formCtrl.valueChanges
+    const formVal$ = this.formCtrl.valueChanges
       .pipe(
         debounceTime(300),
-        map((formVal) => CheckPII.validationErrors(formVal)),
+        map((formVal) => ({ payload: formVal }))
+      );
+    
+    this.piiWarnings$ = WebWorkerHelpers.createWebWorkerSubject<[{ name: string, matches: string[] }], string>(formVal$, WorkerUrls.PII_CHECK)
+      .pipe(
         tap((warnings) => this.showWarnings = warnings.length > 0)
-      )
+      );   
+  }
+
+  public ngOnDestroy() {
+    if (this.piiWarnings$) {
+      this.piiWarnings$.unsubscribe();
+    }
   }
 }

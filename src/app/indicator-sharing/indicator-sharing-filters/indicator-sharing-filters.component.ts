@@ -1,7 +1,7 @@
 
-import { finalize, debounceTime, distinctUntilChanged, pluck, map, filter, withLatestFrom } from 'rxjs/operators';
-import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { finalize, debounceTime, distinctUntilChanged, pluck, map, filter, withLatestFrom, take } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
@@ -41,12 +41,6 @@ export class IndicatorSharingFiltersComponent implements OnInit {
     public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>, 
     private fb: FormBuilder
   ) {
-    const params = { ...fromIndicatorSharing.initialSearchParameters };
-    try {
-      delete params.indicatorName;
-    } catch (e) { }
-    this.searchForm = fb.group(params);
-    this.searchForm.setValue(params);
     this.organizations$ = this.store.select('indicatorSharing')
       .pipe(
         pluck<any, any[]>('identities'),
@@ -61,6 +55,29 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   }
 
   public ngOnInit() {
+    this.store.select('indicatorSharing')
+      .pipe(
+        pluck('searchParameters'),
+        take(1)
+      )
+      .subscribe(
+        (searchParameters: SearchParameters) => {
+          if (!this.searchForm) {
+            const initParams = { ...fromIndicatorSharing.initialSearchParameters };
+            const params = { ...searchParameters };
+            try {
+              delete initParams.indicatorName;
+              delete params.indicatorName;
+            } catch (e) { }
+            this.searchForm = this.fb.group(initParams);
+            this.searchForm.patchValue(params);
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+
     const searchChanges$ = this.searchForm.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged())

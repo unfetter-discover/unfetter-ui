@@ -1,7 +1,7 @@
 <div id="indicatorSharingList" class="fadeIn" *ngIf="SERVER_CALL_COMPLETE; else loadingBlock">
-    <button mat-fab color="primary" class="bottomRightFab" (click)="openDialog()">
+    <a mat-fab color="primary" class="bottomRightFab" routerLink="/indicator-sharing/add">
         <i class="material-icons mat-24">add</i>
-    </button>
+    </a>
 
     <mat-sidenav-container>
         <mat-sidenav #filterContainer id="filterContainer" opened="false" mode="side" class="mat-elevation-z8" (openedStart)="openedStart()"
@@ -38,7 +38,7 @@
                             <div class="pl-24 pr-24 flex flexItemsCenter" id="listControlFlexWraper">
                                 <indicator-sharing-sort></indicator-sharing-sort>
                                 <label class="spacer" id="spacer1">&nbsp;|&nbsp;</label>
-                                <label class="mb-0">Results: {{ filteredIndicators.length }} / {{ totalIndicatorCount$ | async }}</label>
+                                <label class="mb-0" *ngIf="filteredIndicators">Results: {{ filteredIndicators.length }} / {{ totalIndicatorCount$ | async }}</label>
                                 <label class="spacer" id="spacer2">&nbsp;|&nbsp;</label>
                                 <span id="listControlBtns">
                                     <!-- Download bundle -->
@@ -60,8 +60,8 @@
                                         <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'stats'}">equalizer</i>
                                     </button>
                                     <!-- Show heatmap -->
-                                    <button mat-icon-button matTooltip="{{ activeMainWell === 'tactics' ? 'Hide' : 'Show' }} Tactics List" (click)="setMainWell('tactics')">
-                                        <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'tactics'}">view_comfy</i>
+                                    <button mat-icon-button matTooltip="{{ activeMainWell === 'attackPatternsUsed' ? 'Hide' : 'Show' }} Techniques Used" (click)="setMainWell('attackPatternsUsed')">
+                                        <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'attackPatternsUsed'}">view_comfy</i>
                                     </button>
                                 </span>
                             </div>
@@ -73,10 +73,9 @@
                             <div class="pl-24 pr-24" *ngIf="activeMainWell === 'stats'">
                                 <indicator-sharing-summary-statistics></indicator-sharing-summary-statistics>
                             </div>
-                            <div class="pl-24 pr-24" *ngIf="activeMainWell === 'tactics'">
+                            <div class="pl-24 pr-24" *ngIf="activeMainWell === 'attackPatternsUsed'">
                                 <indicator-tactics [indicators]="filteredIndicators"
-                                        [mappings]="indicatorToAttackPatternMap"
-                                        [collapseSubject]="collapseAllCardsSubject"></indicator-tactics>
+                                        [mappings]="indicatorToAttackPatternMap"></indicator-tactics>
                             </div>
                         </div>
                     </div>

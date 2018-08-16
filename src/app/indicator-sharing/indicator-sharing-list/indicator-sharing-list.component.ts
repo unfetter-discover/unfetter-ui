@@ -1,10 +1,9 @@
-import { take, filter, pluck, distinctUntilChanged, distinctUntilKeyChanged, finalize, debounceTime } from 'rxjs/operators';
+import { take, filter, pluck, distinctUntilChanged, finalize, debounceTime } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Observable ,  BehaviorSubject } from 'rxjs';
 
-import { AddIndicatorComponent } from '../add-indicator/add-indicator.component';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 import { Constance } from '../../utils/constance';
@@ -19,7 +18,7 @@ import { IndicatorSharingService } from '../indicator-sharing.service';
 import { downloadBundle } from '../../global/static/stix-bundle';
 import { SearchParameters } from '../models/search-parameters';
 
-type mainWell = 'stats' | 'tactics' | 'none';
+type mainWell = 'stats' | 'attackPatternsUsed' | 'none';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -35,8 +34,8 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public DEFAULT_LENGTH: number = Constance.INDICATOR_SHARING.DEFAULT_LIST_LENGTH;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
-    public collapseAllCards: boolean = false;
-    public activeMainWell: mainWell = 'tactics';
+    public collapseAllCards: boolean = true;
+    public activeMainWell: mainWell = 'attackPatternsUsed';
     public totalIndicatorCount$: Observable<number>;
     public userToken$: Observable<string>;
     public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
@@ -167,38 +166,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         this.dialog.closeAll();
     }
 
-    public openDialog(data?: any) {
-        const configObj = {
-            width: Constance.DIALOG_WIDTH_MEDIUM,
-            height: Constance.DIALOG_HEIGHT_TALL
-        };
-        if (data) {
-            configObj['data'] = data;
-        }
-        const dialogRef = this.dialog.open(AddIndicatorComponent, configObj);
-
-        const dialogRefClose$ = dialogRef.afterClosed()
-            .subscribe(
-                (res) => {
-                    if (res && !res.editMode) {
-                        this.store.dispatch(new indicatorSharingActions.AddIndicator(res.indicator));
-                        this.store.dispatch(new indicatorSharingActions.FetchIndicators());
-                        if (res.newRelationships) {
-                            this.store.dispatch(new indicatorSharingActions.RefreshApMap());
-                        }
-                    } else if (res && res.editMode) {
-                        this.store.dispatch(new indicatorSharingActions.StartUpdateIndicator(res.indicator));
-                    }
-                },
-                (err) => {
-                    console.log(err);
-                },
-                () => {
-                    dialogRefClose$.unsubscribe();
-                }
-            );
-    }
-
     public showMoreIndicators() {
         this.store.dispatch(new indicatorSharingActions.ShowMoreIndicators());
         this.changeDetectorRef.markForCheck();
@@ -235,10 +202,6 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
                 },
                 () => closeDialog$.unsubscribe()
             );
-    }
-
-    public editIndicator(indicatorToEdit: any) {
-        this.openDialog(indicatorToEdit);
     }
 
     public setMainWell(wellTab: mainWell) {
