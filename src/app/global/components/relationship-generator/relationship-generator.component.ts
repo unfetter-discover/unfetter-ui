@@ -7,11 +7,11 @@ import { Constance } from '../../../utils/constance';
 import { RxjsHelpers } from '../../static/rxjs-helpers';
 
 @Component({
-  selector: 'relatationship-generator',
-  templateUrl: './relatationship-generator.component.html',
-  styleUrls: ['./relatationship-generator.component.scss']
+  selector: 'relationship-generator',
+  templateUrl: './relationship-generator.component.html',
+  styleUrls: ['./relationship-generator.component.scss']
 })
-export class RelatationshipGeneratorComponent implements OnInit {
+export class RelationshipGeneratorComponent implements OnInit {
 
   @Input() public model: any;
   @Input() public relatedObjectType: string = 'attack-pattern';

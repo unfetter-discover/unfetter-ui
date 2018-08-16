@@ -32,10 +32,6 @@ export class SidepanelComponent implements OnInit {
 
     public showMinimizeButton = false;
 
-    public options: Array<Option> = [
-      {label: 'Sample Option', icon: 'apps', url: 'sample.url.html'}
-    ];
-
     constructor() {}
 
     ngOnInit() {

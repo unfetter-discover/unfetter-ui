@@ -3,7 +3,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { MatSelectModule } from '@angular/material';
 import { of as observableOf, Observable } from 'rxjs';
 
-import { RelatationshipGeneratorComponent } from './relatationship-generator.component';
+import { RelationshipGeneratorComponent } from './relationship-generator.component';
 import { GenericApi } from '../../../core/services/genericapi.service';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { FieldSortPipe } from '../../pipes/field-sort.pipe';
@@ -12,9 +12,9 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { By } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
-describe('RelatationshipGeneratorComponent', () => {
-  let component: RelatationshipGeneratorComponent;
-  let fixture: ComponentFixture<RelatationshipGeneratorComponent>;
+describe('RelationshipGeneratorComponent', () => {
+  let component: RelationshipGeneratorComponent;
+  let fixture: ComponentFixture<RelationshipGeneratorComponent>;
   let overlayContainerElement: HTMLElement;
   let selectEl: HTMLInputElement;
 
@@ -42,7 +42,7 @@ describe('RelatationshipGeneratorComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ 
-        RelatationshipGeneratorComponent,
+        RelationshipGeneratorComponent,
         CapitalizePipe,
         FieldSortPipe
       ],
@@ -77,7 +77,7 @@ describe('RelatationshipGeneratorComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RelatationshipGeneratorComponent);
+    fixture = TestBed.createComponent(RelationshipGeneratorComponent);
     component = fixture.componentInstance;
     component.model =  { ...mockModel };
     fixture.detectChanges();

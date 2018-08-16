@@ -111,7 +111,7 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
                     return m;
                 }, {color: null, text: '', texts: [], portion: '', portions: []});
                 marking.text = marking.texts.join(' // ');
-                marking.portion = marking.portions.join(' // ');
+                marking.portion = marking.portions.join('//');
                 markings.unshift(marking);
             }
         }

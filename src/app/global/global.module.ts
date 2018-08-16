@@ -56,7 +56,7 @@ import { ObservableDataSummaryComponent } from './components/observable-data-sum
 import { ObservableDataTreeComponent } from './components/observable-data-tree/observable-data-tree.component';
 import { PiiCheckMessageComponent } from './components/pii-check-message/pii-check-message.component';
 import { PublishedCheckboxComponent } from './components/published-checkbox/published-checkbox.component';
-import { RelatationshipGeneratorComponent } from './components/relatationship-generator/relatationship-generator.component';
+import { RelationshipGeneratorComponent } from './components/relationship-generator/relationship-generator.component';
 import { RiskBreakdownComponent } from './components/risk-breakdown/risk-breakdown.component';
 import { RiskIconComponent } from './components/risk-icon/risk-icon.component';
 import { SelectionListComponent } from './components/selection-list/selection-list.component';
@@ -138,7 +138,7 @@ const unfetterComponents = [
     ObservableDataTreeComponent,
     PiiCheckMessageComponent,
     PublishedCheckboxComponent,
-    RelatationshipGeneratorComponent,
+    RelationshipGeneratorComponent,
     RiskBreakdownComponent,
     RiskIconComponent,
     SidepanelComponent,

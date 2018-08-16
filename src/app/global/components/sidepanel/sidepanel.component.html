@@ -1,16 +1,18 @@
 <div id="unfetter-side-panel">
 
-    <div class="side-panel" [@inOutAnimation] [style.width]="getWidth()" (mouseover)="showMinimizeButton = collapsible && !minimized"
-        (mouseleave)="showMinimizeButton = false">
+    <div class="side-panel" [@inOutAnimation] [style.width]="getWidth()"
+            (mouseover)="showMinimizeButton = collapsible && !minimized"
+            (mouseleave)="showMinimizeButton = false">
 
         <!--
-        <div class="theme-color-accent theme-bg-primary minimize-control" [style.display]="showMinimizeButton ? 'block': 'none'">
+        <div class="theme-color-accent theme-bg-primary minimize-control"
+                [style.display]="showMinimizeButton ? 'block': 'none'">
             <button mat-icon-button (click)="minimized = true" matTooltip="Minimize" matTooltipPosition="right">
                 <mat-icon class="mat-24" aria-hidden="true" aria-label="Minimize side panel"
                         #minimizeBtn>chevron_left</mat-icon>
             </button>
         </div>
--->
+        -->
 
         <div class="theme-color-primary theme-bg-primary-lighter side-panel-header">
 
@@ -46,10 +48,11 @@
 
     <!--
     <ng-template #minimizedBlock>
-        <div [@inOutAnimation] class="theme-color-primary theme-bg-primary-lighter small-side-panel" (click)="minimized = false">
+        <div [@inOutAnimation] class="theme-color-primary theme-bg-primary-lighter small-side-panel"
+                (click)="minimized = false">
             <ng-content select="[sidepanel-mini-item]"></ng-content>
         </div>
     </ng-template>
--->
+    -->
 
 </div>
