@@ -1,41 +1,68 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule, MatInputModule } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, FormArray } from '@angular/forms';
+import { MatButtonModule, MatInputModule } from '@angular/material';
 
 import { AdditionalQueriesComponent } from './additional-queries.component';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 
 describe('AdditionalQueriesComponent', () => {
-  let component: AdditionalQueriesComponent;
-  let fixture: ComponentFixture<AdditionalQueriesComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ 
-        AdditionalQueriesComponent,
-        CapitalizePipe 
-      ],
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatButtonModule,
-        MatInputModule,
-        BrowserAnimationsModule
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
-    .compileComponents();
-  }));
+    let fixture: ComponentFixture<AdditionalQueriesComponent>;
+    let component: AdditionalQueriesComponent;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AdditionalQueriesComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async(() => {
+        TestBed
+            .configureTestingModule({
+                declarations: [ 
+                    AdditionalQueriesComponent,
+                    CapitalizePipe 
+                ],
+                imports: [
+                    FormsModule,
+                    ReactiveFormsModule,
+                    MatButtonModule,
+                    MatInputModule,
+                    BrowserAnimationsModule
+                ],
+                schemas: [NO_ERRORS_SCHEMA]
+            })
+            .compileComponents();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AdditionalQueriesComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
+    it('should format queries', () => {
+        const query = 'B\u2019s ID: \u201CBob\u201D';
+        const formatted = 'B\'s ID: "Bob"';
+        const form = new FormControl(query);
+        component.queryChange(form);
+        expect(form.value).toEqual(formatted);
+    });
+
+    it('should add queries to a parent form', () => {
+        const name = 'id', value = '123';
+        component.parentForm = new FormGroup({
+            metaProperties: new FormGroup({
+                additional_queries: new FormArray([])
+            })
+        });
+        component.localForm.setValue({'name': name, 'query': value});
+        component.addToParent();
+        const queries = component.parentForm.get('metaProperties').get('additional_queries').value;
+        expect(queries.length).toEqual(1);
+        expect(queries[0].name).toEqual(name);
+        expect(queries[0].query).toEqual(value);
+    });
+
 });

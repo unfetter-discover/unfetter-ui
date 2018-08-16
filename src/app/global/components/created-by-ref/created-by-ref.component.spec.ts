@@ -106,7 +106,7 @@ describe('CreatedByRefComponent', () => {
         expect(component.model.attributes.created_by_ref).toEqual(ident);
     });
 
-    it('should update a an assessment model', () => {
+    it('should update an assessment model', () => {
         component.model = undefined;
         component.assessmentMeta = new AssessmentMeta();
         expect(component.assessmentMeta.created_by_ref).toEqual('');

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormArray } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 
 @Component({
@@ -14,7 +14,7 @@ export class SelectionListComponent implements OnInit {
   public stix: any[];
 
   @Input()
-  public formCtrl: FormControl;
+  public formCtrl: FormArray = new FormArray([]);
 
   @Input()
   public showSelectedOnly: boolean = false;
