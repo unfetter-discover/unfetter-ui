@@ -60,8 +60,8 @@
                                         <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'stats'}">equalizer</i>
                                     </button>
                                     <!-- Show heatmap -->
-                                    <button mat-icon-button matTooltip="{{ activeMainWell === 'techiquesUsed' ? 'Hide' : 'Show' }} Techniques Used" (click)="setMainWell('techiquesUsed')">
-                                        <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'techiquesUsed'}">view_comfy</i>
+                                    <button mat-icon-button matTooltip="{{ activeMainWell === 'attackPatternsUsed' ? 'Hide' : 'Show' }} Techniques Used" (click)="setMainWell('attackPatternsUsed')">
+                                        <i class="material-icons mat-24" [ngClass]="{'labelColor': activeMainWell !== 'attackPatternsUsed'}">view_comfy</i>
                                     </button>
                                 </span>
                             </div>
@@ -73,7 +73,7 @@
                             <div class="pl-24 pr-24" *ngIf="activeMainWell === 'stats'">
                                 <indicator-sharing-summary-statistics></indicator-sharing-summary-statistics>
                             </div>
-                            <div class="pl-24 pr-24" *ngIf="activeMainWell === 'techiquesUsed'">
+                            <div class="pl-24 pr-24" *ngIf="activeMainWell === 'attackPatternsUsed'">
                                 <indicator-tactics [indicators]="filteredIndicators"
                                         [mappings]="indicatorToAttackPatternMap"></indicator-tactics>
                             </div>

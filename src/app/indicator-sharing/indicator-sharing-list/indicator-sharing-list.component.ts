@@ -18,7 +18,7 @@ import { IndicatorSharingService } from '../indicator-sharing.service';
 import { downloadBundle } from '../../global/static/stix-bundle';
 import { SearchParameters } from '../models/search-parameters';
 
-type mainWell = 'stats' | 'techiquesUsed' | 'none';
+type mainWell = 'stats' | 'attackPatternsUsed' | 'none';
 
 @Component({
     selector: 'indicator-sharing-list',
@@ -35,7 +35,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
     public collapseAllCards: boolean = true;
-    public activeMainWell: mainWell = 'techiquesUsed';
+    public activeMainWell: mainWell = 'attackPatternsUsed';
     public totalIndicatorCount$: Observable<number>;
     public userToken$: Observable<string>;
     public collapseAllCardsSubject: BehaviorSubject<boolean> = new BehaviorSubject(this.collapseAllCards);
