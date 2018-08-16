@@ -7,6 +7,7 @@ export const UPDATE_USER_DATA = '[User] Add User Data';
 export const LOGOUT_USER = '[User] Logout User';
 export const SET_TOKEN = '[User] Set Token';
 export const REFRESH_TOKEN = '[User] Refresh Token';
+export const START_USER_OBJECT_STREAM = '[User] Start User Object Stream';
 
 export class FetchUser implements Action {
     public readonly type = FETCH_USER;
@@ -45,6 +46,10 @@ export class RefreshToken implements Action {
     public readonly type = REFRESH_TOKEN;
 }
 
+export class StartUserObjectStream implements Action {
+    public readonly type = START_USER_OBJECT_STREAM;
+}
+
 export type UserActions = 
     FetchUser |
     FetchUserOnly |
@@ -52,4 +57,5 @@ export type UserActions =
     UpdateUserData |
     LogoutUser |
     SetToken |
-    RefreshToken;
+    RefreshToken |
+    StartUserObjectStream;
