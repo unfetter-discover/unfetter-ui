@@ -14,7 +14,7 @@ export class SelectionListComponent implements OnInit {
   public stix: any[];
 
   @Input()
-  public formCtrl: FormArray = new FormArray([]);
+  public formCtrl: FormControl;
 
   @Input()
   public showSelectedOnly: boolean = false;

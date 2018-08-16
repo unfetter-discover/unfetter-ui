@@ -2,7 +2,7 @@ import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 import { ChangeDetectorRef } from '@angular/core';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule, FormsModule, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormControl, FormArray } from '@angular/forms';
 import { MatInputModule, MatListModule, MatCheckboxModule } from '@angular/material';
 
 import { SelectionListComponent } from './selection-list.component';
@@ -53,6 +53,7 @@ describe('SelectionListComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(SelectionListComponent);
         component = fixture.componentInstance;
+        component.formCtrl = new FormControl([]);
         component.stix = mockStix;
         fixture.detectChanges();
     });
