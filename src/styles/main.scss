@@ -1,3 +1,5 @@
+@import 'simplemde/dist/simplemde.min.css';
+
 @import 'partials/angular_material_config';
 @import 'partials/animations';
 @import 'partials/bootstrap_overrides';
@@ -5,3 +7,4 @@
 @import 'partials/primeng_overrides';
 @import 'partials/styles';
 @import 'partials/unfetter_custom_elements';
+@import 'partials/simplemde_overrides';

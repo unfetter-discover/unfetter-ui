@@ -38,6 +38,8 @@
                     <markings-chips class="flex1" [model]="form.value" disableTooltips="true"></markings-chips>
                 </div>
 
+                <simplemde formControlName="description"></simplemde>
+
                 <markdown-editor 
                     [editing]="true" 
                     [inputLabel]="'Description (Markdown Editor)'"
