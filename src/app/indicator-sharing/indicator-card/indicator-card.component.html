@@ -210,6 +210,11 @@
               <div class="mb-6">
                 <code>{{ query.query }}</code>
               </div>
+              <div *ngIf="query.details">
+                <label>Details</label>
+                <markdown-editor [editing]="false" [flushed]="true" [truncate]="true"
+                    [value]="query.details"></markdown-editor>
+              </div>  
             </div>
           </div>
         </mat-tab>

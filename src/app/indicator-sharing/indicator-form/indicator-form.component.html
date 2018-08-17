@@ -89,13 +89,11 @@
         <mat-step label="Analytic {{ form.get('pattern').status !== 'VALID' ? '(Required Fields Remaining)' : '' }}" [stepControl]="form.get('pattern')">
           <help-window [helpHtml]="patternHelpHtml"></help-window>
 
-          <h5>Pseudocode
-            <sup>*</sup> (Optional: Use STIX patterns to get automated translations)</h5>
-          <mat-error *ngIf="form.get('pattern').hasError('required')">
-            Pseudocode is
-            <strong>required</strong>
-          </mat-error>
-          <simplemde formControlName="pattern" (keyup)="patternChange(form.get('pattern'))"></simplemde>
+          <h5>Pseudocode<sup>*</sup> (Optional: Use STIX patterns to get automated translations)</h5>
+            <simplemde formControlName="pattern" (keyup)="patternChange(form.get('pattern'))" [class.mdeError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></simplemde>
+            <mat-error *ngIf="form.get('pattern').dirty && form.get('pattern').hasError('required')" style="margin-top: -20px;">
+                Pseudocode is <strong>required</strong>
+            </mat-error>
           <!-- <mat-form-field class="full-width mb-6">
                     <textarea matInput required placeholder="Pseudocode (Optional: Use STIX patterns to get automated translations)" formControlName="pattern" (keyup)="patternChange(form.get('pattern'))"></textarea>
                     <simplemde formControlName="pattern" (keyup)="patternChange(form.get('pattern'))"></simplemde>
