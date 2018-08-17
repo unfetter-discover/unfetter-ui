@@ -1,4 +1,4 @@
-import { take, filter, pluck, distinctUntilChanged, finalize, debounceTime } from 'rxjs/operators';
+import { take, filter, pluck, distinctUntilChanged, finalize, debounceTime, map } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { Store } from '@ngrx/store';
@@ -45,6 +45,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         phases: {}
     };
     public highlightObj = { ...this.initialHighlightObj };
+    public filtersInitOpen$: Observable<boolean>;
 
     @ViewChild('filterContainer') public filterContainer: MatSidenav;
 
@@ -58,6 +59,13 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
         super(store, changeDetectorRef);
         this.totalIndicatorCount$ = this.store.select('indicatorSharing')
             .pipe(pluck('totalIndicatorCount'));
+
+        this.filtersInitOpen$ = this.store.select('indicatorSharing')
+            .pipe(
+                pluck('searchParameters'),
+                take(1),
+                map((searchParameters) => JSON.stringify(searchParameters) !== JSON.stringify(initialSearchParameters))
+            );
     }
 
     public ngOnInit() {

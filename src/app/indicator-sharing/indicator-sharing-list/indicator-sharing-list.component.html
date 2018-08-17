@@ -4,7 +4,7 @@
     </a>
 
     <mat-sidenav-container>
-        <mat-sidenav #filterContainer id="filterContainer" opened="false" mode="side" class="mat-elevation-z8" (openedStart)="openedStart()"
+        <mat-sidenav #filterContainer id="filterContainer" opened="{{ filtersInitOpen$ | async  }}" mode="side" class="mat-elevation-z8" (openedStart)="openedStart()"
             (closedStart)="closedStart()">
             <div id="filterTitle" class="flex flexItemsCenter">
                 <button mat-button (click)="filterContainer.close()">

@@ -4,7 +4,7 @@ import { of as observableOf, forkJoin as observableForkJoin,  Observable  } from
 import { switchMap, delay, pluck, mergeMap, tap, catchError, map, withLatestFrom } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Actions, Effect } from '@ngrx/effects';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { AuthService } from '../../core/services/auth.service';
 import { UsersService } from '../../core/services/users.service';
@@ -14,6 +14,8 @@ import * as userActions from '../../root-store/users/user.actions';
 import * as utilityActions from '../../root-store/utility/utility.actions';
 import * as stixActions from '../../root-store/stix/stix.actions';
 import { AppState } from '../app.reducers';
+import { WebsocketService } from '../../core/services/web-socket.service';
+import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
 
 
 @Injectable()
@@ -83,6 +85,7 @@ export class UserEffects {
                     new userActions.SetToken(token),
                     new configActions.FetchConfig(false),
                     new notificationActions.FetchNotificationStore(),
+                    new userActions.StartUserObjectStream(),
                     new utilityActions.RecordVisit(),
                     new stixActions.FetchStix(),
                 ];
@@ -161,11 +164,26 @@ export class UserEffects {
         tap(() => localStorage.clear()),
         map(() => new utilityActions.Navigate(['/'])));
 
+    @Effect()
+    public userObjStream = this.actions$
+        .pipe(
+            ofType(userActions.START_USER_OBJECT_STREAM),
+            switchMap(() => this.websocketService.connect(WSMessageTypes.USER_OBJECT).pipe(pluck('body'))),
+            tap((userObj: any) => {
+                console.log('Updating user object from web socket');
+                if (userObj.registered) {
+                    this.authService.setUser(userObj);
+                }
+            }),
+            map((userObj: any) => new userActions.UpdateUserData({ ...userObj }))
+        )
+
     constructor(
         private actions$: Actions,
         private router: Router,
         private usersService: UsersService,
         private authService: AuthService,
-        private store: Store<AppState>
+        private store: Store<AppState>,
+        private websocketService: WebsocketService
     ) { }
 }
