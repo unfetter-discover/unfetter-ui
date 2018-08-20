@@ -1,23 +1,22 @@
-<form [formGroup]="form" novalidate>
-  <div id="indicatorFormComponent" class="flexCol">
+<form [formGroup]="form" novalidate id="indicatorFormComponent">
+  <div class="flexCol">
     <span><br></span>
     <div class="container">
-        <p class="lead mb-6">
+        <p class="lead mb-6" style="padding-left: 21px;">
             <span *ngIf="!editMode">Add</span>
             <span *ngIf="editMode">Edit</span>
             <span> Analytic</span>
         </p>
     </div>
     <span class="container">
-      <button mat-icon-button class="mat-24 edit-close-button" (click)="location.back()">
+      <button mat-icon-button class="mat-24 edit-close-button" style="margin-left: -18px;" (click)="location.back()" type="button">
         <mat-icon>close</mat-icon>
       </button>
       <span style="width: 50%" class="inlineBlock">
         <mat-form-field class="full-width">
-          <input matInput required placeholder="Name" formControlName="name">
+          <input matInput required placeholder="Analytic Name" formControlName="name">
           <mat-error *ngIf="form.get('name').hasError('required')">
-            Name is
-            <strong>required</strong>
+            Analytic name is <strong>required</strong>
           </mat-error>
         </mat-form-field>
       </span>
@@ -31,12 +30,6 @@
       <mat-horizontal-stepper (selectionChange)="stepperChanged($event)">
 
         <mat-step label="Base Data {{ stepOneInvalid() ? '(Required Fields Remaining)' : '' }}">
-          <!-- <mat-form-field class="full-width mb-6 mt-10">
-                    <input matInput required placeholder="Name" formControlName="name">
-                    <mat-error *ngIf="form.get('name').hasError('required')">
-                        Name is <strong>required</strong>
-                    </mat-error>
-                </mat-form-field> -->
 
           <mat-form-field class="full-width mb-6" *ngIf="!editMode">
             <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">

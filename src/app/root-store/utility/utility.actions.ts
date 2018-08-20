@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
 import { HttpStatusCodes } from '../../global/enums/http-status-codes.enum';
+import { Themes } from '../../global/enums/themes.enum';
 
 export const CLEAR_ALL_LOCAL_STORAGE = '[Utility] Clear All Local Storage';
 export const ADD_LOCAL_STORAGE = '[Utility] Add Local Storage Item';
@@ -10,6 +11,10 @@ export const RECORD_VISIT = '[Utility] Record Visit';
 export const NULL_ACTION = '[Utility] Null Action';
 export const OPEN_SNACKBAR = '[Utility] Open Snackbar';
 export const NAVIGATE_TO_ERROR_PAGE = '[Utility] Navigate to Error Page';
+export const START_THEME_UPDATE = '[Utility] Start Theme Update';
+export const SET_THEME = '[Utility] Set Theme';
+export const HIDE_FOOTER = '[Utility] Hide Footer';
+export const SHOW_FOOTER = '[Utility] Show Footer';
 
 export class ClearAllLocalStorage implements Action {
     public readonly type = CLEAR_ALL_LOCAL_STORAGE;
@@ -57,6 +62,26 @@ export class NavigateToErrorPage implements Action {
     constructor(public payload: HttpStatusCodes) { }
 }
 
+export class StartThemeUpdate implements Action {
+    public readonly type = START_THEME_UPDATE;
+
+    constructor(public payload: Themes) { }
+}
+
+export class SetTheme implements Action {
+    public readonly type = SET_THEME;
+
+    constructor(public payload: Themes) { }
+}
+
+export class HideFooter implements Action {
+    public readonly type = HIDE_FOOTER;
+}
+
+export class ShowFooter implements Action {
+    public readonly type = SHOW_FOOTER;
+}
+
 export type UtilityActions =
     ClearAllLocalStorage |
     AddLocalStorage |
@@ -66,4 +91,8 @@ export type UtilityActions =
     RecordVisit |
     NullAction |
     OpenSnackbar |
-    NavigateToErrorPage;
+    NavigateToErrorPage |
+    StartThemeUpdate |
+    SetTheme |
+    HideFooter |
+    ShowFooter;

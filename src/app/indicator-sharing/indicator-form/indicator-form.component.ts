@@ -26,6 +26,7 @@ import { GridFSFile } from '../../global/models/grid-fs-file';
 import { MasterConfig } from '../../core/services/run-config.service';
 import { MarkingDefinition } from '../../models';
 import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
+import { HideFooter } from '../../root-store/utility/utility.actions';
 
 @Component({
   selector: 'indicator-form',
@@ -87,6 +88,7 @@ export class IndicatorFormComponent implements OnInit {
   ) { }
 
   public ngOnInit() {
+    this.store.dispatch(new HideFooter());
     this.resetForm();
     const route = this.route.snapshot.url.length && this.route.snapshot.url[0].path;
     if (route === 'edit') {
