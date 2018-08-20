@@ -75,36 +75,36 @@ describe('HeaderNavigationComponent', () => {
         expect(fixture.debugElement.query(By.css('mat-toolbar')).nativeElement.className).not.toContain('demoMode');
     });
 
-    it('displays the proper title', () => {
-        const titleEl = 'span#titleWrapper span#titleText';
-        const tests = [
-            {title: '', logo: /.*logo\-default\.svg/, text: undefined},
-            {title: 'assessments', logo: /.*logo\-assessments\.svg/, text: /assessments/i},
-            {title: 'threat-dashboard', logo: /.*logo\-threat\-dashboard\.svg/, text: /threat dashboard/i},
-            {title: 'Analytic Exchange', logo: /.*logo\-indicator\-sharing\.svg/, text: /analytic exchange/i},
-        ];
-        tests.forEach(test => {
-            const titledFixture = TestBed.createComponent(HeaderNavigationComponent);
-            const titledComponent = titledFixture.componentInstance;
-            titledComponent.title = test.title;
-            titledFixture.detectChanges();
-            if (test.title) {
-                expect(titledFixture.debugElement.query(By.css(titleEl)).nativeElement.textContent).toMatch(test.text);
-            } else {
-                expect(titledFixture.debugElement.query(By.css(titleEl))).toBeNull();
-            }
-        });
+    // it('displays the proper title', () => {
+    //     const titleEl = 'span#titleWrapper span#titleText';
+    //     const tests = [
+    //         {title: '', logo: /.*logo\-default\.svg/, text: undefined},
+    //         {title: 'assessments', logo: /.*logo\-assessments\.svg/, text: /assessments/i},
+    //         {title: 'threat-dashboard', logo: /.*logo\-threat\-dashboard\.svg/, text: /threat dashboard/i},
+    //         {title: 'Analytic Exchange', logo: /.*logo\-indicator\-sharing\.svg/, text: /analytic exchange/i},
+    //     ];
+    //     tests.forEach(test => {
+    //         const titledFixture = TestBed.createComponent(HeaderNavigationComponent);
+    //         const titledComponent = titledFixture.componentInstance;
+    //         titledComponent.title = test.title;
+    //         titledFixture.detectChanges();
+    //         if (test.title) {
+    //             expect(titledFixture.debugElement.query(By.css(titleEl)).nativeElement.textContent).toMatch(test.text);
+    //         } else {
+    //             expect(titledFixture.debugElement.query(By.css(titleEl))).toBeNull();
+    //         }
+    //     });
 
-        {
-            expect(component.topPx).toEqual('0px');
-            runConfig.showBanner = true;
-            const titledFixture = TestBed.createComponent(HeaderNavigationComponent);
-            const titledComponent = titledFixture.componentInstance;
-            titledFixture.detectChanges();
-            expect(titledComponent.topPx).toEqual('17px');
-            runConfig.showBanner = false;
-        }
-    });
+    //     {
+    //         expect(component.topPx).toEqual('0px');
+    //         runConfig.showBanner = true;
+    //         const titledFixture = TestBed.createComponent(HeaderNavigationComponent);
+    //         const titledComponent = titledFixture.componentInstance;
+    //         titledFixture.detectChanges();
+    //         expect(titledComponent.topPx).toEqual('17px');
+    //         runConfig.showBanner = false;
+    //     }
+    // });
 
     it('can run in demo mode', () => {
         environment.runMode = 'DEMO';
