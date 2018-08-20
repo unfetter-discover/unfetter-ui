@@ -23,7 +23,7 @@
         <mat-checkbox formControlName="published">Publish To All Unfetter Users</mat-checkbox>
       </span>
     </div>
-    <div id="formWrapper" class="flex1 container">
+    <div id="formWrapper" class="flex1">
 
       <mat-horizontal-stepper (selectionChange)="stepperChanged($event)">
 
@@ -251,7 +251,7 @@
       </div>
 
     </div>
-    
+
     <p class="text-right mt-6">
       <button mat-button type="button" (click)="location.back()">CANCEL</button>
       <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit" (click)="submitIndicator()">SAVE</button>
