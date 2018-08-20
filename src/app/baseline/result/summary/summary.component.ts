@@ -164,7 +164,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   public getBaseline(): void {
     const baselinesRetrieve$ = this.store
-      .select('summary').pipe(
+      .select('baselineSummary').pipe(
       pluck('baselines'),
       distinctUntilChanged(),
       filter((baselines: AssessmentSet[]) => baselines && baselines.length > 0))
@@ -172,7 +172,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     const baselineRetrieve$ = this.store
-      .select('summary').pipe(
+      .select('baselineSummary').pipe(
       pluck('baseline'),
       distinctUntilChanged())
       .subscribe((baseline: AssessmentSet) => this.currentBaseline = baseline,
@@ -180,7 +180,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
 
     const apRetrieve$ = this.store
-      .select('summary').pipe(
+      .select('baselineSummary').pipe(
       pluck('blAttackPatterns'),
       distinctUntilChanged(),
       filter((arr: string[]) => arr && arr.length >= 0))
@@ -188,21 +188,21 @@ export class SummaryComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     const apIncRetrieve$ = this.store
-      .select('summary').pipe(
+      .select('baselineSummary').pipe(
       pluck('blCompleteAPs'),
       distinctUntilChanged())
       .subscribe((incAP: number) => this.blCompleteAPs = incAP,
         (err) => console.log(err));
 
     const wgtIncRetrieve$ = this.store
-      .select('summary').pipe(
+      .select('baselineSummary').pipe(
       pluck('blCompleteWeightings'),
       distinctUntilChanged())
       .subscribe((incWgt: number) => this.blCompleteWeightings = incWgt,
         (err) => console.log(err));
 
     const groupRetrieve$ = this.store
-      .select('summary').pipe(
+      .select('baselineSummary').pipe(
       pluck('blGroups'),
       distinctUntilChanged(),
       filter((arr: string[]) => arr && arr.length >= 0))
@@ -210,7 +210,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     const blWeightsRetrieve$ = this.store
-      .select('summary').pipe(
+      .select('baselineSummary').pipe(
       pluck('blWeightings'),
       distinctUntilChanged())
       .subscribe((weightings: { protPct, detPct, respPct }) => this.blWeightings = weightings,
@@ -226,7 +226,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    */
   public listenForDataChanges(): void {
     const sub1$ = this.store
-      .select('summary').pipe(
+      .select('baselineSummary').pipe(
       pluck('summaries'),
       distinctUntilChanged(),
       filter((arr: AssessmentSet[]) => arr && arr.length > 0))
@@ -236,7 +236,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         (err) => console.log(err));
 
     const sub2$ = this.store
-      .select('summary').pipe(
+      .select('baselineSummary').pipe(
       pluck('finishedLoading'),
       distinctUntilChanged(),
       filter((el) => el === true))
@@ -252,7 +252,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       }, (err) => console.log(err));
 
     const sub3$ = this.store
-      .select('summary').pipe(
+      .select('baselineSummary').pipe(
       pluck('finishedLoadingSummaryAggregationData'),
       distinctUntilChanged())
       .subscribe((done: boolean) => {
@@ -263,7 +263,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
       }, (err) => console.log(err));
 
     const sub4$ = this.store
-      .select('summary').pipe(
+      .select('baselineSummary').pipe(
       pluck('baseline'),
       distinctUntilChanged())
       .subscribe((baseline: AssessmentSet) => {
