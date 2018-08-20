@@ -2,9 +2,9 @@
       [style.top]="topPx" color="primary">
 
   <a [routerLink]=" ['./'] " routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="flex">
-    <header-logo [title]="title"></header-logo>  
+    <header-logo></header-logo>
   </a>
-  <span *ngIf="title" id="titleWrapper">
+  <span *ngIf="title$ | async as title" id="titleWrapper">
     <span class="inlineBlock" id="spacer1">&nbsp;</span>
     <span id="bar">|</span>
     <span class="inlineBlock" id="spacer2">&nbsp;</span>

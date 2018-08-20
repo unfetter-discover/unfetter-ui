@@ -13,6 +13,7 @@ export const OPEN_SNACKBAR = '[Utility] Open Snackbar';
 export const NAVIGATE_TO_ERROR_PAGE = '[Utility] Navigate to Error Page';
 export const START_THEME_UPDATE = '[Utility] Start Theme Update';
 export const SET_THEME = '[Utility] Set Theme';
+export const SET_TITLE = '[Utility] Set Title';
 export const HIDE_FOOTER = '[Utility] Hide Footer';
 export const SHOW_FOOTER = '[Utility] Show Footer';
 
@@ -74,6 +75,12 @@ export class SetTheme implements Action {
     constructor(public payload: Themes) { }
 }
 
+export class SetTitle implements Action {
+    public readonly type = SET_TITLE;
+
+    constructor(public payload: string) { }
+}
+
 export class HideFooter implements Action {
     public readonly type = HIDE_FOOTER;
 }
@@ -94,5 +101,6 @@ export type UtilityActions =
     NavigateToErrorPage |
     StartThemeUpdate |
     SetTheme |
+    SetTitle |
     HideFooter |
     ShowFooter;

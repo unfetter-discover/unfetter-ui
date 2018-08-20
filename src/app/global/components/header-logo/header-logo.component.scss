@@ -9,22 +9,22 @@
   fill: #fff;
 }
 
-.defaultAccent {
+.defaultThemeAccent #accentPath {
   fill: $accent-color;
 }
 
-.assessmentsAccent {
+.assessmentsThemeAccent #accentPath {
   fill: $assessments-accent;
 }
 
-.threatAccent {
+.threatDashboardThemeAccent #accentPath {
   fill: $threat-dashboard-accent;
 }
 
-.indicatorAccent {
+.analyticHubThemeAccent #accentPath {
   fill: $analytic-exchange-accent;
 }
 
-.eventsAccent {
+.eventsThemeAccent #accentPath {
   fill: $events-accent;
 }

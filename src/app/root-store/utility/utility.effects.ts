@@ -138,6 +138,23 @@ export class UtilityEffects {
                 map((event: ActivatedRoute) => ((event as any)._routerState.snapshot.url.split('/'))[1])
             )
             .subscribe((url: string) => {
+                let title;
+                switch (url) {
+                    case 'indicator-sharing':
+                        title = 'Analytic Exchange'
+                        break;
+                    case 'assess':
+                    case 'assess-beta':
+                        title = 'Assessments';
+                        break;
+                    case 'baseline':
+                        title = 'Baselines';
+                        break;
+                    default:
+                        title = url;
+                }
+                this.store.dispatch(new utilityActions.SetTitle(title));
+
                 let theme;
                 switch (url) {
                     case 'indicator-sharing':

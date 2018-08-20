@@ -3,12 +3,14 @@ import { Themes } from '../../global/enums/themes.enum';
 
 export interface UtilityState {
     theme: Themes,
-    showFooter: boolean
+    showFooter: boolean,
+    title: string
 }
 
 export const initialState: UtilityState = {
     theme: Themes.DEFAULT,
-    showFooter: true
+    showFooter: true,
+    title: ''
 };
 
 export function utilityReducer(state = initialState, action: utilityActions.UtilityActions) {
@@ -17,6 +19,11 @@ export function utilityReducer(state = initialState, action: utilityActions.Util
             return {
                 ...state,
                 theme: action.payload
+            };
+        case utilityActions.SET_TITLE:
+            return {
+                ...state,
+                title: action.payload
             };
         case utilityActions.SHOW_FOOTER:
             return {

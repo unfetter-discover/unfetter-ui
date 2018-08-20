@@ -12,6 +12,7 @@ import * as stixActions from './root-store/stix/stix.actions';
 import * as userActions from './root-store/users/user.actions';
 import { demoUser } from './testing/demo-user';
 import { RunConfigService } from './core/services/run-config.service';
+import { pluck } from 'rxjs/internal/operators/pluck';
 
 @Component({
   selector: 'unf-app',
@@ -24,7 +25,6 @@ export class AppComponent implements OnInit {
   public readonly runMode = environment.runMode;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
   public theme: Themes = Themes.DEFAULT;
-  public title = '';
   public showBanner: boolean = false;
   public securityMarkingLabel: string = '';
 
