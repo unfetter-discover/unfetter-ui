@@ -5,6 +5,8 @@ Pseudocode describes the analytic. Any format of pseudocode is acceptable, howev
 valid [STIX 2 Patterning Language](http://docs.oasis-open.org/cti/stix/v2.0/stix-v2.0-part5-stix-patterning.html).
 Valid STIX 2 patterns will yield additional benefits in Unfetter.
 
+Example STIX 2 Pattern: <code>[process:pid = 3]</code>
+
 #### Generated Pattern Translations
 
 If a valid STIX 2 pattern is entered, Unfetter will attempt to translate the STIX 2 pattern into ElasticSearch query

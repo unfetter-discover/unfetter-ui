@@ -270,7 +270,7 @@ export class IndicatorFormComponent implements OnInit {
   }
 
   public stepOneInvalid(): boolean {
-    return this.form.get('name').status !== 'VALID' || this.form.get('created_by_ref').status !== 'VALID' || this.form.get('valid_from').status !== 'VALID';
+    return this.form.get('created_by_ref').status !== 'VALID' || this.form.get('valid_from').status !== 'VALID';
   }
 
   public async submitIndicator() {
