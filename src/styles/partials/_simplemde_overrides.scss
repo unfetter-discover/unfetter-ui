@@ -1,5 +1,7 @@
 @import 'variables';
 
+$mde-background: #f2f2f2;
+
 .mdeError {
     .editor-toolbar {
         border-left: 1px solid $warn-color;
@@ -14,12 +16,22 @@
     }
 }
 
+.editor-toolbar.disabled-for-preview a:not(.no-disable) {
+    background: $mde-background;
+}
+
+.CodeMirror {
+    border: 1px solid $mde-background;
+    border-top: 1px solid #e7e7e7;
+    background: $mde-background;
+    border-radius: initial;
+}
+
 .editor-toolbar {
-    background: #fff;
+    background: $mde-background !important;
     opacity: 1 !important;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    border-top: 1px solid #ddd;
+    border: 1px solid $mde-background;
+    border-radius: initial;
 
     &:hover a {
         color: $dark-text-default !important;
@@ -60,7 +72,7 @@
     .fa-quote-left::before {
         content: "format_quote";
     }
-    
+
     .fa-list-ul::before {
         content: "format_list_bulleted";
     }

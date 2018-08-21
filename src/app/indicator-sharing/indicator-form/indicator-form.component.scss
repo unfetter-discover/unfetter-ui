@@ -2,7 +2,13 @@
 
 #indicatorFormComponent {
   height: calc(100vh - #{$navbar-height}px);
-  background: #fff;
+  background: $app-background-color;
+}
+
+:host ::ng-deep {
+  .mat-stepper-horizontal {
+    background: $app-background-color;
+  }
 }
 
 #formHeader {
