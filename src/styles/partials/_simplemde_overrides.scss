@@ -6,6 +6,7 @@
         border-right: 1px solid $warn-color;
         border-top: 1px solid $warn-color;
     }
+
     .CodeMirror {
         border-left: 1px solid $warn-color;
         border-right: 1px solid $warn-color;
@@ -19,58 +20,75 @@
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
     border-top: 1px solid #ddd;
+
     &:hover a {
         color: $dark-text-default !important;
     }
+
     a { 
         color: $dark-text-dimmed !important;
         transition: color 0.1s ease-in-out;
+
         &:focus {
             outline: none;
         }
     }
+
     &.fullscreen {
         top: 64px;
     }
+
     .fa::before {
         @include material-icons;
         position: relative;
         font-size: 24px;
         top: 3px;
     }
+
     .fa-bold::before {
         content: "format_bold";        
     }
+
     .fa-italic::before {
         content: "format_italic";
     }
+
     .fa-header::before {
         content: "title";
     }
+
     .fa-quote-left::before {
         content: "format_quote";
     }
+    
     .fa-list-ul::before {
         content: "format_list_bulleted";
     }
+
     .fa-list-ol::before {
         content: "format_list_numbered";
     }
+
     .fa-link::before {
         content: "insert_link";
     }
+
     .fa-picture-o::before {
         content: "insert_photo";
     }
+
     .fa-eye::before {
         content: "pageview";
     }
+
     .fa-columns::before {
         content: "view_column";
     }
+
     .fa-arrows-alt::before {
         content: "fullscreen";
     }
+
     .fa-question-circle::before {
         content: "help_outline";
     }
