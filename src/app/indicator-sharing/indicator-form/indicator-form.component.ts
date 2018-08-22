@@ -39,8 +39,9 @@ export class IndicatorFormComponent implements OnInit {
   public form: FormGroup | any;
   public organizations: any;
   public attackPatterns: any[] = [];
-  public showPatternTranslations: boolean = false;
-  public showAdditionalQueries: boolean = true;
+  public showPatternTranslations = false;
+  public firstShowPatternTranslations = false;
+  public showAdditionalQueries = true;
   public includeQueries = {
     carElastic: true,
     carSplunk: true,
@@ -64,6 +65,10 @@ export class IndicatorFormComponent implements OnInit {
   @ViewChild('associatedDataStep')
   public associatedDataStep: MatStep;
 
+  @ViewChild('baseDataStep')
+  public baseDataStep: MatStep;
+
+  private readonly BASE_DATA_STEPPER_INDEX = 0;
   private readonly ASSOCIATED_DATA_STEPPER_INDEX = 1;
   private initialPatternHandlerResponse: PatternHandlerTranslateAll = {
     pattern: null,
@@ -196,6 +201,7 @@ export class IndicatorFormComponent implements OnInit {
 
           if (translations['car-elastic'] || translations['car-splunk'] || translations['cim-splunk']) {
             this.showPatternTranslations = true;
+            this.firstShowPatternTranslations = true;
           }
 
           // ~~~ Pattern Objects ~~~
@@ -361,8 +367,12 @@ export class IndicatorFormComponent implements OnInit {
 
   public stepperChanged(event: StepperSelectionEvent) {
     if (event.selectedIndex === this.ASSOCIATED_DATA_STEPPER_INDEX) {
-      // This is to prevent external reference and kill chain forms from showing errors if already visited
+      // This is to prevent external reference form from showing errors if already visited
       this.associatedDataStep.interacted = false;
+    }
+    if (event.selectedIndex === this.BASE_DATA_STEPPER_INDEX) {
+      // This is to prevent implementations form from showing errors if already visited
+      this.baseDataStep.interacted = false;
     }
   }
 
@@ -438,6 +448,7 @@ export class IndicatorFormComponent implements OnInit {
         this.editData.metaProperties.queries.cimSplunk && this.editData.metaProperties.queries.cimSplunk.include)
       ) {
         this.showPatternTranslations = true;
+        this.firstShowPatternTranslations = true;
       }
     }
 

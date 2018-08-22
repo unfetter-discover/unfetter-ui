@@ -189,7 +189,8 @@ const unfetterComponents = [
             provide: SIMPLEMDE_CONFIG,
             useValue: {
                 spellChecker: false,
-                autoDownloadFontAwesome: false
+                autoDownloadFontAwesome: false,
+                status: false
             }
         }),
         ...matModules

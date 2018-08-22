@@ -1,5 +1,5 @@
-<form [formGroup]="form" novalidate id="indicatorFormComponent">
-  <div class="container">
+<div class="container" id="indicatorFormComponent">
+  <form [formGroup]="form" novalidate>
     <br>
     <p class="lead mb-6" style="padding-left: 21px;">
         <span *ngIf="!editMode">Add</span>
@@ -23,11 +23,11 @@
         <mat-checkbox formControlName="published">Publish To All Unfetter Users</mat-checkbox>
       </span>
     </div>
-    <div id="formWrapper" class="flex1">
+    <div id="formWrapper">
 
       <mat-horizontal-stepper (selectionChange)="stepperChanged($event)">
 
-        <mat-step label="Base Data">        
+        <mat-step label="Base Data" #baseDataStep>        
 
           <h4>Description</h4>
           <simplemde formControlName="description"></simplemde>
@@ -37,9 +37,10 @@
           <h4 class="inlineBlock"><span [class.textWarn]="form.get('pattern').dirty && form.get('pattern').hasError('required')">Pseudocode<sup>*</sup></span></h4>
           <small class="text-muted">(Optional: Use STIX patterns to get automated translations)</small>
           <simplemde formControlName="pattern" (keyup)="patternChange(form.get('pattern'))" [class.mdeError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></simplemde>
-          <mat-error *ngIf="form.get('pattern').dirty && form.get('pattern').hasError('required')" style="margin-top: -20px;">
+          <mat-error *ngIf="form.get('pattern').dirty && form.get('pattern').hasError('required')">
               Pseudocode is <strong>required</strong>
           </mat-error>
+          <div class="mb-30" *ngIf="!form.get('pattern').dirty || !form.get('pattern').hasError('required')"></div>
 
           <p id="patternSuccess" [style.opacity]="form.get('metaProperties').get('validStixPattern').value && form.get('pattern').dirty && form.get('pattern').value.length > 0 ? 1 : 0"
             [style.marginTop]="!form.get('pattern').hasError('required') ? '-20px' : '-5px'" [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">
@@ -47,7 +48,7 @@
 
           <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message>
 
-          <div class="mb-6">
+          <div class="mb-6" *ngIf="firstShowPatternTranslations">
             <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">
               <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showPatternTranslations}">chevron_right</i>
               <span class="h5">&nbsp;Automatic Pattern Translations</span>
@@ -103,12 +104,14 @@
             </mat-chip-list>
           </div>
 
-          <h4>Submitter Organization<sup>*</sup></h4>
-          <mat-form-field class="full-width mb-6" *ngIf="!editMode">
-            <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
-              <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
-            </mat-select>
-          </mat-form-field>
+          <div *ngIf="!editMode">
+            <h4>Submitter Organization<sup>*</sup></h4>
+            <mat-form-field class="full-width mb-6">
+              <mat-select required placeholder="Submitter Organization" formControlName="created_by_ref">
+                <mat-option *ngFor="let org of organizations" [value]="org.id">{{org.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
           <h4>Marking Definitions</h4>
           <div class="mb-6">
@@ -211,5 +214,5 @@
       <button mat-button type="button" (click)="location.back()">CANCEL</button>
       <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit" (click)="submitIndicator()">SAVE</button>
     </p>
-  </div>
-</form>
+  </form>
+</div>
