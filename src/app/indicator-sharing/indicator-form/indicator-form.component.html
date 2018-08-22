@@ -125,9 +125,11 @@
             <markings-chips [model]="form.value" disableTooltips="true"></markings-chips>
           </div>
 
-          <div class="mt-6">
+          <ng-template #baseDataButtons>
+            <button mat-button [disabled]="form.status !== 'VALID'" type="submit" (click)="submitIndicator()">SAVE</button>
+            <span>&nbsp;</span>
             <button mat-raised-button matStepperNext type="button" color="primary" [disabled]="stepOneInvalid()">CONTINUE</button>
-          </div>
+          </ng-template>
         </mat-step>
 
         <mat-step label="Associated Data" #associatedDataStep>
@@ -175,10 +177,13 @@
             <br>
           </div>
 
-          <div class="mt-6">
+          <ng-template #associatedDataButtons>
+            <button mat-button [disabled]="form.status !== 'VALID'" type="submit" (click)="submitIndicator()">SAVE</button>
+            <span>&nbsp;</span>
             <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
+            <span>&nbsp;</span>
             <button mat-button matStepperPrevious type="button">BACK</button>
-          </div>
+          </ng-template>          
         </mat-step>
 
         <mat-step label="Input Data">
@@ -191,9 +196,11 @@
           <div class="mt-15">
             <data-sources [formCtrl]="form.get('x_mitre_data_sources')"></data-sources>
           </div>
-          <div class="mt-6">
+          <ng-template #inputDataButtons>
+            <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit" (click)="submitIndicator()">SAVE</button>
+            <span>&nbsp;</span>
             <button mat-button matStepperPrevious type="button">BACK</button>
-          </div>
+          </ng-template>
         </mat-step>
 
       </mat-horizontal-stepper>
@@ -210,9 +217,18 @@
 
     </div>
 
-    <p class="text-right mt-6">
-      <button mat-button type="button" (click)="location.back()">CANCEL</button>
-      <button mat-raised-button color="primary" [disabled]="form.status !== 'VALID'" type="submit" (click)="submitIndicator()">SAVE</button>
-    </p>
+    <div class="stepperControlWrapper mat-elevation-z8">
+      <div class="container" [ngSwitch]="currentStepperIndex">
+        <div *ngSwitchCase="0">
+          <ng-container *ngTemplateOutlet="baseDataButtons"></ng-container>
+        </div>
+        <div *ngSwitchCase="1">
+          <ng-container *ngTemplateOutlet="associatedDataButtons"></ng-container>
+        </div>
+        <div *ngSwitchCase="2">
+          <ng-container *ngTemplateOutlet="inputDataButtons"></ng-container>
+        </div>
+      </div>
+    </div>
   </form>
 </div>

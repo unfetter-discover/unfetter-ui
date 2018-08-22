@@ -61,6 +61,7 @@ export class IndicatorFormComponent implements OnInit {
     object_marking_refs: []
   };
   public editData: any = null;
+  public currentStepperIndex = 0;
 
   @ViewChild('associatedDataStep')
   public associatedDataStep: MatStep;
@@ -366,6 +367,8 @@ export class IndicatorFormComponent implements OnInit {
   }
 
   public stepperChanged(event: StepperSelectionEvent) {
+    this.currentStepperIndex = event.selectedIndex;
+    
     if (event.selectedIndex === this.ASSOCIATED_DATA_STEPPER_INDEX) {
       // This is to prevent external reference form from showing errors if already visited
       this.associatedDataStep.interacted = false;
