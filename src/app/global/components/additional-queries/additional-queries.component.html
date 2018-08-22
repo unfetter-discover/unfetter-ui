@@ -1,15 +1,15 @@
 <div class="additionalQueriesComponent">
-  <div class="uf-collapsible-control mb-10" (click)="showForm = !showForm">
+  <!-- <div class="uf-collapsible-control mb-10" (click)="showForm = !showForm">
     <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showForm}">chevron_right</i>
     <span class="h5">&nbsp;Add Implementations</span>
-  </div>
-  <div class="uf-well-accent" @heightCollapse *ngIf="showForm">
+  </div> -->
+  <div class="uf-well-accent">
     <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()" *ngIf="formResetComplete">
 
       <mat-form-field class="full-width mb-6">
-        <input matInput required placeholder="Name" formControlName="name">
+        <input matInput required placeholder="Tool/Sensor Name" formControlName="name">
         <mat-error *ngIf="localForm.get('name').hasError('required')">
-          Name is <strong>required</strong>
+          Tool/Sensor Name is <strong>required</strong>
         </mat-error>
       </mat-form-field>
 

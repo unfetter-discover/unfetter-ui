@@ -62,11 +62,7 @@ export class WebsocketService {
                             pluck('token'),
                             finalize(() => getToken$ && getToken$.unsubscribe())
                         )
-                        .subscribe(
-                            (newToken: string) => {
-                                this.socket.query = this.socket.io.opts.query = `token=${newToken}`;
-                            }
-                        );
+                        .subscribe((newToken: string) => this.socket.query = this.socket.io.opts.query = `token=${newToken}`);
 
                     this.socket.on('connect', () => {
                         console.log('Successfully connected to socket server');

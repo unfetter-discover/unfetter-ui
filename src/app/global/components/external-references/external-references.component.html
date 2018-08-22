@@ -1,9 +1,9 @@
 <div class="externalReferencesComponent">
-    <div class="uf-collapsible-control mb-10" (click)="showExternalReferences = !showExternalReferences">
+    <!-- <div class="uf-collapsible-control mb-10" (click)="showExternalReferences = !showExternalReferences">
         <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showExternalReferences}">chevron_right</i>
         <span class="h5">&nbsp;Add External References</span>
-    </div>
-    <div class="uf-well-accent" @heightCollapse *ngIf="showExternalReferences">
+    </div> -->
+    <div class="uf-well-accent">
         <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()" *ngIf="formResetComplete">
 
             <mat-form-field class="full-width mb-6">
@@ -13,13 +13,13 @@
                 </mat-error>
             </mat-form-field>
 
-            <mat-form-field class="full-width mb-6">
+            <!-- <mat-form-field class="full-width mb-6">
                 <input matInput placeholder="External ID" formControlName="external_id">
             </mat-form-field>
 
             <mat-form-field class="full-width mb-6">
                 <textarea matInput placeholder="Description" formControlName="description"></textarea>
-            </mat-form-field>
+            </mat-form-field> -->
 
             <mat-form-field class="full-width mb-6">
                 <input matInput placeholder="URL" formControlName="url">

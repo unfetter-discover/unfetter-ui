@@ -64,7 +64,7 @@ export class IndicatorFormComponent implements OnInit {
   @ViewChild('associatedDataStep')
   public associatedDataStep: MatStep;
 
-  private readonly ASSOCIATED_DATA_STEPPER_INDEX = 2;
+  private readonly ASSOCIATED_DATA_STEPPER_INDEX = 1;
   private initialPatternHandlerResponse: PatternHandlerTranslateAll = {
     pattern: null,
     validated: false,
@@ -275,7 +275,7 @@ export class IndicatorFormComponent implements OnInit {
   }
 
   public stepOneInvalid(): boolean {
-    return this.form.get('created_by_ref').status !== 'VALID' || this.form.get('valid_from').status !== 'VALID';
+    return this.form.get('created_by_ref').status !== 'VALID' || this.form.get('pattern').status !== 'VALID';
   }
 
   public async submitIndicator() {
