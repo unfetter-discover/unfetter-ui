@@ -2,21 +2,18 @@ import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { ExternalReferencesForm } from '../../form-models/external-references';
-import { heightCollapse } from '../../animations/height-collapse';
 
 @Component({
     selector: 'external-references-reactive',
     templateUrl: 'external-references.component.html',
-    styleUrls: ['external-references.component.scss'],
-    animations: [heightCollapse]
+    styleUrls: ['external-references.component.scss']
 })
 
 export class ExternalReferencesReactiveComponent implements OnInit {
     @Input() public parentForm: any;
     @Input() public parentDocumentType: string = 'analytic';
 
-    public localForm: FormGroup; 
-    public showExternalReferences: boolean = false;
+    public localForm: FormGroup;
     public formResetComplete = true;
 
     constructor(private changeDetectorRef: ChangeDetectorRef) { }

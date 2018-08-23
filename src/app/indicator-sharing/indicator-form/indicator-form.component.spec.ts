@@ -6,7 +6,7 @@ import { of as observableOf, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { StoreModule } from '@ngrx/store';
 
-import { MatButtonModule, MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MatButtonModule } from '@angular/material';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
 import { FieldSortPipe } from '../../global/pipes/field-sort.pipe';
 import { IndicatorSharingService } from '../indicator-sharing.service';
@@ -114,22 +114,11 @@ describe('IndicatorFormComponent', () => {
       ],
       imports: [
         MatButtonModule,
-        MatDialogModule,
         RouterTestingModule,
         StoreModule.forRoot(fromRoot.reducers)
       ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        {
-          provide: MAT_DIALOG_DATA,
-          useValue: {}
-        },
-        {
-          provide: MatDialogRef,
-          useValue: {
-            close: function () { }
-          }
-        },
         {
           provide: IndicatorSharingService,
           useValue: mockIndService

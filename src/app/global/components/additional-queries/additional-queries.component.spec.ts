@@ -21,8 +21,6 @@ describe('AdditionalQueriesComponent', () => {
                     CapitalizePipe 
                 ],
                 imports: [
-                    FormsModule,
-                    ReactiveFormsModule,
                     MatButtonModule,
                     MatInputModule,
                     BrowserAnimationsModule
@@ -51,18 +49,19 @@ describe('AdditionalQueriesComponent', () => {
     });
 
     it('should add queries to a parent form', () => {
-        const name = 'id', value = '123';
+        const name = 'id', value = '123', details = 'a super awesome query';
         component.parentForm = new FormGroup({
             metaProperties: new FormGroup({
                 additional_queries: new FormArray([])
             })
         });
-        component.localForm.setValue({'name': name, 'query': value});
+        component.localForm.setValue({'name': name, 'query': value, details });
         component.addToParent();
         const queries = component.parentForm.get('metaProperties').get('additional_queries').value;
         expect(queries.length).toEqual(1);
         expect(queries[0].name).toEqual(name);
         expect(queries[0].query).toEqual(value);
+        expect(queries[0].details).toEqual(details);
     });
 
 });

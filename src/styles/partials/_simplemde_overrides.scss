@@ -1,0 +1,111 @@
+@import 'variables';
+
+$mde-background: #f2f2f2;
+
+.mdeError {
+    .editor-toolbar {
+        border-left: 1px solid $warn-color;
+        border-right: 1px solid $warn-color;
+        border-top: 1px solid $warn-color;
+    }
+
+    .CodeMirror {
+        border-left: 1px solid $warn-color;
+        border-right: 1px solid $warn-color;
+        border-bottom: 1px solid $warn-color;
+    }
+}
+
+.editor-toolbar.disabled-for-preview a:not(.no-disable) {
+    background: $mde-background;
+}
+
+.CodeMirror {
+    border: 1px solid $mde-background;
+    border-top: 1px solid #e7e7e7;
+    background: $mde-background;
+    border-radius: initial;
+}
+
+.editor-toolbar {
+    background: $mde-background !important;
+    opacity: 1 !important;
+    border: 1px solid $mde-background;
+    border-radius: initial;
+
+    &:hover a {
+        color: $dark-text-default !important;
+    }
+
+    a { 
+        color: $dark-text-dimmed !important;
+        transition: color 0.1s ease-in-out;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &.fullscreen {
+        top: 64px;
+    }
+
+    .fa::before {
+        @include material-icons;
+        position: relative;
+        font-size: 24px;
+        top: 3px;
+    }
+
+    .fa-bold::before {
+        content: "format_bold";        
+    }
+
+    .fa-italic::before {
+        content: "format_italic";
+    }
+
+    .fa-header::before {
+        content: "title";
+    }
+
+    .fa-quote-left::before {
+        content: "format_quote";
+    }
+
+    .fa-list-ul::before {
+        content: "format_list_bulleted";
+    }
+
+    .fa-list-ol::before {
+        content: "format_list_numbered";
+    }
+
+    .fa-link::before {
+        content: "insert_link";
+    }
+
+    .fa-picture-o::before {
+        content: "insert_photo";
+    }
+
+    .fa-eye::before {
+        content: "pageview";
+    }
+
+    .fa-columns::before {
+        content: "view_column";
+    }
+
+    .fa-arrows-alt::before {
+        content: "fullscreen";
+    }
+
+    .fa-question-circle::before {
+        content: "help_outline";
+    }
+}
+
+.CodeMirror-fullscreen, .editor-preview-side {
+    top: 114px;
+}

@@ -15,6 +15,7 @@ import { AssessService } from '../../../services/assess.service';
 import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-object.component';
 import { AssessGroupComponent } from './assessments-group.component';
 import { FullAssessmentGroupMockFactory } from './models/full-assessment-group.mock';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('AssessGroupComponent', () => {
   let component: AssessGroupComponent;
@@ -44,6 +45,8 @@ describe('AssessGroupComponent', () => {
         AssessGroupComponent
       ],
       imports: [
+        FormsModule,
+        ReactiveFormsModule,
         RouterTestingModule,
         HttpClientTestingModule,
         GlobalModule,

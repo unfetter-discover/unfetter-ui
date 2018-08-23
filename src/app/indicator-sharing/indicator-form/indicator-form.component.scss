@@ -1,12 +1,19 @@
 @import '../../../styles/_variables.scss';
 
 #indicatorFormComponent {
-  height: calc(100vh - #{$navbar-height}px);
-  background: #fff;
+  background: $app-background-color;
+  padding-bottom: 100px;
 }
 
-#formWrapper {
-  overflow-y: auto;
+:host ::ng-deep {
+  .mat-stepper-horizontal {
+    background: $app-background-color;
+  }
+}
+
+#formHeader {
+  align-items: baseline;
+  padding-right: 22px;
 }
 
 #filterTitle {
@@ -83,5 +90,20 @@
     #spacer2 {
       display: none;
     }
+  }
+}
+
+.stepperControlWrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  background: #fff;
+  z-index: 700;
+  width: 100vw;
+
+  >.container {
+    padding-left: 24px;
+    padding-right: 24px;
   }
 }

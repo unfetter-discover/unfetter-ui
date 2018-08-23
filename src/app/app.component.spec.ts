@@ -15,7 +15,6 @@ import { RunConfigService } from './core/services/run-config.service';
 import { GenericApi } from './core/services/genericapi.service';
 import { environment } from '../environments/environment';
 import { reducers } from './root-store/app.reducers';
-import { Themes } from './global/enums/themes.enum';
 
 @Component({template: 'Nothing to see here'})
 class NoopComponent {
@@ -62,30 +61,11 @@ describe(`App`, () => {
         config: observableOf(config)
     }
 
-    const routes: Routes = [
-        { path: '', component: NoopComponent },
-        { path: 'home', component: NoopComponent },
-        { path: 'intrusion-set-dashboard', component: NoopComponent },
-        { path: 'assessments', component: NoopComponent },
-        { path: 'assess', component: NoopComponent },
-        { path: 'assess-beta', component: NoopComponent },
-        { path: 'baseline', component: NoopComponent },
-        { path: 'threat-dashboard', component: NoopComponent },
-        { path: 'users', component: NoopComponent },
-        { path: 'indicator-sharing', component: NoopComponent },
-        { path: 'events', component: NoopComponent },
-        { path: 'organizations', component: NoopComponent },
-        { path: 'admin', component: NoopComponent },
-        { path: '**', component: NoopComponent },
-    ];
-
     // async beforeEach
     beforeEach(async(() => {
         TestBed
             .configureTestingModule({
                 imports: [
-                    RouterTestingModule.withRoutes(routes),
-                    HttpClientTestingModule,
                     StoreModule.forRoot(reducers),
                 ],
                 declarations: [
@@ -103,12 +83,9 @@ describe(`App`, () => {
                         provide: RunConfigService,
                         useValue: mockRunConfig
                     },
-                    GenericApi,
                 ]
             })
-            .compileComponents(); // compile template and css
-
-        router = TestBed.get(Router);
+            .compileComponents();
     }));
 
     it(`should be readly initialized`, () => {
@@ -138,41 +115,6 @@ describe(`App`, () => {
             });
         });
     });
-
-    it(`should handle various router outlets`, fakeAsync(() => {
-        const routeChecks = [
-            { path: '', title: '', theme: Themes.DEFAULT },
-            { path: 'admin', title: 'admin', theme: Themes.DEFAULT },
-            { path: 'assessments', title: 'assessments', theme: Themes.ASSESSMENTS },
-            { path: 'assess', title: 'assessments', theme: Themes.ASSESSMENTS },
-            { path: 'assess-beta', title: 'assessments', theme: Themes.ASSESSMENTS },
-            { path: 'baseline', title: 'Baselines', theme: Themes.ASSESSMENTS },
-            { path: 'events', title: 'events', theme: Themes.EVENTS },
-            { path: 'home', title: 'home', theme: Themes.DEFAULT },
-            { path: 'indicator-sharing', title: 'Analytic Exchange', theme: Themes.ANALYTIC_HUB },
-            { path: 'intrusion-set-dashboard', title: 'intrusion-set-dashboard', theme: Themes.DEFAULT },
-            { path: 'non-existent-page', title: 'non-existent-page', theme: Themes.DEFAULT },
-            { path: 'organizations', title: 'organizations', theme: Themes.DEFAULT },
-            { path: 'threat-dashboard', title: 'threat-dashboard', theme: Themes.THREAT_DASHBOARD },
-            { path: 'users', title: 'users', theme: Themes.DEFAULT },
-        ];
-
-        loggedIn = true;
-        fixture = TestBed.createComponent(AppComponent);
-        comp = fixture.componentInstance;
-        router.initialNavigation();
-
-        routeChecks.forEach((check) => {
-            router.navigate([check.path]).then(
-                () => {
-                    comp.ngOnInit();
-                    expect(comp.theme).toBe(check.theme);
-                    expect(comp.title).toBe(check.title);
-                }
-            );
-            tick();
-        });
-    }));
 
     it(`stub AppState class`, () => {
         fixture = TestBed.createComponent(AppComponent);

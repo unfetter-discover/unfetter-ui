@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { of as observableOf, forkJoin as observableForkJoin, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize, take, withLatestFrom, map } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize, take, withLatestFrom, map, filter } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,6 +26,7 @@ import { GridFSFile } from '../../global/models/grid-fs-file';
 import { MasterConfig } from '../../core/services/run-config.service';
 import { MarkingDefinition } from '../../models';
 import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
+import { HideFooter, NavigateToErrorPage } from '../../root-store/utility/utility.actions';
 
 @Component({
   selector: 'indicator-form',
@@ -38,8 +39,9 @@ export class IndicatorFormComponent implements OnInit {
   public form: FormGroup | any;
   public organizations: any;
   public attackPatterns: any[] = [];
-  public showPatternTranslations: boolean = false;
-  public showAdditionalQueries: boolean = true;
+  public showPatternTranslations = false;
+  public firstShowPatternTranslations = false;
+  public showAdditionalQueries = true;
   public includeQueries = {
     carElastic: true,
     carSplunk: true,
@@ -59,11 +61,16 @@ export class IndicatorFormComponent implements OnInit {
     object_marking_refs: []
   };
   public editData: any = null;
+  public currentStepperIndex = 0;
 
   @ViewChild('associatedDataStep')
   public associatedDataStep: MatStep;
 
-  private readonly ASSOCIATED_DATA_STEPPER_INDEX = 2;
+  @ViewChild('baseDataStep')
+  public baseDataStep: MatStep;
+
+  private readonly BASE_DATA_STEPPER_INDEX = 0;
+  private readonly ASSOCIATED_DATA_STEPPER_INDEX = 1;
   private initialPatternHandlerResponse: PatternHandlerTranslateAll = {
     pattern: null,
     validated: false,
@@ -87,32 +94,38 @@ export class IndicatorFormComponent implements OnInit {
   ) { }
 
   public ngOnInit() {
+    this.store.dispatch(new HideFooter());
     this.resetForm();
     const route = this.route.snapshot.url.length && this.route.snapshot.url[0].path;
     if (route === 'edit') {
-      this.route.params
-        .pipe(
-          pluck('id'),
-          take(1),
-          withLatestFrom(
-            this.store.select('indicatorSharing').pipe(pluck('indicators'))
+      observableForkJoin(
+        this.route.params
+          .pipe(
+            pluck('id'),
+            take(1)
+          ),
+        this.store.select('indicatorSharing')
+          .pipe(
+            pluck('indicators'),
+            filter((indicators: any[]) => indicators.length > 0),
+            take(1)
           )
-        )
-        .subscribe(
-          ([indicatorId, indicators]: [string, any[]]) => {
-            const indicatorToEdit = indicators.find((indicator) => indicator.id === indicatorId);
-            if (indicatorToEdit) {
-              this.editData = indicatorToEdit;
-              this.editMode = true;
-              this.setEditValues();
-            } else {
-              // TODO handle error
-            }
-          },
-          (err) => {
-            console.log(err);
+      ).subscribe(
+        ([indicatorId, indicators]: [string, any[]]) => {
+          const indicatorToEdit = indicators.find((indicator) => indicator.id === indicatorId);
+          if (indicatorToEdit) {
+            this.editData = indicatorToEdit;
+            this.editMode = true;
+            this.setEditValues();
+          } else {
+            console.log('Unable to find indicator to edit');
+            this.store.dispatch(new NavigateToErrorPage(404));
           }
-        );
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
     }
 
     const userId = this.authService.getUser()._id;
@@ -189,6 +202,7 @@ export class IndicatorFormComponent implements OnInit {
 
           if (translations['car-elastic'] || translations['car-splunk'] || translations['cim-splunk']) {
             this.showPatternTranslations = true;
+            this.firstShowPatternTranslations = true;
           }
 
           // ~~~ Pattern Objects ~~~
@@ -268,7 +282,7 @@ export class IndicatorFormComponent implements OnInit {
   }
 
   public stepOneInvalid(): boolean {
-    return this.form.get('name').status !== 'VALID' || this.form.get('created_by_ref').status !== 'VALID' || this.form.get('valid_from').status !== 'VALID';
+    return this.form.get('created_by_ref').status !== 'VALID' || this.form.get('pattern').status !== 'VALID';
   }
 
   public async submitIndicator() {
@@ -353,9 +367,15 @@ export class IndicatorFormComponent implements OnInit {
   }
 
   public stepperChanged(event: StepperSelectionEvent) {
+    this.currentStepperIndex = event.selectedIndex;
+    
     if (event.selectedIndex === this.ASSOCIATED_DATA_STEPPER_INDEX) {
-      // This is to prevent external reference and kill chain forms from showing errors if already visited
+      // This is to prevent external reference form from showing errors if already visited
       this.associatedDataStep.interacted = false;
+    }
+    if (event.selectedIndex === this.BASE_DATA_STEPPER_INDEX) {
+      // This is to prevent implementations form from showing errors if already visited
+      this.baseDataStep.interacted = false;
     }
   }
 
@@ -422,6 +442,16 @@ export class IndicatorFormComponent implements OnInit {
 
       if (this.editData.metaProperties.observedData) {
         requestAnimationFrame(() => this.patternObjSubject.next(this.editData.metaProperties.observedData));
+      }
+
+      if (
+        this.editData.metaProperties.queries && 
+        (this.editData.metaProperties.queries.carElastic && this.editData.metaProperties.queries.carElastic.include ||
+        this.editData.metaProperties.queries.carSplunk && this.editData.metaProperties.queries.carSplunk.include ||
+        this.editData.metaProperties.queries.cimSplunk && this.editData.metaProperties.queries.cimSplunk.include)
+      ) {
+        this.showPatternTranslations = true;
+        this.firstShowPatternTranslations = true;
       }
     }
 

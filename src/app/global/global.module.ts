@@ -27,6 +27,7 @@ import {
 } from '@angular/material';
 import { CarouselModule } from 'primeng/primeng';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
+import { SimplemdeModule, SIMPLEMDE_CONFIG } from 'ng2-simplemde';
 
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
@@ -184,6 +185,14 @@ const unfetterComponents = [
             }
         }),
         CarouselModule,
+        SimplemdeModule.forRoot({
+            provide: SIMPLEMDE_CONFIG,
+            useValue: {
+                spellChecker: false,
+                autoDownloadFontAwesome: false,
+                status: false
+            }
+        }),
         ...matModules
     ],
     declarations: [
@@ -193,6 +202,7 @@ const unfetterComponents = [
         ...unfetterComponents,
         ...matModules,
         CarouselModule,
+        SimplemdeModule,
     ],
     providers: [
         AuthService,

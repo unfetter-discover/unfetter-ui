@@ -9,6 +9,7 @@ import * as userActions from '../../../root-store/users/user.actions';
 import { Constance } from '../../../utils/constance';
 import { fadeInOut } from '../../animations/fade-in-out';
 import { filter, pluck, distinctUntilChanged } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'header-navigation',
@@ -64,7 +65,7 @@ export class HeaderNavigationComponent {
   public adminIcon: string = Constance.LOGO_IMG_ADMIN; // Placeholder icon
   public stixIcon: string = Constance.LOGO_IMG_STIX;
   public encodedToken: string = '';
-  @Input() public title;
+  public title$: Observable<string>;
   private _authServices: string[] = null;
 
   constructor(
@@ -107,6 +108,8 @@ export class HeaderNavigationComponent {
           }
         }
       );
+
+    this.title$ = this.store.select('utility').pipe(pluck<any, string>('title'));
   }
 
   public get authServices(): string[] {

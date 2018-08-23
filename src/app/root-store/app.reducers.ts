@@ -9,7 +9,7 @@ import * as fromNotification from './notification/notification.reducers';
 export interface AppState {
     users: fromUsers.UserState,
     config: fromConfig.ConfigState,
-    utility: any, // TODO update type if an interface is added
+    utility: fromUtility.UtilityState,
     stix: fromStix.StixState,
     notifications: fromNotification.NotificationState,
 }
