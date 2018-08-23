@@ -21,8 +21,6 @@ describe('AdditionalQueriesComponent', () => {
                     CapitalizePipe 
                 ],
                 imports: [
-                    FormsModule,
-                    ReactiveFormsModule,
                     MatButtonModule,
                     MatInputModule,
                     BrowserAnimationsModule
