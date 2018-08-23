@@ -75,16 +75,18 @@ import { TacticsTooltipComponent } from './components/tactics-pane/tactics-toolt
 import { TacticsTooltipService } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 import { TacticsTreemapComponent } from './components/tactics-pane/tactics-treemap/tactics-treemap.component';
 import { TreemapComponent } from './components/treemap/treemap.component';
+import { FileListComponent } from './components/file-list/file-list.component';
+import { ExternalReferencesListComponent } from './components/external-references-list/external-references-list.component';
 
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
 import { ResizeDirective } from './directives/resize.directive';
+
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AuthService } from '../core/services/auth.service';
 import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
-import { FileListComponent } from './components/file-list/file-list.component';
 import { UnfetterCarouselComponent, PrimedDirective } from './components/tactics-pane/tactics-carousel/unf-carousel.component';
 
 const matModules = [
@@ -164,6 +166,7 @@ const unfetterComponents = [
     ErrorPageComponent,
     ReadableBytesPipe,
     FileListComponent,
+    ExternalReferencesListComponent,
 ];
 
 @NgModule({

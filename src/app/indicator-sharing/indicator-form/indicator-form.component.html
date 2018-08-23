@@ -150,13 +150,14 @@
           <div>
             <h4>External References</h4>
             <external-references-reactive [parentForm]="form"></external-references-reactive>
-            <mat-chip-list formArrayName="external_references" *ngIf="form.get('external_references').value.length > 0" class="chipListPadding">
+            <external-references-list [form]="form"></external-references-list>
+            <!-- <mat-chip-list formArrayName="external_references" *ngIf="form.get('external_references').value.length > 0" class="chipListPadding">
               <mat-chip *ngFor="let extRef of form.get('external_references').value; let i = index" class="cursor-pointer chipListChip"
                 color="warn" selected="true" removable="true">
                 <span class="flex1 flexNowrap">{{ extRef.source_name | capitalize}}</span>
                 <mat-icon matChipRemove (click)="form.get('external_references').removeAt(i)">cancel</mat-icon>
               </mat-chip>
-            </mat-chip-list>
+            </mat-chip-list> -->
           </div>
 
           <!-- ~~~ Labels ~~~ -->

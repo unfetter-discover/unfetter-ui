@@ -1,0 +1,58 @@
+<div class="externalReferencesListComponent" *ngIf="form.get('external_references').value.length > 0">
+  <form [formGroup]="form" novalidate>    
+    <table class="uf-table mb-10" [formGroup]="form">
+      <thead>
+        <tr>
+          <th>Current External References</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr formArrayName="external_references" *ngFor="let extRef of form.get('external_references').controls; let i = index" #row>
+
+          <td *ngIf="!row.editMode">
+            <div class="flex flexItemsCenter mat-icon-button-cell-wrapper">
+              <a href="{{ extRef.value.url }}" target="_blank">{{ extRef.value.source_name | capitalize}}</a>
+              <span class="flex1">&nbsp;</span>
+              <span>
+                <button type="button" mat-icon-button (click)="row.editMode = true">
+                  <i class="material-icons mat-24">create</i>
+                </button>
+              </span>
+              <span>
+                <button type="button" mat-icon-button (click)="form.get('external_references').removeAt(i)">
+                  <i class="material-icons mat-24">delete</i>
+                </button>
+              </span>
+            </div>
+          </td>
+
+          <td *ngIf="row.editMode">
+            <div class="flex flexItemsCenter mat-icon-button-cell-wrapper pb-3 pt-3" [formGroupName]="i">
+              <span class="flex1">
+                <mat-form-field class="full-width">
+                  <input matInput required placeholder="Source Name" formControlName="source_name">
+                  <mat-error *ngIf="form.get('external_references').at(i).get('source_name').hasError('required')">
+                    Source name is
+                    <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+              </span>
+              <span>&nbsp;</span>
+              <span class="flex1">
+                <mat-form-field class="full-width">
+                  <input matInput required placeholder="URL" formControlName="url">
+                </mat-form-field>
+              </span>
+              <span>
+                <button type="button" mat-icon-button (click)="row.editMode = false">
+                  <i class="material-icons mat-24">save</i>
+                </button>
+              </span>
+            </div>       
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </form>
+</div>
