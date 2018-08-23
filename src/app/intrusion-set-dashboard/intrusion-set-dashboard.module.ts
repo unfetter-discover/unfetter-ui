@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
     MatButtonModule,
     MatCardModule,
@@ -70,6 +70,7 @@ const primengModules = [
         GlobalModule,
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         ...materialModules,
         ...primengModules,
         routing,

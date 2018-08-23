@@ -1,0 +1,10 @@
+.csc-attack-patterns {
+    column-width: 24em;
+    -moz-column-width: 24em;
+    -webkit-column-width: 24em;
+    color: blue;
+
+    ol li:first-child {
+        margin-top: 0px;
+    }
+}
