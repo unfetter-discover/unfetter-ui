@@ -94,14 +94,7 @@
           <h4>Implementations</h4>
           <div class="mb-6" formGroupName="metaProperties">
             <additional-queries [parentForm]="form"></additional-queries>
-            <mat-chip-list formArrayName="additional_queries" *ngIf="form.get('metaProperties').get('additional_queries').value.length > 0"
-              class="chipListPadding">
-              <mat-chip *ngFor="let query of form.get('metaProperties').get('additional_queries').value; let i = index" class="cursor-pointer chipListChip"
-                color="primary" selected="true" removable="true">
-                <span class="flex1 flexNowrap">{{ query.name | capitalize}}</span>
-                <mat-icon matChipRemove (click)="form.get('metaProperties').get('additional_queries').removeAt(i)">cancel</mat-icon>
-              </mat-chip>
-            </mat-chip-list>
+            <implementations-list [form]="form"></implementations-list>
           </div>
 
           <div *ngIf="!editMode">

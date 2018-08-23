@@ -77,6 +77,7 @@ import { TacticsTreemapComponent } from './components/tactics-pane/tactics-treem
 import { TreemapComponent } from './components/treemap/treemap.component';
 import { FileListComponent } from './components/file-list/file-list.component';
 import { ExternalReferencesListComponent } from './components/external-references-list/external-references-list.component';
+import { ImplementationsListComponent } from './components/implementations-list/implementations-list.component';
 
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
 import { ResizeDirective } from './directives/resize.directive';
@@ -167,6 +168,7 @@ const unfetterComponents = [
     ReadableBytesPipe,
     FileListComponent,
     ExternalReferencesListComponent,
+    ImplementationsListComponent,
 ];
 
 @NgModule({

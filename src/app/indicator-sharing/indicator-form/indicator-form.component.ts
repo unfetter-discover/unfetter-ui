@@ -27,6 +27,7 @@ import { MasterConfig } from '../../core/services/run-config.service';
 import { MarkingDefinition } from '../../models';
 import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
 import { HideFooter, NavigateToErrorPage } from '../../root-store/utility/utility.actions';
+import { AdditionalQueriesForm } from '../../global/form-models/additional-queries';
 
 @Component({
   selector: 'indicator-form',
@@ -436,7 +437,9 @@ export class IndicatorFormComponent implements OnInit {
     if (this.editData.metaProperties) {
       if (this.editData.metaProperties.additional_queries) {
         this.editData.metaProperties.additional_queries.forEach((query) => {
-          (this.form.get('metaProperties').get('additional_queries') as FormArray).push(new FormControl(query));
+          const additionalQueriesForm = AdditionalQueriesForm();
+          additionalQueriesForm.setValue(query);
+          (this.form.get('metaProperties').get('additional_queries') as FormArray).push(additionalQueriesForm);
         });
       }
 
