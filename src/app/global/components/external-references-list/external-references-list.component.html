@@ -44,8 +44,13 @@
                 </mat-form-field>
               </span>
               <span>
-                <button type="button" mat-icon-button (click)="row.editMode = false">
+                <button type="button" mat-icon-button (click)="row.editMode = false" [disabled]="form.get('external_references').at(i).status === 'INVALID'">
                   <i class="material-icons mat-24">save</i>
+                </button>
+              </span>
+              <span>
+                <button type="button" mat-icon-button (click)="form.get('external_references').removeAt(i)">
+                  <i class="material-icons mat-24">delete</i>
                 </button>
               </span>
             </div>       

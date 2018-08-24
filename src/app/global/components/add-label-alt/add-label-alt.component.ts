@@ -27,7 +27,6 @@ export class AddLabelAltComponent implements OnInit {
   public addToParent() {
     const labels = this.parentForm.get('labels').value;
     (this.parentForm.get('labels') as FormArray).insert(0, this.newLabel);
-    console.log('~~~', this.parentForm);
 
     this.formResetComplete = false;
     this.resetForm();

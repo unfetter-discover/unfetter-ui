@@ -46,8 +46,13 @@
                 </mat-form-field>
               </span>
               <span>
-                <button type="button" mat-icon-button (click)="row.editMode = false">
+                <button type="button" mat-icon-button (click)="row.editMode = false" [disabled]="parentForm.get('labels').at(i).status === 'INVALID'">
                   <i class="material-icons mat-24">save</i>
+                </button>
+              </span>
+              <span>
+                <button type="button" mat-icon-button (click)="parentForm.get('labels').removeAt(i)">
+                  <i class="material-icons mat-24">delete</i>
                 </button>
               </span>
             </div>

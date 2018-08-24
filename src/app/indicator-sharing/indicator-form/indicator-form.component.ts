@@ -28,6 +28,7 @@ import { MarkingDefinition } from '../../models';
 import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
 import { HideFooter, NavigateToErrorPage } from '../../root-store/utility/utility.actions';
 import { AdditionalQueriesForm } from '../../global/form-models/additional-queries';
+import { DomHelper } from '../../global/static/dom-helper';
 
 @Component({
   selector: 'indicator-form',
@@ -92,9 +93,11 @@ export class IndicatorFormComponent implements OnInit {
     private store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
     public location: Location,
     private route: ActivatedRoute
-  ) { }
+  ) { 
+    DomHelper.ScrollToTop();
+  }
 
-  public ngOnInit() {
+  public ngOnInit() {    
     this.store.dispatch(new HideFooter());
     this.resetForm();
     const route = this.route.snapshot.url.length && this.route.snapshot.url[0].path;

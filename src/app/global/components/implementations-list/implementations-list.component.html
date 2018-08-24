@@ -35,8 +35,11 @@
             <mat-card-title>
               <span>Edit Implementation</span>
               <span class="flex1">&nbsp;</span>
-              <button type="button" mat-icon-button class="mat-24" (click)="thisCard.editMode = false">
+              <button type="button" mat-icon-button class="mat-24" (click)="thisCard.editMode = false" [disabled]="form.get('metaProperties').get('additional_queries').at(i).status === 'INVALID'">
                 <mat-icon>save</mat-icon>
+              </button>
+              <button type="button" mat-icon-button class="mat-24" (click)="form.get('metaProperties').get('additional_queries').removeAt(i)">
+                <mat-icon>delete</mat-icon>
               </button>
             </mat-card-title>
           </mat-card-header>
