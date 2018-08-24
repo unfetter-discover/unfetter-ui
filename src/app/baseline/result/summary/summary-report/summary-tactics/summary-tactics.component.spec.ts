@@ -12,6 +12,7 @@ import { HeatmapComponent } from '../../../../../global/components/heatmap/heatm
 import { MarkdownEditorComponent } from '../../../../../global/components/markdown-editor/markdown-editor.component';
 import { TacticsCarouselControlComponent } from '../../../../../global/components/tactics-pane/tactics-carousel/tactics-carousel-control.component';
 import { TacticsCarouselComponent } from '../../../../../global/components/tactics-pane/tactics-carousel/tactics-carousel.component';
+import { UnfetterCarouselComponent } from '../../../../../global/components/tactics-pane/tactics-carousel/unf-carousel.component';
 import { TacticsControlService } from '../../../../../global/components/tactics-pane/tactics-control.service';
 import { TacticsHeatmapComponent } from '../../../../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { TacticsPaneComponent } from '../../../../../global/components/tactics-pane/tactics-pane.component';
@@ -54,6 +55,7 @@ describe('SummaryTacticsComponent', () => {
                     TacticsHeatmapComponent,
                     TacticsTreemapComponent,
                     TacticsCarouselComponent,
+                    UnfetterCarouselComponent,
                     TacticsCarouselControlComponent,
                     TacticsTooltipComponent,
                     HeatmapComponent,
