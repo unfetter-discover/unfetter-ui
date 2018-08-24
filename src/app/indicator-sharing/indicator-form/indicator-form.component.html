@@ -25,7 +25,7 @@
     </div>
     <div id="formWrapper">
 
-      <mat-horizontal-stepper (selectionChange)="stepperChanged($event)">
+      <mat-horizontal-stepper (selectionChange)="stepperChanged($event)" #stepper>
 
         <mat-step label="Base Data" #baseDataStep>        
 
@@ -198,16 +198,24 @@
     </div>
 
     <div class="stepperControlWrapper mat-elevation-z8">
-      <div class="container" [ngSwitch]="currentStepperIndex">
-        <div *ngSwitchCase="0">
+      <div class="container flex flexItemsCenter" [ngSwitch]="currentStepperIndex">
+        <span *ngSwitchCase="0" class="flex1">
           <ng-container *ngTemplateOutlet="baseDataButtons"></ng-container>
-        </div>
-        <div *ngSwitchCase="1">
+        </span>
+        <span *ngSwitchCase="1" class="flex1">
           <ng-container *ngTemplateOutlet="associatedDataButtons"></ng-container>
-        </div>
-        <div *ngSwitchCase="2">
+        </span>
+        <span *ngSwitchCase="2" class="flex1">
           <ng-container *ngTemplateOutlet="inputDataButtons"></ng-container>
-        </div>
+        </span>
+        <span>
+          <div id="stepperMiniControl" class="flex">
+            <span class="dot" *ngFor="let number of [0,1,2]" 
+              [class.theme-bg-primary]="number === currentStepperIndex"
+              [class.cursor-pointer]="number !== currentStepperIndex"
+              (click)="changeStepperIndex(number)"></span>
+          </div>
+        </span>
       </div>
     </div>
   </form>

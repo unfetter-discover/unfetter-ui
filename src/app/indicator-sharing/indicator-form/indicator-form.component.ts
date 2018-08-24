@@ -6,7 +6,7 @@ import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
-import { MatStep } from '@angular/material';
+import { MatStep, MatStepper, MatHorizontalStepper } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
@@ -70,6 +70,9 @@ export class IndicatorFormComponent implements OnInit {
 
   @ViewChild('baseDataStep')
   public baseDataStep: MatStep;
+
+  @ViewChild('stepper')
+  public stepper: MatHorizontalStepper;
 
   private readonly BASE_DATA_STEPPER_INDEX = 0;
   private readonly ASSOCIATED_DATA_STEPPER_INDEX = 1;
@@ -409,6 +412,22 @@ export class IndicatorFormComponent implements OnInit {
         resolve([null, null]);
       }
     });
+  }
+
+  public changeStepperIndex(newIndex: number) {
+    if (newIndex === this.currentStepperIndex) {
+      // This should never be reached, but just in case!
+      return;
+    } else if (newIndex > this.currentStepperIndex) {
+      // This method is largely due the fact that CdkStepper does not have a way to specify an index
+      while (newIndex > this.stepper.selectedIndex) {
+        this.stepper.next();
+      }
+    } else if (newIndex < this.currentStepperIndex) {
+      while (newIndex < this.stepper.selectedIndex) {
+        this.stepper.previous();
+      }
+    }
   }
 
   private setEditValues() {

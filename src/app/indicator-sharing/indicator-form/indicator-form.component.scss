@@ -103,7 +103,23 @@
   width: 100vw;
 
   >.container {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: 30px;
+    padding-right: 49px;
+  }
+}
+
+#stepperMiniControl {
+  width: 50px;
+  justify-content: space-between;
+
+  span:not(.theme-bg-primary) {
+    background-color: #BDBDBD;
+  }
+
+  .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;    
   }
 }
