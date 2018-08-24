@@ -78,6 +78,7 @@ import { TreemapComponent } from './components/treemap/treemap.component';
 import { FileListComponent } from './components/file-list/file-list.component';
 import { ExternalReferencesListComponent } from './components/external-references-list/external-references-list.component';
 import { ImplementationsListComponent } from './components/implementations-list/implementations-list.component';
+import { AddLabelAltComponent } from './components/add-label-alt/add-label-alt.component';
 
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
 import { ResizeDirective } from './directives/resize.directive';
@@ -169,6 +170,7 @@ const unfetterComponents = [
     FileListComponent,
     ExternalReferencesListComponent,
     ImplementationsListComponent,
+    AddLabelAltComponent,
 ];
 
 @NgModule({
@@ -202,7 +204,7 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,
+        ...unfetterComponents,        
     ],
     exports: [
         ...unfetterComponents,

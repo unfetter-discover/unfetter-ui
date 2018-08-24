@@ -1,0 +1,60 @@
+<div class="addLabelAltComponent">
+  <div *ngIf="formResetComplete" class="uf-well-accent">
+    <mat-form-field class="full-width mb-6">
+      <input matInput required placeholder="Label" [formControl]="newLabel">
+      <mat-error *ngIf="newLabel.hasError('required')">
+        Label is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+    <button mat-button color="accent" [disabled]="newLabel.status === 'INVALID'" class="mb-3" (click)="addToParent()">Attach Label to {{ parentDocumentType | capitalize }}</button>
+  </div>
+  <div *ngIf="parentForm.get('labels').value.length > 0">
+    <table class="uf-table mb-10">
+      <thead>
+        <tr>
+          <th>Current Labels</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let label of parentForm.get('labels').controls; let i = index" #row>
+
+          <td *ngIf="!row.editMode">
+            <div class="flex flexItemsCenter mat-icon-button-cell-wrapper">
+              <span>{{ label.value | capitalize }}</span>
+              <span class="flex1">&nbsp;</span>
+              <span>
+                <button type="button" mat-icon-button (click)="row.editMode = true">
+                  <i class="material-icons mat-24">create</i>
+                </button>
+              </span>
+              <span>
+                <button type="button" mat-icon-button (click)="parentForm.get('labels').removeAt(i)">
+                  <i class="material-icons mat-24">delete</i>
+                </button>
+              </span>
+            </div>
+          </td>
+
+          <td *ngIf="row.editMode">
+            <div class="flex flexItemsCenter mat-icon-button-cell-wrapper pb-3 pt-3">
+              <span class="flex1">
+                <mat-form-field class="full-width">
+                  <input matInput required placeholder="Label" [formControl]="parentForm.get('labels').at(i)">
+                  <mat-error *ngIf="parentForm.get('labels').at(i).hasError('required')">
+                    Label is <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+              </span>
+              <span>
+                <button type="button" mat-icon-button (click)="row.editMode = false">
+                  <i class="material-icons mat-24">save</i>
+                </button>
+              </span>
+            </div>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

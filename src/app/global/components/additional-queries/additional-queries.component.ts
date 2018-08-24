@@ -28,7 +28,7 @@ export class AdditionalQueriesComponent implements OnInit {
   }
 
   public addToParent() {
-    this.parentForm.get('metaProperties').get('additional_queries').push(this.localForm);
+    this.parentForm.get('metaProperties').get('additional_queries').insert(0, this.localForm);
 
     this.formResetComplete = false;
     this.resetForm();
