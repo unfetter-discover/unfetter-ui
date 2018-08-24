@@ -1,6 +1,5 @@
-
-import { finalize } from 'rxjs/operators';
 import { Component, ViewChild, Input, } from '@angular/core';
+import { finalize } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import { Carousel } from 'primeng/primeng';
@@ -67,10 +66,11 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
      * @description 
      */
     get phases(): any[] {
-        return (this.frameworks || Object.keys(this.chainedTactics))
+        const p = (this.frameworks || Object.keys(this.chainedTactics))
             .map(chain => (this.chainedTactics || {})[chain])
             .filter(chain => chain !== null && chain !== undefined)
             .reduce((phases, chain) => phases.concat(chain.phases), []);
+        return p;
     }
 
     /**
