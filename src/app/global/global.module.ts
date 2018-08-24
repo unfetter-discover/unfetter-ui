@@ -25,7 +25,6 @@ import {
     MatToolbarModule,
     MatTooltipModule,
 } from '@angular/material';
-import { CarouselModule } from 'primeng/primeng';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { SimplemdeModule, SIMPLEMDE_CONFIG } from 'ng2-simplemde';
 
@@ -86,6 +85,7 @@ import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AuthService } from '../core/services/auth.service';
 import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
 import { FileListComponent } from './components/file-list/file-list.component';
+import { UnfetterCarouselComponent, PrimedDirective } from './components/tactics-pane/tactics-carousel/unf-carousel.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -127,6 +127,7 @@ const unfetterComponents = [
     HelpWindowComponent,
     InfiniteScrollDirective,
     ResizeDirective,
+    PrimedDirective,
     InfoBarComponent,
     KillChainPhasesReactiveComponent,
     LandingPageComponent,
@@ -150,6 +151,7 @@ const unfetterComponents = [
     SpeedDialComponent,
     StixTableComponent,
     TacticsCarouselComponent,
+    UnfetterCarouselComponent,
     TacticsCarouselControlComponent,
     TacticsHeatmapComponent,
     TacticsTooltipComponent,
@@ -184,7 +186,6 @@ const unfetterComponents = [
                 }
             }
         }),
-        CarouselModule,
         SimplemdeModule.forRoot({
             provide: SIMPLEMDE_CONFIG,
             useValue: {
@@ -201,7 +202,6 @@ const unfetterComponents = [
     exports: [
         ...unfetterComponents,
         ...matModules,
-        CarouselModule,
         SimplemdeModule,
     ],
     providers: [

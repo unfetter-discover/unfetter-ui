@@ -8,8 +8,9 @@ import { Sighting } from '../../../../models';
 import { Constance } from '../../../../utils/constance';
 
 @Component({
-  selector: 'sighting-list',
-  templateUrl: './sighting-list.component.html',
+    selector: 'sighting-list',
+    templateUrl: './sighting-list.component.html',
+    styleUrls: ['sighting-list.component.scss']
 })
 export class SightingListComponent extends BaseStixComponent implements OnInit {
     public sightings: Sighting[] = [];

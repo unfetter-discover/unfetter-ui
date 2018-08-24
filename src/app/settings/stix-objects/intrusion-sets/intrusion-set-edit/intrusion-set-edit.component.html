@@ -1,42 +1,35 @@
-
 <div class="row">
     <div class="col-md-12">
         <mat-form-field class="full-width">
-        <input matInput placeholder="Name" required [(ngModel)]="intrusionSet.attributes.name" value="{{intrusionSet.attributes.name}}">
+            <input matInput placeholder="Name" required [(ngModel)]="intrusionSet.attributes.name" value="{{intrusionSet.attributes.name}}">
         </mat-form-field>
     </div>
 </div>
+
 <div class="row">
     <div class="col-md-6">
-                 <!-- <p-calendar [(ngModel)]="intrusionSet.attributes.first_seen"  dateFormat="M-dd-yy"  showIcon="true"></p-calendar> -->
-
-                <!--<mat-form-field class="full-width">
-                    <input matInput [matDatepicker]="picker" placeholder="First Seen" [(ngModel)]="intrusionSet.attributes.first_seen">
-                    <button matSuffix [matDatepickerToggle]="picker"></button>
-                </mat-form-field>
-                <mat-datepicker #picker></mat-datepicker>-->
-
-                <mat-form-field class="full-width">
-                    <input matInput [matDatepicker]="picker" placeholder="First Seen" [(ngModel)]="intrusionSet.attributes.first_seen">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-
-
+        <!--<mat-form-field class="full-width">
+            <input matInput [matDatepicker]="picker" placeholder="First Seen" [(ngModel)]="intrusionSet.attributes.first_seen">
+            <button matSuffix [matDatepickerToggle]="picker"></button>
+        </mat-form-field>
+        <mat-datepicker #picker></mat-datepicker>-->
+        <mat-form-field class="full-width">
+            <input matInput [matDatepicker]="picker" placeholder="First Seen" [(ngModel)]="intrusionSet.attributes.first_seen">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
     </div>
     <div class="col-md-6">
-                 <!-- <p-calendar [(ngModel)]="intrusionSet.attributes.last_seen"  dateFormat="M-dd-yy" showIcon="true"></p-calendar> -->
-                <!--<mat-form-field class="full-width">
-                    <input matInput [matDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="intrusionSet.attributes.last_seen">
-                    <button matSuffix [matDatepickerToggle]="picker_last_seen"></button>
-                </mat-form-field>
-                <mat-datepicker #picker_last_seen></mat-datepicker>-->
-
-                <mat-form-field class="full-width">
-                    <input matInput [matDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="intrusionSet.attributes.last_seen">
-                    <mat-datepicker-toggle matSuffix [for]="picker_last_seen"></mat-datepicker-toggle>
-                    <mat-datepicker #picker_last_seen></mat-datepicker>
-                </mat-form-field>
+        <!--<mat-form-field class="full-width">
+            <input matInput [matDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="intrusionSet.attributes.last_seen">
+            <button matSuffix [matDatepickerToggle]="picker_last_seen"></button>
+        </mat-form-field>
+        <mat-datepicker #picker_last_seen></mat-datepicker>-->
+        <mat-form-field class="full-width">
+            <input matInput [matDatepicker]="picker_last_seen" placeholder="Last Seen" [(ngModel)]="intrusionSet.attributes.last_seen">
+            <mat-datepicker-toggle matSuffix [for]="picker_last_seen"></mat-datepicker-toggle>
+            <mat-datepicker #picker_last_seen></mat-datepicker>
+        </mat-form-field>
     </div>
 </div>
 
@@ -45,33 +38,34 @@
           <form>
             <mat-form-field class="full-width">
                 <input matInput placeholder="Primary Motivation" aria-label="Primary Motivation" [matAutocomplete]="auto"
-                [formControl]="motivationCtrl" [(ngModel)]="intrusionSet.attributes.primary_motivation">
+                        [formControl]="motivationCtrl" [(ngModel)]="intrusionSet.attributes.primary_motivation">
             </mat-form-field>
         </form>
         <mat-autocomplete name="auto" #auto="matAutocomplete" >
             <mat-option *ngFor="let motivation of motivations" [value]="motivation">
-
                 <span>{{ motivation }}</span>
             </mat-option>
         </mat-autocomplete>
-       <!-- <mat-form-field class="full-width">
-        <input matInput placeholder="Primary Motivation"  [(ngModel)]="intrusionSet.attributes.primary_motivation" value="{{intrusionSet.attributes.primary_motivation}}">
+        <!-- <mat-form-field class="full-width">
+            <input matInput placeholder="Primary Motivation"  [(ngModel)]="intrusionSet.attributes.primary_motivation" value="{{intrusionSet.attributes.primary_motivation}}">
         </mat-form-field> -->
     </div>
 </div>
+
 <!-- <div class="row">
     <div class="col-md-12">
-       <mat-form-field class="full-width">
-        <input matInput placeholder="Goals"  [(ngModel)]="intrusionSet.attributes.goals" value="{{intrusionSet.attributes.goals}}">
+        <mat-form-field class="full-width">
+            <input matInput placeholder="Goals"  [(ngModel)]="intrusionSet.attributes.goals" value="{{intrusionSet.attributes.goals}}">
         </mat-form-field>
     </div>
 </div> -->
+
 <div class="row">
     <div class="col-md-12">
          <form>
             <mat-form-field class="full-width">
                 <input matInput placeholder="Resource Level" aria-label="Resource Level" [matAutocomplete]="autores"
-                [formControl]="resourceLevelCtrl" [(ngModel)]="intrusionSet.attributes.resource_level">
+                        [formControl]="resourceLevelCtrl" [(ngModel)]="intrusionSet.attributes.resource_level">
             </mat-form-field>
         </form>
         <mat-autocomplete name="autores" #autores="matAutocomplete">
@@ -79,18 +73,19 @@
                 <span>{{ resourceLevel }}</span>
             </mat-option>
         </mat-autocomplete>
-       <!-- <mat-form-field class="full-width">
-        <input matInput placeholder="Resource Level"  [(ngModel)]="intrusionSet.attributes.resource_level" value="{{intrusionSet.attributes.resource_level}}">
+        <!-- <mat-form-field class="full-width">
+            <input matInput placeholder="Resource Level"  [(ngModel)]="intrusionSet.attributes.resource_level" value="{{intrusionSet.attributes.resource_level}}">
         </mat-form-field> -->
     </div>
 </div>
+
 <div class="row">
     <div class="col-md-12">
         <select-search-field [placeholder]="'Identities'" [searchUrl]="'identities'" (optionChanged)="add($event)"></select-search-field>
         <mat-chip-list class="pull-left">
             <mat-chip selected="true" color="accent" *ngFor="let identity of identities">
                 {{identity.attributes.name}}
-               <span class="cursor-pointer" (click)="remove(identity)"><i class="material-icons">delete</i></span>
+                <span class="cursor-pointer" (click)="remove(identity)"><i class="material-icons">delete</i></span>
             </mat-chip>
         </mat-chip-list>
     </div>
@@ -102,37 +97,41 @@
         <mat-chip-list class="pull-left">
             <mat-chip selected="true" color="accent" *ngFor="let threatActor of threatActors">
                 {{threatActor.attributes.name}}
-               <span class="cursor-pointer" (click)="remove(threatActor)"><i class="material-icons">delete</i></span>
+                <span class="cursor-pointer" (click)="remove(threatActor)"><i class="material-icons">delete</i></span>
             </mat-chip>
         </mat-chip-list>
     </div>
 </div>
+
 <div class="row">
     <div class="col-md-12">
         <select-search-field [placeholder]="'Attack Patterns'" [searchUrl]="'attack-patterns'" (optionChanged)="add($event)"></select-search-field>
         <mat-chip-list class="pull-left">
             <mat-chip selected="true" color="accent" *ngFor="let attackPattern of attackPatterns">
                 {{attackPattern.attributes.name}}
-               <span class="cursor-pointer" (click)="remove(attackPattern)"><i class="material-icons">delete</i></span>
+                <span class="cursor-pointer" (click)="remove(attackPattern)"><i class="material-icons">delete</i></span>
             </mat-chip>
         </mat-chip-list>
     </div>
 </div>
 
 <!--<external-reference [(model)]="intrusionSet"></external-reference>-->
+
 <div class="row">
     <markdown-editor [editing]="true" [inputLabel]="'Description (Markdown Editor)'"
             [value]="intrusionSet.attributes.description"
             (changed)="intrusionSet.attributes.description = $event"></markdown-editor>
 </div>
+
 <stix-text-array [(model)]="intrusionSet" [propertyName]="'labels'"></stix-text-array>
+
 <stix-text-array [(model)]="intrusionSet" [propertyName]="'goals'"></stix-text-array>
 
 <div class="row">
     <div class="col-md-12">
         <div class="button-row pull-right">
-                <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
-                <button mat-raised-button (click)="saveIdentity()" [disabled]="!intrusionSet.attributes.name" color="primary">SAVE</button>
+            <button mat-button (click)="cancelButtonClicked()">CANCEL</button>
+            <button mat-raised-button (click)="saveIdentity()" [disabled]="!intrusionSet.attributes.name" color="primary">SAVE</button>
         </div>
     </div>
 </div>

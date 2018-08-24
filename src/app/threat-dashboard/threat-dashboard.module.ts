@@ -8,7 +8,6 @@ import {
   MatMenuModule, MatNativeDateModule, MatPaginatorModule, MatProgressBarModule, MatSelectModule, MatSlideToggleModule, MatSnackBarModule, MatStepperModule, MatTableModule, MatTabsModule, MatTooltipModule 
 } from '@angular/material';
 import { ClipboardModule } from 'ngx-clipboard';
-import { CarouselModule } from 'primeng/components/carousel/carousel';
 import { GlobalModule } from '../global/global.module';
 import { BarChartComponent } from './bar-chart/bar-chart.component';
 import { CollapsibleTreeComponent } from './collapsible-tree/collapsible-tree.component';
@@ -66,10 +65,6 @@ const materialModules = [
   PlatformModule,
 ];
 
-const primengModules = [
-  CarouselModule,
-];
-
 @NgModule({
   declarations: [
     ...moduleComponents,
@@ -79,7 +74,6 @@ const primengModules = [
     FormsModule,
     ReactiveFormsModule,
     ...materialModules,
-    ...primengModules,
     ClipboardModule,
     GlobalModule,
     routing,

@@ -3,8 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatIconModule, MatInputModule, MatSelectModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
-import { CheckboxModule } from 'primeng/components/checkbox/checkbox';
-import { DataListModule } from 'primeng/components/datalist/datalist';
 import { GlobalModule } from '../global/global.module';
 import { BaseComponentService } from './base-service.component';
 import { ButtonsFilterComponent } from './buttons-filter/buttons-filter.component';
@@ -53,8 +51,6 @@ import { ValidationErrorsComponent } from './validation-errors/validation-errors
     MatButtonModule,
     MatCardModule,
     MatChipsModule,
-    DataListModule,
-    CheckboxModule,
     MatCheckboxModule,
     GlobalModule
   ],

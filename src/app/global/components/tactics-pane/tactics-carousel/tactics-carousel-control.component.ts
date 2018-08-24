@@ -10,7 +10,6 @@ import {
 import { Subscription } from 'rxjs';
 
 import { MatButtonToggleChange, MatSelectChange } from '@angular/material';
-import { Carousel } from 'primeng/primeng';
 
 import { CarouselOptions } from './carousel.data';
 import { TacticsControlService } from '../tactics-control.service';

@@ -1,20 +1,20 @@
-
-import { distinctUntilChanged, finalize, debounceTime } from 'rxjs/operators';
 import {
-        Component,
-        OnInit,
-        AfterContentInit,
-        Output,
-        ViewChild,
-        ElementRef,
-        EventEmitter,
-        ChangeDetectorRef,
-    } from '@angular/core';
-import { Subject } from 'rxjs';
+    Component,
+    OnInit,
+    AfterContentInit,
+    Output,
+    ViewChild,
+    ElementRef,
+    EventEmitter,
+    ChangeDetectorRef,
+} from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { Observable, Subject } from 'rxjs';
+import { distinctUntilChanged, finalize, debounceTime, startWith, map, switchMap, tap } from 'rxjs/operators';
 
-import { Constance } from '../../utils/constance';
-import { GenericApi } from '../../core/services/genericapi.service';
 import { IntrusionSetHighlighterService } from '../intrusion-set-highlighter.service';
+import { GenericApi } from '../../core/services/genericapi.service';
+import { Constance } from '../../utils/constance';
 
 @Component({
     selector: 'intrusion-sets-panel',
@@ -26,6 +26,7 @@ export class IntrusionSetsPanelComponent implements OnInit {
     public intrusionSets = [];
     public selectedIntrusionSets = [];
     public intrusionSetSuggestions = [];
+    public intrusionSetFilterControl = new FormControl();
 
     @ViewChild('intrusion_sets_list') listElement: ElementRef;
 
@@ -36,7 +37,8 @@ export class IntrusionSetsPanelComponent implements OnInit {
         protected genericApi: GenericApi,
         protected ref: ChangeDetectorRef,
         private highlighter: IntrusionSetHighlighterService,
-    ) { }
+    ) {
+    }
 
     /**
      * @description load the intrusion set data, and prep the updater.
@@ -48,23 +50,36 @@ export class IntrusionSetsPanelComponent implements OnInit {
             'stix.id': 1
         };
         const ISfilter = encodeURI(`sort=${JSON.stringify(ISsortObj)}&project=${JSON.stringify(ISprojectObj)}`);
-        const initData$ = this.genericApi.get(`${Constance.INTRUSION_SET_URL}?${ISfilter}`).pipe(
-            finalize(() => {initData$.unsubscribe()}))
+        const initData$ = this.genericApi.get(`${Constance.INTRUSION_SET_URL}?${ISfilter}`)
+            .pipe(
+                finalize(() => {initData$.unsubscribe()})
+            )
             .subscribe(
                 (results) => this.intrusionSets = results || [],
                 (err) => console.log(new Date().toISOString(), err),
                 () => this.intrusionSets.forEach(intrusionSet => intrusionSet.checked = false)
             );
 
-        this.updateDebouncer.pipe(
-            debounceTime(1000))
+        this.intrusionSetFilterControl.valueChanges
+            .pipe(
+                startWith('')
+            ).subscribe(
+                value => this.onAutoCompleteSearch({ query: value })
+            );
+
+        this.updateDebouncer
+            .pipe(
+                debounceTime(1000)
+            )
             .subscribe(
                 () => this.onChange.emit(this.selectedIntrusionSets),
                 (err) => console.log(new Date().toISOString(), err),
             );
 
-        this.highlighter.intrusionSet.pipe(
-            distinctUntilChanged())
+        this.highlighter.intrusionSet
+            .pipe(
+                distinctUntilChanged()
+            )
             .subscribe(
                 (event) => {
                     const highlighted: NodeList = this.listElement.nativeElement.querySelectorAll('[highlight]');
@@ -81,32 +96,39 @@ export class IntrusionSetsPanelComponent implements OnInit {
             );
     }
 
+    public displayFilter(input: any) {
+        return input ? input.name : undefined
+    }
+
     /**
      * @description called when the search autocomplete input needs suggestions
      */
     public onAutoCompleteSearch(input: any) {
         this.intrusionSetSuggestions = [];
-        this.intrusionSets
-            .filter((intrusionSet) => {
-                return intrusionSet.attributes.name.toLowerCase()
-                    .indexOf(input.query.toLowerCase()) >= 0;
-            })
-            .forEach((intrusionSet) => {
-                this.intrusionSetSuggestions.push({
-                    id: intrusionSet.id,
-                    name: intrusionSet.attributes.name
+        if (input && input.query && input.query.toLowerCase) {
+            this.intrusionSets
+                .filter((intrusionSet) => {
+                    return intrusionSet.attributes.name.toLowerCase().indexOf(input.query.toLowerCase()) >= 0;
+                })
+                .forEach((intrusionSet) => {
+                    this.intrusionSetSuggestions.push({
+                        id: intrusionSet.id,
+                        name: intrusionSet.attributes.name
+                    });
                 });
-            });
+        }
     }
 
     /**
      * @description called when the user selects an auto-complete suggestion; triggers an update
      */
     public onAutoCompleteSelect(selection: any): void {
-        const intrusionSet = this.intrusionSets.find((i) => i.id === selection.id);
-        intrusionSet.checked = true;
-        this.select(intrusionSet, true);
-        this.updateDebouncer.next();
+        if (selection && selection.source && selection.source.value) {
+            const intrusionSet = this.intrusionSets.find((i) => i.id === selection.source.value.id);
+            intrusionSet.checked = true;
+            this.select(intrusionSet, true);
+            this.updateDebouncer.next();
+        }
     }
 
     /**

@@ -6,13 +6,13 @@ import { MatButtonToggleModule, MatCardModule, MatIconModule, MatOptionModule, M
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { MarkdownComponent } from 'ngx-markdown';
-import { Carousel } from 'primeng/primeng';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { HeatmapComponent } from '../../../../../global/components/heatmap/heatmap.component';
 import { MarkdownEditorComponent } from '../../../../../global/components/markdown-editor/markdown-editor.component';
 import { TacticsCarouselControlComponent } from '../../../../../global/components/tactics-pane/tactics-carousel/tactics-carousel-control.component';
 import { TacticsCarouselComponent } from '../../../../../global/components/tactics-pane/tactics-carousel/tactics-carousel.component';
+import { UnfetterCarouselComponent } from '../../../../../global/components/tactics-pane/tactics-carousel/unf-carousel.component';
 import { TacticsControlService } from '../../../../../global/components/tactics-pane/tactics-control.service';
 import { TacticsHeatmapComponent } from '../../../../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { TacticsPaneComponent } from '../../../../../global/components/tactics-pane/tactics-pane.component';
@@ -55,11 +55,11 @@ describe('SummaryTacticsComponent', () => {
                     TacticsHeatmapComponent,
                     TacticsTreemapComponent,
                     TacticsCarouselComponent,
+                    UnfetterCarouselComponent,
                     TacticsCarouselControlComponent,
                     TacticsTooltipComponent,
                     HeatmapComponent,
                     TreemapComponent,
-                    Carousel,
                     MarkdownEditorComponent,
                     MarkdownComponent,
                     CapitalizePipe,

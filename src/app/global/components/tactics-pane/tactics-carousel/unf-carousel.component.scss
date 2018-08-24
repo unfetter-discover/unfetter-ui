@@ -1,0 +1,36 @@
+.unf-carousel-container {
+    position: relative;
+    box-sizing: border-box;
+    padding: 0.63em;
+    border-radius: .25em;
+    background: inherit;
+    font-family: inherit;
+
+    .unf-carousel-viewport {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        border: 0;
+
+        .unf-carousel-items {
+            position: relative;
+            width: 32000px;
+            left: 0;
+            margin: 0;
+            padding: 0;
+            list-style: none outside none;
+            transition-property: left;
+            transition-duration: 1s;
+            transition-timing-function: ease-out;
+
+            .unf-carousel-item {
+                padding: 0;
+                float: left;
+                box-sizing: border-box;
+                background: inherit;
+                border-radius: .25em;
+                font-family: inherit;
+            }
+        }
+    }
+}

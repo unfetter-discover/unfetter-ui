@@ -1,0 +1,10 @@
+<div #container class="unf-carousel-container">
+    <div #viewport class="unf-carousel-viewport">
+        <ul #items class="unf-carousel-items" [style.left.px]="viewportPosition">
+            <li *ngFor="let item of value" class="unf-carousel-item"
+                    [style.width.px]="columnWidth - columnMargin * 2" [style.margin.px]="columnMargin">
+                <ng-container *ngTemplateOutlet="itemTemplate; context: {$implicit: item}"></ng-container>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -38,12 +38,12 @@ export class CriticalSecurityControlsComponent implements OnInit, DoCheck {
                         courseOfActionChildren.forEach((courseOfAction) => {
                             if (!cscObject[courseOfAction.name]) {
                                 cscObject[courseOfAction.name] = {
-                                    attackPatterns: [],
+                                    attackPatterns: new Set(),
                                     name: courseOfAction.name,
                                     description: courseOfAction.description
                                 };
                             }
-                            cscObject[courseOfAction.name].attackPatterns.push(attack_pattern.name);
+                            cscObject[courseOfAction.name].attackPatterns.add(attack_pattern.name);
                         });
                     }
                 });

@@ -1,9 +1,6 @@
-
-import { finalize } from 'rxjs/operators';
 import { Component, ViewChild, Input, } from '@angular/core';
+import { finalize } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-
-import { Carousel } from 'primeng/primeng';
 
 import { CarouselOptions } from './carousel.data';
 import { TacticsView } from '../tactics-view';
@@ -14,13 +11,14 @@ import { ResizeEvent, ResizeDirective } from '../../../directives/resize.directi
 import { Dictionary } from '../../../../models/json/dictionary';
 import { AppState } from '../../../../root-store/app.reducers';
 import { DOMRect } from '../../heatmap/heatmap.data';
+import { UnfetterCarouselComponent } from './unf-carousel.component';
 
 @Component({
     selector: 'tactics-carousel',
     templateUrl: './tactics-carousel.component.html',
     styleUrls: ['./tactics-carousel.component.scss'],
 })
-export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOptions> {
+export class TacticsCarouselComponent extends TacticsView<UnfetterCarouselComponent, CarouselOptions> {
 
     /**
      * @description Tactics grouped by framework.
@@ -44,7 +42,7 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
 
     private resizeTimer: number;
 
-    @ViewChild('carousel') private carousel: Carousel;
+    @ViewChild('carousel') private carousel: UnfetterCarouselComponent;
 
     @ViewChild(ResizeDirective) private resizer: ResizeDirective;
 
@@ -67,10 +65,11 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
      * @description 
      */
     get phases(): any[] {
-        return (this.frameworks || Object.keys(this.chainedTactics))
+        const p = (this.frameworks || Object.keys(this.chainedTactics))
             .map(chain => (this.chainedTactics || {})[chain])
             .filter(chain => chain !== null && chain !== undefined)
             .reduce((phases, chain) => phases.concat(chain.phases), []);
+        return p;
     }
 
     /**
@@ -164,7 +163,6 @@ export class TacticsCarouselComponent extends TacticsView<Carousel, CarouselOpti
             const maxColumns = Math.floor(rect.width / this.options.columnWidth);
             this.bounds = rect;
             requestAnimationFrame(() => {
-                this.carousel.numVisible = Math.max(1, maxColumns);
                 this.carousel.render();
                 this.controls.onChange({pager: this.view});
             });

@@ -1,0 +1,22 @@
+.stix-list {
+    padding: 0;
+    border: 1px solid #d5d5d5;
+}
+
+.stix-item.mat-list-item {
+    height: auto;
+    margin-left: 0px;
+    margin-right: 0px;
+    font-size: 16px;
+    padding: 10px;
+    border-bottom: 1px solid #d5d5d5;
+    
+    .row {
+        width: 100%;
+        color: #222222;
+    }
+}
+
+.stix-item.mat-list-item:last-child {
+    border-bottom: none;
+}
