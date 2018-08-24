@@ -5,7 +5,6 @@ import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, O
 import { MatSelect, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MenuItem } from 'primeng/components/common/menuitem';
 import { Subscription } from 'rxjs';
 import { Assessment } from 'stix/assess/v2/assessment';
 import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
@@ -59,7 +58,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public publishDate = new Date();
   public buttonLabel: ButtonLabel = 'CONTINUE';
   public navigations: { label: string, page: number }[] = [];
-  public item: MenuItem[];
   public doughnutChartLabels: string[];
   public doughnutChartData: { data: any[], backgroundColor: any[], hoverBackgroundColor: any[] }[];
   public doughnutChartType: string = this.CHART_TYPE;
@@ -917,7 +915,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           label: this.splitTitle(phaseName),
           page: step
         });
-        this.item = this.navigations;
         // TODO: Need to get description somehow from the key phase information
         assessmentGroup.description = this.groupings[phaseName];
         assessmentGroup.assessments = courseOfActionGroup;

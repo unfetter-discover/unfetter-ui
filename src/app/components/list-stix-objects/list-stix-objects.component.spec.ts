@@ -5,7 +5,6 @@ import { MatChipsModule, MatDialog, MatIconModule, MatInputModule } from '@angul
 import { ActivatedRoute, Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MarkdownComponent } from 'ngx-markdown';
-import { DataListModule } from 'primeng/components/datalist/datalist';
 import { of as observableOf, Observable } from 'rxjs';
 import { ListStixObjectComponent } from './list-stix-objects.component';
 import { MarkdownEditorComponent } from '../../global/components/markdown-editor/markdown-editor.component';
@@ -39,7 +38,6 @@ describe('ListStixObjectComponent', () => {
                     RouterTestingModule.withRoutes(routes),
                     FormsModule,
                     ReactiveFormsModule,
-                    DataListModule,
                     MatChipsModule,
                     MatIconModule,
                     MatInputModule,

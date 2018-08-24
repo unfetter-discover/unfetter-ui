@@ -15,9 +15,6 @@ import {
     MatTabsModule,
     MatTooltipModule,
 } from '@angular/material';
-import { AccordionModule } from 'primeng/components/accordion/accordion';
-import { AutoCompleteModule } from 'primeng/components/autocomplete/autocomplete';
-import { CarouselModule } from 'primeng/components/carousel/carousel';
 
 import { IntrusionSetDashboardComponent } from './intrusion-set-dashboard.component';
 import { IntrusionSetHighlighterService } from './intrusion-set-highlighter.service';
@@ -55,12 +52,6 @@ const materialModules = [
     MatTooltipModule,
 ];
 
-const primengModules = [
-    AccordionModule,
-    AutoCompleteModule,
-    CarouselModule,
-];
-
 @NgModule({
     declarations: [
         ...unfetterComponents,
@@ -72,7 +63,6 @@ const primengModules = [
         FormsModule,
         ReactiveFormsModule,
         ...materialModules,
-        ...primengModules,
         routing,
     ],
     providers: [

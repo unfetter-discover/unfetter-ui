@@ -2,7 +2,6 @@ import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, O
 import { MatSelect } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MenuItem } from 'primeng/components/common/menuitem';
 import { Subscription, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, pluck, take } from 'rxjs/operators';
 import { AssessmentObject } from 'stix/assess/v2/assessment-object';
@@ -75,7 +74,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public finishedLoading = false;
   public indicators: Indicator.UnfetterIndicator[];
   public insertMode = false;
-  public item: MenuItem[];
   public meta = new Assess3Meta();
   public mitigations: Stix[];
   public model: JsonApiData<Assessment, Dictionary<Assessment>>;
@@ -1052,7 +1050,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           label: this.splitTitle(phaseName),
           page: step,
         });
-        this.item = this.navigations;
         // TODO: Need to get description somehow from the key phase information
         assessmentGroup.description = this.groupings[phaseName];
         assessmentGroup.assessments = courseOfActionGroup;

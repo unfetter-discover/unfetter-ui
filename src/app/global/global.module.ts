@@ -25,8 +25,6 @@ import {
     MatToolbarModule,
     MatTooltipModule,
 } from '@angular/material';
-import { CarouselModule } from 'primeng/primeng';
-import { NguCarouselModule } from '@ngu/carousel';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { SimplemdeModule, SIMPLEMDE_CONFIG } from 'ng2-simplemde';
 
@@ -153,6 +151,7 @@ const unfetterComponents = [
     SpeedDialComponent,
     StixTableComponent,
     TacticsCarouselComponent,
+    UnfetterCarouselComponent,
     TacticsCarouselControlComponent,
     TacticsHeatmapComponent,
     TacticsTooltipComponent,
@@ -165,7 +164,6 @@ const unfetterComponents = [
     ErrorPageComponent,
     ReadableBytesPipe,
     FileListComponent,
-    UnfetterCarouselComponent,
 ];
 
 @NgModule({
@@ -188,8 +186,6 @@ const unfetterComponents = [
                 }
             }
         }),
-        CarouselModule,
-        NguCarouselModule,
         SimplemdeModule.forRoot({
             provide: SIMPLEMDE_CONFIG,
             useValue: {
@@ -206,8 +202,6 @@ const unfetterComponents = [
     exports: [
         ...unfetterComponents,
         ...matModules,
-        CarouselModule,
-        NguCarouselModule,
         SimplemdeModule,
     ],
     providers: [

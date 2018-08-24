@@ -11,7 +11,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ChartsModule } from 'ng2-charts';
-import { CalendarModule } from 'primeng/components/calendar/calendar';
 import { ComponentModule } from '../../../components/component.module';
 import { GlobalModule } from '../../../global/global.module';
 import { PipesModule } from '../../../pipes/pipes.module';
@@ -34,17 +33,12 @@ const matModules = [
   MatSnackBarModule,
 ];
 
-const primengModules = [
-  CalendarModule,
-];
-
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     routing,
     ...matModules,
-    ...primengModules,
     ComponentModule,
     ChartsModule,
     PipesModule,

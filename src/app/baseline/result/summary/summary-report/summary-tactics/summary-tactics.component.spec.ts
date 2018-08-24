@@ -6,7 +6,6 @@ import { MatButtonToggleModule, MatCardModule, MatIconModule, MatOptionModule, M
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
 import { MarkdownComponent } from 'ngx-markdown';
-import { Carousel } from 'primeng/primeng';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { HeatmapComponent } from '../../../../../global/components/heatmap/heatmap.component';
@@ -59,7 +58,6 @@ describe('SummaryTacticsComponent', () => {
                     TacticsTooltipComponent,
                     HeatmapComponent,
                     TreemapComponent,
-                    Carousel,
                     MarkdownEditorComponent,
                     MarkdownComponent,
                     CapitalizePipe,
