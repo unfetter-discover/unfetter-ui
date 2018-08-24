@@ -150,23 +150,6 @@
 
           <h4>Add Labels</h4>
           <add-label-alt [parentForm]="form"></add-label-alt>
-          <!-- <div>
-            <mat-chip-list *ngIf="form.get('labels').value.length > 0" class="inlineBlock" class="chipListPadding">
-              <mat-chip *ngFor="let label of form.get('labels').value; let i = index" class="cursor-pointer chipListChip" removable="true">
-                <span class="flex1 flexNowrap">{{label | capitalize}}</span>
-                <mat-icon matChipRemove (click)="form.get('labels').removeAt(i)">cancel</mat-icon>
-              </mat-chip>
-            </mat-chip-list>
-            <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
-          </div> -->
-<!-- 
-          <mat-chip-list *ngIf="form.get('labels').value.length > 0" class="inlineBlock" class="chipListPadding">
-              <mat-chip *ngFor="let label of form.get('labels').value; let i = index" class="cursor-pointer chipListChip" removable="true">
-                <span class="flex1 flexNowrap">{{label | capitalize}}</span>
-                <mat-icon matChipRemove (click)="form.get('labels').removeAt(i)">cancel</mat-icon>
-              </mat-chip>
-            </mat-chip-list>
-            <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive> -->
 
           <div *ngIf="!blockAttachments">
             <h4>Attachments</h4>
