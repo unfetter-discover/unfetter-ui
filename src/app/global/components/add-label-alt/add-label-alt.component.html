@@ -1,7 +1,12 @@
 <div class="addLabelAltComponent">
   <div *ngIf="formResetComplete" class="uf-well-accent">
     <mat-form-field class="full-width mb-6">
-      <input matInput required placeholder="Label" [formControl]="newLabel">
+      <input matInput required placeholder="Label" [formControl]="newLabel" [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let ov of openVocabList" [value]="ov">
+            {{ ov | capitalize }}
+        </mat-option>
+      </mat-autocomplete>
       <mat-error *ngIf="newLabel.hasError('required')">
         Label is <strong>required</strong>
       </mat-error>

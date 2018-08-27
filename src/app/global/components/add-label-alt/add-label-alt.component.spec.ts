@@ -1,9 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { MatButtonModule, MatInputModule } from '@angular/material';
+import { MatButtonModule, MatInputModule, MatAutocompleteModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
+import { StoreModule } from '@ngrx/store';
 
+import * as fromRoot from '../../../root-store/app.reducers';
 import { AddLabelAltComponent } from './add-label-alt.component';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { IndicatorForm } from '../../form-models/indicator';
@@ -22,7 +24,9 @@ describe('AddLabelAltComponent', () => {
         NoopAnimationsModule,
         ReactiveFormsModule,
         MatButtonModule,
-        MatInputModule
+        MatInputModule,
+        MatAutocompleteModule,
+        StoreModule.forRoot(fromRoot.reducers)
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
