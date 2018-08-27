@@ -6,7 +6,7 @@
         </mat-form-field>
     </div>
 
-    <div class="uf-well stixList" [style.maxHeight]="listMaxHeight">
+    <div class="uf-well stixList" [style.maxHeight]="listMaxHeight" scrollTrap>
         <mat-selection-list [formControl]="formCtrl">
             <mat-list-option *ngFor="let s of stix | sortByField:'name':'ascending'; let i = index" [value]="s.id"
                     [style.display]="hideStixObj[s.id] ? 'none' : 'block'">

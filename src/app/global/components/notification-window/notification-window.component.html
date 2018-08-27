@@ -26,7 +26,7 @@
           </a>
         </div>
       </div>
-      <div id="notificiationRowWrapper">
+      <div id="notificiationRowWrapper" scrollTrap>
         <div *ngFor="let notification of notifications | sortByField:'submitted'; let i = index" class="notificationRow flex flexItemsCenter"
           [ngClass]="{'readNotication': notification.read}" (mouseenter)="!notification.read ? markAsRead(notification) : ''">
           <span>
