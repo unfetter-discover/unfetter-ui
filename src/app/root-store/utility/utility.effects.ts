@@ -144,7 +144,6 @@ export class UtilityEffects {
                         title = 'Analytic Exchange'
                         break;
                     case 'assess':
-                    case 'assess-beta':
                         title = 'Assessments';
                         break;
                     case 'baseline':
@@ -168,7 +167,6 @@ export class UtilityEffects {
                         break;
                     case 'assessments':
                     case 'assess':
-                    case 'assess-beta':
                     case 'baseline':
                         theme = Themes.ASSESSMENTS;
                         break;
