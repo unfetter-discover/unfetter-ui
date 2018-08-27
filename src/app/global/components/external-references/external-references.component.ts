@@ -27,7 +27,7 @@ export class ExternalReferencesReactiveComponent implements OnInit {
     }
 
     public addToParent() {
-        this.parentForm.get('external_references').push(this.localForm);
+        this.parentForm.get('external_references').insert(0, this.localForm);
 
         this.formResetComplete = false;
         this.resetForm();

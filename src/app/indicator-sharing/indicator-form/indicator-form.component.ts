@@ -6,7 +6,7 @@ import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
-import { MatStep } from '@angular/material';
+import { MatStep, MatStepper, MatHorizontalStepper } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
 import { IndicatorForm } from '../../global/form-models/indicator';
@@ -27,6 +27,8 @@ import { MasterConfig } from '../../core/services/run-config.service';
 import { MarkingDefinition } from '../../models';
 import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
 import { HideFooter, NavigateToErrorPage } from '../../root-store/utility/utility.actions';
+import { AdditionalQueriesForm } from '../../global/form-models/additional-queries';
+import { DomHelper } from '../../global/static/dom-helper';
 
 @Component({
   selector: 'indicator-form',
@@ -69,6 +71,9 @@ export class IndicatorFormComponent implements OnInit {
   @ViewChild('baseDataStep')
   public baseDataStep: MatStep;
 
+  @ViewChild('stepper')
+  public stepper: MatHorizontalStepper;
+
   private readonly BASE_DATA_STEPPER_INDEX = 0;
   private readonly ASSOCIATED_DATA_STEPPER_INDEX = 1;
   private initialPatternHandlerResponse: PatternHandlerTranslateAll = {
@@ -91,9 +96,11 @@ export class IndicatorFormComponent implements OnInit {
     private store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
     public location: Location,
     private route: ActivatedRoute
-  ) { }
+  ) { 
+    DomHelper.ScrollToTop();
+  }
 
-  public ngOnInit() {
+  public ngOnInit() {    
     this.store.dispatch(new HideFooter());
     this.resetForm();
     const route = this.route.snapshot.url.length && this.route.snapshot.url[0].path;
@@ -407,6 +414,22 @@ export class IndicatorFormComponent implements OnInit {
     });
   }
 
+  public changeStepperIndex(newIndex: number) {
+    if (newIndex === this.currentStepperIndex) {
+      // This should never be reached, but just in case!
+      return;
+    } else if (newIndex > this.currentStepperIndex) {
+      // This method is largely due the fact that CdkStepper does not have a way to specify an index
+      while (newIndex > this.stepper.selectedIndex) {
+        this.stepper.next();
+      }
+    } else if (newIndex < this.currentStepperIndex) {
+      while (newIndex < this.stepper.selectedIndex) {
+        this.stepper.previous();
+      }
+    }
+  }
+
   private setEditValues() {
 
     this.form.patchValue(this.editData);
@@ -436,7 +459,9 @@ export class IndicatorFormComponent implements OnInit {
     if (this.editData.metaProperties) {
       if (this.editData.metaProperties.additional_queries) {
         this.editData.metaProperties.additional_queries.forEach((query) => {
-          (this.form.get('metaProperties').get('additional_queries') as FormArray).push(new FormControl(query));
+          const additionalQueriesForm = AdditionalQueriesForm();
+          additionalQueriesForm.setValue(query);
+          (this.form.get('metaProperties').get('additional_queries') as FormArray).push(additionalQueriesForm);
         });
       }
 

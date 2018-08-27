@@ -25,7 +25,7 @@
     </div>
     <div id="formWrapper">
 
-      <mat-horizontal-stepper (selectionChange)="stepperChanged($event)">
+      <mat-horizontal-stepper (selectionChange)="stepperChanged($event)" #stepper>
 
         <mat-step label="Base Data" #baseDataStep>        
 
@@ -94,14 +94,7 @@
           <h4>Implementations</h4>
           <div class="mb-6" formGroupName="metaProperties">
             <additional-queries [parentForm]="form"></additional-queries>
-            <mat-chip-list formArrayName="additional_queries" *ngIf="form.get('metaProperties').get('additional_queries').value.length > 0"
-              class="chipListPadding">
-              <mat-chip *ngFor="let query of form.get('metaProperties').get('additional_queries').value; let i = index" class="cursor-pointer chipListChip"
-                color="primary" selected="true" removable="true">
-                <span class="flex1 flexNowrap">{{ query.name | capitalize}}</span>
-                <mat-icon matChipRemove (click)="form.get('metaProperties').get('additional_queries').removeAt(i)">cancel</mat-icon>
-              </mat-chip>
-            </mat-chip-list>
+            <implementations-list [form]="form"></implementations-list>
           </div>
 
           <div *ngIf="!editMode">
@@ -134,6 +127,7 @@
 
         <mat-step label="Associated Data" #associatedDataStep>
           <br>
+
           <div formGroupName="metaProperties" *ngIf="attackPatterns && attackPatterns.length">
             <h4>Indicated Techniques</h4>
             <unf-selection-list [stix]="attackPatterns" [formCtrl]="form.get('metaProperties').get('relationships')"></unf-selection-list>
@@ -147,29 +141,15 @@
             </mat-chip-list>
           </div>
           <br>
+
           <div>
-            <h4>External References</h4>
+            <h4>Reference Links</h4>
             <external-references-reactive [parentForm]="form"></external-references-reactive>
-            <mat-chip-list formArrayName="external_references" *ngIf="form.get('external_references').value.length > 0" class="chipListPadding">
-              <mat-chip *ngFor="let extRef of form.get('external_references').value; let i = index" class="cursor-pointer chipListChip"
-                color="warn" selected="true" removable="true">
-                <span class="flex1 flexNowrap">{{ extRef.source_name | capitalize}}</span>
-                <mat-icon matChipRemove (click)="form.get('external_references').removeAt(i)">cancel</mat-icon>
-              </mat-chip>
-            </mat-chip-list>
+            <external-references-list [form]="form"></external-references-list>
           </div>
 
-          <!-- ~~~ Labels ~~~ -->
           <h4>Add Labels</h4>
-          <div class="flex flexItemsCenter" id="labelsWrapper">
-            <mat-chip-list *ngIf="form.get('labels').value.length > 0" class="inlineBlock" class="chipListPadding">
-              <mat-chip *ngFor="let label of form.get('labels').value; let i = index" class="cursor-pointer chipListChip" removable="true">
-                <span class="flex1 flexNowrap">{{label | capitalize}}</span>
-                <mat-icon matChipRemove (click)="form.get('labels').removeAt(i)">cancel</mat-icon>
-              </mat-chip>
-            </mat-chip-list>
-            <add-label-reactive [parentForm]="form" [stixType]="'indicator'"></add-label-reactive>
-          </div>
+          <add-label-alt [parentForm]="form"></add-label-alt>
 
           <div *ngIf="!blockAttachments">
             <h4>Attachments</h4>
@@ -218,16 +198,24 @@
     </div>
 
     <div class="stepperControlWrapper mat-elevation-z8">
-      <div class="container" [ngSwitch]="currentStepperIndex">
-        <div *ngSwitchCase="0">
+      <div class="container flex flexItemsCenter" [ngSwitch]="currentStepperIndex">
+        <span *ngSwitchCase="0" class="flex1">
           <ng-container *ngTemplateOutlet="baseDataButtons"></ng-container>
-        </div>
-        <div *ngSwitchCase="1">
+        </span>
+        <span *ngSwitchCase="1" class="flex1">
           <ng-container *ngTemplateOutlet="associatedDataButtons"></ng-container>
-        </div>
-        <div *ngSwitchCase="2">
+        </span>
+        <span *ngSwitchCase="2" class="flex1">
           <ng-container *ngTemplateOutlet="inputDataButtons"></ng-container>
-        </div>
+        </span>
+        <span>
+          <div id="stepperMiniControl" class="flex">
+            <span class="dot" *ngFor="let number of [0,1,2]" 
+              [class.theme-bg-primary]="number === currentStepperIndex"
+              [class.cursor-pointer]="number !== currentStepperIndex"
+              (click)="changeStepperIndex(number)"></span>
+          </div>
+        </span>
       </div>
     </div>
   </form>

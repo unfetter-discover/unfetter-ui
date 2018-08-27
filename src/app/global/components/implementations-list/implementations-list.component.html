@@ -1,0 +1,71 @@
+<div class="implementationsListComponent mt-15 mb-10" *ngIf="form.get('metaProperties').get('additional_queries').value.length > 0">
+  <form [formGroup]="form" novalidate>
+    <div formGroupName="metaProperties">
+      <div formArrayName="additional_queries" class="mb-15" *ngFor="let query of form.get('metaProperties').get('additional_queries').controls; let i = index" #thisCard>
+
+        <mat-card class="uf-mat-card" *ngIf="!thisCard.editMode">
+          <mat-card-header>
+            <mat-card-title>
+              <span>{{ query.value.name }}</span>
+              <span class="flex1">&nbsp;</span>
+              <button type="button" mat-icon-button class="mat-24" (click)="thisCard.editMode = true">
+                <mat-icon>create</mat-icon>
+              </button>
+              <button type="button" mat-icon-button class="mat-24" (click)="form.get('metaProperties').get('additional_queries').removeAt(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div *ngIf="query.value.query">
+              <label>Query</label>
+              <p>
+                <code [innerHtml]="whitespaceToBreak(query.value.query)" class="inlineBlock"></code>
+              </p>
+            </div>
+            <div *ngIf="query.value.details">
+              <label>Details</label>
+              <markdown [data]="query.value.details"></markdown>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="uf-mat-card mb-15" *ngIf="thisCard.editMode">
+          <mat-card-header>
+            <mat-card-title>
+              <span>Edit Implementation</span>
+              <span class="flex1">&nbsp;</span>
+              <button type="button" mat-icon-button class="mat-24" (click)="thisCard.editMode = false" [disabled]="form.get('metaProperties').get('additional_queries').at(i).status === 'INVALID'">
+                <mat-icon>save</mat-icon>
+              </button>
+              <button type="button" mat-icon-button class="mat-24" (click)="form.get('metaProperties').get('additional_queries').removeAt(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content [formGroupName]="i">
+            <mat-form-field class="full-width mb-6">
+              <input matInput required placeholder="Tool/Sensor Name" formControlName="name">
+              <mat-error *ngIf="form.get('metaProperties').get('additional_queries').at(i).get('name').hasError('required')">
+                Tool/Sensor Name is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="full-width mb-6">
+              <textarea matInput required placeholder="Query" formControlName="query" (keyup)="queryChange(form.get('metaProperties').get('additional_queries').at(i).get('query'))"></textarea>
+              <mat-error *ngIf="form.get('metaProperties').get('additional_queries').at(i).get('query').hasError('required')">
+                Query is <strong>required</strong>
+              </mat-error>
+            </mat-form-field>
+            
+            <pii-check-message [formCtrl]="form.get('metaProperties').get('additional_queries').at(i).get('query')"></pii-check-message>
+
+            <h5>Details</h5>
+            <simplemde formControlName="details"></simplemde>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </div>
+  </form>
+</div>
