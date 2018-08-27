@@ -33,7 +33,7 @@ import { FullAssessmentGroup } from './group/models/full-assessment-group';
 })
 export class FullComponent implements OnInit, OnDestroy {
 
-  public readonly baseAssessUrl = '/assess-beta';
+  public readonly baseAssessUrl = '/assess';
 
   public activePhase: string;
   public assessment$: Observable<Assessment>;

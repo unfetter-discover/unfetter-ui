@@ -265,7 +265,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
         (saved: SavedState) => {
           const rollupId = saved.rollupId;
           const id = saved.id;
-          this.router.navigate(['/assess-beta/result/summary', rollupId, id]);
+          this.router.navigate(['/assess/result/summary', rollupId, id]);
         },
         (err) => console.log(err)
       );

@@ -150,8 +150,8 @@ export class FullResultEffects {
                 const assessmentId = payload.assessmentId;
                 const phase = payload.phase;
                 const attackPattern = payload.attackPattern;
-                // const url = `${Constance.API_HOST}/assess-beta/result/full/${rollupId}/${assessmentId}/phase/${phase}/attackPattern/${attackPattern}`;
-                const url = `${Constance.API_HOST}/assess-beta/result/full/${rollupId}/${assessmentId}/phase/${phase}`;
+                // const url = `${Constance.API_HOST}/assess/result/full/${rollupId}/${assessmentId}/phase/${phase}/attackPattern/${attackPattern}`;
+                const url = `${Constance.API_HOST}/assess/result/full/${rollupId}/${assessmentId}/phase/${phase}`;
                 this.location.replaceState(url);
             }),
             switchMap(() => observableOf(new DonePushUrl()))

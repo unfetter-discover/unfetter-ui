@@ -12,7 +12,7 @@ import { AssessService } from './services/assess.service';
 @Injectable()
 export class AssessGuard implements CanActivate {
     public readonly demoMode: boolean = (environment.runMode === 'DEMO');
-    private readonly BASE_URL = 'assess-beta';
+    private readonly BASE_URL = 'assess';
     private readonly CREATE_URL = `${this.BASE_URL}/create`;
 
     constructor(

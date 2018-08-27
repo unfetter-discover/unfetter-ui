@@ -32,7 +32,7 @@ export class ResultHeaderComponent implements OnInit {
    * @return {void}
    */
   public ngOnInit(): void {
-    const base = '/assess-beta';
+    const base = '/assess';
     const resultBase = `${base}/result`;
     this.summaryLink = `${resultBase}/summary/${this.rollupId}/${this.assessmentId}`;
     this.resultsLink = `${resultBase}/full/${this.rollupId}/${this.assessmentId}`;
