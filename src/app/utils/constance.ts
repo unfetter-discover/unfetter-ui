@@ -93,7 +93,6 @@ export const Constance = {
   // TODO change icon
   X_UNFETTER_ASSESSMENT_ICON: 'assets/icon/stix-icons/2018/report.svg',
 
-  X_UNFETTER_ASSESSMENT3_NAVIGATE_URL: 'assess-beta/navigate',
   
   X_UNFETTER_BASELINE_NAVIGATE_URL: 'baseline/navigate',
   

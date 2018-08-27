@@ -37,7 +37,7 @@ import { SummaryDataSource } from './summary.datasource';
 })
 export class SummaryComponent implements OnInit, OnDestroy {
 
-  readonly baseAssessUrl = '/assess-beta';
+  readonly baseAssessUrl = '/assess';
 
   assessmentName$: Observable<string>;
   refassessmentName: string;

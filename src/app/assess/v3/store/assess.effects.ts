@@ -162,7 +162,7 @@ export class AssessEffects {
           .pipe(
             tap((el: Assess3Meta) => {
               let route = [
-                '/assess-beta/wizard/new',
+                '/assess/wizard/new',
                 'indicators',
                 el.includesIndicators === true ? 1 : 0,
                 'mitigations',
