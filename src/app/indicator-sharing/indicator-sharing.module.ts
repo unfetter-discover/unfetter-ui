@@ -25,6 +25,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { ClipboardModule } from 'ngx-clipboard';
 import { ChartsModule } from 'ng2-charts';
+import { MarkdownModule } from 'ngx-markdown';
 
 // Modules
 import { routing } from './indicator-sharing-routing.module';
@@ -69,7 +70,8 @@ const matModules = [
     MatTooltipModule,
     MatSidenavModule,
     MatMenuModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MarkdownModule
 ];
 
 @NgModule({

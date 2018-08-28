@@ -90,6 +90,7 @@ import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AuthService } from '../core/services/auth.service';
 import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
 import { UnfetterCarouselComponent, PrimedDirective } from './components/tactics-pane/tactics-carousel/unf-carousel.component';
+import { ScrollTrapDirective } from './directives/scroll-trap.directive';
 
 const matModules = [
     MatAutocompleteModule,
@@ -204,7 +205,8 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,        
+        ...unfetterComponents,
+        ScrollTrapDirective,        
     ],
     exports: [
         ...unfetterComponents,
