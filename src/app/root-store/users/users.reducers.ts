@@ -7,6 +7,7 @@ export interface UserState {
     token: string,
     authenticated: boolean,
     approved: boolean,
+    locked: boolean,
     role: string,
     avatar_url: string
 }
