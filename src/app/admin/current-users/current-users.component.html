@@ -1,42 +1,58 @@
 <div id="currentUsersComponent" class="row">
-  <div class="col-xs-12">
 
-    <div class="uf-well" *ngIf="message">{{message}}</div>
+    <div class="col-xs-12">
 
-    <div *ngIf="users && users.length">
-      <h5>Current Users</h5>
-      <table class="table table-striped">
-        <thead>
-          <th>User Name</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Organizations</th>
-          <th class="text-right">Make Admin</th>
-          <th class="text-right">Lock Account</th>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of users">
-            <td>{{ user.userName }}</td>
-            <td>{{ user.lastName }}, {{ user.firstName }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.role }}</td>
-            <td>{{ formatOrganizations(user.organizations) }}</td>
-            <td class="text-right">
-              <div *ngIf="user.role !== adminRole">
-                <button mat-button class="mat-24" (click)="userAction(user, 'PROMOTE_TO_ADMIN')">
-                  <i class="material-icons">arrow_upward</i>
-                </button>
-              </div>              
-            </td>
-            <td class="text-right">
-              <button mat-button class="mat-24" (click)="userAction(user, 'LOCK_USER')">
-                <i class="material-icons">lock</i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <div class="uf-well" *ngIf="message">{{message}}</div>
+
+        <div *ngIf="users && users.length">
+
+            <h5>Current Users</h5>
+
+            <table class="table table-striped">
+
+                <thead>
+                    <th>User Name</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Organizations</th>
+                    <th class="text-center">Make Admin</th>
+                    <th class="text-center">Lock Account</th>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let user of users">
+                        <td>{{ user.userName }}</td>
+                        <td>{{ user.lastName }}, {{ user.firstName }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>{{ formatOrganizations(user.organizations) }}</td>
+                        <td class="text-center">
+                            <div *ngIf="user.role !== adminRole">
+                                <button mat-button class="mat-24" (click)="userAction(user, 'PROMOTE_TO_ADMIN')">
+                                    <i class="material-icons">arrow_upward</i>
+                                </button>
+                            </div>              
+                        </td>
+                        <td class="text-center">
+                            <div *ngIf="user.locked">
+                                <button mat-button class="mat-24" (click)="userAction(user, 'UNLOCK_USER')">
+                                    <i class="material-icons">lock_open</i>
+                                </button>
+                            </div>
+                            <div *ngIf="!user.locked">
+                              <button mat-button class="mat-24" (click)="userAction(user, 'LOCK_USER')">
+                                  <i class="material-icons">lock</i>
+                              </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
     </div>
-  </div>
+
 </div>
