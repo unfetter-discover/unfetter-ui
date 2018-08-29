@@ -181,8 +181,8 @@ describe('AuthService should', () => {
             service.setToken(user.token);
         });
 
-        it('user is logged in (since they are... ish)', async () => {
-            expect(service.loggedIn()).toBeTruthy();
+        it('user is not considered logged in', async () => {
+            expect(service.loggedIn()).toBeFalsy();
         });
 
         it('user is locked (since they definitely are)', async () => {
