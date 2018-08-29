@@ -16,6 +16,7 @@ export const initialState: UserState = {
     token: null,
     authenticated: false,
     approved: false,
+    locked: false,
     role: null,
     avatar_url: null
 }
@@ -30,6 +31,7 @@ export function usersReducer(state = initialState, action: userActions.UserActio
                 token: action.payload.token,
                 role: action.payload.userData.role,
                 approved: action.payload.userData.approved,
+                locked: action.payload.userData.locked,
                 authenticated: true,
                 avatar_url
             };
@@ -38,6 +40,7 @@ export function usersReducer(state = initialState, action: userActions.UserActio
                 ...state,
                 role: action.payload.role,
                 approved: action.payload.approved,
+                locked: action.payload.locked,
                 userProfile: {
                     ...action.payload
                 },
