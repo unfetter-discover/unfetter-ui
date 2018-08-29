@@ -68,7 +68,8 @@ export class TacticsCarouselComponent extends TacticsView<UnfetterCarouselCompon
         const p = (this.frameworks || Object.keys(this.chainedTactics))
             .map(chain => (this.chainedTactics || {})[chain])
             .filter(chain => chain !== null && chain !== undefined)
-            .reduce((phases, chain) => phases.concat(chain.phases), []);
+            .reduce((phases, chain) => phases.concat(chain.phases), [])
+            .filter(phase => !this.filters.columns || (this.count(phase.tactics) > 0));
         return p;
     }
 
@@ -111,13 +112,18 @@ export class TacticsCarouselComponent extends TacticsView<UnfetterCarouselCompon
             this.readied = true;
         }
 
-        const sub$ = this.controls.change.pipe(
-            finalize(() => sub$ && sub$.unsubscribe()))
+        const sub$ = this.controls.change
+            .pipe(
+                finalize(() => sub$ && sub$.unsubscribe())
+            )
             .subscribe(
                 (event) => {
                     if (event) {
                         if (event.toggle) {
-                            requestAnimationFrame(() => {});
+                            requestAnimationFrame(() => {
+                                this.view.setPage(this.view.page, false);
+                                this.controls.onChange({pager: this.view});
+                            });
                         } else if (event.page >= 0) {
                             this.view.setPage(event.page, false);
                         }
