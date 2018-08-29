@@ -45,7 +45,7 @@ describe('TacticCarouselControlComponent', () => {
     });
 
     it('should handle page control events', fakeAsync(() => {
-        component['controls'].state.pager = {totalPages: 3};
+        component['controls'].state.pager = {page: 0, totalPages: 3};
         component['controls'].change.emit({pager: component['controls'].state.pager});
         tick(250);
         expect(component.pages).toEqual(3);
