@@ -13,7 +13,7 @@ import {
 import { TacticsCarouselControlComponent } from './tactics-carousel-control.component';
 import { TacticsControlService } from '../tactics-control.service';
 
-fdescribe('TacticCarouselControlComponent', () => {
+describe('TacticCarouselControlComponent', () => {
 
     let fixture: ComponentFixture<TacticsCarouselControlComponent>;
     let component: TacticsCarouselControlComponent;
