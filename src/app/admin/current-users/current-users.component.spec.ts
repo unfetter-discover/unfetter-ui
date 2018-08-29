@@ -5,7 +5,7 @@ import { CurrentUsersComponent } from './current-users.component';
 import { UserRole } from '../../models/user/user-role.enum';
 import { AdminService } from '../admin.service';
 
-fdescribe('CurrentUsersComponent', () => {
+describe('CurrentUsersComponent', () => {
 
     let fixture: ComponentFixture<CurrentUsersComponent>;
     let component: CurrentUsersComponent;
