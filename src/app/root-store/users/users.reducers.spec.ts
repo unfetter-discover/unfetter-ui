@@ -12,6 +12,7 @@ describe('usersReducer', () => {
             token: '1234',
             authenticated: false,
             approved: false,
+            locked: false,
             role: 'STANDARD_USER',
             avatar_url: '1234.com/img1'
         };

@@ -57,7 +57,7 @@ export class AuthGuard implements CanActivate {
     }
 
     public loggedIn(userState: fromUsers.UserState) {
-        return userState.approved && userState.authenticated && tokenNotExpired('unfetterUiToken');
+        return userState.approved && !userState.locked && userState.authenticated && tokenNotExpired('unfetterUiToken');
     }
 
     private authorizeUser(userState: fromUsers.UserState, allowedRoles: string[]): boolean {

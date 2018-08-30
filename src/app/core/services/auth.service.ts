@@ -72,7 +72,7 @@ export class AuthService {
             try {
                 tokenExpired = tokenNotExpired('unfetterUiToken');
             } catch (e) { }
-            return tokenExpired && this.getUser() !== null && this.getUser().approved === true;
+            return tokenExpired && this.getUser() !== null && this.getUser().approved === true && !this.getUser().locked;
         }
     }
 
