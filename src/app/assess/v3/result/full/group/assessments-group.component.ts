@@ -164,7 +164,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const sub2$ = this.assessmentGroup
       .pipe(
-        pluck<AssessmentGroup, AttackPattern>('currentAttackPattern'),
+        pluck<any, AttackPattern>('currentAttackPattern'),
         distinctUntilChanged(),
         filter((attackPattern) => attackPattern.id !== undefined)
       )
