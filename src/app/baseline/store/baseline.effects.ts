@@ -7,7 +7,7 @@ import { forkJoin as observableForkJoin, of as observableOf } from 'rxjs';
 import { catchError, filter, map, mergeMap, pluck, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
-import { Stix } from 'stix/unfetter/stix';
+import { ExpandedStix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
 import { AttackPatternService } from '../../core/services/attack-pattern.service';
 import { GenericApi } from '../../core/services/genericapi.service';
@@ -421,7 +421,7 @@ export class BaselineEffects {
         const newOA = new ObjectAssessment();
         newOA.object_ref = capability.id;
         newOA.assessed_objects = [];
-        const stix = new Stix();
+        const stix = new ExpandedStix();
         stix.type = StixEnum.OBJECT_ASSESSMENT;
         stix.description = capability.description;
         stix.name = capability.name;
