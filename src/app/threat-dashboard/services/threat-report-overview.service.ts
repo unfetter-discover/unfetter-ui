@@ -326,7 +326,7 @@ export class ThreatReportOverviewService {
     const saveReports$ = this.upsertReports(reports as Report[], threatReport)
       .pipe(
         tap((el) => console.log('upserted report', el)),
-        reduce((acc, val) => acc.concat(val), []),
+        reduce((acc: any, val: any) => acc.concat(val), []),
         map((el) => threatReport)
       );
     return saveReports$;
