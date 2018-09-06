@@ -169,7 +169,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
         filter((attackPattern) => attackPattern.id !== undefined)
       )
       .subscribe(
-        (currentAttackPattern: Stix) => this.currentAttackPattern = currentAttackPattern,
+        (currentAttackPattern) => this.currentAttackPattern = currentAttackPattern,
         (err) => console.log(err)
       );
 

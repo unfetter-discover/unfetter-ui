@@ -15,7 +15,7 @@ import { Dictionary } from 'stix/common/dictionary';
 import { JsonApiData } from 'stix/json/jsonapi-data';
 import { StixCoreEnum } from 'stix/stix/stix-core.enum';
 import * as Indicator from 'stix/unfetter/indicator';
-import { Stix } from 'stix/unfetter/stix';
+import { ExpandedStix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
 import { Key } from 'ts-keycode-enum';
 import { heightCollapse } from '../../../global/animations/height-collapse';
@@ -75,7 +75,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public indicators: Indicator.UnfetterIndicator[];
   public insertMode = false;
   public meta = new Assess3Meta();
-  public mitigations: Stix[];
+  public mitigations: ExpandedStix[];
   public model: JsonApiData<Assessment, Dictionary<Assessment>>;
   public navigations: { label: string; page: number }[] = [];
   public openedSidePanel: SidePanelName;
@@ -766,7 +766,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
             description: assessment.description,
             type: assessment.type,
             name: assessment.name,
-          } as Stix,
+          } as ExpandedStix,
         } as AssessmentObject;
         this.model.attributes.assessment_objects.push(assessment_object);
         switch (assessment.type) {
@@ -980,7 +980,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param data
    * @return {void}
    */
-  private build(data?: Stix[]): void {
+  private build(data?: ExpandedStix[]): void {
     if (!data) {
       return;
     }
@@ -1024,10 +1024,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   /**
    * @description
-   * @param {Stix[]}
+   * @param {ExpandedStix[]}
    * @return {any[]}
    */
-  public createAssessmentGroups(assessedObjects: Stix[]): any[] {
+  public createAssessmentGroups(assessedObjects: ExpandedStix[]): any[] {
     const assessmentGroups = [];
 
     if (assessedObjects) {
@@ -1071,7 +1071,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @param {Stix} assessedObject
    * @returns WizardQuestion
    */
-  public createWizardQuestion(assessedObject: Stix): WizardQuestion {
+  public createWizardQuestion(assessedObject: ExpandedStix): WizardQuestion {
     const assessment = new WizardQuestion();
     if (
       assessedObject.metaProperties &&
@@ -1416,7 +1416,7 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
     Object.keys(tempModel).forEach((assessmentId) => {
       const assessmentObj = tempModel[assessmentId];
       const temp = new AssessmentObject();
-      const stix = new Stix();
+      const stix = new ExpandedStix();
       stix.id = assessmentObj.assessment.id;
       stix.type = assessmentObj.assessment.type;
       stix.description = assessmentObj.assessment.description || '';

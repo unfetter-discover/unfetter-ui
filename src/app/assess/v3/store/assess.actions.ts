@@ -7,6 +7,7 @@ import { ObjectAssessment } from 'stix/assess/v3/baseline/object-assessment';
 import { Indicator } from 'stix/stix/indicator';
 import { Stix } from 'stix/unfetter/stix';
 import { Category } from 'stix/assess/v3/baseline/category';
+import { CourseOfAction } from 'stix/stix/course-of-action';
 
 // For effects
 export const CLEAN_ASSESSMENT_WIZARD_DATA = '[Assess] CLEAN_ASSESSMENT_WIZARD_DATA';
@@ -86,7 +87,7 @@ export class SetIndicators implements Action {
 export class SetMitigations implements Action {
   public readonly type = SET_MITIGATONS;
 
-  constructor(public payload: Stix[]) { }
+  constructor(public payload: CourseOfAction[]) { }
 }
 
 export class FinishedLoading implements Action {
