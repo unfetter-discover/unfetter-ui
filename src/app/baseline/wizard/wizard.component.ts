@@ -110,11 +110,10 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       filter((loaded: boolean) => loaded && loaded === true))
       .subscribe(
         (loaded: boolean) => {
-          const panel = this.determineFirstOpenSidePanel();
-          if (panel) {
-            this.page = 1;
-            this.openedSidePanel = 'categories';
-          }
+          let step, stepName;
+          [ step, stepName ] = this.determineFirstOpenSidePanel();
+          this.page = step;
+          this.openedSidePanel = stepName;
           this.updateWizardData();
         },
         (err) => console.log(err));
@@ -296,14 +295,30 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @description name of first side panel with data
    * @return {string} name of first open side panel
    */
-  public determineFirstOpenSidePanel(): string {
-    // TODO: For now, go to first panel (Group Setup), but eventually
-    //       want to check for first incomplete capability in this assessment set
+  public determineFirstOpenSidePanel() {
+    let step = 1;   // Start at GROUP SETUP
+    let stepName = 'categories';
 
-    let hasContents = [ this.sidePanelNames[0] ];
-
-    // return first panel w/ data
-    return hasContents[0];
+    // Narrow object assessments to those which are associated to caps for this category
+    this.baselineGroups.forEach((category) => {
+      step++;
+      stepName = 'capability-selector';
+      let capsForThisCategory = this.getCapabilities(category);
+      capsForThisCategory.forEach((capability) => {
+        step++;
+        stepName = 'capabilities';
+        let oaForThisCap = this.baselineObjAssessments.find((oa) => oa.object_ref === capability.id);
+        oaForThisCap.assessed_objects.forEach((ao) => {
+          // If we don't have 3 values in the questions array, this is where we should start
+          if (ao.questions.length < 3) {
+            return [ step, stepName ];
+          }
+        });
+      });
+    });
+          
+    // Return first panel w/o complete set data
+    return [ step, stepName ];
   }
 
   /*
@@ -531,7 +546,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {boolean} true if first page of first side panel otherwise false
    */
   public isFirstPageOfFirstSidePanel(): boolean {
-    const isFirstPanel = this.openedSidePanel === this.determineFirstOpenSidePanel();
+    let step, stepName;
+    [ step, stepName ] = this.determineFirstOpenSidePanel();
+    const isFirstPanel = this.openedSidePanel === stepName;
     return isFirstPanel && this.isFirstPage();
   }
 
