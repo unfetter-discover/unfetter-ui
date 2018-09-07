@@ -20,7 +20,7 @@
             <div *ngIf="query.value.query">
               <label>Query</label>
               <p>
-                <code [innerHtml]="whitespaceToBreak(query.value.query)" class="inlineBlock"></code>
+                <code class="codeBlock">{{ query.value.query }}</code>
               </p>
             </div>
             <div *ngIf="query.value.details">

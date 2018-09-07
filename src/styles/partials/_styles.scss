@@ -379,3 +379,11 @@ span.stix-object-item-label {
 .goog-tooltip .mat-card-content .row:not(:first-child) {
     margin-top: 10px;
 }
+
+code.codeBlock {
+    display: block;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: pre;
+    overflow-x: auto;
+}

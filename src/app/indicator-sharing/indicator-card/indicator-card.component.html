@@ -54,7 +54,7 @@
           <i class="material-icons">check</i> Valid STIX Pattern
         </small>
         <p>
-          <code [innerHtml]="whitespaceToBreak(indicator.pattern)" class="inlineBlock"></code>
+          <code class="codeBlock">{{ indicator.pattern }}</code>
         </p>
 
         <label *ngIf="(indicator.labels && indicator.labels.length) || canCrud">Labels</label>
@@ -175,7 +175,7 @@
                 <div #elasticTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
               <div class="mb-6">
-                <code>{{ indicator.metaProperties.queries.carElastic.query }}</code>
+                <code class="codeBlock">{{ indicator.metaProperties.queries.carElastic.query }}</code>
               </div>
             </div>
             <div *ngIf="indicator.metaProperties.queries.carSplunk && indicator.metaProperties.queries.carSplunk.include && indicator.metaProperties.queries.carSplunk.query">
@@ -185,7 +185,7 @@
                 <div #cimTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
               <div class="mb-6">
-                <code>{{ indicator.metaProperties.queries.carSplunk.query }}</code>
+                <code class="codeBlock">{{ indicator.metaProperties.queries.carSplunk.query }}</code>
               </div>
             </div>
             <div *ngIf="indicator.metaProperties.queries.cimSplunk && indicator.metaProperties.queries.cimSplunk.include && indicator.metaProperties.queries.cimSplunk.query">
@@ -195,7 +195,7 @@
                 <div #carsplunkTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
               <div class="mb-6">
-                <code>{{ indicator.metaProperties.queries.cimSplunk.query }}</code>
+                <code class="codeBlock">{{ indicator.metaProperties.queries.cimSplunk.query }}</code>
               </div>
             </div>
           </div>
@@ -208,7 +208,7 @@
                 <div #copyTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
               <div class="mb-6">
-                <code>{{ query.query }}</code>
+                <code class="codeBlock">{{ query.query }}</code>
               </div>
               <div *ngIf="query.details">
                 <label>Details</label>
