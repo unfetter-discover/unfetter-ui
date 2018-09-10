@@ -52,6 +52,15 @@ $notification-row-height: 106;
     z-index: -1;
 }
 
+.notificationTitle {
+    width: 430px;
+
+    span {
+        display: inline-block;
+        transform: translateY(4px);
+    }
+}
+
 .notificationBody {
     width: 430px;
     margin-bottom: 0;

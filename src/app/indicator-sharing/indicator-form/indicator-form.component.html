@@ -27,12 +27,12 @@
 
       <mat-horizontal-stepper (selectionChange)="stepperChanged($event)" #stepper>
 
-        <mat-step label="Base Data" #baseDataStep>        
+        <mat-step label="Base Data" #baseDataStep>
+
+          <help-window [helpHtml]="patternHelpHtml"></help-window>
 
           <h4>Description</h4>
           <simplemde formControlName="description"></simplemde>
-
-          <help-window [helpHtml]="patternHelpHtml"></help-window>
 
           <h4 class="inlineBlock"><span [class.textWarn]="form.get('pattern').dirty && form.get('pattern').hasError('required')">Pseudocode<sup>*</sup></span></h4>
           <small class="text-muted">(Optional: Use STIX patterns to get automated translations)</small>
