@@ -21,7 +21,7 @@ export class LoginCallbackComponent implements OnInit {
     ) { }
 
     public ngOnInit() {
-        let params$ = this.route.params
+        const params$ = this.route.params
             .subscribe((params) => {
                 const token = `Bearer ${params.token}`;
                 this.store.dispatch(new userActions.SetToken(token));             
