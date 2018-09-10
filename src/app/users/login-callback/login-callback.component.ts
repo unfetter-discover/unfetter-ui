@@ -35,7 +35,9 @@ export class LoginCallbackComponent implements OnInit {
                     )
                     .subscribe(
                         (user) => {
-                            this.router.navigate(['/']);
+                            if (user.registered) {
+                                this.router.navigate(['/']);
+                            }
                         },
                         (err) => {
                             console.log(err);
