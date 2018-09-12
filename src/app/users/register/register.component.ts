@@ -162,12 +162,12 @@ To get the most out of Unfetter, users should be in one or more organizations. A
     public enterPressed(e: KeyboardEvent) {
         console.log(e)
 
-        if (e.target.name === 'cancelBtn') {
-            this.logout();
+        if ((e.target as any).name === 'cancelBtn') {
+            this.logOut();
         }
 
         // Ignore if the cancel button or a stepper back button is clicked
-        if (e.target.name === 'cancelBtn' || ((e as any).target.attributes && (e as any).target.attributes.matstepperprevious)) {
+        if ((e.target as any).name === 'cancelBtn' || ((e as any).target.attributes && (e as any).target.attributes.matstepperprevious)) {
             return;
         }
 
