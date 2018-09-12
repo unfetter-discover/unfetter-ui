@@ -15,11 +15,11 @@ import {
     MatToolbarModule,
 } from '@angular/material';
 import { MarkdownComponent } from 'ngx-markdown';
-import { CarouselModule } from 'primeng/primeng';
 
 import { TacticsPaneComponent } from './tactics-pane.component';
 import { TacticsControlService } from './tactics-control.service';
 import { TacticsCarouselComponent } from './tactics-carousel/tactics-carousel.component';
+import { UnfetterCarouselComponent } from './tactics-carousel/unf-carousel.component';
 import { TacticsCarouselControlComponent } from './tactics-carousel/tactics-carousel-control.component';
 import { TacticsHeatmapComponent } from './tactics-heatmap/tactics-heatmap.component';
 import { TacticsTreemapComponent } from './tactics-treemap/tactics-treemap.component';
@@ -49,7 +49,6 @@ describe('TacticsPaneComponent', () => {
                 imports: [
                     FormsModule,
                     ReactiveFormsModule,
-                    CarouselModule,
                     MatButtonToggleModule,
                     MatCardModule,
                     MatIconModule,
@@ -63,6 +62,7 @@ describe('TacticsPaneComponent', () => {
                 declarations: [
                     TacticsPaneComponent,
                     TacticsCarouselComponent,
+                    UnfetterCarouselComponent,
                     TacticsCarouselControlComponent,
                     TacticsHeatmapComponent,
                     TacticsTreemapComponent,
@@ -118,15 +118,33 @@ describe('TacticsPaneComponent', () => {
     });
 
     it('should pass hover events', () => {
-        const spy = spyOn(component.tooltips, 'handleTacticTooltip').and.callFake(() => {});
+        const passingSpy = spyOn(component.tooltips, 'handleTacticTooltip').and.callFake(() => {});
         component.onHover({type: 'hover'} as TooltipEvent);
-        expect(spy).toHaveBeenCalled();
+        expect(passingSpy).toHaveBeenCalled();
+
+        const emittingSpy = spyOn(component.hover, 'emit').and.callThrough();
+        component.hover.observers.push({
+            next: ev => console.log('next', ev),
+            error: err => console.log('error', err),
+            complete: () => {}
+        });
+        component.onHover({type: 'hover'} as TooltipEvent);
+        expect(emittingSpy).toHaveBeenCalled();
     });
 
     it('should pass click events', () => {
-        const spy = spyOn(component.tooltips, 'handleTacticTooltip').and.callFake(() => {});
+        const passingSpy = spyOn(component.tooltips, 'handleTacticTooltip').and.callFake(() => {});
         component.onClick({type: 'click'} as TooltipEvent);
-        expect(spy).toHaveBeenCalled();
+        expect(passingSpy).toHaveBeenCalled();
+
+        const emittingSpy = spyOn(component.click, 'emit').and.callThrough();
+        component.click.observers.push({
+            next: ev => console.log('next', ev),
+            error: err => console.log('error', err),
+            complete: () => {}
+        });
+        component.onClick({type: 'click'} as TooltipEvent);
+        expect(emittingSpy).toHaveBeenCalled();
     });
 
     it('should handle collapse events', () => {

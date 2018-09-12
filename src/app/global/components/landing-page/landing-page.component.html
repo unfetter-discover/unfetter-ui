@@ -3,7 +3,7 @@
     <div class="col-xs-6 col-xs-offset-3">
       <div class="uf-well-accent">
         <a (click)="authService.logOut()" class="close" data-dismiss="alert">&times;</a>
-        Thank you for registrating to Unfetter. You are pending approval.
+        Thank you for registering. You are pending approval.
       </div>
     </div>
   </div>
@@ -35,17 +35,6 @@
       <h1 id="descHeading">Discover Gaps. Analytics in Practice. Leverage the Community.</h1>
     </div>
   </div>
-  <!-- <div class="row mb-5">
-    <div class="col-xs-6 col-xs-offset-3">
-      <p class="landingPageText">
-        When the threat hits, cybersecurity professionals working at the tactical, operational, and strategic levels need to work
-        together quickly and effectively to enable a common cybersecurity strategy that protects against the adversary. To
-        do this in a repeatable, scalable way depends on an organization’s ability to discover and mitigate gaps in their
-        posture, understand adversary tradecraft, and implement and communicate defensive courses of action. Visit
-        <a href="https://nsacyber.github.io/unfetter/" target="_blank">unfetter.io</a> for more information.
-      </p>
-    </div>
-  </div> -->
   <div class="row">
     <div class="col-xs-12">
       <p class="text-center landingPageText">
@@ -53,7 +42,7 @@
       </p>
     </div>
   </div>
-  <div class="row" *ngIf="!authService.loggedIn()">
+  <div class="row" *ngIf="!authService.loggedIn() && !authService.pendingApproval()">
     <div class="col-xs-6 col-xs-offset-3">
       <br>
       <p class="uf-well">

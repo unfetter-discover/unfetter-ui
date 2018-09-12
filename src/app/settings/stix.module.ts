@@ -4,9 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, 
   MatExpansionModule, MatInputModule, MatListModule, MatNativeDateModule, MatProgressSpinnerModule, MatRadioModule, 
   MatSelectModule, MatSlideToggleModule, MatSnackBarModule } from '@angular/material';
-import { AccordionModule } from 'primeng/components/accordion/accordion';
-import { CalendarModule } from 'primeng/components/calendar/calendar';
-import { DataListModule } from 'primeng/components/datalist/datalist';
 import { ComponentModule } from '../components/component.module';
 import { GlobalModule } from '../global/global.module';
 import { IdentifierSummarizedPipe, IdentifierTypePipe } from '../pipes';
@@ -128,12 +125,6 @@ const stixComponents = [
   ToolNewComponent,
 ];
 
-const primengModules = [
-  AccordionModule,
-  CalendarModule,
-  DataListModule,
-];
-
 @NgModule({
   imports: [
     CommonModule,
@@ -141,7 +132,6 @@ const primengModules = [
     ReactiveFormsModule,
     ...materialModules,
     ComponentModule,
-    ...primengModules,
     GlobalModule,
     routing,
   ],

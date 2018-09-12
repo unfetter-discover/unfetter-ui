@@ -26,14 +26,14 @@
           </a>
         </div>
       </div>
-      <div id="notificiationRowWrapper">
+      <div id="notificiationRowWrapper" scrollTrap>
         <div *ngFor="let notification of notifications | sortByField:'submitted'; let i = index" class="notificationRow flex flexItemsCenter"
           [ngClass]="{'readNotication': notification.read}" (mouseenter)="!notification.read ? markAsRead(notification) : ''">
           <span>
-            <p class="lead">
+            <p class="lead flexNowrap notificationTitle">
               <span *ngIf="notification.link">
                 <a routerLink="{{notification.link}}"><i class="material-icons">exit_to_app</i></a>
-              </span>{{ notification.heading }}
+              </span>&nbsp;{{ notification.heading }}
             </p>
             <p class="notificationBody flexNowrap">{{ notification.body }}</p>
             <p class="notificationFooter">

@@ -4,11 +4,17 @@
 
         <div class="row">
             <div id="search-fieldset" class="col-sm-12">
-                <p-autoComplete styleClass="intrusionClass"
-                        [(ngModel)]="intrusionSet" [suggestions]="intrusionSetSuggestions" field="name"
-                        (completeMethod)="onAutoCompleteSearch($event)"
-                        (onSelect)="onAutoCompleteSelect($event)">
-                </p-autoComplete>
+                <form>
+                    <mat-form-field class="full-width">
+                        <input type="text" matInput [matAutocomplete]="autoIntrusions"
+                                [formControl]="intrusionSetFilterControl">
+                        <mat-autocomplete #autoIntrusions="matAutocomplete"
+                                class="full-width" [displayWith]="displayFilter">
+                            <mat-option *ngFor="let option of intrusionSetSuggestions" [value]="option"
+                                    (onSelectionChange)="onAutoCompleteSelect($event)">{{ option.name }}</mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </form>
                 <button id="search-button" mat-raised-button (click)="triggerSearch()">Search</button>
             </div>
         </div>

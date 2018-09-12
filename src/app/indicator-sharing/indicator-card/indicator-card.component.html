@@ -1,4 +1,4 @@
-<mat-card class="indicatorCard uf-mat-card" *ngIf="indicator">
+<mat-card class="indicatorCard uf-mat-card" *ngIf="indicator" [class.collapsed]="collapseContents">
   <mat-card-header>
     <mat-card-title>        
         <span>{{ indicator.name }}</span>
@@ -15,10 +15,10 @@
                 <mat-icon>file_download</mat-icon>
                 <span>Download</span>
             </button>
-            <button mat-menu-item (click)="editIndicator()" *ngIf="canCrud">
+            <a mat-menu-item class="plainLink" routerLink="/indicator-sharing/edit/{{ indicator.id }}" *ngIf="canCrud">
                 <mat-icon>create</mat-icon>
                 <span>Edit</span>
-            </button>
+            </a>
             <button mat-menu-item (click)="deleteIndicator()" *ngIf="canCrud">
                 <mat-icon>delete</mat-icon>
                 <span>Delete</span>
@@ -54,7 +54,7 @@
           <i class="material-icons">check</i> Valid STIX Pattern
         </small>
         <p>
-          <code [innerHtml]="whitespaceToBreak(indicator.pattern)" class="inlineBlock"></code>
+          <code class="codeBlock">{{ indicator.pattern }}</code>
         </p>
 
         <label *ngIf="(indicator.labels && indicator.labels.length) || canCrud">Labels</label>
@@ -145,7 +145,7 @@
             <markings-chips [model]="indicator" disableTooltips="true"></markings-chips>
           </div>
           <div *ngIf="indicator.external_references">
-            <label>External References</label>
+            <label>Reference Links</label>
             <br>
             <chip-links [data]="indicator.external_references" nameField="source_name" urlField="url"></chip-links>
           </div>
@@ -154,12 +154,12 @@
             <observable-data-summary [observedData]="indicator.metaProperties.observedData"></observable-data-summary>
           </div>          
           <div class="mt-3">
-            <label>Unfetter User Interactions: </label>
+            <label>Unfetter User Interactions:&nbsp;</label>
             <span *ngIf="indicator.metaProperties && indicator.metaProperties.interactions">{{ indicator.metaProperties.interactions.length }}</span>
             <span *ngIf="!indicator.metaProperties || !indicator.metaProperties.interactions">{{ 0 }}</span>
           </div>
           <div class="mt-3" *ngIf="indicator.metaProperties && indicator.metaProperties.published !== undefined">
-            <label>Unfetter Publish Status: </label>
+            <label>Unfetter Publish Status:&nbsp;</label>
             <span *ngIf="indicator.metaProperties.published">Published</span>
             <span *ngIf="indicator.metaProperties.published === false">Draft</span>
           </div>
@@ -175,7 +175,7 @@
                 <div #elasticTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
               <div class="mb-6">
-                <code>{{ indicator.metaProperties.queries.carElastic.query }}</code>
+                <code class="codeBlock">{{ indicator.metaProperties.queries.carElastic.query }}</code>
               </div>
             </div>
             <div *ngIf="indicator.metaProperties.queries.carSplunk && indicator.metaProperties.queries.carSplunk.include && indicator.metaProperties.queries.carSplunk.query">
@@ -185,7 +185,7 @@
                 <div #cimTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
               <div class="mb-6">
-                <code>{{ indicator.metaProperties.queries.carSplunk.query }}</code>
+                <code class="codeBlock">{{ indicator.metaProperties.queries.carSplunk.query }}</code>
               </div>
             </div>
             <div *ngIf="indicator.metaProperties.queries.cimSplunk && indicator.metaProperties.queries.cimSplunk.include && indicator.metaProperties.queries.cimSplunk.query">
@@ -195,7 +195,7 @@
                 <div #carsplunkTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
               <div class="mb-6">
-                <code>{{ indicator.metaProperties.queries.cimSplunk.query }}</code>
+                <code class="codeBlock">{{ indicator.metaProperties.queries.cimSplunk.query }}</code>
               </div>
             </div>
           </div>
@@ -208,8 +208,13 @@
                 <div #copyTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
               </button>
               <div class="mb-6">
-                <code>{{ query.query }}</code>
+                <code class="codeBlock">{{ query.query }}</code>
               </div>
+              <div *ngIf="query.details">
+                <label>Details</label>
+                <markdown-editor [editing]="false" [flushed]="true" [truncate]="true"
+                    [value]="query.details"></markdown-editor>
+              </div>  
             </div>
           </div>
         </mat-tab>
@@ -250,17 +255,18 @@
       </mat-tab-group>
 
       <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">
-        <mat-form-field class="full-width">
-          <textarea matInput placeholder="Comment" [(ngModel)]="commentText">{{ commentText }}</textarea>
-        </mat-form-field>
+        <h4>Comment</h4>
+        <div class="mb-6">
+          <simplemde [(ngModel)]="commentText"></simplemde>
+        </div>
         <div class="text-right">
           <button mat-button (click)="showCommentTextArea = false; commentText = ''">CANCEL</button>
           <button mat-raised-button color="primary" [disabled]="commentText === ''" (click)="submitComment()">SAVE</button>
         </div>
         <div label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
           <hr>
-          <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index">
-            <div class="flex flexItemsCenter mb-5">
+          <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index" class="comment">
+            <div class="flex flexItemsCenter mb-12">
               <span *ngIf="comment.user.avatar_url">
                 <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
               </span>
@@ -269,7 +275,7 @@
                 <small class="text-muted"> &bull; {{ comment.submitted | timeAgo }}</small>
               </span>
             </div>
-            <p [innerHtml]="whitespaceToBreak(comment.comment)"></p>
+            <markdown [data]="comment.comment"></markdown>
             <hr>
           </div>
         </div>

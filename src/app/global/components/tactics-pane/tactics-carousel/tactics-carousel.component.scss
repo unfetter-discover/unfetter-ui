@@ -13,50 +13,56 @@ $white: #FFFFFF;
         overflow-y: auto;
     }
 
-    .ui-carousel {
-        .ui-carousel-header {
-            display: none;
+    .tactics-phase {
+        margin: 0;
+        padding: 0;
+        clear: both;
+
+        .tactics-phase-header {
+            display: flex;
+            clear: both;
         }
-    }
 
-    .ui-widget-content {
-        border: none;
-    }
-
-    .ui-carousel .ui-carousel-viewport {
-        height: 100%;
-        overflow-y: auto;
-    }
-
-    .ui-carousel .ui-carousel-viewport .ui-carousel-items .ui-carousel-item {
-        margin: 0px;
-    }
-
-    .ui-corner-all {
-        border: none;
-        border-radius: 0;
-    }
-
-    .carouselSubheadingRow {
-        .phase-div {
-            font-weight: medium;
-            font-size: 12px;
+        .phase-info {
+            display: flex;
+            width: 100%;
             padding: 16px;
+            float: left;
+            font-size: 14px;
+            font-weight: 500;
         }
-    }
 
-    .carousel-content-wrapper {
-        overflow-y: auto;
-        position: relative;
-    }
+        .tactics-block {
+            display: flex;
+            clear: both;
+            width: 100%;
+        }
 
-    .ui-grid {
-        .tactic-div {
-            font-size: 13px;
-            font-weight: normal;
+        .tactics-wrapper {
+            position: relative;
+            overflow-y: auto;
+            float: left;
+            width: 100%;
+        }
+
+        .tactics-list {
+            margin: 0;
+            padding: 0;
+            clear: both;
+        }
+
+        .tactic-row {
+            display: flex;
+            clear: both;
+        }
+
+        .tactic-info {
+            display: flex;
+            width: 100%;
             margin: 0px;
             height: 48px;
-            display: flex;
+            font-size: 12px;
+            font-weight: normal;
 
             .flexCenter {
                 margin: auto 16px;

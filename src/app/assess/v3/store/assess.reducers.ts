@@ -6,6 +6,7 @@ import { ObjectAssessment } from 'stix/assess/v3/baseline/object-assessment';
 import { Indicator } from 'stix/stix/indicator';
 import { Stix } from 'stix/unfetter/stix';
 import * as assessmentActions from './assess.actions';
+import { CourseOfAction } from 'stix/stix/course-of-action';
 
 export interface AssessState {
     assessment: Assessment;
@@ -18,7 +19,7 @@ export interface AssessState {
     failedToLoad: boolean;
     finishedLoading: boolean;
     indicators?: Indicator[];
-    mitigations?: Stix[];
+    mitigations?: CourseOfAction[];
     page: number;
     saved: { finished: boolean, rollupId: string, id: string };
     showSummary: boolean;

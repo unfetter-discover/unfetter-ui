@@ -1,5 +1,5 @@
 
-import { take, map, filter, pluck, share } from 'rxjs/operators';
+import { take, map, filter, pluck, share, skip, finalize } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable ,  Subject } from 'rxjs';
@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 import * as fromApp from '../../root-store/app.reducers';
 import * as fromUser from '../../root-store/users/users.reducers';
 import { environment } from '../../../environments/environment';
+import { RefreshToken } from '../../root-store/users/user.actions';
 
 @Injectable()
 export class WebsocketService {
@@ -40,12 +41,28 @@ export class WebsocketService {
             )
             .subscribe(
                 (userToken: string) => {
-                    console.log('Starting connection!');
                     this.socket = io(this.url, {
                         path: '/socketserver/socket',
                         secure: true,
                         query: `token=${userToken}`
                     });
+
+                    // Update token in socket
+                    /**
+                     * This is possibly related to an issue with chrome throttling - When Unfetter 
+                     * isn't the active tab, the WSS connection can close which can cause a reconnect
+                     * attempt, but the reattempt occurs with the old token, so if the old token is 
+                     * expired it will cause a connection error.  This is a hack to attempt to update
+                     * the token so reconnection attempts will be made with the most current token.
+                     */
+                    const getToken$ = this.store.select('users')
+                        .pipe(
+                            filter((user: fromUser.UserState) => user.authenticated),
+                            skip(2),
+                            pluck('token'),
+                            finalize(() => getToken$ && getToken$.unsubscribe())
+                        )
+                        .subscribe((newToken: string) => this.socket.query = this.socket.io.opts.query = `token=${newToken}`);
 
                     this.socket.on('connect', () => {
                         console.log('Successfully connected to socket server');

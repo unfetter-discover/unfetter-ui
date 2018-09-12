@@ -12,13 +12,13 @@ import {
     MatToolbarModule,
 } from '@angular/material';
 import { MarkdownComponent } from 'ngx-markdown';
-import { Carousel } from 'primeng/primeng';
 
 import { ThreatTacticsComponent } from './threat-tactics.component';
 import { TacticsPaneComponent } from '../../global/components/tactics-pane/tactics-pane.component';
 import { TacticsHeatmapComponent } from '../../global/components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { TacticsTreemapComponent } from '../../global/components/tactics-pane/tactics-treemap/tactics-treemap.component';
 import { TacticsCarouselComponent } from '../../global/components/tactics-pane/tactics-carousel/tactics-carousel.component';
+import { UnfetterCarouselComponent } from '../../global/components/tactics-pane/tactics-carousel/unf-carousel.component';
 import { TacticsCarouselControlComponent } from '../../global/components/tactics-pane/tactics-carousel/tactics-carousel-control.component';
 import { TacticsTooltipComponent } from '../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.component';
 import { TacticsTooltipService } from '../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
@@ -60,11 +60,11 @@ describe('ThreatTacticsComponent', () => {
                 TacticsHeatmapComponent,
                 TacticsTreemapComponent,
                 TacticsCarouselComponent,
+                UnfetterCarouselComponent,
                 TacticsCarouselControlComponent,
                 TacticsTooltipComponent,
                 HeatmapComponent,
                 TreemapComponent,
-                Carousel,
                 MarkdownEditorComponent,
                 MarkdownComponent,
                 CapitalizePipe,

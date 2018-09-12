@@ -2,6 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { HeaderLogoComponent } from './header-logo.component';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from '../../../root-store/app.reducers';
 
 describe('HeaderLogoComponent', () => {
   let component: HeaderLogoComponent;
@@ -9,7 +11,10 @@ describe('HeaderLogoComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HeaderLogoComponent ]
+      declarations: [ HeaderLogoComponent ],
+      imports: [
+        StoreModule.forRoot(reducers)
+      ]
     })
     .compileComponents();
   }));
@@ -22,25 +27,5 @@ describe('HeaderLogoComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should have defaultAccent only when title is empty', () => {
-    component.title = '';
-    fixture.detectChanges();
-    const accentPath = fixture.debugElement.query(By.css('#accentPath'));
-    for (let cls in accentPath.classes) {
-      if (cls === 'defaultAccent') {
-        expect(accentPath.classes[cls]).toBeTruthy();
-        continue;
-      }
-      expect(accentPath.classes[cls]).toBeFalsy();
-    }
-  });
-
-  it('should have eventsAccent when title is `events`', () => {
-    component.title = 'events';
-    fixture.detectChanges();
-    const accentPath = fixture.debugElement.query(By.css('#accentPath'));
-    expect(accentPath.classes.eventsAccent).toBeTruthy();
   });
 });

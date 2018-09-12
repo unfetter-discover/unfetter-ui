@@ -12,6 +12,7 @@ import * as stixActions from './root-store/stix/stix.actions';
 import * as userActions from './root-store/users/user.actions';
 import { demoUser } from './testing/demo-user';
 import { RunConfigService } from './core/services/run-config.service';
+import { pluck } from 'rxjs/internal/operators/pluck';
 
 @Component({
   selector: 'unf-app',
@@ -24,7 +25,6 @@ export class AppComponent implements OnInit {
   public readonly runMode = environment.runMode;
   public readonly demoMode: boolean = (environment.runMode === 'DEMO');
   public theme: Themes = Themes.DEFAULT;
-  public title = '';
   public showBanner: boolean = false;
   public securityMarkingLabel: string = '';
 
@@ -32,8 +32,6 @@ export class AppComponent implements OnInit {
     private authService: AuthService,
     private runConfigService: RunConfigService,
     private store: Store<fromApp.AppState>,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
   ) {
   }
 
@@ -71,58 +69,6 @@ export class AppComponent implements OnInit {
         this.store.dispatch(new configActions.FetchConfig(false));
         this.store.dispatch(new stixActions.FetchStix());
       }
-    }
-
-    const bodyElement: HTMLElement = document.getElementsByTagName('body')[0];
-
-    this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map(() => this.activatedRoute))
-      .subscribe((event: ActivatedRoute) => {
-        const url = ((event as any)._routerState.snapshot.url.split('/'))[1];
-        this.setTheme(url, bodyElement);
-        if (url === 'indicator-sharing') {
-          this.title = 'Analytic Exchange';
-        } else if (url === 'events') {
-          this.title = 'events';
-        } else if (url === 'assess') {
-          this.title = 'assessments';
-        } else if (url === 'baseline') {
-          this.title = 'Baselines';
-        } else if (url === 'assess-beta') {
-            this.title = 'assessments';
-        } else {
-          this.title = url;
-        }
-      },
-        (err) => console.log(err));
-  }
-
-  private setTheme(url: string, bodyElement: HTMLElement) {
-    switch (url) {
-      case 'indicator-sharing':
-        this.theme = Themes.ANALYTIC_HUB;
-        break;
-      case 'events':
-        this.theme = Themes.EVENTS;
-        break;
-      case 'threat-dashboard':
-        this.theme = Themes.THREAT_DASHBOARD;
-        break;
-      case 'assessments':
-      case 'assess':
-      case 'assess-beta':  
-      case 'baseline':
-        this.theme = Themes.ASSESSMENTS;
-        break;
-      default:
-        this.theme = Themes.DEFAULT;
-    }
-
-    if (url === 'intrusion-set-dashboard') {
-      bodyElement.className = `${this.theme} hideFooter`;
-    } else {
-      bodyElement.className = this.theme;
     }
   }
 }

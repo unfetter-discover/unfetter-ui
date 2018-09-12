@@ -68,6 +68,9 @@ markings-chips {
             white-space: normal;
             word-break: break-word;
             font-weight: lighter;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 

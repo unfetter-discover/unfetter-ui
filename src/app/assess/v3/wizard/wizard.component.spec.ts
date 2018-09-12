@@ -271,7 +271,7 @@ describe('WizardComponent', () => {
     let assessment = {
       version: null, external_references: null, granular_markings: null, name: null, description: null, pattern: null, kill_chain_phases: null,
       created_by_ref: null, type: null, valid_from: null, labels: null, modified: null, created: null, metaProperties: null
-    } as Assessment;
+    } as any;
     expect(component.createAssessmentGroups(null)).toEqual([]);
     expect(component.createAssessmentGroups([])).toEqual([]);
     expect(component.createAssessmentGroups([assessment])).toEqual([]);

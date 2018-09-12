@@ -21,6 +21,7 @@ import { Constance } from '../../../utils/constance';
 import { AssessStateService } from '../services/assess-state.service';
 import { AssessService } from '../services/assess.service';
 import * as assessActions from './assess.actions';
+import { CourseOfAction } from 'stix';
 
 
 type URL_TYPE = 'course-of-action' | 'indicator' | 'mitigation';
@@ -79,7 +80,7 @@ export class AssessEffects {
             mergeMap(([indicators, mitigations, baseline, capabilities, categories]) => {
               const actions: Action[] = [
                 new assessActions.SetIndicators(indicators as Indicator.UnfetterIndicator[]),
-                new assessActions.SetMitigations(mitigations as Stix[]),
+                new assessActions.SetMitigations(mitigations as CourseOfAction[]),
                 new assessActions.SetCurrentBaseline(baseline as AssessmentSet),
               ];
 
@@ -162,7 +163,7 @@ export class AssessEffects {
           .pipe(
             tap((el: Assess3Meta) => {
               let route = [
-                '/assess-beta/wizard/new',
+                '/assess/wizard/new',
                 'indicators',
                 el.includesIndicators === true ? 1 : 0,
                 'mitigations',

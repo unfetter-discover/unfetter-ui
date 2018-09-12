@@ -10,7 +10,6 @@ import {
 import { Subscription } from 'rxjs';
 
 import { MatButtonToggleChange, MatSelectChange } from '@angular/material';
-import { Carousel } from 'primeng/primeng';
 
 import { CarouselOptions } from './carousel.data';
 import { TacticsControlService } from '../tactics-control.service';
@@ -52,6 +51,9 @@ export class TacticsCarouselControlComponent implements OnInit, OnChanges, OnDes
             (event) => {
                 if (event && event.pager) {
                     requestAnimationFrame(() => {});
+                    if (this.controls.state.pager && (this.controls.state.page !== this.controls.state.pager.page)) {
+                        requestAnimationFrame(() => this.controls.state.page = this.controls.state.pager.page);
+                    }
                 }
                 if (this.controls.state.pager && (this.controls.state.pages !== this.controls.state.pager.totalPages)) {
                     requestAnimationFrame(() => this.controls.state.pages = this.controls.state.pager.totalPages);

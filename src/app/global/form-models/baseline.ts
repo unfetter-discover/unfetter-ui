@@ -10,6 +10,6 @@ export const BaselineForm = (assessment?: BaselineMeta) => {
     return new FormGroup({
         title: new FormControl(assessment.title || '', Validators.required),
         description: new FormControl(assessment.description || ''),
-        created_by_ref: new FormControl(assessment.created_by_ref),
+        created_by_ref: new FormControl(assessment.created_by_ref || '', Validators.required),
     });
 }

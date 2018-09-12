@@ -1,0 +1,220 @@
+@import '../../../styles/_variables.scss';
+
+$white: #ffffff;
+$timeline-grey: #d1d5da;
+$red: get-color($red, 500);
+// $blue: get-color($blue, 400);
+$title-padding: 24px;
+$row-lr-padding: 12px;
+$icon-size: 36px;
+// $max-width: 1280px;
+$max-width: 1366px;
+$arrow-size: 10px;
+
+.arrow-right {
+    height: 0;
+    border-top: $arrow-size solid transparent;
+    border-left: ($arrow-size * 2) solid $timeline-grey;
+    border-bottom: $arrow-size solid transparent;
+    float: right;
+}
+
+.arrow-left {
+    width: 0;
+	height: 0;
+	border-top: $arrow-size solid transparent;
+	border-right: ($arrow-size * 2) solid $timeline-grey;
+	border-bottom: $arrow-size solid transparent;
+}
+
+.box {
+    position: relative;
+    border: 1px solid $timeline-grey;
+    border-radius: 15px;
+    padding: 4px;
+}
+
+.box-left {
+    margin-right: 24px;
+
+    &:after, &:before {
+        left: 100%;
+        top: 30%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+    
+    &:after {
+        border-color: rgba(136, 183, 213, 0);
+        border-left-color: $white;
+        border-width: 10px;
+        margin-top: -10px;
+    }
+    
+    &:before {
+        border-color: rgba(194, 225, 245, 0);
+        border-left-color: $timeline-grey;
+        border-width: 11px;
+        margin-top: -11px;
+    }
+}
+
+.box-right {
+    &:after, &:before {
+        right: 100%;
+        bottom: 0%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+
+    &:after {
+        border-color: rgba(136, 183, 213, 0);
+        border-right-color: $white;
+        border-width: 10px;
+        margin-top: -10px;
+    }
+
+    &:before {
+        border-color: rgba(194, 225, 245, 0);
+        border-right-color: $timeline-grey;
+        border-width: 11px;
+        margin-top: -11px;
+    }
+}
+
+.top-bar {
+    border-top: 2px solid $threat-dashboard-primary-light;
+    padding-top: 16px;
+}
+
+.title {
+    padding-top: $title-padding;
+    padding-left: 12px;
+    padding-right: 12px;
+    color: $dark-text-dimmed;
+
+    // .title-text {
+    //     padding-left: 18px;
+    // }
+}
+
+.attackIcon {
+    border-radius: 50%;
+    height: $icon-size;
+    width: $icon-size;
+    // position: relative;
+    // top: 10px;
+    position: relative;
+    right: $icon-size/2;
+
+    svg {
+        width: $icon-size;
+        height: $icon-size;
+        fill: $white;
+        border: 1px solid $red;
+        border-radius: 50%;
+        background: $red;
+    }
+}
+
+.position-on-line {
+    position: relative;
+    right: 21px;
+    top: 48px;
+}
+
+.defendIcon {
+    border-radius: 50%;
+    border: 1px solid $threat-dashboard-primary-light;
+    background-color: $threat-dashboard-primary-light;
+    height: $icon-size;
+    width: $icon-size;
+    border-radius: 50%;
+    color: $white;
+
+    mat-icon {
+        font-size: $icon-size;
+    }
+}
+
+.flex-rev {
+    flex-direction: row-reverse;
+    margin-right: 24px;
+}
+
+@mixin minRowPading {
+    padding-left: $row-lr-padding;
+    padding-right: $row-lr-padding;
+}
+
+.main {
+    min-height: calc(100vh - 350px);
+    color: $dark-text-default;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: $max-width;
+
+    .line {
+        min-height: 64px;
+
+        .col1, .col3 {
+            @include minRowPading;
+            padding-bottom: 18px;
+        }
+
+        .col2 {
+            border-left: 2px solid $timeline-grey;
+        }
+        
+        .to-right {
+            float: right;
+        }
+
+        .text-fadeable {
+            position: relative;
+            max-height: 64px;
+            overflow-y: hidden;
+        }
+    
+        .text-fadeable:after {
+            content: "";
+            text-align: right;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            top: 20px;
+            width: 70%;
+            height: 20px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0), $light-text-slightly-dimmed 100%);
+        }
+
+        .citation-links {
+            border-bottom: 1px dashed $timeline-grey;
+        }
+
+    }
+
+    .helper {
+        @include minRowPading;
+        padding-top: $title-padding;
+    }
+
+    .text-muted {
+        color: rgba(0, 0, 0, 0.57) !important;
+    }
+}
+
+.flex-half {
+    flex-basis: 50%;
+}
+

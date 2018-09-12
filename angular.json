@@ -28,8 +28,6 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeng/resources/themes/omega/theme.scss",
               "src/styles/main.scss"
             ],
             "scripts": [
@@ -225,8 +223,6 @@
             "karmaConfig": "src/karma.conf.js",
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeng/resources/themes/omega/theme.scss",
               "styles/main.scss"
             ],
             "scripts": [

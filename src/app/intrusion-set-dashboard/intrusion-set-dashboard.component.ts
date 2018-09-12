@@ -14,6 +14,7 @@ import { Dictionary } from '../models/json/dictionary';
 import { AppState } from '../root-store/app.reducers';
 import { Constance } from '../utils/constance';
 import { topRightSlide } from '../global/animations/top-right-slide';
+import { HideFooter } from '../root-store/utility/utility.actions';
 
 @Component({
     selector: 'intrusion-set-dashboard',
@@ -41,7 +42,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     public loadSpinner: boolean = false;
 
     constructor(
-        private tacticsStore: Store<AppState>,
+        private store: Store<AppState>,
         private genericApi: GenericApi,
         private snackBar: MatSnackBar,
         private ref: ChangeDetectorRef,
@@ -49,7 +50,7 @@ export class IntrusionSetDashboardComponent implements OnInit {
     }
 
     public ngOnInit() {
-        const initAttackPatterns$ = this.tacticsStore
+        const initAttackPatterns$ = this.store
             .select('stix')
             .pipe(
                 pluck('attackPatterns'),
@@ -57,6 +58,8 @@ export class IntrusionSetDashboardComponent implements OnInit {
                 distinctUntilChanged(),
                 take(1)
             );
+
+        this.store.dispatch(new HideFooter());
 
         const intrusionsProperties = {
             'stix.id': 1,

@@ -9,7 +9,8 @@ import { BaseComponent } from '../base.component';
 
 @Component({
     selector: 'list-stix-objects',
-    templateUrl: './list-stix-objects.component.html'
+    templateUrl: './list-stix-objects.component.html',
+    styleUrls: ['./list-stix-objects.component.scss'],
 })
 export class ListStixObjectComponent extends BaseComponent implements OnInit {
 

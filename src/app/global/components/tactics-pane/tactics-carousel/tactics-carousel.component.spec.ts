@@ -2,10 +2,9 @@ import { TestBed, ComponentFixture, async, fakeAsync, tick } from '@angular/core
 import { SimpleChange } from '@angular/core';
 import { StoreModule, Store } from '@ngrx/store';
 
-import { CarouselModule } from 'primeng/primeng';
-
 import { Tactic } from '../tactics.model';
 import { TacticsCarouselComponent } from './tactics-carousel.component';
+import { UnfetterCarouselComponent } from './unf-carousel.component';
 import { TacticsControlService } from '../tactics-control.service';
 import { TacticsTooltipService, TooltipEvent } from '../tactics-tooltip/tactics-tooltip.service';
 import { ResizeDirective } from '../../../directives/resize.directive';
@@ -27,11 +26,11 @@ describe('TacticCarouselComponent', () => {
         TestBed
             .configureTestingModule({
                 imports: [
-                    CarouselModule,
                     StoreModule.forRoot(reducers),
                 ],
                 declarations: [
                     TacticsCarouselComponent,
+                    UnfetterCarouselComponent,
                     ResizeDirective,
                     CapitalizePipe,
                 ],

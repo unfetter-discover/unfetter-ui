@@ -4,7 +4,7 @@
             <form class="assess-form" [formGroup]="form" novalidate (ngSubmit)="submitForm()">
                 <mat-card-content>
                     <mat-form-field class="full-width">
-                        <input matInput placeholder="Title" [value]="assessMeta.title" formControlName="title" (blur)="onTitleBlur($event)">
+                        <input matInput placeholder="Title" [value]="assessMeta.title" formControlName="title" (blur)="onTitleBlur($event)" required>
                         <mat-error *ngIf="form.get('title').hasError('required')">
                             Title is
                             <strong>required</strong>

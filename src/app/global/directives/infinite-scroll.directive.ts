@@ -1,14 +1,17 @@
 
 import { fromEvent as observableFromEvent,  Observable  } from 'rxjs';
-import { Directive, ElementRef, AfterViewInit, EventEmitter, Output, Input } from '@angular/core';
+import { Directive, ElementRef, AfterViewInit, EventEmitter, Output, Input, OnDestroy } from '@angular/core';
+import { finalize } from 'rxjs/operators';
 
 @Directive({
   selector: '[infiniteScroll]'
 })
-export class InfiniteScrollDirective implements AfterViewInit {
+export class InfiniteScrollDirective implements AfterViewInit, OnDestroy {
 
   @Input() public bottomOffset = 500;
   @Output() public atBottom = new EventEmitter();
+  
+  private getScrolls$;
 
   constructor(private el: ElementRef) { }
 
@@ -17,23 +20,28 @@ export class InfiniteScrollDirective implements AfterViewInit {
 
     const bottomDiv = this.el.nativeElement.querySelector('#bottom');
 
-    const getScrolls$ = scrollEvent$.subscribe(
-      () => {
-        const bottomDivOffset = bottomDiv.offsetTop + bottomDiv.clientHeight;
-        const pageOffset = window.pageYOffset + window.innerHeight;
-        
-        if (pageOffset > bottomDivOffset - this.bottomOffset) {
-          this.atBottom.emit(null);
+    this.getScrolls$ = scrollEvent$
+      .pipe(
+        finalize(() => this.getScrolls$ && this.getScrolls$.unsubscribe())
+      )
+      .subscribe(
+        () => {
+          const bottomDivOffset = bottomDiv.offsetTop + bottomDiv.clientHeight;
+          const pageOffset = window.pageYOffset + window.innerHeight;
+          
+          if (pageOffset > bottomDivOffset - this.bottomOffset) {
+            this.atBottom.emit(null);
+          }
+        },
+        (err) => {
+          console.log(err);
         }
-      },
-      (err) => {
-        console.log(err);
-      },
-      () => {
-        if (getScrolls$) {
-          getScrolls$.unsubscribe();
-        }
-      }
-    );
-  }  
+      );
+  }
+  
+  ngOnDestroy() {
+    if (this.getScrolls$) {
+       this.getScrolls$.unsubscribe()
+    }
+  }
 }

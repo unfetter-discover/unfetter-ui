@@ -21,19 +21,23 @@ export class LoginCallbackComponent implements OnInit {
     ) { }
 
     public ngOnInit() {
-        let params$ = this.route.params
+        const params$ = this.route.params
             .subscribe((params) => {
                 const token = `Bearer ${params.token}`;
                 this.store.dispatch(new userActions.SetToken(token));             
                 this.store.dispatch(new userActions.FetchUser(token));
 
-                const getUser$ = this.store.select('users').pipe(
-                    pluck('userProfile'),
-                    filter((user: any) => !!user && user.approved),
-                    take(1))
+                const getUser$ = this.store.select('users')
+                    .pipe(
+                        pluck('userProfile'),
+                        filter((user: any) => !!user),
+                        take(1)
+                    )
                     .subscribe(
                         (user) => {
-                            this.router.navigate(['/']);
+                            if (user.registered) {
+                                this.router.navigate(['/']);
+                            }
                         },
                         (err) => {
                             console.log(err);

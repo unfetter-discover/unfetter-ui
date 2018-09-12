@@ -1,7 +1,7 @@
 
-import { switchMap, tap, pluck } from 'rxjs/operators';
+import { switchMap, tap, pluck, filter, map, mergeMap, withLatestFrom } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -10,11 +10,18 @@ import { Constance } from '../../utils/constance';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { SnackBarService } from '../../core/services/snackbar.service';
 import { HttpStatusCodes } from '../../global/enums/http-status-codes.enum';
+import { ActivatedRoute } from '@angular/router';
+import { NavigationEnd } from '@angular/router';
+import { Themes } from '../../global/enums/themes.enum';
+import { AppState } from '../app.reducers';
+import { Store } from '@ngrx/store';
+import { getTheme } from './utility.selectors';
 
 @Injectable()
 export class UtilityEffects {
 
     private webAnalyticsUrl = Constance.WEB_ANALYTICS_URL;
+    private bodyElement: HTMLElement = document.getElementsByTagName('body')[0];
 
     @Effect({ dispatch: false })
     public clearLocalStorageEffect = this.actions$
@@ -90,10 +97,83 @@ export class UtilityEffects {
             })
         );
 
+    @Effect()
+    public startThemeUpdate = this.actions$
+        .pipe(
+            ofType(utilityActions.START_THEME_UPDATE),
+            pluck<any, Themes>('payload'),
+            tap((theme) => {
+                this.bodyElement.className = theme;
+            }),
+            map((theme) => new utilityActions.SetTheme(theme))
+        );
+
+    @Effect({ dispatch: false })
+    public changeFooter = this.actions$
+        .pipe(
+            ofType(utilityActions.HIDE_FOOTER, utilityActions.SHOW_FOOTER),
+            pluck<any, string>('type'),
+            withLatestFrom(this.store.select(getTheme)),
+            tap(([type, theme]) => {
+                if (type === utilityActions.HIDE_FOOTER) {
+                    this.bodyElement.className = `${theme} hideFooter`;
+                } else {
+                    this.bodyElement.className = theme;
+                }
+            })
+        )
+
     constructor(
         private actions$: Actions,
         private router: Router,
         private genericApi: GenericApi,
         private snackBarService: SnackBarService,
-    ) { }
+        private activatedRoute: ActivatedRoute,
+        private store: Store<AppState>,
+    ) { 
+        this.router.events
+            .pipe(
+                filter((event) => event instanceof NavigationEnd),
+                map(() => this.activatedRoute),
+                map((event: ActivatedRoute) => ((event as any)._routerState.snapshot.url.split('/'))[1])
+            )
+            .subscribe((url: string) => {
+                let title;
+                switch (url) {
+                    case 'indicator-sharing':
+                        title = 'Analytic Exchange'
+                        break;
+                    case 'assess':
+                        title = 'Assessments';
+                        break;
+                    case 'baseline':
+                        title = 'Baselines';
+                        break;
+                    default:
+                        title = url;
+                }
+                this.store.dispatch(new utilityActions.SetTitle(title));
+
+                let theme;
+                switch (url) {
+                    case 'indicator-sharing':
+                        theme = Themes.ANALYTIC_HUB;
+                        break;
+                    case 'events':
+                        theme = Themes.EVENTS;
+                        break;
+                    case 'threat-dashboard':
+                        theme = Themes.THREAT_DASHBOARD;
+                        break;
+                    case 'assessments':
+                    case 'assess':
+                    case 'baseline':
+                        theme = Themes.ASSESSMENTS;
+                        break;
+                    default:
+                        theme = Themes.DEFAULT;
+                }
+                this.store.dispatch(new utilityActions.StartThemeUpdate(theme));
+            });
+    }
 }

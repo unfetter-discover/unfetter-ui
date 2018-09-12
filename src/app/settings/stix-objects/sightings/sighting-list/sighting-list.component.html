@@ -1,27 +1,23 @@
-<buttons-filter [model]="sightings" [filteredItems]="filteredItems" (filterItemsChange)="onFilterItemsChange($event)">
+<buttons-filter [model]="sightings" [filteredItems]="filteredItems"
+        (filterItemsChange)="onFilterItemsChange($event)">
 </buttons-filter>
 
-<div class="row" style="margin-top: 15px;">
-
-   <div class="row"  style="margin-top: 15px;">
-        <div class="col-md-12">
-            <div style="margin-top: 1%;">
-                <p-dataList [value]="filteredItems">
-                        <ng-template let-data pTemplate="item">
-                            <div class="row list-item-row">
-                                <div class="col-md-9">
-                                                <div class="pull-left">
-                                                    <a routerLink="/stix/sightings/{{data.id}}" >{{data.attributes.sighting_of_ref}}</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <a mat-raised-button (click)="editButtonClicked(data)"><i class="material-icons">create</i></a>
-                                                <a mat-raised-button (click)="deleteButtonClicked(data)"><i class="material-icons">delete</i></a>
-                                            </div>
-                            </div>
-
-                        </ng-template>
-                </p-dataList>
+<div class="row" class="mt-15">
+    <mat-list class="col-md-12 sightings-list">
+        <mat-list-item *ngFor="let item of filteredItems" class="sighting-item">
+            <div class="row">
+                <div class="col-md-9 col-xs-12 pull-left mt-10">
+                    <a routerLink="/stix/sightings/{{item.id}}">{{item.attributes.sighting_of_ref}}</a>
+                </div>
+                <div class="col-md-3 col-xs-12">
+                    <button mat-button (click)="editButtonClicked(item)">
+                        <mat-icon class="mat-24">create</mat-icon>
+                    </button>
+                    <button mat-button (click)="deleteButtonClicked(item)">
+                        <mat-icon class="mat-24">delete</mat-icon>
+                    </button>
+                </div>
             </div>
-        </div>
-    </div>
+        </mat-list-item>
+    </mat-list>
+</div>

@@ -12,7 +12,6 @@ import {
     MatToolbarModule,
 } from '@angular/material';
 import { MarkdownComponent } from 'ngx-markdown';
-import { Carousel } from 'primeng/primeng';
 
 import { IndicatorTacticsComponent } from './indicator-tactics.component';
 import { TacticsPaneComponent } from '../../global/components/tactics-pane/tactics-pane.component';
@@ -37,6 +36,7 @@ import {
 import * as stixActions from '../../root-store/stix/stix.actions';
 import * as userActions from '../../root-store/users/user.actions';
 import { reducers, AppState } from '../../root-store/app.reducers';
+import { UnfetterCarouselComponent } from '../../global/components/tactics-pane/tactics-carousel/unf-carousel.component';
 
 describe('IndicatorTacticsComponent', () => {
 
@@ -65,13 +65,13 @@ describe('IndicatorTacticsComponent', () => {
                     TacticsHeatmapComponent,
                     TacticsTreemapComponent,
                     TacticsCarouselComponent,
+                    UnfetterCarouselComponent,
                     TacticsCarouselControlComponent,
                     TacticsTooltipComponent,
                     HeatmapComponent,
                     TreemapComponent,
                     MarkdownEditorComponent,
                     MarkdownComponent,
-                    Carousel,
                     CapitalizePipe,
                 ],
                 providers: [
@@ -98,10 +98,11 @@ describe('IndicatorTacticsComponent', () => {
 
     it('should handle input data', () => {
         component.indicators = [0, 1, 2, 3].map(i => ({id: `A${i}`}));
-        component.mappings = [0, 1, 2].reduce((maps, i) => {
-            maps[`A${i}`] = [mockAttackPatternData[i]];
+        component.mappings = [0, 1].reduce((maps, i) => {
+            maps[`A${i}`] = [mockAttackPatternData[i], mockAttackPatternData[i + 1]];
             return maps;
         }, {});
+        component.mappings['A2'] = [mockAttackPatternData[2]];
         component.targets = mockTargets;
         component.ngOnChanges();
         fixture.detectChanges();

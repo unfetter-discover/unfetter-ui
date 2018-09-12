@@ -63,13 +63,22 @@ describe('TacticsTooltipComponent should', () => {
         });
         expect(showSpy).toHaveBeenCalled();
         expect(component['backdropped']).toBeFalsy();
+        component['tooltips'].onHover({
+            data: mockAttackPatterns[0],
+            source: { target: component } as any
+        });
+        expect(showSpy).toHaveBeenCalledTimes(2);
 
-        const hideSpy = spyOn(component, 'hideTacticTooltip').and.callFake(() => {});
+        const hideSpy = spyOn(component, 'hideTacticTooltip').and.callThrough();
         component['tooltips'].onHover({
             data: null,
             source: { target: component } as any
         });
         expect(hideSpy).toHaveBeenCalled();
+        component['tooltips'].onHover({
+            data: null
+        });
+        expect(hideSpy).toHaveBeenCalledTimes(1);
 
         showSpy.calls.reset();
         component['tooltips'].onClick({
@@ -85,6 +94,38 @@ describe('TacticsTooltipComponent should', () => {
             source: { target: component } as any
         });
         expect(showSpy).not.toHaveBeenCalled();
+    });
+
+    it('should emit events', () => {
+        const observer = {
+            next: ev => console.log('next', ev),
+            error: err => console.log('error', err),
+            complete: () => {}
+        };
+        component.hover.observers.push(observer);
+        component.click.observers.push(observer);
+
+        const emitSpy = spyOn(component.hover, 'emit').and.callThrough();
+        component['tooltips'].onHover({
+            data: mockAttackPatterns[0],
+            source: { target: component } as any
+        });
+        expect(emitSpy).toHaveBeenCalled();
+
+        emitSpy.calls.reset();
+        component['tooltips'].onClick({
+            data: mockAttackPatterns[1],
+            source: { target: component } as any
+        });
+        expect(emitSpy).toHaveBeenCalled();
+
+        emitSpy.calls.reset();
+        component['tooltips'].onHover({
+            data: mockAttackPatterns[0],
+            observed: true,
+            source: { target: component } as any
+        });
+        expect(emitSpy).not.toHaveBeenCalled();
     });
 
 });

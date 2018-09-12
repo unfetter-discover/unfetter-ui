@@ -25,6 +25,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { ClipboardModule } from 'ngx-clipboard';
 import { ChartsModule } from 'ng2-charts';
+import { MarkdownModule } from 'ngx-markdown';
 
 // Modules
 import { routing } from './indicator-sharing-routing.module';
@@ -41,7 +42,6 @@ import { IndicatorSharingEffects } from './store/indicator-sharing.effects';
 import { IndicatorSharingLayoutComponent } from './indicator-sharing-layout/indicator-sharing-layout.component';
 import { IndicatorSharingListComponent } from './indicator-sharing-list/indicator-sharing-list.component';
 import { IndicatorCardComponent } from './indicator-card/indicator-card.component';
-import { AddIndicatorComponent } from './add-indicator/add-indicator.component';
 import { IndicatorDetailsComponent } from './indicator-details/indicator-details.component';
 import { SearchBarComponent } from './search-bar/search-bar.component';
 import { IndicatorSharingSortComponent } from './indicator-sharing-sort/indicator-sharing-sort.component';
@@ -51,6 +51,7 @@ import { IndicatorHeatMapFilterComponent } from './indicator-tactics/indicator-h
 import { SummaryStatisticsComponent } from './summary-statistics/summary-statistics.component';
 import { IndicatorTacticsComponent } from './indicator-tactics/indicator-tactics.component';
 import { ObservedDataFilterComponent } from './indicator-sharing-filters/observed-data-filter/observed-data-filter.component';
+import { IndicatorFormComponent } from './indicator-form/indicator-form.component';
 
 const matModules = [
     MatButtonModule,
@@ -69,7 +70,8 @@ const matModules = [
     MatTooltipModule,
     MatSidenavModule,
     MatMenuModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MarkdownModule
 ];
 
 @NgModule({
@@ -92,7 +94,6 @@ const matModules = [
         IndicatorSharingLayoutComponent,
         IndicatorSharingListComponent,
         IndicatorCardComponent,
-        AddIndicatorComponent,
         IndicatorDetailsComponent,
         SearchBarComponent,
         IndicatorSharingSortComponent,
@@ -102,12 +103,12 @@ const matModules = [
         SummaryStatisticsComponent,
         IndicatorTacticsComponent,
         ObservedDataFilterComponent,
+        IndicatorFormComponent,
     ],
     providers: [
         IndicatorSharingService
     ],
     entryComponents: [
-        AddIndicatorComponent,
         IndicatorHeatMapFilterComponent,
         ObservedDataFilterComponent,
     ]

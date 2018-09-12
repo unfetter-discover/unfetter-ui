@@ -44,7 +44,7 @@ const moduleComponents = [
     ...materialModules,
     GlobalModule,
     ChartsModule,
-    StoreModule.forFeature('summary', summaryReducer),
+    StoreModule.forFeature('baselineSummary', summaryReducer),
     EffectsModule.forFeature([SummaryEffects]),
   ],
   declarations: [

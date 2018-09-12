@@ -4,5 +4,6 @@ export const ExternalReferencesForm = () => new FormGroup({
     source_name: new FormControl('', Validators.required),
     external_id: new FormControl(),
     description: new FormControl(),
-    url: new FormControl()
+    // URL is not required by the STIX schema, but we require it
+    url: new FormControl('', Validators.required)
 });

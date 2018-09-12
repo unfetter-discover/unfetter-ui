@@ -1,4 +1,4 @@
-<div id="headerLogoComponent">
+<div id="headerLogoComponent" *ngIf="themeClass$ | async as themeClass" class="{{ themeClass }}">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="200.914 20.913 49.23 27.174" height="35">
     <g id="Group_40" data-name="Group 40" transform="translate(200.914 20.913)">
       <g id="Group_11" data-name="Group 11" transform="translate(0 4.488)">
@@ -11,8 +11,8 @@
         <path id="Path_22" data-name="Path 22" class="cls-1" d="M169.6,47.9V66.55H174V53.808l.056-.011,6.461,11.851,1.4-4.657L173.964,47.9Z"
           transform="translate(-150.476 -46.987)" />
       </g>
-      <path id="accentPath" data-name="Path 23" class="defaultAccent" d="M274.707,27.174l6.359-21.2.44-1.488L282.859,0h-2.03l-1.612,5.39L272.7,27.174Z"
-        transform="translate(-241.951)" [ngClass]="{ 'assessmentsAccent': title === 'assessments', 'threatAccent': title === 'threat-dashboard', 'indicatorAccent': title === 'Analytic Exchange', 'eventsAccent': title === 'events' }" />
+      <path id="accentPath" data-name="Path 23" d="M274.707,27.174l6.359-21.2.44-1.488L282.859,0h-2.03l-1.612,5.39L272.7,27.174Z"
+        transform="translate(-241.951)" />
     </g>
   </svg>
 </div>

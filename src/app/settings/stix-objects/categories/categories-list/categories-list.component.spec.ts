@@ -15,9 +15,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AccordionModule } from 'primeng/components/accordion/accordion';
-import { CalendarModule } from 'primeng/components/calendar/calendar';
-import { DataListModule } from 'primeng/components/datalist/datalist';
 import { ButtonsFilterComponent } from '../../../../components/buttons-filter/buttons-filter.component';
 import { FilterSearchBoxComponent } from '../../../../components/filter-search-box/filter-search-box.component';
 import { ListStixObjectComponent } from '../../../../components/list-stix-objects/list-stix-objects.component';
@@ -76,9 +73,6 @@ describe('CategoriesListComponent', () => {
         FormsModule,
         RouterTestingModule,
         HttpClientTestingModule,
-        CalendarModule,
-        AccordionModule,
-        DataListModule,
         ...materialModules,
       ],
       providers: [

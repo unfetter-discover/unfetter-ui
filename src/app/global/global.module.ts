@@ -25,8 +25,8 @@ import {
     MatToolbarModule,
     MatTooltipModule,
 } from '@angular/material';
-import { CarouselModule } from 'primeng/primeng';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
+import { SimplemdeModule, SIMPLEMDE_CONFIG } from 'ng2-simplemde';
 
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
@@ -56,7 +56,7 @@ import { ObservableDataSummaryComponent } from './components/observable-data-sum
 import { ObservableDataTreeComponent } from './components/observable-data-tree/observable-data-tree.component';
 import { PiiCheckMessageComponent } from './components/pii-check-message/pii-check-message.component';
 import { PublishedCheckboxComponent } from './components/published-checkbox/published-checkbox.component';
-import { RelatationshipGeneratorComponent } from './components/relatationship-generator/relatationship-generator.component';
+import { RelationshipGeneratorComponent } from './components/relationship-generator/relationship-generator.component';
 import { RiskBreakdownComponent } from './components/risk-breakdown/risk-breakdown.component';
 import { RiskIconComponent } from './components/risk-icon/risk-icon.component';
 import { SelectionListComponent } from './components/selection-list/selection-list.component';
@@ -75,16 +75,22 @@ import { TacticsTooltipComponent } from './components/tactics-pane/tactics-toolt
 import { TacticsTooltipService } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 import { TacticsTreemapComponent } from './components/tactics-pane/tactics-treemap/tactics-treemap.component';
 import { TreemapComponent } from './components/treemap/treemap.component';
+import { FileListComponent } from './components/file-list/file-list.component';
+import { ExternalReferencesListComponent } from './components/external-references-list/external-references-list.component';
+import { ImplementationsListComponent } from './components/implementations-list/implementations-list.component';
+import { AddLabelAltComponent } from './components/add-label-alt/add-label-alt.component';
 
 import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
 import { ResizeDirective } from './directives/resize.directive';
+
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { FieldSortPipe } from './pipes/field-sort.pipe';
 import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AuthService } from '../core/services/auth.service';
 import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
-import { FileListComponent } from './components/file-list/file-list.component';
+import { UnfetterCarouselComponent, PrimedDirective } from './components/tactics-pane/tactics-carousel/unf-carousel.component';
+import { ScrollTrapDirective } from './directives/scroll-trap.directive';
 
 const matModules = [
     MatAutocompleteModule,
@@ -126,6 +132,7 @@ const unfetterComponents = [
     HelpWindowComponent,
     InfiniteScrollDirective,
     ResizeDirective,
+    PrimedDirective,
     InfoBarComponent,
     KillChainPhasesReactiveComponent,
     LandingPageComponent,
@@ -138,7 +145,7 @@ const unfetterComponents = [
     ObservableDataTreeComponent,
     PiiCheckMessageComponent,
     PublishedCheckboxComponent,
-    RelatationshipGeneratorComponent,
+    RelationshipGeneratorComponent,
     RiskBreakdownComponent,
     RiskIconComponent,
     SidepanelComponent,
@@ -149,6 +156,7 @@ const unfetterComponents = [
     SpeedDialComponent,
     StixTableComponent,
     TacticsCarouselComponent,
+    UnfetterCarouselComponent,
     TacticsCarouselControlComponent,
     TacticsHeatmapComponent,
     TacticsTooltipComponent,
@@ -161,6 +169,9 @@ const unfetterComponents = [
     ErrorPageComponent,
     ReadableBytesPipe,
     FileListComponent,
+    ExternalReferencesListComponent,
+    ImplementationsListComponent,
+    AddLabelAltComponent,
 ];
 
 @NgModule({
@@ -183,16 +194,24 @@ const unfetterComponents = [
                 }
             }
         }),
-        CarouselModule,
+        SimplemdeModule.forRoot({
+            provide: SIMPLEMDE_CONFIG,
+            useValue: {
+                spellChecker: false,
+                autoDownloadFontAwesome: false,
+                status: false
+            }
+        }),
         ...matModules
     ],
     declarations: [
         ...unfetterComponents,
+        ScrollTrapDirective,        
     ],
     exports: [
         ...unfetterComponents,
         ...matModules,
-        CarouselModule,
+        SimplemdeModule,
     ],
     providers: [
         AuthService,

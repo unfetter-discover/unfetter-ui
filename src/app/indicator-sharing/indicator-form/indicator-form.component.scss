@@ -1,0 +1,125 @@
+@import '../../../styles/_variables.scss';
+
+#indicatorFormComponent {
+  background: $app-background-color;
+  padding-bottom: 100px;
+}
+
+:host ::ng-deep {
+  .mat-stepper-horizontal {
+    background: $app-background-color;
+  }
+}
+
+#formHeader {
+  align-items: baseline;
+  padding-right: 22px;
+}
+
+#filterTitle {
+  height: 64px;
+  background: $analytic-exchange-primary-lighter;
+  padding-left: 7px;
+}
+
+#mainWindow {
+  min-height: calc(100vh - #{$navbar-height}px);
+}
+
+#filterContainer {
+  width: 360px;
+}
+
+#searchWrapper {
+  background-color: $analytic-exchange-primary-light;
+  height: 128px;
+  transition: height 0.2s ease-in-out;
+}
+
+.filterOpen {
+  height: 64px !important;
+}
+
+#showFiltersButton {
+  position: absolute;
+  top: 13px;
+  left: 7px;
+}
+
+#listControls {
+  label {
+    margin-bottom: 0;
+  }
+}
+
+#indicatorSharingList {
+  .spacer {
+    font-size: 28px;
+  }
+
+  #spacer1 {
+    margin-right: 13px;
+  }
+
+  #spacer2 {
+    margin-left: 14px;
+    margin-right: 6px;
+  }
+}
+
+@media (min-width: 1500px) {
+  .filterOpenBreakpoint {
+    width: 80%;
+    margin-left: 10%;
+  }
+}
+
+@media (min-width: 1700px) {
+  .filterOpenBreakpoint {
+    width: 66.66666667%;
+    margin-left: 16.66666667%;
+  }
+}
+
+@media (max-width: 1350px) {
+  #listControlFlexWraper {
+    flex-direction: column;
+    align-items: flex-start;
+    
+    #spacer1,
+    #spacer2 {
+      display: none;
+    }
+  }
+}
+
+.stepperControlWrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  background: #fff;
+  z-index: 8;
+  width: 100vw;
+
+  >.container {
+    padding-left: 30px;
+    padding-right: 49px;
+  }
+}
+
+#stepperMiniControl {
+  width: 50px;
+  justify-content: space-between;
+
+  span:not(.theme-bg-primary) {
+    background-color: #BDBDBD;
+  }
+
+  .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;    
+  }
+}

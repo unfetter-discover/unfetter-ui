@@ -2,14 +2,12 @@ import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 
 import { AdditionalQueriesForm } from '../../form-models/additional-queries';
-import { heightCollapse } from '../../animations/height-collapse';
 import { FormatHelpers } from '../../static/format-helpers';
 
 @Component({
   selector: 'additional-queries',
   templateUrl: './additional-queries.component.html',
-  styleUrls: ['./additional-queries.component.scss'],
-  animations: [heightCollapse]
+  styleUrls: ['./additional-queries.component.scss']
 })
 export class AdditionalQueriesComponent implements OnInit {
 
@@ -17,7 +15,6 @@ export class AdditionalQueriesComponent implements OnInit {
   @Input() public parentDocumentType: string = 'analytic';
 
   public localForm: FormGroup;
-  public showForm: boolean = false;
   public formResetComplete = true;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) { }
@@ -31,7 +28,7 @@ export class AdditionalQueriesComponent implements OnInit {
   }
 
   public addToParent() {
-    this.parentForm.get('metaProperties').get('additional_queries').push(this.localForm);
+    this.parentForm.get('metaProperties').get('additional_queries').insert(0, this.localForm);
 
     this.formResetComplete = false;
     this.resetForm();

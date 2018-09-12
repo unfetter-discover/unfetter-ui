@@ -25,6 +25,10 @@ pre code {
     font-weight: 300 !important;
 }
 
+.text-warn, .textWarn, .text-danger, .textDanger {
+    color: $warn-color;
+}
+
 .nav-pills>li:not(.active)>a {
     @include themePrimaryColors('color');
 }

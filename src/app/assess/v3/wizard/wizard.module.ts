@@ -35,16 +35,12 @@ const matModules = [
   MatSnackBarModule,
 ];
 
-const primengModules = [
-];
-
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     routing,
     ...matModules,
-    ...primengModules,
     ComponentModule,
     ChartsModule,
     PipesModule,
