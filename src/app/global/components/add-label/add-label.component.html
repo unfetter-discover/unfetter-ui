@@ -8,7 +8,7 @@
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>        
-        <button tabindex="{{ showAddLabel ? 0 : -1 }}" id="sendLabelBtn" (click)="localForm.status === 'VALID' ? addToParent() : ''" matTooltip="Attach Label to {{ parentDocumentType | capitalize }}">
+        <button tabindex="{{ showAddLabel && localForm.status === 'VALID' ? 0 : -1 }}" id="sendLabelBtn" (click)="localForm.status === 'VALID' ? addToParent() : ''" matTooltip="Attach Label to {{ parentDocumentType | capitalize }}">
             <i class="material-icons mat-24 cursor-pointer sendLabelBtnIcon" [ngClass]="{'text-muted': localForm.status === 'INVALID'}">send</i>
         </button>
     </div>
