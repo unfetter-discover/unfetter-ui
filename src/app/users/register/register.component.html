@@ -34,9 +34,9 @@
 
                 <mat-card-content>
                     <br class="mt-10">
-                    <form [formGroup]="form" novalidate (ngSubmit)="registerSubmit()">
+                    <form [formGroup]="form" (keydown.enter)="enterPressed($event)" (ngOnSubmit)="registerSubmit()">
 
-                        <mat-vertical-stepper [linear]="true">
+                        <mat-vertical-stepper [linear]="true" #stepper>
 
                             <mat-step label="User Information" [stepControl]="form.get('unfetterInformation')">
                                 <div id="unfetterInformationForm" formGroupName="unfetterInformation">

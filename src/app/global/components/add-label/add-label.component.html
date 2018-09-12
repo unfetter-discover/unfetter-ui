@@ -1,7 +1,7 @@
 <span [ngClass]="{'showAddLabel': showAddLabel}" class="inlineFlex flexItemsCenter addLabelComponentWrapper">
     <div id="addLabelInputWrapper" class="inlineFlex flexItemsCenter">
         <mat-form-field>
-            <input type="text" matInput [formControl]="localForm" [matAutocomplete]="auto">
+            <input type="text" matInput [formControl]="localForm" [matAutocomplete]="auto" (keydown.enter)="inputEnter($event)">
             <mat-autocomplete #auto="matAutocomplete">
                 <mat-option *ngFor="let ov of openVocabList" [value]="ov">
                     {{ ov }}

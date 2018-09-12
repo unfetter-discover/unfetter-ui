@@ -47,6 +47,17 @@ export class AddLabelReactiveComponent implements OnInit {
         this.showAddLabel = !this.showAddLabel;
     }
 
+    public inputEnter(e: KeyboardEvent) {
+        // requestAnimationFrame is used to give time to auto complete to change form value
+        // The value is checked as well so there is not a submit if the value was set by the autocomplete
+        const valueBeforeCallback = this.localForm.value;
+        requestAnimationFrame(() => {
+            if (this.localForm.status === 'VALID' && valueBeforeCallback === this.localForm.value) {
+                this.addToParent();                
+            }
+        });
+    }
+
     private setStixType() {
         switch (this.stixType) {
         case 'indicator':
