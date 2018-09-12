@@ -1,28 +1,22 @@
 
-import { pluck, distinctUntilChanged, map } from 'rxjs/operators';
-import { Component, EventEmitter, OnInit, Output, NgModule, ViewEncapsulation, Inject } from '@angular/core';
-import { DataSource } from '@angular/cdk/collections';
-import { MatTableDataSource } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { MatTableDataSource } from '@angular/material';
 import { Store } from '@ngrx/store';
-import * as assessReducers from '../../store/baseline.reducers';
-import { Capability, AssessedObject, ObjectAssessment, Question, QuestionAnswerEnum } from 'stix/assess/v3';
-import { PdrString } from 'stix/assess/v3/baseline/question';
-import { StixEnum } from 'stix/unfetter/stix.enum';
-import { AnswerOption } from '../../../settings/stix-objects/categories/categories-edit/answer-option'
+import { distinctUntilChanged, pluck } from 'rxjs/operators';
+import { AssessedObject, Capability, ObjectAssessment, Question, QuestionAnswerEnum, Category } from 'stix/assess/v3';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
-import { SetCurrentBaselineObjectAssessment } from '../../store/baseline.actions';
-import { BaselineSummaryService } from '../../services/baseline-summary.service';
 import { RxjsHelpers } from '../../../global/static/rxjs-helpers';
+import { AnswerOption } from '../../../settings/stix-objects/categories/categories-edit/answer-option';
+import * as assessReducers from '../../store/baseline.reducers';
+import { SetCurrentBaselineObjectAssessment } from '../../store/baseline.actions';
 
 @Component({
   selector: 'unf-baseline-wizard-capability',
   templateUrl: './capability.component.html',
   styleUrls: ['./capability.component.scss']
 })
-export class CapabilityComponent implements OnInit {
+export class CapabilityComponent {
 
   pageToggle: number = 2;    // 1 for heatmap, 2 for pdr score picker
 
@@ -35,6 +29,7 @@ export class CapabilityComponent implements OnInit {
 
   @Output()
   public onToggleHeatMap = new EventEmitter<any>();
+  private currentCapabilityGroup: Category;
   public currentCapability: Capability;
   public currentCapabilityName: string;
   public currentCapabilityDescription: string;
@@ -60,15 +55,22 @@ export class CapabilityComponent implements OnInit {
     new AnswerOption(QuestionAnswerEnum.NOT_APPLICABLE, 'NOT_APPLICABLE'),
   ];
 
-
-
   selectedAttackPatterns = new FormControl();
 
-  constructor(private wizardStore: Store<assessReducers.BaselineState>, private _baselineSummaryService: BaselineSummaryService ) {
+  constructor(private wizardStore: Store<assessReducers.BaselineState>) {
 
     this.dataSource = new MatTableDataSource<TableEntry>();
 
-    const sub1$ = this.wizardStore
+    this.wizardStore
+      .select('baseline').pipe(
+      pluck('currentCapabilityGroup'),
+      distinctUntilChanged())
+      .subscribe(
+        (currentCapabilityGroup: Category) => {
+          this.currentCapabilityGroup = currentCapabilityGroup;
+        }, (err) => console.log(err));
+  
+    this.wizardStore
       .select('baseline').pipe(
       pluck('currentCapability'),
       distinctUntilChanged())
@@ -79,7 +81,7 @@ export class CapabilityComponent implements OnInit {
           this.currentCapabilityDescription = (this.currentCapability === undefined) ? '' : this.currentCapability.description;
         }, (err) => console.log(err));
 
-    const sub2$ = this.wizardStore
+      this.wizardStore
       .select('baseline')
       .pipe(
         pluck('allAttackPatterns'),
@@ -89,9 +91,13 @@ export class CapabilityComponent implements OnInit {
       .subscribe(
         (allAttackPatterns: AttackPattern[]) => {
           this.allAttackPatterns = allAttackPatterns;
+          // Once we have these, we can update our data source
+          if (this.allAttackPatterns && this.allAttackPatterns.length > 0) {
+            this.updateDataSource();
+          }
         }, (err) => console.log(err));
 
-    const sub21$ = this.wizardStore
+    this.wizardStore
       .select('baseline').pipe(
       pluck('baselineObjAssessments'),
       distinctUntilChanged())
@@ -100,69 +106,51 @@ export class CapabilityComponent implements OnInit {
         this.baselineObjectAssessments = baselineObjectAssessments;
       }, (err) => console.log(err));
 
-    const sub3$ = this.wizardStore
+    this.wizardStore
       .select('baseline').pipe(
       pluck('currentObjectAssessment'))
-      // .distinctUntilChanged()
       .subscribe(
         (currentObjectAssessment: ObjectAssessment) => {
           this.currentObjectAssessment = currentObjectAssessment;
-          if (this.currentObjectAssessment) {
-            this.currentAssessedObject = currentObjectAssessment.assessed_objects;
 
-
-
-            let numOfTotalQuestions = 0;
-
-            let numOFAnsweredQuestions = 0;
-
-            for (let oa of this.baselineObjectAssessments) {
-              for (let ao of oa.assessed_objects) {
-                for ( let question of ao.questions) {
-                  numOfTotalQuestions += 1;
-                  if ( question.score === QuestionAnswerEnum.LOW || question.score === QuestionAnswerEnum.MEDIUM || question.score === QuestionAnswerEnum.NOT_APPLICABLE ||
-                    question.score === QuestionAnswerEnum.SIGNIFICANT || question.score === QuestionAnswerEnum.NONE) {
-   
-                    numOFAnsweredQuestions += 1;
-                  }
-                }
-              }
-            }
-            if (this.currentAssessedObject) {
-              this.incomingListOfAttackPatterns = this.currentAssessedObject.map(x => x.assessed_object_ref);
-
-              if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length || this.checkForOAChange()) {
-                // inital value for number of attack patterns
-                this.currentNumberOfAttackPatterns = this.currentAssessedObject.length;
-                this.dataSource.data = this.currentAssessedObject.map(x => ({
-                  assessed_obj_id: x.id,
-                  capability_id: x.assessed_object_ref,
-                  capability: this.getAttackPatternName(x.assessed_object_ref),
-                  protect: this.getScore(x.questions, 'protect'),
-                  detect: this.getScore(x.questions, 'detect'),
-                  respond: this.getScore(x.questions, 'respond'),
-                  definition: this.getAttackPatternDescription(x.assessed_object_ref),
-                }));
-              }
-            } else {
-              // console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
-              return;
-            }
-          }
+          this.updateDataSource();
 
           this.lastKnownObjectAssessment = this.currentObjectAssessment;
         }, (err) => console.log(err));
-
-    // this.subscriptions.push(sub1$, sub2$, sub3$)
   }
 
+  private updateDataSource() {
+    if (this.currentObjectAssessment) {
+      this.currentAssessedObject = this.currentObjectAssessment.assessed_objects;
+    }
 
-  ngOnInit() {
-    // this.ratioOfQuestionsAnswered = this._baselineSummaryService.getBaselinePercentComplete();
-    
+    if (this.currentAssessedObject) {
+      this.incomingListOfAttackPatterns = this.currentAssessedObject.map(x => x.assessed_object_ref);
+
+      // if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length || this.checkForOAChange()) {
+        // inital value for number of attack patterns
+        this.currentNumberOfAttackPatterns = this.currentAssessedObject.length;
+        this.dataSource.data = this.currentAssessedObject.map(x => ({
+          assessed_obj_id: x.id,
+          capability_id: x.assessed_object_ref,
+          capability: this.getAttackPatternName(x.assessed_object_ref),
+          protect: this.getScore(x.questions, 'protect'),
+          detect: this.getScore(x.questions, 'detect'),
+          respond: this.getScore(x.questions, 'respond'),
+          definition: this.getAttackPatternDescription(x.assessed_object_ref),
+        }));
+      // }
+    } else {
+      // console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
+      return;
+    }
   }
 
   public onAttackPatternChange(event): void {
+    if (!this.currentAssessedObject) {
+      return;
+    }
+
     const prevValues = this.currentAssessedObject.map(x => x.assessed_object_ref);
     if (prevValues === undefined) {
       return;
@@ -176,6 +164,7 @@ export class CapabilityComponent implements OnInit {
       .forEach(ap => {
         let index = this.currentObjectAssessment.assessed_objects.findIndex(x => x.assessed_object_ref === ap);
         this.currentObjectAssessment.assessed_objects.splice(index, 1);
+
         this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
       });
 
@@ -193,6 +182,7 @@ export class CapabilityComponent implements OnInit {
         r.name = 'respond';
         newAssessedObject.questions = [p, d, r];
         this.currentObjectAssessment.assessed_objects.push(newAssessedObject);
+
         this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
       });
   }
@@ -201,6 +191,7 @@ export class CapabilityComponent implements OnInit {
     let correctIndex = this.currentAssessedObject.findIndex(x => x.assessed_object_ref === id);
     this.setScore(this.currentAssessedObject[correctIndex].questions, pdr, value)
     this.currentObjectAssessment.assessed_objects = this.currentAssessedObject.slice();
+
     this.wizardStore.dispatch(new SetCurrentBaselineObjectAssessment(this.currentObjectAssessment));
   }
 
@@ -220,15 +211,18 @@ export class CapabilityComponent implements OnInit {
   }
 
   public getAttackPatternName(id: string): string {
-    return this.allAttackPatterns.find(x => x.id === id).name;
+    let ap = this.allAttackPatterns.find(x => x.id === id);
+    return (ap ? ap.name : '');
   }
 
   public getAttackPatternDescription(id: string): string {
-    return this.allAttackPatterns.find(x => x.id === id).description;
+    let ap = this.allAttackPatterns.find(x => x.id === id);
+    return (ap ? ap.description : '');
   }
 
   public getAttackPatternId(name: string): string {
-    return this.allAttackPatterns.find(x => x.name === name).id;
+    let ap = this.allAttackPatterns.find(x => x.name === name);
+    return (ap ? ap.id : '');
   }
 
   public getScore(questionArray: Question[], name: string): string {
@@ -247,21 +241,14 @@ export class CapabilityComponent implements OnInit {
     }
   }
 
-  public checkForOAChange() {
-    try {
-      return this.lastKnownObjectAssessment.name !== this.currentObjectAssessment.name
-    } catch (TypeError) {
-      return false;
-    }  
-
-    
-
-  }
-
-  // public ngOnDestroy(): void {
-  //   this.wizardStore.dispatch(new CleanAssessmentWizardData());
-  //   this.subscriptions.forEach((sub) => sub.unsubscribe());
+  // public checkForOAChange() {
+  //   try {
+  //     return this.lastKnownObjectAssessment.name !== this.currentObjectAssessment.name
+  //   } catch (TypeError) {
+  //     return false;
+  //   }  
   // }
+
 }
 
 export interface TableEntry {

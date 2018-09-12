@@ -112,7 +112,7 @@ export class SummaryCalculationService {
     this.blAttackPatterns = blAttackPatterns;
   }
 
-  public set baselineIncompleteAPs(blCompleteAPs: number) {
+  public set baselineCompleteAPs(blCompleteAPs: number) {
     this.blCompleteAPs = blCompleteAPs;
   }
 
@@ -176,19 +176,19 @@ export class SummaryCalculationService {
   }
 
   public get baselineGroups(): string[] {
-    return this.baselineGroups;
+    return this.blGroups;
   }
 
   public get baselineAttackPatterns(): string[] {
-    return this.baselineAttackPatterns;
+    return this.blAttackPatterns;
   }
 
-  public get baselineIncompleteAPs(): number {
-    return this.baselineIncompleteAPs;
+  public get baselineCompleteAPs(): number {
+    return this.blCompleteAPs;
   }
 
   public get baselinePercentComplete(): number {
-    return this.baselinePercentComplete;
+    return this.blPercentComplete;
   }
 
   public get baselineWeightings(): { protPct, detPct, respPct } {
