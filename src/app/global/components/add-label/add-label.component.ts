@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 
 import { ConfigService } from '../../../core/services/config.service';
@@ -17,6 +17,9 @@ export class AddLabelReactiveComponent implements OnInit {
     @Input() public currentLabels: string[] = [];
     @Input() public parentDocumentType: string = 'analytic';
     @Output() public labelAdded: EventEmitter<string> = new EventEmitter();
+
+    @ViewChild('labelInput')
+    public labelInput: ElementRef;
 
     public localForm: FormControl;
     public showAddLabel: boolean = false;
@@ -43,8 +46,23 @@ export class AddLabelReactiveComponent implements OnInit {
     }
 
     public buttonClick(e) {
+        console.log('~~~~', this.labelInput);
         e.preventDefault();
         this.showAddLabel = !this.showAddLabel;
+        if (this.showAddLabel) {
+            this.labelInput.nativeElement.focus();
+        }
+    }
+
+    public inputEnter(e: KeyboardEvent) {
+        // requestAnimationFrame is used to give time to auto complete to change form value
+        // The value is checked as well so there is not a submit if the value was set by the autocomplete
+        const valueBeforeCallback = this.localForm.value;
+        requestAnimationFrame(() => {
+            if (this.localForm.status === 'VALID' && valueBeforeCallback === this.localForm.value) {
+                this.addToParent();                
+            }
+        });
     }
 
     private setStixType() {
