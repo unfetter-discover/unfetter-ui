@@ -1,3 +1,12 @@
 <div class="simpleMdeMentions">
-  <simplemde [(ngModel)]="value"></simplemde>
+  <simplemde [(ngModel)]="value" #mde></simplemde>
+
+  <span id="userMentions" #userMentions [style.display]="showUserMentions ? 'inline-block' : 'none'" class="mat-elevation-z6">
+    <div *ngFor="let user of displayedUsers$ | async; let i = index" [class.selected]="i === selectedUserIndex" class="mention flex flesxItemsCenter" (mouseenter)="selectedUserIndex = i" (click)="addMention()">
+        <span>
+          <img src="{{ user.avatar_url }}" class="userAvatar">
+        </span>&nbsp;
+        <strong class="flexNowrap">{{ user.userName }}</strong>
+    </div>
+  </span>
 </div>

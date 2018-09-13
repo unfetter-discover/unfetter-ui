@@ -387,3 +387,11 @@ code.codeBlock {
     white-space: pre;
     overflow-x: auto;
 }
+
+.mentionHighlight {
+    color: #337ab7;
+
+    .threatDashboardTheme & {
+        color: $threat-dashboard-primary;
+    }
+}
