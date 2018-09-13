@@ -11,5 +11,6 @@ export enum StixUrls {
     REPORT = 'api/reports',
     SIGHTING = 'api/sightings',
     THREAT_ACTOR = 'api/threat-actors',
-    TOOL = 'api/tools'
+    TOOL = 'api/tools',
+    X_UNFETTER_THREAT_BOARD = 'api/x-unfetter-threat-boards',
 }
