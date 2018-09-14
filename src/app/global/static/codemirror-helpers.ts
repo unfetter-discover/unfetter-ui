@@ -5,6 +5,10 @@ interface CodeMirrorWord {
     text: string
 }
 
+interface CursorGroup {
+    [index: string]: CodeMirror.Position
+}
+
 export type CursorTypes = 'anchor' | 'from' | 'head' | 'to';
 
 /**
@@ -21,7 +25,7 @@ export class CodeMirrorHelpers {
      * @param {CursorTypes} cursorTypes
      * @returns {CursorSelection}
      */
-    getCursor(...cursorTypes: CursorTypes[]): CodeMirror.Range {
+    getCursor(...cursorTypes: CursorTypes[]): CursorGroup {
         const doc = this.codeMirror.getDoc();
         const cursor = doc.getCursor();
 

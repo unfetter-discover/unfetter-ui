@@ -10,7 +10,7 @@ import { UserHelpers } from '../../static/user-helpers';
 import { SimpleMDEConfig } from '../../static/simplemde-config';
 import { HostListener } from '@angular/core';
 import { RxjsHelpers } from '../../static/rxjs-helpers';
-import { CodeMirrorHelpers, CursorPos } from '../../static/codemirror-helpers';
+import { CodeMirrorHelpers } from '../../static/codemirror-helpers';
 
 @Component({
   selector: 'simplemde-mentions',
@@ -67,7 +67,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
     }
   };
     
-  private atSignPosition: CursorPos;
+  private atSignPosition: CodeMirror.Position;
   private _showUserMentions = false;
   private codeMirror: any;
   private codeMirrorHelpers: CodeMirrorHelpers;
@@ -113,15 +113,17 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
     this.codeMirrorHelpers = new CodeMirrorHelpers(this.codeMirror);
 
     this.codeMirror.on('keydown', (_, event: KeyboardEvent) => {
-      const cursor: CodeMirror.Range | { from: any, to: any } = this.codeMirrorHelpers.getCursor();
-      const word = this.codeMirrorHelpers.getWordAt(cursor.to);         
+      const cursor = this.codeMirrorHelpers.getCursor();
+      const word = this.codeMirrorHelpers.getWordAt(cursor.to);        
       
       if (cursor.from.line !== cursor.to.line || cursor.from.ch !== cursor.to.ch) {
         // Stop if a multi selection occured
-        this.showUserMentions = false;      
+        this.showUserMentions = false;
+        this.atSignPosition = null;      
       } else if (!this.showUserMentions) {
         // Show mentions menu(s)
         if (event.keyCode === Key.AtSign) {
+          this.atSignPosition = cursor.to;
           this.mentionTerm$.next('');
           this.showUserMentions = true;
           this.codeMirrorHelpers.positionAtCursor(this.userMentions.nativeElement);
