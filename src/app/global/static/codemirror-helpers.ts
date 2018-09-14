@@ -70,7 +70,6 @@ export class CodeMirrorHelpers {
         }
         return { range, text: text };
     }
-
     
     /**
      * @param  {CodeMirrorWord} word
@@ -89,6 +88,68 @@ export class CodeMirrorHelpers {
             retVal += word.text.substring(pos.ch - word.range.anchor.ch + 1, word.range.head.ch - word.range.anchor.ch + 1);
         }
         return retVal;
+    }
+
+    /**
+     * @param  {CodeMirrorWord} word
+     * @param  {CodeMirror.Position} pos
+     * @returns string
+     * @description Predicts what a word will be after a letter is deleted at a position
+     */
+    predictDeletion(word: CodeMirrorWord, pos: CodeMirror.Position): string {
+        let retVal = word.text.substring(0, pos.ch - word.range.anchor.ch);
+        if (word.range.head.ch > pos.ch) {
+            retVal += word.text.substring(pos.ch - word.range.anchor.ch + 1, word.range.head.ch - word.range.anchor.ch + 1);
+        }
+        return retVal;
+    }
+    
+    /**
+     * @param  {CodeMirror.Range} range
+     * @param  {CodeMirror.Position} pos
+     * @param  {boolean} incrementHead
+     * @description Sees if a cursor position is in a given range of a word
+     */
+    checkIfInRange(range: CodeMirror.Range, pos: CodeMirror.Position): boolean {
+        if (range.head.line !== pos.line) {
+            return false
+        // Increment head by 1 to allow for characters at the end of the word
+        } else if (range.anchor.ch <= pos.ch && range.head.ch + 1 >= pos.ch) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    getMentionTermRange(range: CodeMirror.Range, denotion = '@'): { start: number, end: number } {
+        if (range.anchor.line !== range.head.line) {
+            console.log('Warning: The word range should be on the same line');
+        }
+        let start = -1;
+        let end = -1;
+        const lineTokens = this.codeMirror.getLineTokens(range.anchor.line);
+        if (lineTokens[range.anchor.ch] && lineTokens[range.anchor.ch].string === denotion) {
+            start = range.anchor.ch;
+        } else if (lineTokens[range.anchor.ch - 1] && lineTokens[range.anchor.ch - 1].string === denotion) {
+            // For some reason, occasionally the range starts 1 char after the token
+            // Keep this until that is fixed
+            start = range.anchor.ch - 1;
+        }
+        for (let i = range.anchor.ch; i <= range.head.ch; i ++) {
+            if (lineTokens[i] && lineTokens[i].string === denotion && start === -1) {
+                start = i;
+            } else if (start > -1 && lineTokens[i] && lineTokens[i].string.match(/\s/)) {
+                end = i;
+                break;
+            }
+        }
+        if (end === -1) {
+            end = range.head.ch;
+        }
+        return {
+            start,
+            end
+        };
     }
 
     /**

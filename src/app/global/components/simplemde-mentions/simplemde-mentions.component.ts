@@ -1,16 +1,21 @@
-import { Component, forwardRef, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
+import { Component, forwardRef, ViewChild, ElementRef, AfterViewInit, OnInit, HostListener } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
 import { of as observableOf, BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { take, switchMap, combineAll, map, pluck } from 'rxjs/operators';
 import { Simplemde } from 'ng2-simplemde';
 import { Key } from 'ts-keycode-enum';
-import { take, switchMap, combineAll, map } from 'rxjs/operators';
 import * as SimpleMDE from 'simplemde';
 
 import { UserHelpers } from '../../static/user-helpers';
 import { SimpleMDEConfig } from '../../static/simplemde-config';
-import { HostListener } from '@angular/core';
 import { RxjsHelpers } from '../../static/rxjs-helpers';
 import { CodeMirrorHelpers } from '../../static/codemirror-helpers';
+
+interface MentionTerm {
+  wordRange: CodeMirror.Range,
+  term: string,
+  currentPos?: CodeMirror.Position
+}
 
 @Component({
   selector: 'simplemde-mentions',
@@ -66,12 +71,18 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
       );
     }
   };
-    
-  private atSignPosition: CodeMirror.Position;
+
   private _showUserMentions = false;
-  private codeMirror: any;
+  private codeMirror: CodeMirror.Editor;
   private codeMirrorHelpers: CodeMirrorHelpers;
-  private mentionTerm$ = new BehaviorSubject<string>('');
+  private initMentionTerm: MentionTerm = {
+    wordRange: {
+      anchor: { line: -1, ch: -1 },
+      head: { line: -1, ch: -1 }
+    } as CodeMirror.Range,
+    term: ''
+  };
+  private mentionTerm$ = new BehaviorSubject<MentionTerm>(this.initMentionTerm);
   private onTouchedCallback: () => {};
   private onChangeCallback: (_: any) => {};
   private _innerValue: string;
@@ -86,7 +97,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
 
   set showUserMentions(v: boolean) {
     if (!v) {
-      this.mentionTerm$.next('');
+      this.mentionTerm$.next(this.initMentionTerm);
     }
     this._showUserMentions = v;
   }
@@ -95,14 +106,20 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
     this.displayedUsers$ = combineLatest(this.user$, this.mentionTerm$)
       .pipe(
         map(([users, mentionTerm]) => {
-          return users
-            .filter((user) => {
-              return user.userName.toLowerCase().indexOf(mentionTerm.toLowerCase()) > -1
-            })
-            .map((user: any) => {
-              user.avatar_url = UserHelpers.getAvatarUrl(user);
-              return user;
-            });          
+          const splitTerm = mentionTerm.term.split('@');
+          const term = splitTerm.length > 1 && splitTerm[1] ? splitTerm[1].toLowerCase() : null;
+          if (!term) {
+            return users;
+          } else {          
+            return users
+              .filter((user) => {
+                return user.userName.toLowerCase().indexOf(term) > -1
+              })
+              .map((user: any) => {
+                user.avatar_url = UserHelpers.getAvatarUrl(user);
+                return user;
+              });
+          }     
         }),
         RxjsHelpers.sortByField('userName', 'ASCENDING')
       );
@@ -118,17 +135,20 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
       
       if (cursor.from.line !== cursor.to.line || cursor.from.ch !== cursor.to.ch) {
         // Stop if a multi selection occured
-        this.showUserMentions = false;
-        this.atSignPosition = null;      
+        this.showUserMentions = false;    
       } else if (!this.showUserMentions) {
-        // Show mentions menu(s)
-        if (event.keyCode === Key.AtSign) {
-          this.atSignPosition = cursor.to;
-          this.mentionTerm$.next('');
+        // Show mentions menu(s) if @ and cursor at begining of a line or word
+        if (event.keyCode === Key.AtSign && (cursor.to.ch === 0 || this.codeMirror.getTokenAt(cursor.to).string.match(/\s/))) {
+          this.mentionTerm$.next(this.initMentionTerm);
           this.showUserMentions = true;
           this.codeMirrorHelpers.positionAtCursor(this.userMentions.nativeElement);
+          this.mentionTerm$.next({
+            wordRange: word.range,
+            term: '@'
+          });
         }
       } else if (this.showUserMentions) {
+        const inRange = this.codeMirrorHelpers.checkIfInRange(this.mentionTerm$.value.wordRange, cursor.to);
         // Handle mentions
         switch (event.keyCode) {
           case Key.UpArrow:
@@ -145,16 +165,38 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
             });
             event.preventDefault();
             break;
+          case Key.LeftArrow:
+          case Key.RightArrow:
+            if (!inRange) {
+              this.showUserMentions = false;
+            }
+            break;
           case Key.Escape:
           case Key.Space:
           case Key.AtSign:
             this.showUserMentions = false;
             break;
           case Key.Backspace:
-            if (this.value.endsWith('@')) {
+            if (this.codeMirror.getTokenAt(cursor.to).string.match(/[@\s]/)) {
+              // Close mention if at whitespace or an `@` sign
+              this.showUserMentions = false;
+            } else if (inRange) {
+              // Handle character deletion
+              const predictedWord = this.codeMirrorHelpers.predictDeletion(word, cursor.to);
+              const updatedRange = {
+                ...word.range,
+                head: {
+                  ...word.range.head,
+                  ch: word.range.head.ch - 1
+                }                
+              };
+              this.mentionTerm$.next({
+                wordRange: updatedRange,
+                term: predictedWord
+              });
+            } else {
               this.showUserMentions = false;
             }
-            this.mentionTerm$.next(this.mentionTerm$.value.slice(0, -1));
             break;
           case Key.Enter:
           case Key.Tab:
@@ -162,8 +204,14 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
             this.addMention();
             break;
           default:
-            if (event.keyCode >= 33 && event.keyCode <= 126) {
-              this.mentionTerm$.next(this.mentionTerm$.value.concat(event.key));
+            if (!inRange && this.mentionTerm$.value.term.length > 1) {
+              this.showUserMentions = false;
+            } else if (event.keyCode >= 33 && event.keyCode <= 126) {
+              const predictedWord = this.codeMirrorHelpers.predictWord(word, cursor.to, event.key);
+              this.mentionTerm$.next({
+                wordRange: word.range,
+                term: predictedWord
+              });
             }
             this.selectedUserIndex = 0;
         }
@@ -172,40 +220,35 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
   }
 
   public addMention() {
-    const doc = this.codeMirror.getDoc();
-    const cursor = doc.getCursor();
-
-    const pos = {
-      line: cursor.line,
-      ch: cursor.ch
-    };
-
     combineLatest(this.displayedUsers$, this.mentionTerm$)
       .pipe(take(1))
       .subscribe(([users, mentionTerm]) => {
+        const doc = this.codeMirror.getDoc();
+        
         // Delete the search string
-        if (mentionTerm && mentionTerm.length) {
-          pos.ch = pos.ch - mentionTerm.length;
-          this.codeMirror.replaceRange('', pos, { line: pos.line, ch: pos.ch + mentionTerm.length });
+        if (mentionTerm && mentionTerm.term.length) {
+          const rangeToReplace = this.codeMirrorHelpers.getMentionTermRange(mentionTerm.wordRange);
+          // TODO Update { start: number, end: number } in getMentionTermRange to user code mirror positions
+          // doc.replaceRange('', pos, { line: pos.line, ch: pos.ch + mentionTerm.term.length });
         }
 
-        // Insert mention
-        if (users[this.selectedUserIndex]) {
-          const newMention = `${users[this.selectedUserIndex].userName} `;
+        // // Insert mention
+        // if (users[this.selectedUserIndex]) {
+        //   const newMention = `${users[this.selectedUserIndex].userName} `;
 
-          doc.replaceRange(newMention, pos);
+        //   doc.replaceRange(newMention, pos);
 
-          requestAnimationFrame(() => {
-            this.codeMirror.focus();
-            this.codeMirror.setCursor(pos.line, pos.ch + newMention.length);
-            this.codeMirror.markText(
-              { line: pos.line, ch: pos.ch - 1 },
-              { line: pos.line, ch: pos.ch + newMention.length - 1 },
-              { className: 'mentionHighlight' }
-            );
-          });
-          this.showUserMentions = false;
-        }
+        //   requestAnimationFrame(() => {
+        //     this.codeMirror.focus();
+        //     doc.setCursor(pos.line, pos.ch + newMention.length);
+        //     doc.markText(
+        //       { line: pos.line, ch: pos.ch - 1 },
+        //       { line: pos.line, ch: pos.ch + newMention.length - 1 },
+        //       { className: 'mentionHighlight' }
+        //     );
+        //   });
+        //   this.showUserMentions = false;
+        // }
       });
   }
 
