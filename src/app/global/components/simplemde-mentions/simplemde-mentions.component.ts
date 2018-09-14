@@ -10,7 +10,7 @@ import { UserHelpers } from '../../static/user-helpers';
 import { SimpleMDEConfig } from '../../static/simplemde-config';
 import { HostListener } from '@angular/core';
 import { RxjsHelpers } from '../../static/rxjs-helpers';
-import { CodeMirrorHelpers } from '../../static/codemirror-helpers';
+import { CodeMirrorHelpers, CursorPos } from '../../static/codemirror-helpers';
 
 @Component({
   selector: 'simplemde-mentions',
@@ -52,9 +52,9 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
   
   public mdeOptions: SimpleMDE.Options = {
     ...SimpleMDEConfig.basicConfig,
-    previewRender(markdown) {
-      const markdown2 = this.parent.markdown(markdown);
-      return markdown2.replace(
+    previewRender(input) {
+      const rendered = this.parent.markdown(input);
+      return rendered.replace(
         /(^@\w+)|(\W)(@\w+)/g,
         (match, g1, g2, g3) => {
           if (g1) {
@@ -67,6 +67,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
     }
   };
     
+  private atSignPosition: CursorPos;
   private _showUserMentions = false;
   private codeMirror: any;
   private codeMirrorHelpers: CodeMirrorHelpers;
@@ -112,10 +113,8 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
     this.codeMirrorHelpers = new CodeMirrorHelpers(this.codeMirror);
 
     this.codeMirror.on('keydown', (_, event: KeyboardEvent) => {
-      const cursor = this.codeMirrorHelpers.getCursor();
-      console.log('~~~CURSOR', cursor);
-      console.log('FROM ch: ', this.codeMirror.getTokenAt(cursor.from), 'TO ch: ', this.codeMirror.getTokenAt(cursor.to));
-      console.log('FROM word: ', this.codeMirror.findWordAt(cursor.from), 'TO word: ', this.codeMirror.findWordAt(cursor.to));
+      const cursor: CodeMirror.Range | { from: any, to: any } = this.codeMirrorHelpers.getCursor();
+      const word = this.codeMirrorHelpers.getWordAt(cursor.to);         
       
       if (cursor.from.line !== cursor.to.line || cursor.from.ch !== cursor.to.ch) {
         // Stop if a multi selection occured
@@ -125,10 +124,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
         if (event.keyCode === Key.AtSign) {
           this.mentionTerm$.next('');
           this.showUserMentions = true;
-          const pos = this.codeMirror.cursorCoords();
-          const left = pos.left + 10, top = pos.bottom;
-          this.userMentions.nativeElement.style.left = left + 'px';
-          this.userMentions.nativeElement.style.top = top + 'px';
+          this.codeMirrorHelpers.positionAtCursor(this.userMentions.nativeElement);
         }
       } else if (this.showUserMentions) {
         // Handle mentions
@@ -159,6 +155,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
             this.mentionTerm$.next(this.mentionTerm$.value.slice(0, -1));
             break;
           case Key.Enter:
+          case Key.Tab:
             event.preventDefault();
             this.addMention();
             break;
