@@ -92,6 +92,7 @@ import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
 import { UnfetterCarouselComponent, PrimedDirective } from './components/tactics-pane/tactics-carousel/unf-carousel.component';
 import { ScrollTrapDirective } from './directives/scroll-trap.directive';
 import { SimplemdeMentionsComponent } from './components/simplemde-mentions/simplemde-mentions.component';
+import { SimpleMDEConfig } from './static/simplemde-config';
 
 const matModules = [
     MatAutocompleteModule,
@@ -198,11 +199,7 @@ const unfetterComponents = [
         }),
         SimplemdeModule.forRoot({
             provide: SIMPLEMDE_CONFIG,
-            useValue: {
-                spellChecker: false,
-                autoDownloadFontAwesome: false,
-                status: false
-            }
+            useValue: SimpleMDEConfig.basicConfig
         }),
         ...matModules
     ],

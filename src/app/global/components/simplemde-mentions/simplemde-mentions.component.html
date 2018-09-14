@@ -1,5 +1,5 @@
 <div class="simpleMdeMentions">
-  <simplemde [(ngModel)]="value" #mde></simplemde>
+  <simplemde [(ngModel)]="value" [options]="mdeOptions" #mde></simplemde>
 
   <span id="userMentions" #userMentions [style.display]="showUserMentions ? 'inline-block' : 'none'" class="mat-elevation-z6">
     <div *ngFor="let user of displayedUsers$ | async; let i = index" [class.selected]="i === selectedUserIndex" class="mention flex flesxItemsCenter" (mouseenter)="selectedUserIndex = i" (click)="addMention()">
@@ -9,4 +9,5 @@
         <strong class="flexNowrap">{{ user.userName }}</strong>
     </div>
   </span>
+  <p>{{ displayedUsers$ | async | json }}</p>
 </div>
