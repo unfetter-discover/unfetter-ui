@@ -18,7 +18,18 @@
     background-color: #e0e0e0;    
 }
 
-.sendLabelbtn {
+#sendLabelBtn {
+    padding: 0;
+    background: inherit;
+    border: none;
+    outline: none !important;
+
+    &:focus i {
+        text-shadow: 1px 1px 3px #9E9E9E;
+    }
+}
+
+.sendLabelBtnIcon {
     margin-right: 20px !important;
 }
 
