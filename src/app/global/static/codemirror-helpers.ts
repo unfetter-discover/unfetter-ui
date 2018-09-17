@@ -59,7 +59,6 @@ export class CodeMirrorHelpers {
         if (range.anchor.line !== range.head.line) {
             console.log('Warning: Attempting to retrieve a multi-line word');
         }
-        const rangeDelta = range.head.ch - range.anchor.ch;
         let text = '';
         for (let i = range.anchor.ch; i <= range.head.ch; i++) {
             const pos: CodeMirror.Position = {

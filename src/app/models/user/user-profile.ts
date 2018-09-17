@@ -24,3 +24,14 @@ export class UserProfile {
     public avatar_url?: string;
     organizations: OrganizationIdentity[] = [];
 }
+
+/**
+ * @description The portion of the UserProfile availible in the site-wide user list
+ */
+export class UserListItem implements Partial<UserProfile> {
+    public _id: string;
+    public userName: string;
+    public lastName: string;
+    public firstName: string;
+    public avatar_url?: string;
+}

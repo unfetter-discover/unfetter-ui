@@ -1,15 +1,18 @@
 import { Component, forwardRef, ViewChild, ElementRef, AfterViewInit, OnInit, HostListener } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
 import { of as observableOf, BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { take, switchMap, combineAll, map, pluck } from 'rxjs/operators';
+import { take, switchMap, combineAll, map, pluck, withLatestFrom, filter } from 'rxjs/operators';
 import { Simplemde } from 'ng2-simplemde';
 import { Key } from 'ts-keycode-enum';
 import * as SimpleMDE from 'simplemde';
+import { Store } from '@ngrx/store';
 
 import { UserHelpers } from '../../static/user-helpers';
 import { SimpleMDEConfig } from '../../static/simplemde-config';
 import { RxjsHelpers } from '../../static/rxjs-helpers';
 import { CodeMirrorHelpers } from '../../static/codemirror-helpers';
+import { UserListItem, UserProfile } from '../../../models/user/user-profile';
+import { AppState } from '../../../root-store/app.reducers';
 
 interface MentionTerm {
   wordRange: CodeMirror.Range,
@@ -32,24 +35,7 @@ interface MentionTerm {
 export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterViewInit, OnInit {
 
   // TODO delete junk data
-  public user$ = observableOf([
-    {
-      userName: 'Bobby3',
-      _id: '1234'
-    },
-    {
-      userName: 'JiMMy4',
-      _id: '5678'
-    },
-    {
-      userName: 'todamaxxxxx',
-      _id: '5436'
-    },
-    {
-      userName: 'henryhenry',
-      _id: '978456'
-    }
-  ]);
+  public user$: Observable<UserListItem[]>;
   public displayedUsers$: Observable<any>;
   public selectedUserIndex = 0;
   @ViewChild('userMentions') public userMentions: ElementRef;
@@ -93,6 +79,8 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
     }
   }
 
+  constructor(private store: Store<AppState>) { }
+
   get showUserMentions() { return this._showUserMentions }
 
   set showUserMentions(v: boolean) {
@@ -103,6 +91,8 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
   }
 
   public ngOnInit() {
+    this.user$ = this.store.select('users').pipe(pluck('userList'));
+    
     this.displayedUsers$ = combineLatest(this.user$, this.mentionTerm$)
       .pipe(
         map(([users, mentionTerm]) => {
@@ -112,14 +102,14 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
             return users;
           } else {          
             return users
-              .filter((user) => {
-                return user.userName.toLowerCase().indexOf(term) > -1
-              })
-              .map((user: any) => {
-                user.avatar_url = UserHelpers.getAvatarUrl(user);
-                return user;
-              });
+              .filter((user) => user.userName.toLowerCase().indexOf(term) > -1);
           }     
+        }),        
+        withLatestFrom(this.store.select('users').pipe(pluck<any, UserProfile>('userProfile'))),
+        map(([displayedUsers, userProfile]) => {
+          const userName = userProfile && userProfile.userName;
+          return displayedUsers
+            .filter((user) => userName ? user.userName !== userName : true);
         }),
         RxjsHelpers.sortByField('userName', 'ASCENDING')
       );
