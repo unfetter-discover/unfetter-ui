@@ -158,7 +158,7 @@ export class CodeMirrorHelpers {
      */
     positionAtCursor(nativeElement: any) {
         const pos = this.codeMirror.cursorCoords(false);
-        const left = pos.left + 10, top = pos.bottom;
+        const left = pos.left + 13, top = pos.bottom + 2;
         if (!nativeElement.style) {
             console.log('Warning: Attempt to style an object without a style property');
         } else {

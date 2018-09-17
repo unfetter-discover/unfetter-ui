@@ -93,6 +93,7 @@ import { UnfetterCarouselComponent, PrimedDirective } from './components/tactics
 import { ScrollTrapDirective } from './directives/scroll-trap.directive';
 import { SimplemdeMentionsComponent } from './components/simplemde-mentions/simplemde-mentions.component';
 import { SimpleMDEConfig } from './static/simplemde-config';
+import { MarkdownMentionsComponent } from './components/markdown-mentions/markdown-mentions.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -175,6 +176,8 @@ const unfetterComponents = [
     ImplementationsListComponent,
     AddLabelAltComponent,
     SimplemdeMentionsComponent,
+    MarkdownMentionsComponent,
+    ScrollTrapDirective,
 ];
 
 @NgModule({
@@ -204,8 +207,7 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,
-        ScrollTrapDirective,      
+        ...unfetterComponents,        
     ],
     exports: [
         ...unfetterComponents,

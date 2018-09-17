@@ -34,7 +34,11 @@ interface MentionTerm {
 })
 export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterViewInit, OnInit {
 
-  // TODO delete junk data
+  /**
+   * @description The length of the list of users in user mentions
+   */
+  public readonly DISPLAYED_USER_LIMIT = 5;
+
   public user$: Observable<UserListItem[]>;
   public displayedUsers$: Observable<any>;
   public selectedUserIndex = 0;
@@ -100,18 +104,22 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
           const term = splitTerm.length > 1 && splitTerm[1] ? splitTerm[1].toLowerCase() : null;
           if (!term) {
             return users;
-          } else {          
+          } else {
             return users
-              .filter((user) => user.userName.toLowerCase().indexOf(term) > -1);
+              .filter((user) => user.userName.toLowerCase().indexOf(term) > -1 
+                || user.firstName.toLowerCase().indexOf(term) > -1 
+                || user.lastName.toLowerCase().indexOf(term) > -1);
           }     
-        }),        
+        }),
+        RxjsHelpers.sortByField('userName', 'ASCENDING'),
         withLatestFrom(this.store.select('users').pipe(pluck<any, UserProfile>('userProfile'))),
         map(([displayedUsers, userProfile]) => {
           const userName = userProfile && userProfile.userName;
+          // Remove user from user list, slice to limit
           return displayedUsers
-            .filter((user) => userName ? user.userName !== userName : true);
-        }),
-        RxjsHelpers.sortByField('userName', 'ASCENDING')
+            .filter((user) => userName ? user.userName !== userName : true)
+            .slice(0, this.DISPLAYED_USER_LIMIT);
+        })
       );
   }
 
@@ -245,7 +253,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
   }
 
   set value(v: string) {
-    if (v !== this._innerValue) {
+    if (v !== this._innerValue && this.onChangeCallback) {
       this._innerValue = v;
       this.onChangeCallback(v);
     }
