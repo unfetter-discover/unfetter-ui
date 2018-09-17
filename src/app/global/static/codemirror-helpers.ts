@@ -54,7 +54,8 @@ export class CodeMirrorHelpers {
      *            it will be the state of the text is changed
      */
     getWordAt(cursorPos: CodeMirror.Position): CodeMirrorWord {
-        const range = this.codeMirror.findWordAt(cursorPos);
+        // NOTE this is unreliable for mentions in the middle of a sentence
+        const range = this.codeMirror.findWordAt(cursorPos);      
         if (range.anchor.line !== range.head.line) {
             console.log('Warning: Attempting to retrieve a multi-line word');
         }

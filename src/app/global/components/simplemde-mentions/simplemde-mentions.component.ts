@@ -226,29 +226,31 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
         const doc = this.codeMirror.getDoc();
         
         // Delete the search string
+        const pos = mentionTerm.wordRange.anchor;
         if (mentionTerm && mentionTerm.term.length) {
           const rangeToReplace = this.codeMirrorHelpers.getMentionTermRange(mentionTerm.wordRange);
-          // TODO Update { start: number, end: number } in getMentionTermRange to user code mirror positions
-          // doc.replaceRange('', pos, { line: pos.line, ch: pos.ch + mentionTerm.term.length });
+          pos.ch = rangeToReplace.start;
+          const line = mentionTerm.wordRange.anchor.line;
+          doc.replaceRange('', { line, ch: rangeToReplace.start }, { line, ch: rangeToReplace.end + 1 });
         }
 
         // // Insert mention
-        // if (users[this.selectedUserIndex]) {
-        //   const newMention = `${users[this.selectedUserIndex].userName} `;
+        if (users[this.selectedUserIndex]) {
+          const newMention = `@${users[this.selectedUserIndex].userName} `;
 
-        //   doc.replaceRange(newMention, pos);
+          doc.replaceRange(newMention, pos);
 
-        //   requestAnimationFrame(() => {
-        //     this.codeMirror.focus();
-        //     doc.setCursor(pos.line, pos.ch + newMention.length);
-        //     doc.markText(
-        //       { line: pos.line, ch: pos.ch - 1 },
-        //       { line: pos.line, ch: pos.ch + newMention.length - 1 },
-        //       { className: 'mentionHighlight' }
-        //     );
-        //   });
-        //   this.showUserMentions = false;
-        // }
+          requestAnimationFrame(() => {
+            this.codeMirror.focus();
+            doc.setCursor(pos.line, pos.ch + newMention.length);
+            doc.markText(
+              { line: pos.line, ch: pos.ch - 1 },
+              { line: pos.line, ch: pos.ch + newMention.length - 1 },
+              { className: 'mentionHighlight' }
+            );
+          });
+          this.showUserMentions = false;
+        }
       });
   }
 
