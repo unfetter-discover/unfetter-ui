@@ -23,7 +23,7 @@ export class MarkdownMentionsComponent implements OnInit {
 
   @Input()
   public set markDown(md: string) {
-    this.markDown$.next(md)
+    this.markDown$.next(md);
   }
   public get markDown() { return this._markDown }
 
@@ -63,7 +63,7 @@ export class MarkdownMentionsComponent implements OnInit {
           )
       )
       .pipe(
-        debounceTime(100),
+        debounceTime(30),
         map(([md, users]) => {
           return md.replace(
             /(^@\w+)|(\W)(@\w+)/g,

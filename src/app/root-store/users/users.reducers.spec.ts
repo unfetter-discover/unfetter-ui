@@ -14,7 +14,16 @@ describe('usersReducer', () => {
             approved: false,
             locked: false,
             role: 'STANDARD_USER',
-            avatar_url: '1234.com/img1'
+            avatar_url: '1234.com/img1',
+            userList: [
+                {
+                    _id: '5678',
+                    userName: 'bob',
+                    firstName: 'jim',
+                    lastName: 'bob',
+                    avatar_url: '5678.com/img1',
+                }
+            ]
         };
     });
 
@@ -43,7 +52,8 @@ describe('usersReducer', () => {
                 }
             },
             authenticated: true,
-            avatar_url: mockState.avatar_url
+            avatar_url: mockState.avatar_url,
+            userList: []
         };
         expect(usersReducer(undefined, new userActions.LoginUser(payload))).toEqual(expected);
     });
