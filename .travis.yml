@@ -3,7 +3,8 @@ dist: trusty
 sudo: required
 lanugage: node_js
 node_js:
-  - "10"
+  - "io.js"
+  - "9"
 
 branches:
   only:
