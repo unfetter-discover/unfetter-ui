@@ -1,4 +1,4 @@
-import * as CodeMirror from 'CodeMirror';
+import * as CodeMirror from 'codemirror';
 
 interface CodeMirrorWord {
     range: CodeMirror.Range,
