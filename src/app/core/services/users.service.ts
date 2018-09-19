@@ -2,10 +2,11 @@
 import { pluck } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserProfile } from '../../models/user/user-profile';
+import { UserProfile, UserListItem } from '../../models/user/user-profile';
 import { Constance } from '../../utils/constance';
 import { GenericApi } from './genericapi.service';
 import { JsonApiData, Identity } from 'stix';
+import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 
 @Injectable()
 export class UsersService {
@@ -68,6 +69,13 @@ export class UsersService {
         return this.genericApi.get(`${this.authUrl}/username-available/${userName}`).pipe(
             pluck('attributes'),
             pluck('available'));
+    }
+
+    public fetchUserList(): Observable<UserListItem[]> {
+        return this.genericApi.get(`${this.authUrl}/get-user-list`)
+            .pipe(
+                RxjsHelpers.unwrapJsonApi<any>()
+            )
     }
 
 }

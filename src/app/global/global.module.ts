@@ -91,6 +91,9 @@ import { AuthService } from '../core/services/auth.service';
 import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
 import { UnfetterCarouselComponent, PrimedDirective } from './components/tactics-pane/tactics-carousel/unf-carousel.component';
 import { ScrollTrapDirective } from './directives/scroll-trap.directive';
+import { SimplemdeMentionsComponent } from './components/simplemde-mentions/simplemde-mentions.component';
+import { SimpleMDEConfig } from './static/simplemde-config';
+import { MarkdownMentionsComponent } from './components/markdown-mentions/markdown-mentions.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -172,6 +175,9 @@ const unfetterComponents = [
     ExternalReferencesListComponent,
     ImplementationsListComponent,
     AddLabelAltComponent,
+    SimplemdeMentionsComponent,
+    MarkdownMentionsComponent,
+    ScrollTrapDirective,
 ];
 
 @NgModule({
@@ -196,17 +202,12 @@ const unfetterComponents = [
         }),
         SimplemdeModule.forRoot({
             provide: SIMPLEMDE_CONFIG,
-            useValue: {
-                spellChecker: false,
-                autoDownloadFontAwesome: false,
-                status: false
-            }
+            useValue: SimpleMDEConfig.basicConfig
         }),
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,
-        ScrollTrapDirective,        
+        ...unfetterComponents,        
     ],
     exports: [
         ...unfetterComponents,
