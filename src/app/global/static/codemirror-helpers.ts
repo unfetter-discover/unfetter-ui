@@ -2,7 +2,9 @@ import * as CodeMirror from 'codemirror';
 
 interface CodeMirrorWord {
     range: CodeMirror.Range,
-    text: string
+    text: string,
+    textBefore: string,
+    textAfter: string
 }
 
 interface CursorGroup {
@@ -54,23 +56,60 @@ export class CodeMirrorHelpers {
      *            it will be the state of the text is changed
      */
     getWordAt(cursorPos: CodeMirror.Position): CodeMirrorWord {
-        // NOTE this is unreliable for mentions in the middle of a sentence
-        const range = this.codeMirror.findWordAt(cursorPos);      
-        if (range.anchor.line !== range.head.line) {
-            console.log('Warning: Attempting to retrieve a multi-line word');
+        const lineTokens = this.codeMirror.getLineTokens(cursorPos.line);
+        let before = '';
+        let after = '';
+
+        const head = cursorPos.ch - 1;
+        let i = head;
+        while (i >= 0 && lineTokens[i]) {
+            const tokenString = lineTokens[i].string;
+            if (tokenString.match(/\s/)) {
+                break;
+            }
+            before = tokenString + before;
+            i--;
         }
-        let text = '';
-        for (let i = range.anchor.ch; i <= range.head.ch; i++) {
-            const pos: CodeMirror.Position = {
-                line: range.head.line,
-                ch: i
-            };
-            const token = this.codeMirror.getTokenAt(pos);
-            text += token.string;
+
+        let j = head + 1;
+        while (j < lineTokens.length && lineTokens[j]) {
+            const tokenString = lineTokens[j].string;
+            if (tokenString.match(/\s/)) {
+                break;
+            }
+            after = after + tokenString;
+            j++;
         }
-        return { range, text: text };
+
+        const range = this.makeRange(
+            { line: cursorPos.line, ch: i + 1},
+            { line: cursorPos.line, ch: j }
+        );
+
+        const retVal: CodeMirrorWord = {
+            range,
+            text: before + after,
+            textBefore: before,
+            textAfter: after
+        };
+        return retVal;
     }
     
+    /**
+     * @param  {CodeMirror.Position} anchor
+     * @param  {CodeMirror.Position} head
+     * @returns CodeMirror.Range
+     * @description H
+     */
+    makeRange(anchor: CodeMirror.Position, head: CodeMirror.Position): CodeMirror.Range {
+        return {
+            anchor,
+            head,
+            from() { return this.anchor },
+            to() { return this.head }
+        };
+    }
+
     /**
      * @param  {CodeMirrorWord} word
      * @param  {CodeMirror.Position} pos
