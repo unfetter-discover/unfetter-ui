@@ -29,7 +29,9 @@ describe('CodeMirrorHelpers', () => {
     let codeMirrorHelpers: CodeMirrorHelpers;
     let codeMirror: CodeMirror.Editor;
 
-    const testString = 'this is a unit test\nto see how codemirror works\nwhen used in simplemde';
+    const testString = 'this is a unit test\n' + 
+    'to see how codemirror works\n' + 
+    'when used in simplemde';
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -129,6 +131,48 @@ describe('CodeMirrorHelpers', () => {
             expect(word.text).toBe(canidateWord);
             expect(word.textBefore).toBe(canidateWord.substring(0, 2));
             expect(word.textAfter).toBe(canidateWord.substring(2, canidateWord.length));
+        });
+    });
+
+    describe('makeRange', () => {
+        it('should make a working Range object', () => {
+            const mockAnchor = { line: 2, ch: 10 };
+            const mockHead = { line: 2, ch: 15 };
+            const range = codeMirrorHelpers.makeRange(mockAnchor, mockHead);
+            expect(range.anchor).toEqual(mockAnchor);
+            expect(range.from()).toEqual(mockAnchor);
+            expect(range.head).toEqual(mockHead);
+            expect(range.to()).toEqual(mockHead);
+        });
+    });
+
+    describe('predictWord', () => {
+        it('should predict a word when a letter is inserted at the end of a word', () => {
+            const mockCursor = { line: 2, ch: 4 };
+            const word = codeMirrorHelpers.getWordAt(mockCursor);
+            const predicted = codeMirrorHelpers.predictWord(word, mockCursor, 'e');
+            expect(predicted).toBe('whene');
+        });
+
+        it('should predict a word when a letter is inserted in the middle of a word', () => {
+            const mockCursor = { line: 2, ch: 2 };
+            const word = codeMirrorHelpers.getWordAt(mockCursor);
+            const predicted = codeMirrorHelpers.predictWord(word, mockCursor, 'e');
+            expect(predicted).toBe('wheen');
+        });
+
+        it('should predict a word when a letter is inserted in the middle of a word, in the middle of a line', () => {
+            const mockCursor = { line: 2, ch: 6 };
+            const word = codeMirrorHelpers.getWordAt(mockCursor);
+            const predicted = codeMirrorHelpers.predictWord(word, mockCursor, 'e');
+            expect(predicted).toBe('uesed');
+        });
+
+        it('should predict a word when a letter is inserted at the start of a word', () => {
+            const mockCursor = { line: 2, ch: 0 };
+            const word = codeMirrorHelpers.getWordAt(mockCursor);
+            const predicted = codeMirrorHelpers.predictWord(word, mockCursor, 'e');
+            expect(predicted).toBe('ewhen');
         });
     });
 });

@@ -121,12 +121,7 @@ export class CodeMirrorHelpers {
         if (letter.length !== 1) {
             console.log('Warning: word prediction is supposed to take a single letter');
         }
-        let retVal = word.text.substring(0, pos.ch - word.range.anchor.ch + 1);
-        retVal += letter;
-        if (word.range.head.ch > pos.ch) {
-            retVal += word.text.substring(pos.ch - word.range.anchor.ch + 1, word.range.head.ch - word.range.anchor.ch + 1);
-        }
-        return retVal;
+        return word.textBefore + letter + word.textAfter;
     }
 
     /**
