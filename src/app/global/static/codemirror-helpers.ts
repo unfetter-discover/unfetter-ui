@@ -56,14 +56,15 @@ export class CodeMirrorHelpers {
      *            it will be the state of the text is changed
      */
     getWordAt(cursorPos: CodeMirror.Position): CodeMirrorWord {
-        const lineTokens = this.codeMirror.getLineTokens(cursorPos.line);
+        const doc = this.codeMirror.getDoc();
+        const lineContent = doc.getLine(cursorPos.line);
         let before = '';
         let after = '';
 
         const head = cursorPos.ch - 1;
         let i = head;
-        while (i >= 0 && lineTokens[i]) {
-            const tokenString = lineTokens[i].string;
+        while (i >= 0 && lineContent[i]) {
+            const tokenString = lineContent[i];
             if (tokenString.match(/\s/)) {
                 break;
             }
@@ -72,8 +73,8 @@ export class CodeMirrorHelpers {
         }
 
         let j = head + 1;
-        while (j < lineTokens.length && lineTokens[j]) {
-            const tokenString = lineTokens[j].string;
+        while (j < lineContent.length && lineContent[j]) {
+            const tokenString = lineContent[j];
             if (tokenString.match(/\s/)) {
                 break;
             }
@@ -163,20 +164,21 @@ export class CodeMirrorHelpers {
         if (range.anchor.line !== range.head.line) {
             console.log('Warning: The word range should be on the same line');
         }
+        const doc = this.codeMirror.getDoc();
         let start = -1;
         let end = -1;
-        const lineTokens = this.codeMirror.getLineTokens(range.anchor.line);
-        if (lineTokens[range.anchor.ch] && lineTokens[range.anchor.ch].string === denotion) {
+        const lineContent = doc.getLine(range.anchor.line);
+        if (lineContent[range.anchor.ch] && lineContent[range.anchor.ch] === denotion) {
             start = range.anchor.ch;
-        } else if (lineTokens[range.anchor.ch - 1] && lineTokens[range.anchor.ch - 1].string === denotion) {
+        } else if (lineContent[range.anchor.ch - 1] && lineContent[range.anchor.ch - 1] === denotion) {
             // For some reason, occasionally the range starts 1 char after the token
             // Keep this until that is fixed
             start = range.anchor.ch - 1;
         }
         for (let i = range.anchor.ch; i <= range.head.ch; i ++) {
-            if (lineTokens[i] && lineTokens[i].string === denotion && start === -1) {
+            if (lineContent[i] && lineContent[i] === denotion && start === -1) {
                 start = i;
-            } else if (start > -1 && lineTokens[i] && lineTokens[i].string.match(/\s/)) {
+            } else if (start > -1 && lineContent[i] && lineContent[i].match(/\s/)) {
                 end = i;
                 break;
             }

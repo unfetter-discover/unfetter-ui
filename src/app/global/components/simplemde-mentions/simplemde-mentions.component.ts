@@ -13,6 +13,7 @@ import { RxjsHelpers } from '../../static/rxjs-helpers';
 import { CodeMirrorHelpers } from '../../static/codemirror-helpers';
 import { UserListItem, UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
+import { getOrganizations } from '../../../root-store/users/user.selectors';
 
 interface MentionTerm {
   wordRange: CodeMirror.Range,
@@ -112,6 +113,25 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
           }     
         }),
         RxjsHelpers.sortByField('userName', 'ASCENDING'),
+        withLatestFrom(this.store.select(getOrganizations)),
+        map(([displayedUsers, organizations]) => {          
+          if (!organizations.length) {
+            return displayedUsers;
+          }
+          // Prioritize users in same org(s) after alphabetical sort
+          return displayedUsers
+            .sort((a, b) => {
+              let aOrg = UserHelpers.getNumMatchingOrgs(organizations, a);
+              let bOrg = UserHelpers.getNumMatchingOrgs(organizations, b);
+              if (aOrg > aOrg) {
+                return -1;
+              } else if (aOrg < bOrg) {
+                return 1;
+              } else {
+                return 0;
+              }
+            });
+        }),
         withLatestFrom(this.store.select('users').pipe(pluck<any, UserProfile>('userProfile'))),
         map(([displayedUsers, userProfile]) => {
           const userName = userProfile && userProfile.userName;
@@ -119,7 +139,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
           return displayedUsers
             .filter((user) => userName ? user.userName !== userName : true)
             .slice(0, this.DISPLAYED_USER_LIMIT);
-        })
+        })        
       );
   }
 
