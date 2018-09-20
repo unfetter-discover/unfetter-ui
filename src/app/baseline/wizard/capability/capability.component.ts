@@ -63,17 +63,17 @@ export class CapabilityComponent {
 
     this.wizardStore
       .select('baseline').pipe(
-        pluck('currentCapabilityGroup'),
-        distinctUntilChanged())
+      pluck('currentCapabilityGroup'),
+      distinctUntilChanged())
       .subscribe(
         (currentCapabilityGroup: Category) => {
           this.currentCapabilityGroup = currentCapabilityGroup;
         }, (err) => console.log(err));
-
+  
     this.wizardStore
       .select('baseline').pipe(
-        pluck('currentCapability'),
-        distinctUntilChanged())
+      pluck('currentCapability'),
+      distinctUntilChanged())
       .subscribe(
         (currentCapability: Capability) => {
           this.currentCapability = currentCapability;
@@ -81,46 +81,46 @@ export class CapabilityComponent {
           this.currentCapabilityDescription = (this.currentCapability === undefined) ? '' : this.currentCapability.description;
         }, (err) => console.log(err));
 
-
-    // Attempt at combining currentObjectAssessments Observable and allAttackPatterns Observable
-    let currentObjectAssessmentObs = this.wizardStore
-        .select('baseline').pipe(
-        pluck('currentObjectAssessment')
-      )
-
-    let allAttackPatternsObs = this.wizardStore
+      this.wizardStore
       .select('baseline')
       .pipe(
         pluck('allAttackPatterns'),
         RxjsHelpers.sortByField('name', 'ASCENDING'),
         distinctUntilChanged()
-    )
-
-    currentObjectAssessmentObs.mergeMap(
-      (result: ObjectAssessment) => {
-        this.currentObjectAssessment = result;
-        return allAttackPatternsObs
-      }
-    ).subscribe(
-      (result2: AttackPattern[]) => {
-        this.allAttackPatterns = result2;
-
-        if (result2.length > 0) {
-          this.updateDataSource();
-        }
-      }
-    );
-
+      )
+      .subscribe(
+        (allAttackPatterns: AttackPattern[]) => {
+          this.allAttackPatterns = allAttackPatterns;
+          // Once we have these, we can update our data source
+          if (this.allAttackPatterns && this.allAttackPatterns.length > 0) {
+            // this.updateDataSource();
+          }
+        }, (err) => console.log(err));
 
     this.wizardStore
       .select('baseline').pipe(
-        pluck('baselineObjAssessments'),
-        distinctUntilChanged())
+      pluck('baselineObjAssessments'),
+      distinctUntilChanged())
       .subscribe(
         (baselineObjectAssessments: ObjectAssessment[]) => {
-          this.baselineObjectAssessments = baselineObjectAssessments;
-        }, (err) => console.log(err));
+        this.baselineObjectAssessments = baselineObjectAssessments;
+      }, (err) => console.log(err));
 
+    this.wizardStore
+      .select('baseline').pipe(
+      pluck('currentObjectAssessment'))
+      .subscribe(
+        (currentObjectAssessment: ObjectAssessment) => {
+          this.currentObjectAssessment = currentObjectAssessment;
+
+          if (this.allAttackPatterns.length > 0) {
+            this.updateDataSource();
+            this.lastKnownObjectAssessment = this.currentObjectAssessment;
+          }
+         
+
+          
+        }, (err) => console.log(err));
   }
 
   private updateDataSource() {
@@ -132,17 +132,17 @@ export class CapabilityComponent {
       this.incomingListOfAttackPatterns = this.currentAssessedObject.map(x => x.assessed_object_ref);
 
       if (this.currentNumberOfAttackPatterns === 0 || this.currentNumberOfAttackPatterns !== this.currentAssessedObject.length || this.checkForOAChange()) {
-      // inital value for number of attack patterns
-      this.currentNumberOfAttackPatterns = this.currentAssessedObject.length;
-      this.dataSource.data = this.currentAssessedObject.map(x => ({
-        assessed_obj_id: x.id,
-        capability_id: x.assessed_object_ref,
-        capability: this.getAttackPatternName(x.assessed_object_ref),
-        protect: this.getScore(x.questions, 'protect'),
-        detect: this.getScore(x.questions, 'detect'),
-        respond: this.getScore(x.questions, 'respond'),
-        definition: this.getAttackPatternDescription(x.assessed_object_ref),
-      }));
+        // inital value for number of attack patterns
+        this.currentNumberOfAttackPatterns = this.currentAssessedObject.length;
+        this.dataSource.data = this.currentAssessedObject.map(x => ({
+          assessed_obj_id: x.id,
+          capability_id: x.assessed_object_ref,
+          capability: this.getAttackPatternName(x.assessed_object_ref),
+          protect: this.getScore(x.questions, 'protect'),
+          detect: this.getScore(x.questions, 'detect'),
+          respond: this.getScore(x.questions, 'respond'),
+          definition: this.getAttackPatternDescription(x.assessed_object_ref),
+        }));
       }
     } else {
       // console.log('pdr change, not reloading!   ' + this.currentNumberOfAttackPatterns );
