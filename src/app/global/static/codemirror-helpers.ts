@@ -99,7 +99,6 @@ export class CodeMirrorHelpers {
      * @param  {CodeMirror.Position} anchor
      * @param  {CodeMirror.Position} head
      * @returns CodeMirror.Range
-     * @description H
      */
     makeRange(anchor: CodeMirror.Position, head: CodeMirror.Position): CodeMirror.Range {
         return {
