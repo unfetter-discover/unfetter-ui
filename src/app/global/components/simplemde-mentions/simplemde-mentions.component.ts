@@ -155,8 +155,13 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
         // Stop if a multi selection occured
         this.showUserMentions = false;    
       } else if (!this.showUserMentions) {
-        // Show mentions menu(s) if @ and cursor at begining of a line or word
-        if (event.keyCode === Key.AtSign && (cursor.to.ch === 0 || this.codeMirror.getTokenAt(cursor.to).string.match(/\s/))) {
+        // Show mentions menu(s) if @ is surrounded by whitespace
+        const nextTokenString = this.codeMirror.getTokenAt({ ch: cursor.to.ch + 1, line: cursor.to.line }).string;
+        if (
+          event.keyCode === Key.AtSign && 
+          (cursor.to.ch === 0 || this.codeMirror.getTokenAt(cursor.to).string.match(/\s/)) && 
+          (!nextTokenString || nextTokenString.match(/\s/))
+        ) {
           this.mentionTerm$.next(this.initMentionTerm);
           this.showUserMentions = true;
           this.codeMirrorHelpers.positionAtCursor(this.userMentions.nativeElement);
