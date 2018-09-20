@@ -23,7 +23,7 @@ class CodeMirrorTestComponent implements AfterViewInit {
     }
 }
 
-describe('CodeMirrorHelpers', () => {
+fdescribe('CodeMirrorHelpers', () => {
     let component: CodeMirrorTestComponent;
     let fixture: ComponentFixture<CodeMirrorTestComponent>;
     let codeMirrorHelpers: CodeMirrorHelpers;
@@ -31,7 +31,8 @@ describe('CodeMirrorHelpers', () => {
 
     const testString = 'this is a unit test\n' + 
     'to see how codemirror works\n' + 
-    'when used in simplemde';
+    'when used in simplemde\n' + 
+    '@jim mentioned @bob also @fred';
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -55,12 +56,13 @@ describe('CodeMirrorHelpers', () => {
     });
 
     beforeEach((done) => {
+        // This seems to be needed to allow the vanilla JS for codemirror to catch up
         setTimeout(() => {
             codeMirror = component.codeMirror;
             codeMirrorHelpers = new CodeMirrorHelpers(codeMirror);
             fixture.detectChanges();
             done();
-        }, 100);
+        }, 50);
     });
 
     describe('getCursor', () => {
@@ -173,6 +175,106 @@ describe('CodeMirrorHelpers', () => {
             const word = codeMirrorHelpers.getWordAt(mockCursor);
             const predicted = codeMirrorHelpers.predictWord(word, mockCursor, 'e');
             expect(predicted).toBe('ewhen');
+        });
+    });
+
+    describe('predictDeletion', () => {
+        it('should predict a delete when a letter is deleted at the end of a word', () => {
+            const mockCursor = { line: 2, ch: 3 };
+            const word = codeMirrorHelpers.getWordAt(mockCursor);
+            const predicted = codeMirrorHelpers.predictDeletion(word, mockCursor);
+            expect(predicted).toBe('whe');
+        });
+
+        it('should predict a delete when a letter is deleted in the middle of a word', () => {
+            const mockCursor = { line: 2, ch: 2 };
+            const word = codeMirrorHelpers.getWordAt(mockCursor);
+            const predicted = codeMirrorHelpers.predictDeletion(word, mockCursor);
+            expect(predicted).toBe('whn');
+        });
+
+        it('should predict a delete when a letter is deleted in the middle of a word, in the middle of a line', () => {
+            const mockCursor = { line: 2, ch: 6 };
+            const word = codeMirrorHelpers.getWordAt(mockCursor);
+            const predicted = codeMirrorHelpers.predictDeletion(word, mockCursor);
+            expect(predicted).toBe('ued');
+        });
+
+        it('should predict a delete when a letter is deleted at the start of a word', () => {
+            const mockCursor = { line: 2, ch: 0 };
+            const word = codeMirrorHelpers.getWordAt(mockCursor);
+            const predicted = codeMirrorHelpers.predictDeletion(word, mockCursor);
+            expect(predicted).toBe('hen');
+        });
+    });
+
+    describe('checkIfInRange', () => {
+        let mockRange: CodeMirror.Range;
+
+        beforeEach(() => mockRange = codeMirrorHelpers.makeRange({ line: 1, ch: 5 }, { line: 1, ch: 7 }));
+
+        it('should return true if in range', () => {
+            const pos = { line: 1, ch: 6 };
+            const inRange = codeMirrorHelpers.checkIfInRange(mockRange, pos);
+            expect(inRange).toBe(true);
+        });
+
+        it('should return true if in range, at the start of a line', () => {
+            mockRange.anchor.ch = 0;
+            const pos = { line: 1, ch: 0 };
+            const inRange = codeMirrorHelpers.checkIfInRange(mockRange, pos);
+            expect(inRange).toBe(true);
+        });
+
+        it('should return true if in range, at the end of a range', () => {
+            const pos = { line: 1, ch: 7 };
+            const inRange = codeMirrorHelpers.checkIfInRange(mockRange, pos);
+            expect(inRange).toBe(true);
+        });
+
+        it('should return false if before range', () => {
+            const pos = { line: 1, ch: 2 };
+            const inRange = codeMirrorHelpers.checkIfInRange(mockRange, pos);
+            expect(inRange).toBe(false);
+        });
+
+        it('should return false if after range', () => {
+            const pos = { line: 1, ch: 9 };
+            const inRange = codeMirrorHelpers.checkIfInRange(mockRange, pos);
+            expect(inRange).toBe(false);
+        });
+
+        it('should return false if on a different line', () => {
+            const pos = { line: 0, ch: 6 };
+            const inRange = codeMirrorHelpers.checkIfInRange(mockRange, pos);
+            expect(inRange).toBe(false);
+        });
+    });
+
+    describe('getMentionTermRange', () => {
+        let mockRange: CodeMirror.Range;
+        beforeEach(() => mockRange = codeMirrorHelpers.makeRange({ line: 3, ch: 0 }, { line: 3, ch: 3 }));
+        
+        it('should range of mention at beginning of line', () => {
+            const mentionTermRange = codeMirrorHelpers.getMentionTermRange(mockRange);
+            expect(mentionTermRange.start).toBe(0);
+            expect(mentionTermRange.end).toBe(3);
+        });
+
+        it('should range of mention at middle of line', () => {
+            mockRange.anchor.ch = 15;
+            mockRange.head.ch = 18;
+            const mentionTermRange = codeMirrorHelpers.getMentionTermRange(mockRange);
+            expect(mentionTermRange.start).toBe(15);
+            expect(mentionTermRange.end).toBe(18);
+        });
+
+        it('should range of mention at end of line', () => {
+            mockRange.anchor.ch = 25;
+            mockRange.head.ch = 28;
+            const mentionTermRange = codeMirrorHelpers.getMentionTermRange(mockRange);
+            expect(mentionTermRange.start).toBe(25);
+            expect(mentionTermRange.end).toBe(28);
         });
     });
 });

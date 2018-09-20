@@ -155,6 +155,13 @@ export class CodeMirrorHelpers {
         }
     }
 
+    
+    /**
+     * @param  {CodeMirror.Range} range
+     * @param  {string} denotion='@'
+     * @returns {{ start: number, end: number }}
+     * @description Verifies a range of a mention
+     */
     getMentionTermRange(range: CodeMirror.Range, denotion = '@'): { start: number, end: number } {
         if (range.anchor.line !== range.head.line) {
             console.log('Warning: The word range should be on the same line');
