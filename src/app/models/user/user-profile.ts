@@ -22,7 +22,7 @@ export class UserProfile {
     public registered: boolean;
     public preferences?: UserPreferences;
     public avatar_url?: string;
-    organizations: OrganizationIdentity[] = [];
+    public organizations: OrganizationIdentity[] = [];
 }
 
 /**
@@ -34,4 +34,5 @@ export class UserListItem implements Partial<UserProfile> {
     public lastName: string;
     public firstName: string;
     public avatar_url?: string;
+    public organizationIds?: string[];
 }

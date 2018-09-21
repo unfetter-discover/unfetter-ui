@@ -23,6 +23,10 @@
   @include themeAccentText();
 }
 
+.hovered {
+  @include themePrimaryLightestColors('background-color');
+}
+
 .userAvatar {
     border-radius: 15%;
     height: 17px;

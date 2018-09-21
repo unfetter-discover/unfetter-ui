@@ -13,6 +13,7 @@ import { RxjsHelpers } from '../../static/rxjs-helpers';
 import { CodeMirrorHelpers } from '../../static/codemirror-helpers';
 import { UserListItem, UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
+import { getOrganizations } from '../../../root-store/users/user.selectors';
 
 interface MentionTerm {
   wordRange: CodeMirror.Range,
@@ -42,6 +43,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
   public user$: Observable<UserListItem[]>;
   public displayedUsers$: Observable<any>;
   public selectedUserIndex = 0;
+  public hoveredRowIndex = -1;
   @ViewChild('userMentions') public userMentions: ElementRef;
   @ViewChild('mde') public mde: Simplemde | any;
   
@@ -89,6 +91,8 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
 
   set showUserMentions(v: boolean) {
     if (!v) {
+      this.selectedUserIndex = 0;
+      this.hoveredRowIndex = -1;
       this.mentionTerm$.next(this.initMentionTerm);
     }
     this._showUserMentions = v;
@@ -112,6 +116,25 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
           }     
         }),
         RxjsHelpers.sortByField('userName', 'ASCENDING'),
+        withLatestFrom(this.store.select(getOrganizations)),
+        map(([displayedUsers, organizations]) => {          
+          if (!organizations.length) {
+            return displayedUsers;
+          }
+          // Prioritize users in same org(s) after alphabetical sort
+          return displayedUsers
+            .sort((a, b) => {
+              let aOrg = UserHelpers.getNumMatchingOrgs(organizations, a);
+              let bOrg = UserHelpers.getNumMatchingOrgs(organizations, b);
+              if (aOrg > aOrg) {
+                return -1;
+              } else if (aOrg < bOrg) {
+                return 1;
+              } else {
+                return 0;
+              }
+            });
+        }),
         withLatestFrom(this.store.select('users').pipe(pluck<any, UserProfile>('userProfile'))),
         map(([displayedUsers, userProfile]) => {
           const userName = userProfile && userProfile.userName;
@@ -119,13 +142,18 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
           return displayedUsers
             .filter((user) => userName ? user.userName !== userName : true)
             .slice(0, this.DISPLAYED_USER_LIMIT);
-        })
+        })        
       );
   }
 
   public ngAfterViewInit() {
     this.codeMirror = this.mde.simplemde.codemirror;
     this.codeMirrorHelpers = new CodeMirrorHelpers(this.codeMirror);
+
+    (this.codeMirror as any).on('change', (a, b, c, d) => {
+      console.log('~~~~', a, b, c, d);
+      this.codeMirror.getDoc().setBookmark({line: 0, ch: 3});
+    });
 
     this.codeMirror.on('keydown', (_, event: KeyboardEvent) => {
       const cursor = this.codeMirrorHelpers.getCursor();
@@ -135,8 +163,13 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
         // Stop if a multi selection occured
         this.showUserMentions = false;    
       } else if (!this.showUserMentions) {
-        // Show mentions menu(s) if @ and cursor at begining of a line or word
-        if (event.keyCode === Key.AtSign && (cursor.to.ch === 0 || this.codeMirror.getTokenAt(cursor.to).string.match(/\s/))) {
+        // Show mentions menu(s) if @ is surrounded by whitespace
+        const nextTokenString = this.codeMirror.getTokenAt({ ch: cursor.to.ch + 1, line: cursor.to.line }).string;
+        if (
+          event.keyCode === Key.AtSign && 
+          (cursor.to.ch === 0 || this.codeMirror.getTokenAt(cursor.to).string.match(/\s/)) && 
+          (!nextTokenString || nextTokenString.match(/\s/))
+        ) {
           this.mentionTerm$.next(this.initMentionTerm);
           this.showUserMentions = true;
           this.codeMirrorHelpers.positionAtCursor(this.userMentions.nativeElement);

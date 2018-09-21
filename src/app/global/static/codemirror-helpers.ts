@@ -2,7 +2,9 @@ import * as CodeMirror from 'codemirror';
 
 interface CodeMirrorWord {
     range: CodeMirror.Range,
-    text: string
+    text: string,
+    textBefore: string,
+    textAfter: string
 }
 
 interface CursorGroup {
@@ -54,23 +56,60 @@ export class CodeMirrorHelpers {
      *            it will be the state of the text is changed
      */
     getWordAt(cursorPos: CodeMirror.Position): CodeMirrorWord {
-        // NOTE this is unreliable for mentions in the middle of a sentence
-        const range = this.codeMirror.findWordAt(cursorPos);      
-        if (range.anchor.line !== range.head.line) {
-            console.log('Warning: Attempting to retrieve a multi-line word');
+        const doc = this.codeMirror.getDoc();
+        const lineContent = doc.getLine(cursorPos.line);
+        let before = '';
+        let after = '';
+
+        const head = cursorPos.ch - 1;
+        let i = head;
+        while (i >= 0 && lineContent[i]) {
+            const tokenString = lineContent[i];
+            if (tokenString.match(/\s/)) {
+                break;
+            }
+            before = tokenString + before;
+            i--;
         }
-        let text = '';
-        for (let i = range.anchor.ch; i <= range.head.ch; i++) {
-            const pos: CodeMirror.Position = {
-                line: range.head.line,
-                ch: i
-            };
-            const token = this.codeMirror.getTokenAt(pos);
-            text += token.string;
+
+        let j = head + 1;
+        while (j < lineContent.length && lineContent[j]) {
+            const tokenString = lineContent[j];
+            if (tokenString.match(/\s/)) {
+                break;
+            }
+            after = after + tokenString;
+            j++;
         }
-        return { range, text: text };
+
+        const range = this.makeRange(
+            { line: cursorPos.line, ch: i + 1},
+            { line: cursorPos.line, ch: j }
+        );
+
+        const retVal: CodeMirrorWord = {
+            range,
+            text: before + after,
+            textBefore: before,
+            textAfter: after
+        };
+        return retVal;
     }
     
+    /**
+     * @param  {CodeMirror.Position} anchor
+     * @param  {CodeMirror.Position} head
+     * @returns CodeMirror.Range
+     */
+    makeRange(anchor: CodeMirror.Position, head: CodeMirror.Position): CodeMirror.Range {
+        return {
+            anchor,
+            head,
+            from() { return this.anchor },
+            to() { return this.head }
+        };
+    }
+
     /**
      * @param  {CodeMirrorWord} word
      * @param  {CodeMirror.Position} pos
@@ -82,12 +121,7 @@ export class CodeMirrorHelpers {
         if (letter.length !== 1) {
             console.log('Warning: word prediction is supposed to take a single letter');
         }
-        let retVal = word.text.substring(0, pos.ch - word.range.anchor.ch + 1);
-        retVal += letter;
-        if (word.range.head.ch > pos.ch) {
-            retVal += word.text.substring(pos.ch - word.range.anchor.ch + 1, word.range.head.ch - word.range.anchor.ch + 1);
-        }
-        return retVal;
+        return word.textBefore + letter + word.textAfter;
     }
 
     /**
@@ -121,24 +155,32 @@ export class CodeMirrorHelpers {
         }
     }
 
+    
+    /**
+     * @param  {CodeMirror.Range} range
+     * @param  {string} denotion='@'
+     * @returns {{ start: number, end: number }}
+     * @description Verifies a range of a mention
+     */
     getMentionTermRange(range: CodeMirror.Range, denotion = '@'): { start: number, end: number } {
         if (range.anchor.line !== range.head.line) {
             console.log('Warning: The word range should be on the same line');
         }
+        const doc = this.codeMirror.getDoc();
         let start = -1;
         let end = -1;
-        const lineTokens = this.codeMirror.getLineTokens(range.anchor.line);
-        if (lineTokens[range.anchor.ch] && lineTokens[range.anchor.ch].string === denotion) {
+        const lineContent = doc.getLine(range.anchor.line);
+        if (lineContent[range.anchor.ch] && lineContent[range.anchor.ch] === denotion) {
             start = range.anchor.ch;
-        } else if (lineTokens[range.anchor.ch - 1] && lineTokens[range.anchor.ch - 1].string === denotion) {
+        } else if (lineContent[range.anchor.ch - 1] && lineContent[range.anchor.ch - 1] === denotion) {
             // For some reason, occasionally the range starts 1 char after the token
             // Keep this until that is fixed
             start = range.anchor.ch - 1;
         }
         for (let i = range.anchor.ch; i <= range.head.ch; i ++) {
-            if (lineTokens[i] && lineTokens[i].string === denotion && start === -1) {
+            if (lineContent[i] && lineContent[i] === denotion && start === -1) {
                 start = i;
-            } else if (start > -1 && lineTokens[i] && lineTokens[i].string.match(/\s/)) {
+            } else if (start > -1 && lineContent[i] && lineContent[i].match(/\s/)) {
                 end = i;
                 break;
             }
