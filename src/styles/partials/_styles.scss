@@ -29,17 +29,6 @@ label {
     display: none;
 }
 
-.btn,
-.btn-large {
-    text-decoration: none;
-    color: #fff;
-    background-color: #214f87;
-    text-align: center;
-    letter-spacing: .5px;
-    transition: .2s ease-out;
-    cursor: pointer;
-}
-
 .red {
     background-color: #F44336 !important
 }
@@ -51,19 +40,24 @@ label {
     text-decoration: none !important;
 }
 
-.theme-bg-primary {
+.theme-bg-primary,
+.bgPrimary {
     @include themePrimaryColors('background-color');
+    @include themePrimaryText();
 }
 
-.theme-bg-primary-light {
+.theme-bg-primary-light,
+.bgPrimaryLight {
     @include themePrimaryLightColors('background-color');
 }
 
-.theme-bg-primary-lighter {
+.theme-bg-primary-lighter, 
+.bgPrimaryLighter {
     @include themePrimaryLighterColors('background-color');
 }
 
-.theme-bg-primary-lightest {
+.theme-bg-primary-lightest, 
+.bgPrimaryLightest {
     @include themePrimaryLightestColors('background-color');
 }
 
@@ -107,15 +101,10 @@ label {
     @include themeAccentFill();
 }
 
+.theme-bg-accent,
 .bg-accent {
-    // color: $accent-text;
-    @include themeAccentText;
+    @include themeAccentText();
     @include themeAccentColors('background-color');
-}
-
-.bg-primary {
-    @include themePrimaryColors('background-color');
-    color: $primary-text-contrast-color;
 }
 
 .full-width {
@@ -212,11 +201,6 @@ label {
     padding-right: 8px;
 }
 
-// .attack-pattern-div {
-//     font-size: .9em;
-//     padding: 5px; // background: pink;
-// }
-
 .ui-progressbar {
     height: 1.2em;
     text-align: left;
@@ -298,11 +282,11 @@ a {
 
 // Color helpers
 .textPrimary {
-    color: $primary-color;
+    @include themePrimaryColors('color');
 }
 
 .textAccent {
-    color: $accent-color;
+    @include themeAccentColors('color');
 }
 
 .textAccentAlt{
@@ -353,31 +337,6 @@ span.stix-object-item-label {
   margin-left: 5px;
   font-weight: normal;
   vertical-align: middle;
-}
-
-.goog-tooltip {
-    z-index: 10 !important;
-}
-
-.goog-tooltip .goog-attack-pattern-desc {
-    max-height: 60px;
-    overflow: hidden;
-}
-
-.goog-tooltip .goog-attack-pattern-desc:after {
-    content: "";
-    text-align: right;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    top: 40px;
-    width: 70%;
-    height: 20px;
-    background: linear-gradient(to right, rgba(240, 240, 240, 0), rgba(240, 240, 240, 1) 80%);
-}
-
-.goog-tooltip .mat-card-content .row:not(:first-child) {
-    margin-top: 10px;
 }
 
 code.codeBlock {

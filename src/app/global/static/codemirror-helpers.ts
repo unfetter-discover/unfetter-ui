@@ -195,17 +195,30 @@ export class CodeMirrorHelpers {
     }
 
     /**
-     * @param {any} nativeElement
+     * @param {HTMLElement} elementToPosition
+     * @param {HTMLElement} relativeElement
      * @description Positions an absolute positioned HTML element at cursor
+     *      The relative element is needed if there is the mentions window is wrapped 
+     *      in a relative element, such as mat-sidenav-container
      */
-    positionAtCursor(nativeElement: any) {
+    positionAtCursor(elementToPosition: HTMLElement, relativeElement?: HTMLElement): void {
         const pos = this.codeMirror.cursorCoords(false);
         const left = pos.left + 13, top = pos.bottom + 2;
-        if (!nativeElement.style) {
+        if (!elementToPosition.style) {
             console.log('Warning: Attempt to style an object without a style property');
+        } else if (relativeElement) {
+            try {
+                const { top: relativeTop, left: relativeLeft } = relativeElement.getBoundingClientRect();
+                const scrollTop = document.documentElement && document.documentElement.scrollTop || 0;
+                const scrollLeft = document.documentElement && document.documentElement.scrollLeft || 0;
+                elementToPosition.style.left = (left - relativeLeft - scrollLeft) + 'px';
+                elementToPosition.style.top = (top - relativeTop - scrollTop) + 'px';                
+            } catch (error) {
+                console.log(error);  
+            }
         } else {
-            nativeElement.style.left = left + 'px';
-            nativeElement.style.top = top + 'px';
+            elementToPosition.style.left = left + 'px';
+            elementToPosition.style.top = top + 'px';
         }
     }
 }

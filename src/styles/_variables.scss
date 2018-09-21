@@ -32,8 +32,8 @@ $threat-dashboard-primary-light: get-color($blue, 400);
 $threat-dashboard-primary-lighter: get-color($blue, 200);
 $threat-dashboard-primary-lightest: get-color($blue, 100);
 $threat-dashboard-accent: get-color($red, 'A200');
-$threat-dashboard-accent-text: $light-text-slightly-dimmed;
-$threat-dashboard-primary-text: $light-text-slightly-dimmed;
+$threat-dashboard-accent-text: $light-text-default;
+$threat-dashboard-primary-text: $light-text-default;
 
 // Analytic exchange
 $analytic-exchange-primary: get-color($cyan, 600);

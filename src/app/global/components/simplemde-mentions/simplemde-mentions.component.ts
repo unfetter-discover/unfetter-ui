@@ -1,4 +1,4 @@
-import { Component, forwardRef, ViewChild, ElementRef, AfterViewInit, OnInit, HostListener } from '@angular/core';
+import { Component, forwardRef, ViewChild, ElementRef, AfterViewInit, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
 import { of as observableOf, BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { take, switchMap, combineAll, map, pluck, withLatestFrom, filter } from 'rxjs/operators';
@@ -85,7 +85,11 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
     }
   }
 
-  constructor(private store: Store<AppState>) { }
+  constructor(
+      private store: Store<AppState>,
+      private elRef: ElementRef,
+      private changeDetectorRef: ChangeDetectorRef
+    ) { }
 
   get showUserMentions() { return this._showUserMentions }
 
@@ -150,11 +154,6 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
     this.codeMirror = this.mde.simplemde.codemirror;
     this.codeMirrorHelpers = new CodeMirrorHelpers(this.codeMirror);
 
-    (this.codeMirror as any).on('change', (a, b, c, d) => {
-      console.log('~~~~', a, b, c, d);
-      this.codeMirror.getDoc().setBookmark({line: 0, ch: 3});
-    });
-
     this.codeMirror.on('keydown', (_, event: KeyboardEvent) => {
       const cursor = this.codeMirrorHelpers.getCursor();
       const word = this.codeMirrorHelpers.getWordAt(cursor.to);        
@@ -172,7 +171,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
         ) {
           this.mentionTerm$.next(this.initMentionTerm);
           this.showUserMentions = true;
-          this.codeMirrorHelpers.positionAtCursor(this.userMentions.nativeElement);
+          this.codeMirrorHelpers.positionAtCursor(this.userMentions.nativeElement, this.elRef.nativeElement);
           this.mentionTerm$.next({
             wordRange: word.range,
             term: '@'
@@ -187,14 +186,16 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
               this.selectedUserIndex--;
             }
             event.preventDefault();
+            this.changeDetectorRef.detectChanges();
             break;
-          case Key.DownArrow:            
-            this.user$.pipe(take(1)).subscribe((users) => {
+          case Key.DownArrow:          
+            this.displayedUsers$.pipe(take(1)).subscribe((users) => {
               if (this.selectedUserIndex + 1 < users.length) {
                 this.selectedUserIndex++;
               }
             });
             event.preventDefault();
+            this.changeDetectorRef.detectChanges();
             break;
           case Key.LeftArrow:
           case Key.RightArrow:

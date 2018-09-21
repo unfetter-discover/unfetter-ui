@@ -4,8 +4,8 @@
   <span id="userMentions" #userMentions [style.display]="showUserMentions ? 'inline-block' : 'none'" class="mat-elevation-z6">
     <div 
       *ngFor="let user of displayedUsers$ | async; let i = index" 
-      [class.selected]="i === selectedUserIndex"
-      [class.hovered]="i === hoveredRowIndex && i !== selectedUserIndex"
+      [class.bgPrimary]="i === selectedUserIndex"
+      [class.bgPrimaryLightest]="i === hoveredRowIndex && i !== selectedUserIndex"
       class="mention flex flexItemsCenter cursor-pointer"
       (mouseenter)="hoveredRowIndex = i"
       (mouseleave)="hoveredRowIndex = -1"
