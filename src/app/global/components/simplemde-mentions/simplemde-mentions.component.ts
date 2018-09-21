@@ -43,6 +43,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
   public user$: Observable<UserListItem[]>;
   public displayedUsers$: Observable<any>;
   public selectedUserIndex = 0;
+  public hoveredRowIndex = -1;
   @ViewChild('userMentions') public userMentions: ElementRef;
   @ViewChild('mde') public mde: Simplemde | any;
   
@@ -90,6 +91,8 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
 
   set showUserMentions(v: boolean) {
     if (!v) {
+      this.selectedUserIndex = 0;
+      this.hoveredRowIndex = -1;
       this.mentionTerm$.next(this.initMentionTerm);
     }
     this._showUserMentions = v;
@@ -146,6 +149,11 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
   public ngAfterViewInit() {
     this.codeMirror = this.mde.simplemde.codemirror;
     this.codeMirrorHelpers = new CodeMirrorHelpers(this.codeMirror);
+
+    (this.codeMirror as any).on('change', (a, b, c, d) => {
+      console.log('~~~~', a, b, c, d);
+      this.codeMirror.getDoc().setBookmark({line: 0, ch: 3});
+    });
 
     this.codeMirror.on('keydown', (_, event: KeyboardEvent) => {
       const cursor = this.codeMirrorHelpers.getCursor();
