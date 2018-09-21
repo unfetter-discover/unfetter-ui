@@ -34,6 +34,7 @@ $threat-dashboard-primary-lightest: get-color($blue, 100);
 $threat-dashboard-accent: get-color($red, 'A200');
 $threat-dashboard-accent-text: $light-text-default;
 $threat-dashboard-primary-text: $light-text-default;
+$threat-dashboard-primary-contrast-text: $light-text-default;
 
 // Analytic exchange
 $analytic-exchange-primary: get-color($cyan, 600);
@@ -43,6 +44,7 @@ $analytic-exchange-primary-lightest: get-color($cyan, 100);
 $analytic-exchange-accent: get-color($orange, A200);
 $analytic-exchange-accent-text: $dark-text-default;
 $analytic-exchange-primary-text: $light-text-default;
+$analytic-exchange-primary-contrast-text: $light-text-default;
 
 // Assessments
 $assessments-primary: get-color($blue-grey, 400);
@@ -54,6 +56,7 @@ $assessments-nav-background: #E2F1F8;
 $assessments-accent: get-color($indigo, A400);
 $assessments-accent-text: $light-text-default;
 $assessments-accent-text-slightly-dimmed: $light-text-slightly-dimmed;
+$assessments-primary-contrast-text: $light-text-default;
 $assessments-primary-text: $dark-text-default;
 
 // Events Dashboard
@@ -65,6 +68,7 @@ $events-primary-subtle: get-color($green, 50);
 $events-accent: get-color($yellow, A200);
 $events-accent-text: $light-text-default;
 $events-primary-text: $dark-text-default;
+$events-primary-contrast-text: $light-text-default;
 
 // ~~~ Navbar sizing ~~~
 

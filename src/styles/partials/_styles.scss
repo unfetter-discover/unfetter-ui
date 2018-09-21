@@ -43,7 +43,7 @@ label {
 .theme-bg-primary,
 .bgPrimary {
     @include themePrimaryColors('background-color');
-    @include themePrimaryText();
+    @include themePrimaryContrastText();
 }
 
 .theme-bg-primary-light,

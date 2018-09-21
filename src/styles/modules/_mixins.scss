@@ -129,6 +129,25 @@
   color: $primary-text-default; 
 }
 
+@mixin themePrimaryContrastText () {
+  .analyticHubTheme & {
+    color: $analytic-exchange-primary-contrast-text;
+  }
+
+  .threatDashboardTheme & {
+    color: $threat-dashboard-primary-contrast-text;
+  }
+
+  .assessmentsTheme & {
+    color: $assessments-primary-contrast-text;
+  }
+
+  .eventsTheme & {
+    color: $events-primary-contrast-text;
+  }
+  color: $primary-text-contrast-color;
+}
+
 @mixin themePrimaryTextProp ($property) {
   .analyticHubTheme & {
     #{$property}: $analytic-exchange-primary-text;
