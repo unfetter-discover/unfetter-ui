@@ -30,68 +30,73 @@ export class UserEffects {
 
     @Effect()
     public fetchUserOnly = this.actions$
-        .ofType(userActions.FETCH_USER_ONLY).pipe(
-        pluck('payload'),
-        switchMap((token) => {
-            return this.usersService.getUserFromToken().pipe(
-                pluck('attributes'));
-        }),
-        tap((userData: any) => {
-            if (userData.registered) {
-                this.authService.setUser(userData);
-            }
-        }),
-        map((userProfile: any) => {
-            return new userActions.UpdateUserData({
-                ...userProfile,
-            });
-        }));
+        .pipe(
+            ofType(userActions.FETCH_USER_ONLY),
+            pluck('payload'),
+            switchMap((token) => {
+                return this.usersService.getUserFromToken().pipe(
+                    pluck('attributes'));
+            }),
+            tap((userData: any) => {
+                if (userData.registered) {
+                    this.authService.setUser(userData);
+                }
+            }),
+            map((userProfile: any) => {
+                return new userActions.UpdateUserData({
+                    ...userProfile,
+                });
+            })
+        );
 
     @Effect()
     public fetchUser = this.actions$
-        .ofType(userActions.FETCH_USER).pipe(
-        pluck('payload'),
-        switchMap((token) => {
-            return observableForkJoin(
-                observableOf(token),
-                this.usersService.getUserFromToken().pipe(
-                    pluck('attributes'))
-            );
-        }),
-        tap(([token, userData]: any) => {
-            if (userData.registered) {
-                // TODO move this to utilities
-                this.authService.setUser(userData);
-            } else {
-                this.router.navigate(['/users/register']);
-            }
-        }),
-        mergeMap(([token, userData]: [string, any]) => {
-            if (!userData.approved) {
-                return [
-                    new userActions.LoginUser({
-                        userData,
-                        token
-                    }),
-                    new userActions.SetToken(token),
-                    new configActions.FetchConfig(true)
-                ];
-            } else {
-                return [
-                    new userActions.LoginUser({
-                        userData,
-                        token
-                    }),
-                    new userActions.SetToken(token),
-                    new configActions.FetchConfig(false),
-                    new notificationActions.FetchNotificationStore(),
-                    new userActions.StartUserObjectStream(),
-                    new utilityActions.RecordVisit(),
-                    new stixActions.FetchStix(),
-                ];
-            }
+        .pipe(
+            ofType(userActions.FETCH_USER),
+            pluck('payload'),
+            switchMap((token) => {
+                return observableForkJoin(
+                    observableOf(token),
+                    this.usersService.getUserFromToken().pipe(
+                        pluck('attributes'))
+                );
+            }),
+            tap(([token, userData]: any) => {
+                if (userData.registered) {
+                    // TODO move this to utilities
+                    this.authService.setUser(userData);
+                } else {
+                    this.router.navigate(['/users/register']);
+                }
+            }),
+            mergeMap(([token, userData]: [string, any]) => {
+                if (!userData.approved) {
+                    return [
+                        new userActions.LoginUser({
+                            userData,
+                            token
+                        }),
+                        new userActions.SetToken(token),
+                        new configActions.FetchConfig(true)
+                    ];
+                } else {
+                    return [
+                        new userActions.LoginUser({
+                            userData,
+                            token
+                        }),
+                        new userActions.SetToken(token),
+                        new configActions.FetchConfig(false),
+                        new notificationActions.FetchNotificationStore(),
+                        new userActions.StartUserObjectStream(),
+                        new utilityActions.RecordVisit(),
+                        new stixActions.FetchStix(),
+                        new userActions.FetchUserList(),
+                    ];
+                }
 
-        }));
+            })
+        );
 
     @Effect()
     public setToken = this.actions$
@@ -176,7 +181,15 @@ export class UserEffects {
                 }
             }),
             map((userObj: any) => new userActions.UpdateUserData({ ...userObj }))
-        )
+        );
+
+    @Effect()
+    public fetchUserList = this.actions$
+        .pipe(
+            ofType(userActions.FETCH_USER_LIST),
+            switchMap(() => this.usersService.fetchUserList()),
+            map((userList) => new userActions.SetUserList(userList))
+        );
 
     constructor(
         private actions$: Actions,
