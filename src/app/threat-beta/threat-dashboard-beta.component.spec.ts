@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
+import { GlobalModule } from '../global/global.module';
 import { ThreatDashboardBetaComponent } from './threat-dashboard-beta.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ThreatDashboardBetaComponent', () => {
   let component: ThreatDashboardBetaComponent;
@@ -8,9 +10,13 @@ describe('ThreatDashboardBetaComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ThreatDashboardBetaComponent ]
+      declarations: [ThreatDashboardBetaComponent],
+      imports: [GlobalModule,
+        RouterTestingModule,
+        NoopAnimationsModule,
+      ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

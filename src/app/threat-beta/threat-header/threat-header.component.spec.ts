@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
+import { GlobalModule } from '../../global/global.module';
 import { ThreatHeaderComponent } from './threat-header.component';
 
 describe('ThreatHeaderComponent', () => {
@@ -8,9 +9,11 @@ describe('ThreatHeaderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ThreatHeaderComponent ]
+      declarations: [ThreatHeaderComponent],
+      imports: [GlobalModule,
+        RouterTestingModule],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
