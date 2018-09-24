@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MatButtonModule, MatCardModule, MatIconModule, MatSelectModule } from '@angular/material';
+import { FormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, combineReducers } from '@ngrx/store';
@@ -23,6 +24,7 @@ describe('CapabilitySelectorComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ CapabilitySelectorComponent, FieldSortPipe ],
       imports: [
+        FormsModule,
         RouterTestingModule,
         NoopAnimationsModule,
         ...matModules,

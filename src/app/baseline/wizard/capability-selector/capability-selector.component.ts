@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { Stix } from 'stix/unfetter/stix';
 import { StixEnum } from 'stix/unfetter/stix.enum';
-import { AddCapabilityToBaseline, AddObjectAssessmentToBaseline, RemoveCapabilitiesFromBaseline, ReplaceCapabilityInBaseline } from '../../store/baseline.actions';
+import { AddCapabilityToBaseline, AddObjectAssessmentToBaseline, RemoveCapabilitiesFromBaseline, ReplaceCapabilityInBaseline, FetchCapabilityGroups, AddCapability } from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
 
 @Component({
@@ -18,9 +18,12 @@ import * as assessReducers from '../../store/baseline.reducers';
 export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDestroy {
   public static readonly DEFAULT_VALUE = undefined;
 
+  public isAddCapability: boolean = false;
+  public addCapability: Capability = new Capability();
   public currentCapabilityGroup: Category;
   public selectedCapabilities: Capability[] = [];
   public allCapabilities: Capability[];
+  public categories: Category[];
   private baselineCapabilities: Capability[] = [];
 
   private subscriptions: Subscription[] = [];
@@ -65,7 +68,17 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
         },
         (err) => console.log(err));
 
-    this.subscriptions.push(capSub1$, capSub2$, capSub3$);
+    const catSub4$ = this.wizardStore
+      .select('baseline').pipe(
+      pluck('capabilityGroups'),
+      distinctUntilChanged())
+      .subscribe(
+        (categories: Category[]) => this.categories = categories,
+        (err) => console.log(err));
+
+    this.subscriptions.push(capSub1$, capSub2$, capSub3$, catSub4$);
+
+    this.wizardStore.dispatch(new FetchCapabilityGroups());
   }
 
   ngAfterViewInit() {
@@ -86,6 +99,38 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
    */
   public trackByFn(index, item) {
     return ((item !== undefined) ? item.id : item) || index;
+  }
+
+  /*
+   * @description Initialize variables to create a new Capability
+   * @returns {void}
+   */
+  private createNewCapability(): void {
+    this.isAddCapability = true;
+    this.addCapability = new Capability();
+    this.addCapability.category = this.currentCapabilityGroup.name;
+    this.addCapability.created_by_ref = this.allCapabilities[0].created_by_ref;
+  }
+  
+  /*
+   * @description Create a new Capability and add the Capability to the capabilities
+   * @returns {void}
+   */
+  private addNewCapability(): void {
+     
+    this.wizardStore.dispatch(new AddCapability(this.addCapability));
+    
+    this.isAddCapability = false;
+    this.addCapability = new Capability();
+  }
+  
+  /*
+   * @description Cancel creating a new Capability
+   * @returns {void}
+   */
+  private cancelAddNewCapability(): void {
+    this.isAddCapability = false;
+    this.addCapability = new Capability();
   }
 
   /*
