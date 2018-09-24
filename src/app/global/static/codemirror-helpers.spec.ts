@@ -23,7 +23,7 @@ class CodeMirrorTestComponent implements AfterViewInit {
     }
 }
 
-fdescribe('CodeMirrorHelpers', () => {
+describe('CodeMirrorHelpers', () => {
     let component: CodeMirrorTestComponent;
     let fixture: ComponentFixture<CodeMirrorTestComponent>;
     let codeMirrorHelpers: CodeMirrorHelpers;
