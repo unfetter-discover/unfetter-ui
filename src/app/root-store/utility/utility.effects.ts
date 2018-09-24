@@ -163,6 +163,7 @@ export class UtilityEffects {
                         theme = Themes.EVENTS;
                         break;
                     case 'threat-dashboard':
+                    case 'threat-beta':
                         theme = Themes.THREAT_DASHBOARD;
                         break;
                     case 'assessments':
