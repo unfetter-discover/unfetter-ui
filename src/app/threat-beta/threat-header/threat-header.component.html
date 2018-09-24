@@ -1,0 +1,24 @@
+<div id="tabWrapper" class="flex flexColumn">
+    <div class="flex flexRow">
+      <div class="flex">
+        <uf-info-bar></uf-info-bar> <!-- *ngIf="percentCompletedMsg" isWarningMsg="true" [message]="percentCompletedMsg"> [completeActionUrl]="editUrl||''"></uf-info-bar> -->
+      </div>
+    </div>
+    <div class="flex1"></div>
+    <div class="flex flexRow">
+      <nav mat-tab-nav-bar class="indent uf-tabs-borderless">
+        <a class="noUnderline" mat-tab-link [routerLink]="feedLink" routerLinkActive #feed="routerLinkActive" [active]="feed.isActive">FEED</a>
+        <a class="noUnderline" mat-tab-link [routerLink]="boardLink" routerLinkActive #board="routerLinkActive" [active]="board.isActive">BOARD</a>
+        <a class="noUnderline" mat-tab-link [routerLink]="articleLink" routerLinkActive #article="routerLinkActive" [active]="article.isActive">ARTICLE</a>
+      </nav>
+      <div class="flex1"></div>
+      <!-- <div *ngIf="created; else notPublished" class="publishText">
+        Published &bull; {{ created | date:'medium' }}
+      </div>
+      <ng-template #notPublished>
+        <div id="publishWrapper" matTooltip="Future Assessment Functionality">
+          <button id="publishButton" disabled mat-raised-button>PUBLISH</button>
+        </div>
+      </ng-template> -->
+    </div>
+  </div>

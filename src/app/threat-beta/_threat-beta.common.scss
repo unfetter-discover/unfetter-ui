@@ -1,0 +1,16 @@
+@mixin with-margin-centered() {
+    margin-left: 24px;
+    margin-right: 24px; 
+}
+
+.flex {
+    display: flex;
+
+    .flex-grow {
+        flex: 1 1 auto;
+    }
+}
+
+.flex-cols {
+    flex-direction: column;
+}
