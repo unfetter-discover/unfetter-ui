@@ -13,7 +13,7 @@ import { RxjsHelpers } from '../../static/rxjs-helpers';
 import { CodeMirrorHelpers } from '../../static/codemirror-helpers';
 import { UserListItem, UserProfile } from '../../../models/user/user-profile';
 import { AppState } from '../../../root-store/app.reducers';
-import { getOrganizations } from '../../../root-store/users/user.selectors';
+import { getApprovedOrganizations } from '../../../root-store/users/user.selectors';
 
 interface MentionTerm {
   wordRange: CodeMirror.Range,
@@ -120,7 +120,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
           }     
         }),
         RxjsHelpers.sortByField('userName', 'ASCENDING'),
-        withLatestFrom(this.store.select(getOrganizations)),
+        withLatestFrom(this.store.select(getApprovedOrganizations)),
         map(([displayedUsers, organizations]) => {          
           if (!organizations.length) {
             return displayedUsers;
