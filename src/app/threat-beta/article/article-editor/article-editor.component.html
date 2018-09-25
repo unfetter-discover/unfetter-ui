@@ -1,0 +1,40 @@
+<div id="articleEditorComponent">
+  <form [formGroup]="form">
+    <mat-card class="mat-elevation-z8">
+      <mat-card-content>
+        <br>
+        <div id="nameWrapper" class="flex">
+          <button mat-icon-button class="mat-24 edit-close-button" style="margin-left: -18px;" (click)="location.back()" type="button">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-form-field class="full-width flex1">
+            <input type="text" matInput placeholder="Article Name" required formControlName="name">
+            <mat-error *ngIf="form.get('name').hasError('required')">
+              Analytic name is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <br>
+        <h4 [class.textWarn]="form.get('content').dirty && form.get('content').hasError('required')">Content<sup>*</sup></h4>
+        <simplemde-mentions formControlName="content" [class.mdeError]="form.get('content').dirty && form.get('content').hasError('required')"></simplemde-mentions>
+        <mat-error [style.visibility]="form.get('content').dirty && form.get('content').hasError('required') ? 'visible' : 'hidden'">
+          Pseudocode is <strong>required</strong>
+        </mat-error>
+        <h4 class="mt-5">Sources</h4>
+        <!-- TODO mock -->
+        <p>Source 1</p>
+        <div *ngIf="!(blockAttachments$ | async)">
+          <br>
+          <h4>Attachments</h4>
+          <file-list></file-list>
+          <br>
+        </div>
+      </mat-card-content>
+      <mat-card-actions class="text-right">
+        <button type="button" mat-button>CLOSE</button>
+        <button type="button" mat-button color="primary">DELETE</button>
+        <button type="button" mat-raised-button color="primary">SAVE</button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</div>

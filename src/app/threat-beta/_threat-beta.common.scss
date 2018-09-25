@@ -1,3 +1,5 @@
+$main-panel-color: #F1F1F1;
+
 @mixin with-margin-centered() {
     margin-left: 24px;
     margin-right: 24px; 
@@ -13,4 +15,8 @@
 
 .flex-cols {
     flex-direction: column;
+}
+
+.main-panel {
+    background: $main-panel-color;
 }

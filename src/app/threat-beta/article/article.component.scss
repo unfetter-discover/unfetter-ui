@@ -1,4 +1,5 @@
 @import '../../../styles/_variables.scss';
+@import '../threat-beta.common';
 
 .side-panel {
     width: 320px;
@@ -27,3 +28,4 @@
     min-height: calc(100vh - #{$navbar-height}px);
     background-color: #F1F1F1;
 }
+

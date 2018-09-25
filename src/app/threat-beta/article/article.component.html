@@ -7,8 +7,13 @@
       <mat-sidenav-content class="sidenavContentPolyfill320">
         <threat-header></threat-header>
         <!-- TODO [threat]="feed" [boardId]="threatBoardId" [created]="board?.created"> </threat-header> -->
-        <div class="main-panel">
-          Article about individual board here.
+        <div class="main-panel flex">
+          <span class="flex1 p-24">
+            <article-report-pane></article-report-pane>    
+          </span>
+          <span class="flex1">
+            <article-editor></article-editor>
+          </span>
         </div>
       </mat-sidenav-content>
     </mat-sidenav-container>
