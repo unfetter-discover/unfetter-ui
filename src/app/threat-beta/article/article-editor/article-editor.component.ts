@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -7,7 +7,6 @@ import { Store } from '@ngrx/store';
 
 import { AppState } from '../../../root-store/app.reducers';
 import { MasterConfig } from '../../../core/services/run-config.service';
-import { ArticleForm } from '../../../global/form-models/article';
 
 @Component({
   selector: 'article-editor',
@@ -15,8 +14,10 @@ import { ArticleForm } from '../../../global/form-models/article';
   styleUrls: ['./article-editor.component.scss']
 })
 export class ArticleEditorComponent implements OnInit {
-  public blockAttachments$: Observable<boolean>;
+  
+  @Input()
   public form: FormGroup;
+  public blockAttachments$: Observable<boolean>;
 
   constructor(
     public location: Location,
@@ -24,7 +25,6 @@ export class ArticleEditorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.resetForm();
     this.blockAttachments$ = this.store
       .select('config')
       .pipe(
@@ -32,9 +32,5 @@ export class ArticleEditorComponent implements OnInit {
         distinctUntilChanged<MasterConfig>(),
         map((cfg) => cfg.blockAttachments)
       );
-  }
-
-  private resetForm() {
-    this.form = ArticleForm();
-  }
+  }  
 }

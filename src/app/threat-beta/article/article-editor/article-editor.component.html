@@ -18,7 +18,7 @@
         <h4 [class.textWarn]="form.get('content').dirty && form.get('content').hasError('required')">Content<sup>*</sup></h4>
         <simplemde-mentions formControlName="content" [class.mdeError]="form.get('content').dirty && form.get('content').hasError('required')"></simplemde-mentions>
         <mat-error [style.visibility]="form.get('content').dirty && form.get('content').hasError('required') ? 'visible' : 'hidden'">
-          Pseudocode is <strong>required</strong>
+          Content is <strong>required</strong>
         </mat-error>
         <h4 class="mt-5">Sources</h4>
         <!-- TODO mock -->
@@ -31,7 +31,7 @@
         </div>
       </mat-card-content>
       <mat-card-actions class="text-right">
-        <button type="button" mat-button>CLOSE</button>
+        <button type="button" mat-button (click)="location.back()">CLOSE</button>
         <button type="button" mat-button color="primary">DELETE</button>
         <button type="button" mat-raised-button color="primary">SAVE</button>
       </mat-card-actions>
