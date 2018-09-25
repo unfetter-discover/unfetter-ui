@@ -108,7 +108,7 @@ export class CapabilitySelectorComponent implements OnInit, AfterViewInit, OnDes
   private createNewCapability(): void {
     this.isAddCapability = true;
     this.addCapability = new Capability();
-    this.addCapability.category = this.currentCapabilityGroup.name;
+    this.addCapability.category = this.currentCapabilityGroup.id;
     this.addCapability.created_by_ref = this.allCapabilities[0].created_by_ref;
   }
   
