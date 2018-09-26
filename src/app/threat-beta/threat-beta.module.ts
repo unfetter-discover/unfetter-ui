@@ -9,6 +9,7 @@ import { ThreatBetaGuard } from './threat-beta.guard';
 import { routing } from './threat-beta.routing';
 import { GlobalModule } from '../global/global.module';
 import { ThreatHeaderComponent } from './threat-header/threat-header.component';
+import { SideBoardComponent } from './side-board/side-board.component';
 
 @NgModule({
   imports: [
@@ -16,7 +17,7 @@ import { ThreatHeaderComponent } from './threat-header/threat-header.component';
     GlobalModule,
     routing
   ],
-  declarations: [ThreatDashboardBetaComponent, FeedComponent, BoardComponent, ArticleComponent, CreateComponent, ThreatHeaderComponent],
+  declarations: [ThreatDashboardBetaComponent, FeedComponent, BoardComponent, ArticleComponent, CreateComponent, ThreatHeaderComponent, SideBoardComponent],
   providers: [
     ThreatBetaGuard,
   ],
