@@ -1,44 +1,28 @@
-import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { fadeInOut } from '../global/animations/fade-in-out';
 import { Router } from '@angular/router';
-import { MasterListDialogTableHeaders } from '../global/components/master-list-dialog/master-list-dialog.component';
 import { ThreatBoard } from 'stix/unfetter/threat-board';
+import { MasterListDialogTableHeaders } from '../../global/components/master-list-dialog/master-list-dialog.component';
 
 @Component({
-  selector: 'threat-dashboard-beta',
-  templateUrl: './threat-dashboard-beta.component.html',
-  styleUrls: ['./threat-dashboard-beta.component.scss'],
-  animations: [fadeInOut],
+  selector: 'side-board',
+  templateUrl: './side-board.component.html',
+  styleUrls: ['./side-board.component.scss']
 })
-export class ThreatDashboardBetaComponent implements OnInit {
+export class SideBoardComponent implements OnInit {
 
-  public showBackButton = new BehaviorSubject(false).asObservable();
+  readonly baseThreatUrl = '/threat-beta';
 
   public threatBoardId: string;
-
-  public finishedLoadingAll$: Observable<boolean> = new BehaviorSubject(true).asObservable(); // TODO
-
-  public failedToLoad = new BehaviorSubject(false).asObservable();
-
-  public title = new BehaviorSubject('').asObservable();
-
-  private location: Location;
-
-  readonly baseAssessUrl = '/threat-beta';
 
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
-    displayRoute: this.baseAssessUrl + '/result/summary',
-    modifyRoute: this.baseAssessUrl + '/wizard/edit',
-    createRoute: this.baseAssessUrl + '/create',
+    displayRoute: this.baseThreatUrl + '/board',
+    modifyRoute: this.baseThreatUrl + '/wizard/edit',
+    createRoute: this.baseThreatUrl + '/create',
   };
 
-  constructor(private router: Router) { // private location: Location) {
-
-   }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
@@ -57,15 +41,6 @@ export class ThreatDashboardBetaComponent implements OnInit {
 
     routePromise.catch((e) => console.log(e));
     return routePromise;
-  }
-
-
-  /**
-   * @description go back
-   * @param event
-   */
-  onBack(event: UIEvent): void {
-    this.location.back();
   }
 
   /**
@@ -88,17 +63,17 @@ export class ThreatDashboardBetaComponent implements OnInit {
   }
 
   /**
-   * @description clicked currently viewed assessment, confirm delete
+   * @description clicked currently viewed threatBoard, confirm delete
    * @return {void}
    */
   public onDeleteCurrent(): void {
     console.log('noop');
     // const boardId = this.boardId;
     // const name = this.boardName;
-    // this.confirmDelete({ name, rollupId });
+    // this.confirmDelete({ name, boardId });
   }
 
-    /**
+  /**
    * @description noop
    * @return {Promise<boolean>}
    */
@@ -122,7 +97,7 @@ export class ThreatDashboardBetaComponent implements OnInit {
    * @return {Promise<boolean>}
    */
   public onCellSelected(threatBoard: ThreatBoard): Promise<boolean> {
-    if (!threatBoard || !threatBoard.id ) {
+    if (!threatBoard || !threatBoard.id) {
       return Promise.resolve(false);
     }
     // TODO this.store.dispatch(new CleanAssessmentResultData());

@@ -1,0 +1,52 @@
+<unfetter-side-panel class="side-panel" [item]="{ name: assessmentName$ | async }" collapsible="false" width="320">
+
+  <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
+  <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
+  <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
+
+  <master-list-dialog-trigger title="Threat Boards" width="750px" height="400px" [dataSource]="masterListOptions.dataSource"
+    [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
+    (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
+
+  <!-- <markings-chips [model]="summary"></markings-chips> -->
+  <sidepanel-list-item label="Threat Report 1" expandable="false" showCount="false">
+    <!-- <mat-list-item *ngFor="let report of threatBoard?.reports; trackBy:trackByFn" class="list-divider"
+      [@slideInOutAnimation]>
+      <h4 mat-line *ngIf="getReportURL(report) as url">
+        <a *ngIf="url; else noLink" href="{{url}}" target="_blank">
+          {{report?.attributes.name}}
+        </a>
+        <mat-icon aria-label="visit report">open_in_new</mat-icon>
+        <ng-template #noLink>{{report?.attributes.name}}</ng-template>
+      </h4>
+      <div mat-line class="mat-caption"> {{report?.attributes.description}} </div>
+    </mat-list-item> -->
+  </sidepanel-list-item>
+  <sidepanel-list-item label="Threat Report 2" expandable="false" showCount="false">
+      <!-- <mat-list-item *ngFor="let report of threatBoard?.reports; trackBy:trackByFn" class="list-divider"
+        [@slideInOutAnimation]>
+        <h4 mat-line *ngIf="getReportURL(report) as url">
+          <a *ngIf="url; else noLink" href="{{url}}" target="_blank">
+            {{report?.attributes.name}}
+          </a>
+          <mat-icon aria-label="visit report">open_in_new</mat-icon>
+          <ng-template #noLink>{{report?.attributes.name}}</ng-template>
+        </h4>
+        <div mat-line class="mat-caption"> {{report?.attributes.description}} </div>
+      </mat-list-item> -->
+    </sidepanel-list-item>
+    <sidepanel-list-item label="Threat Report 3" expandable="false" showCount="false">
+        <!-- <mat-list-item *ngFor="let report of threatBoard?.reports; trackBy:trackByFn" class="list-divider"
+          [@slideInOutAnimation]>
+          <h4 mat-line *ngIf="getReportURL(report) as url">
+            <a *ngIf="url; else noLink" href="{{url}}" target="_blank">
+              {{report?.attributes.name}}
+            </a>
+            <mat-icon aria-label="visit report">open_in_new</mat-icon>
+            <ng-template #noLink>{{report?.attributes.name}}</ng-template>
+          </h4>
+          <div mat-line class="mat-caption"> {{report?.attributes.description}} </div>
+        </mat-list-item> -->
+      </sidepanel-list-item>
+
+</unfetter-side-panel>
