@@ -23,7 +23,17 @@ import { ArticleReportPaneComponent } from './article/article-report-pane/articl
     ReactiveFormsModule,
     routing
   ],
-  declarations: [ThreatDashboardBetaComponent, FeedComponent, BoardComponent, ArticleComponent, CreateComponent, ThreatHeaderComponent, SideBoardComponent],
+  declarations: [
+    ThreatDashboardBetaComponent, 
+    FeedComponent, 
+    BoardComponent, 
+    ArticleComponent, 
+    CreateComponent, 
+    ThreatHeaderComponent, 
+    SideBoardComponent,
+    ArticleEditorComponent,
+    ArticleReportPaneComponent
+  ],
   providers: [
     ThreatBetaGuard,
   ],
