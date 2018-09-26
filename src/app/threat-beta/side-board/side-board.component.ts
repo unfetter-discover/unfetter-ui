@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ThreatBoard } from 'stix/unfetter/threat-board';
 import { MasterListDialogTableHeaders } from '../../global/components/master-list-dialog/master-list-dialog.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'side-board',
@@ -11,6 +12,8 @@ import { MasterListDialogTableHeaders } from '../../global/components/master-lis
 export class SideBoardComponent implements OnInit {
 
   readonly baseThreatUrl = '/threat-beta';
+
+  threatBoardName$: Observable<string>;
 
   public threatBoardId: string;
 
@@ -66,7 +69,11 @@ export class SideBoardComponent implements OnInit {
    * @description clicked currently viewed threatBoard, confirm delete
    * @return {void}
    */
-  public onDeleteCurrent(): void {
+  public onDeleteCurrent(event: Event): void {
+    if (event && (event instanceof UIEvent)) {
+      event.preventDefault();
+    }
+
     console.log('noop');
     // const boardId = this.boardId;
     // const name = this.boardName;
