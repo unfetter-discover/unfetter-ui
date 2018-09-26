@@ -15,11 +15,19 @@ import { UserListItem } from '../../../models/user/user-profile';
 export class MarkdownMentionsComponent implements OnInit {
 
   /**
-   * @description If you wish to use this event emitter, be sure to pass in
-   * and empty functions for the onLinkCallback input
+   * @description If you wish to use this event emitter to do something
+   *    other than route to the user's profile on click, be sure to set 
+   *    `goToProfileOnClick` to false
    */
   @Output()
   public userIdClicked: EventEmitter<string> = new EventEmitter();
+
+  /**
+   * @description switch to turn off default behavior of going to
+   *    the user's profile on click
+   */
+  @Input()
+  public goToProfileOnClick = true;
 
   @Input()
   public set markDown(md: string) {
@@ -34,20 +42,7 @@ export class MarkdownMentionsComponent implements OnInit {
   public markDown$: Subject<string> = new Subject();
 
   public rendered$: Observable<string>;
-  private _markDown: string;
-
-  /**
-   * @description Adds customizable behavior for clicking of a link to a user.
-   * 
-   * Default behavior is to them to their profile page.
-   * 
-   * If your callback has `this` in it, be sure to set `this.callbackName = this.callbackName.bind(this)`
-   * in the parent class's constructor.
-   */
-  @Input()
-  public onLinkCallback: (userId: string) => void = (userId: string): void => {
-    this.router.navigate([`/users/profile/${userId}`]);
-  };  
+  private _markDown: string; 
 
   constructor(
     private store: Store<AppState>,
@@ -88,7 +83,9 @@ export class MarkdownMentionsComponent implements OnInit {
   public onClick(e: any) {
     const userId = e.target.getAttribute('data-link');
     if (userId) {
-      this.onLinkCallback(userId);
+      if (this.goToProfileOnClick) {
+        this.router.navigate([`/users/profile/${userId}`]);
+      }
       this.userIdClicked.emit(userId);
     }
   }

@@ -4,7 +4,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 950;
+  z-index: 750;
   background: #fff;
   display: none;
 }
@@ -18,16 +18,11 @@
   border-bottom: 1px solid #E0E0E0;
 }
 
-.selected {
-  @include themePrimaryColors('background-color');
-  @include themeAccentText();
-}
-
-.hovered {
-  @include themePrimaryLightestColors('background-color');
-}
-
 .userAvatar {
     border-radius: 15%;
     height: 17px;
+}
+
+.simpleMdeMentions {
+  position: relative;
 }
