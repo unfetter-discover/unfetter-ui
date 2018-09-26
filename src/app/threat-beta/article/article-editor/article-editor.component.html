@@ -1,6 +1,6 @@
 <div id="articleEditorComponent">
   <form [formGroup]="form">
-    <mat-card class="mat-elevation-z8">
+    <mat-card class="mat-elevation-z8 fixed-tab-height card">
       <mat-card-content>
         <br>
         <div id="nameWrapper" class="flex">
@@ -30,11 +30,13 @@
           <br>
         </div>
       </mat-card-content>
-      <mat-card-actions class="text-right">
-        <button type="button" mat-button (click)="location.back()">CLOSE</button>
-        <button type="button" mat-button color="primary">DELETE</button>
-        <button type="button" mat-raised-button color="primary">SAVE</button>
-      </mat-card-actions>
     </mat-card>
+    <div class="articleControlWrapper text-right">
+      <button type="button" mat-button (click)="location.back()">CLOSE</button>
+      <span>&nbsp;</span>
+      <button type="button" mat-button color="primary">DELETE</button>
+      <span>&nbsp;</span>
+      <button type="button" mat-raised-button color="primary">SAVE</button>
+    </div>
   </form>
 </div>
