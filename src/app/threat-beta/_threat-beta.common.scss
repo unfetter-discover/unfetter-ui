@@ -1,4 +1,9 @@
+@import '../../styles/variables';
+
+$page-height: calc(100vh - #{$navbar-height}px);
 $main-panel-color: #F1F1F1;
+$tab-wrapper-height: 128px;
+$tab-content-height: calc(100vh - #{$navbar-height}px - 128px);
 
 @mixin with-margin-centered() {
     margin-left: 24px;
@@ -19,4 +24,20 @@ $main-panel-color: #F1F1F1;
 
 .main-panel {
     background: $main-panel-color;
+}
+
+.fixed-page-height {
+    height: $page-height;
+}
+
+.min-page-height {
+    min-height: $page-height;
+}
+
+.fixed-tab-height {
+    height: $tab-content-height;
+}
+
+.min-tab-height {
+    min-height: $tab-content-height;
 }
