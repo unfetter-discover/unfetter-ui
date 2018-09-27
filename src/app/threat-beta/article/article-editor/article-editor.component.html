@@ -1,7 +1,7 @@
 <div id="articleEditorComponent">
   <form [formGroup]="form">
     <mat-card class="mat-elevation-z8 fixed-tab-height card">
-      <mat-card-content>
+      <mat-card-content class="cardContent">
         <br>
         <div id="nameWrapper" class="flex">
           <button mat-icon-button class="mat-24 edit-close-button" style="margin-left: -18px;" (click)="location.back()" type="button">
@@ -18,7 +18,7 @@
 
         <div class="mb-6">          
           <h4 [class.textWarn]="form.get('content').dirty && form.get('content').hasError('required')">Content<sup>*</sup></h4>
-          <simplemde-mentions formControlName="content" [class.mdeError]="form.get('content').dirty && form.get('content').hasError('required')"></simplemde-mentions>
+          <simplemde-mentions formControlName="content" [class.mdeError]="form.get('content').dirty && form.get('content').hasError('required')" ngDefaultControl></simplemde-mentions>
           <mat-error [style.visibility]="form.get('content').dirty && form.get('content').hasError('required') ? 'visible' : 'hidden'">
             Content is <strong>required</strong>
           </mat-error>
@@ -38,12 +38,14 @@
 
       </mat-card-content>
     </mat-card>
-    <div class="articleControlWrapper text-right">
-      <button type="button" mat-button (click)="location.back()">CLOSE</button>
-      <span>&nbsp;</span>
-      <button type="button" mat-button color="primary">DELETE</button>
-      <span>&nbsp;</span>
-      <button type="button" mat-raised-button color="primary">SAVE</button>
+    <div class="articleControlWrapper">
+      <div class="max-card-width text-right">
+        <button type="button" mat-button (click)="location.back()">CLOSE</button>
+        <span>&nbsp;</span>
+        <button type="button" mat-button color="primary">DELETE</button>
+        <span>&nbsp;</span>
+        <button type="button" mat-raised-button color="primary">SAVE</button>
+      </div>
     </div>
   </form>
 </div>

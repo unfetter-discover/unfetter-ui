@@ -6,6 +6,8 @@ $tab-wrapper-height: 128px;
 $page-height: calc(100vh - #{$navbar-height}px);
 // Page height including tabs
 $tab-content-height: calc(100vh - #{$navbar-height}px - #{$tab-wrapper-height});
+// At very wide resolutions, content can be too hard to read
+$card-max-content-width: 700px;
 
 @mixin with-margin-centered() {
     margin-left: 24px;
@@ -65,4 +67,8 @@ $tab-content-height: calc(100vh - #{$navbar-height}px - #{$tab-wrapper-height});
 
 .min-tab-height {
     min-height: $tab-content-height;
+}
+
+.max-card-width {
+    max-width: $card-max-content-width;
 }

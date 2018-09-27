@@ -22,6 +22,7 @@ export class ArticleEditorComponent implements OnInit {
 
   constructor(
     public location: Location,
+    // TODO update state to feature state when ngrx is added
     private store: Store<AppState>
   ) { }
 
@@ -32,16 +33,15 @@ export class ArticleEditorComponent implements OnInit {
         pluck('runConfig'),
         distinctUntilChanged<MasterConfig>(),
         map((cfg) => cfg.blockAttachments)
-      );
-
+      );    
     this.sourceNames$ = this.form.get('sources').valueChanges
-        .pipe(
-          startWith(this.form.get('sources').value),
-          map((sourceIds: string[]) => {
-            // TODO get real source names
-            return sourceIds
-              .map((sourceId) => 'A placeholder name');
-          })
-        )
-  }  
+      .pipe(
+        startWith(this.form.get('sources').value),
+        map((sourceIds: string[]) => {
+          // TODO get real source names
+          return sourceIds
+            .map((sourceId) => 'A placeholder name');
+        })
+      );
+  }
 }
