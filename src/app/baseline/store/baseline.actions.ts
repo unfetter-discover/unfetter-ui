@@ -23,6 +23,7 @@ export const REMOVE_OBJECT_ASSESSMENTS_FROM_BASELINE = '[Baseline] REMOVE_OBJECT
 export const SET_CURRENT_BASELINE_CAPABILITY = '[Baseline] SET_CURRENT_BASELINE_CAPABILITY';
 export const SET_BASELINE = '[Baseline] SET_BASELINE';
 export const ADD_CAPABILITY_GROUP = '[Baseline] ADD_CAPABILITY_GROUP';
+export const ADD_CAPABILITY = '[Baseline] ADD_CAPABILITY';
 export const REMOVE_CAPABILITY_GROUP_FROM_BASELINE = '[Baseline] REMOVE_CAPABILITY_GROUP_FROM_BASELINE'
 export const SAVE_OBJECT_ASSESSMENTS = '[Baseline] SAVE_OBJECT_ASSESSMENTS';
 export const FAILED_TO_LOAD = '[Baseline] FAILED_TO_LOAD';
@@ -157,6 +158,12 @@ export class SetCapabilities implements Action {
     public readonly type = SET_CAPABILITIES;
 
     constructor(public payload: Capability[]) { }
+}
+
+export class AddCapability implements Action {
+    public readonly type = ADD_CAPABILITY;
+
+    constructor(public payload: Capability) { }
 }
 
 export class SetBaselineCapabilities implements Action {

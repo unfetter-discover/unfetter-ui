@@ -5,6 +5,24 @@
             {{ currentCapabilityGroup.name }} Capabilities
           </mat-card-title>
         </div>
+        <div class="col-sm-3">
+          <div *ngIf="!isAddCapability" class="button-row">
+            <button mat-raised-button (click)="createNewCapability()"><i class="material-icons">add</i>ADD CAPABILITY</button>
+          </div>          
+        </div>
+      </div>
+      <div *ngIf="isAddCapability">
+        <div class="row margin-bottom flex-sm flexItemsCenter">
+          <div class="col-sm-9">
+            <div class="form-group">
+              <mat-form-field class="full-width">
+                <input matInput class="form-control" required placeholder="Capability Name" value="addCapability.name" [(ngModel)]="addCapability.name">
+              </mat-form-field>
+            </div>
+            <button type="submit"  class="mat-primary" mat-raised-button [disabled]="!addCapability.name" (click)="addNewCapability(addCapability)"><i class="material-icons">save</i> SAVE {{ addCapability.name }}</button>
+            <button type="submit"  class="mat-primary" mat-raised-button (click)="cancelAddNewCapability()">CANCEL</button>
+          </div>
+        </div>
       </div>
       <div class="row margin-bottom" *ngFor="let selCapability of selectedCapabilities; index as i; trackBy: trackByFn">
         <div class="col-xs-12">
