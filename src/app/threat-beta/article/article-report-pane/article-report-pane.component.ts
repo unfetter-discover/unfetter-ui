@@ -12,7 +12,8 @@ export class ArticleReportPaneComponent implements OnInit {
   @Input()
   public form: FormGroup;
   @Input()
-  public report: Report = new Report({ 
+  public report: Report = new Report({
+    id: 'report-1234',
     name: 'Sample Text to Be Deleted',
     description: `Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus ducimus, illum explicabo architecto officia impedit quaerat aut iste dolore eius amet porro, qui recusandae voluptate in quo cumque repellendus minima.
       \n\nLorem ipsum dolor sit, amet consectetur adipisicing elit. Vitae animi non consequuntur facilis voluptatum odit sed impedit tempora assumenda, aliquid itaque cumque repellendus commodi excepturi 
@@ -76,8 +77,11 @@ export class ArticleReportPaneComponent implements OnInit {
     const quote = text.replace(/\n/g, '\n> ');
     const newContent = `${previousContent}\n> ${quote}\n> (Citation: ${this.report.name})\n>\n`;
     this.form.get('content').patchValue(newContent);
-    
-    const sources = this.form.get('metaProperties').get('relationships');
 
+    const sources: string[] = this.form.get('sources').value;
+    if (!sources.includes(this.report.id)) {
+      sources.push(this.report.id);
+      this.form.get('sources').patchValue(sources);
+    }
   }
 }
