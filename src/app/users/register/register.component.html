@@ -34,7 +34,7 @@
 
                 <mat-card-content>
                     <br class="mt-10">
-                    <form [formGroup]="form" (keydown.enter)="enterPressed($event)" (ngOnSubmit)="registerSubmit()">
+                    <form [formGroup]="form" (keydown.enter)="enterPressed($event)" (ngSubmit)="registerSubmit()">
 
                         <mat-vertical-stepper [linear]="true" #stepper>
 
