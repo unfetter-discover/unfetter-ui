@@ -1,4 +1,5 @@
 @import '../../threat-beta.common';
+@import '../../../../styles/variables';
 
 #articleEditorComponent {
     position: relative;
@@ -8,6 +9,7 @@
     overflow-y: auto;
     // To account for fixed controls
     padding-bottom: 64px;
+    height: calc(100vh - #{$navbar-height}px - 128px - 48px);
 }
 
 .articleControlWrapper {

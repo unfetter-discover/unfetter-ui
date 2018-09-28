@@ -1,2 +1,13 @@
 @import '../../../styles/_variables.scss';
 @import '../threat-beta.common';
+
+#card1Wrapper,
+#card2Wrapper {
+    margin: 24px;
+    max-width: $card-max-content-width + 48px;
+}
+
+#card2Wrapper {
+    margin-left: 0;
+    max-width: $card-max-content-width + 24px;
+}
