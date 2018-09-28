@@ -1,6 +1,2 @@
 @import '../../../styles/_variables.scss';
-
-.main-panel {
-    min-height: calc(100vh - #{$navbar-height}px);
-    background-color: #F1F1F1;
-}
+@import '../threat-beta.common';

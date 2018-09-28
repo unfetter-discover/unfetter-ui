@@ -1,14 +1,19 @@
 <ng-container *ngIf="(finishedLoadingAll$|async) === true; else loadingBlock">
   <div #layout class="layout" *ngIf="(failedToLoad|async) === false; else failedToLoadBlock">
-    <mat-sidenav-container>
-      <mat-sidenav class="side-panel" mode="side" opened="true">
+    <mat-sidenav-container class="fixed-page-height">
+      <mat-sidenav class="side-panel fixed-page-height zIndex1" mode="side" opened="true">
         <side-board></side-board>
       </mat-sidenav>
-      <mat-sidenav-content class="sidenavContentPolyfill320">
+      <mat-sidenav-content class="sidenavContentPolyfill320 fixed-page-height">
         <threat-header></threat-header>
         <!-- TODO [threat]="feed" [boardId]="threatBoardId" [created]="board?.created"> </threat-header> -->
-        <div class="main-panel">
-          Article about individual board here.
+        <div class="main-panel flex">
+          <span class="flex1 p-24 max-card-width">
+            <article-report-pane [form]="form"></article-report-pane>    
+          </span>
+          <span class="flex1">
+            <article-editor [form]="form"></article-editor>
+          </span>
         </div>
       </mat-sidenav-content>
     </mat-sidenav-container>

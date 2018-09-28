@@ -1,6 +1,40 @@
+@import '../../styles/variables';
+
+$main-panel-color: #F1F1F1;
+$tab-wrapper-height: 128px;
+// Page height ignored tabs
+$page-height: calc(100vh - #{$navbar-height}px);
+// Page height including tabs
+$tab-content-height: calc(100vh - #{$navbar-height}px - #{$tab-wrapper-height});
+// At very wide resolutions, content can be too hard to read
+$card-max-content-width: 700px;
+
 @mixin with-margin-centered() {
     margin-left: 24px;
     margin-right: 24px; 
+}
+
+.side-panel {
+  width: 320px;
+  background-color: white;
+
+  markings-chips {
+    ::ng-deep div.flex {
+      margin-bottom: 4px;
+
+      mat-chip-list {
+        margin: 0 auto;
+      }
+
+      mat-chip {
+        margin: 0 auto 4px;
+      }
+
+      mat-chip:first-of-type {
+        margin-top: -8px;
+      }
+    }
+  }
 }
 
 .flex {
@@ -13,4 +47,28 @@
 
 .flex-cols {
     flex-direction: column;
+}
+
+.main-panel {
+    background: $main-panel-color;
+}
+
+.fixed-page-height {
+    height: $page-height;
+}
+
+.min-page-height {
+    min-height: $page-height;
+}
+
+.fixed-tab-height {
+    height: $tab-content-height;
+}
+
+.min-tab-height {
+    min-height: $tab-content-height;
+}
+
+.max-card-width {
+    max-width: $card-max-content-width;
 }

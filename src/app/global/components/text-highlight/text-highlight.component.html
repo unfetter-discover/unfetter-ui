@@ -1,0 +1,11 @@
+<div class="textHighlightComponent" (mouseup)="mouseUp($event)">
+
+  <span id="fab" #fab [class.inlineBlock]="showFab" matTooltip="{{ toolTipText }}" (click)="onClick()">
+    <button mat-mini-fab color="accent">
+      <i class="material-icons mat-24">add</i>
+    </button>
+  </span>
+  
+  <ng-content></ng-content>
+
+</div>

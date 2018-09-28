@@ -94,6 +94,7 @@ import { ScrollTrapDirective } from './directives/scroll-trap.directive';
 import { SimplemdeMentionsComponent } from './components/simplemde-mentions/simplemde-mentions.component';
 import { SimpleMDEConfig } from './static/simplemde-config';
 import { MarkdownMentionsComponent } from './components/markdown-mentions/markdown-mentions.component';
+import { TextHighlightComponent } from './components/text-highlight/text-highlight.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -178,6 +179,7 @@ const unfetterComponents = [
     SimplemdeMentionsComponent,
     MarkdownMentionsComponent,
     ScrollTrapDirective,
+    TextHighlightComponent,
 ];
 
 @NgModule({
@@ -207,12 +209,13 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,        
+        ...unfetterComponents,       
     ],
     exports: [
         ...unfetterComponents,
         ...matModules,
         SimplemdeModule,
+        MarkdownModule,
     ],
     providers: [
         AuthService,
