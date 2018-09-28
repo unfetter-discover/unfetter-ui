@@ -8,10 +8,10 @@
         <threat-header></threat-header>
         <!-- TODO [threat]="feed" [boardId]="threatBoardId" [created]="board?.created"> </threat-header> -->
         <div class="main-panel flex">
-          <span class="flex1 p-24 max-card-width">
+          <span class="flex1" id="card1Wrapper">
             <article-report-pane [form]="form"></article-report-pane>    
           </span>
-          <span class="flex1">
+          <span class="flex1" id="card2Wrapper">
             <article-editor [form]="form"></article-editor>
           </span>
         </div>
