@@ -16,7 +16,7 @@ const routes: Routes = [
         path: 'create', component: CreateComponent
       }, 
       {
-        path: ':id',
+        path: ':boardId',
         component: BoardLayoutComponent,
         children: [
           { path: 'article', component: ArticleComponent },

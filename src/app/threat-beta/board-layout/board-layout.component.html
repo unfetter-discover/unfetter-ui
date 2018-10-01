@@ -3,10 +3,10 @@
     <div #layout class="layout" *ngIf="(failedToLoad|async) === false; else failedToLoadBlock">
       <mat-sidenav-container class="fixed-page-height">
         <mat-sidenav class="side-panel fixed-page-height zIndex1" mode="side" opened="true">
-          <side-board></side-board>
+          <side-board [boardId]="boardId$ | async"></side-board>
         </mat-sidenav>
         <mat-sidenav-content class="sidenavContentPolyfill320 fixed-page-height">
-          <threat-header></threat-header>
+          <threat-header [boardId]="boardId$ | async"></threat-header>
           <router-outlet></router-outlet>
         </mat-sidenav-content>
       </mat-sidenav-container>

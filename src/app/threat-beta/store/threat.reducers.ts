@@ -26,7 +26,7 @@ export const initialState: ThreatState = {
     selectedBoard: null
 }
 
-export function threatReducer(state = initialState, action: threatActions): ThreatState {
+export function threatReducer(state = initialState, action: threatActions): ThreatState {    
     switch (action.type) {
         case ThreatActionTypes.FetchBaseData: 
         case ThreatActionTypes.FetchBoardDetailedData:

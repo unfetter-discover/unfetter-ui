@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { filter, pluck } from 'rxjs/operators';
 
 @Component({
   selector: 'board-layout',
@@ -11,9 +13,16 @@ export class BoardLayoutComponent implements OnInit {
 
   public failedToLoad = new BehaviorSubject(false).asObservable();
 
-  constructor() { }
+  public boardId$;
+
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.boardId$ = this.route.params
+      .pipe(
+        filter((params) => params && params.boardId),
+        pluck('boardId')
+      );
   }
 
 }

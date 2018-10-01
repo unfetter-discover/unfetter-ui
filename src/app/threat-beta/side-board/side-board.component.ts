@@ -1,8 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { ThreatBoard } from 'stix/unfetter/threat-board';
-import { MasterListDialogTableHeaders } from '../../global/components/master-list-dialog/master-list-dialog.component';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { ThreatBoard } from 'stix/unfetter/threat-board';
+
+import { MasterListDialogTableHeaders } from '../../global/components/master-list-dialog/master-list-dialog.component';
+import { SideBoardDataSource } from './side-board.datasource';
+import { ThreatFeatureState } from '../store/threat.reducers';
+import { pluck, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'side-board',
@@ -10,24 +15,31 @@ import { Observable } from 'rxjs';
   styleUrls: ['./side-board.component.scss']
 })
 export class SideBoardComponent implements OnInit {
+  @Input()
+  public boardId: string;
 
   readonly baseThreatUrl = '/threat-beta';
 
   threatBoardName$: Observable<string>;
 
-  public threatBoardId: string;
-
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
-    displayRoute: this.baseThreatUrl + '/board',
     modifyRoute: this.baseThreatUrl + '/wizard/edit',
     createRoute: this.baseThreatUrl + '/create',
   };
 
-  constructor(private router: Router) { }
-
+  constructor(
+    private router: Router,
+    protected store: Store<ThreatFeatureState>
+  ) { }
+  
   ngOnInit() {
+    this.masterListOptions.dataSource = new SideBoardDataSource(this.store);
+    const isSameThreatBoard = (row: any) => row && row.id === this.boardId;
+    this.masterListOptions.columns.id.classes =
+      (row: any) => isSameThreatBoard(row) ? 'current-item' : 'cursor-pointer';
+    this.masterListOptions.columns.id.selectable = (row: any) => !isSameThreatBoard(row);
   }
 
   /**
@@ -37,7 +49,7 @@ export class SideBoardComponent implements OnInit {
   public onEdit(event?: any): Promise<boolean> {
     let routePromise: Promise<boolean>;
     if (!event || (event instanceof UIEvent)) {
-      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, this.threatBoardId]);
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, this.boardId]);
     } else {
       routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.id]);
     }
@@ -109,7 +121,8 @@ export class SideBoardComponent implements OnInit {
     }
     // TODO this.store.dispatch(new CleanAssessmentResultData());
     // this.riskByAttackPatternStore.dispatch(new CleanAssessmentRiskByAttackPatternData());
-    return this.router.navigate([this.masterListOptions.displayRoute, threatBoard.id]);
+    this.router.navigate([this.baseThreatUrl, threatBoard.id, 'board' ]);
+    return Promise.resolve(false);
   }
 
 }

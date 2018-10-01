@@ -16,6 +16,8 @@ export enum ThreatActionTypes {
 
 export class FetchBaseData implements Action {
     public readonly type = ThreatActionTypes.FetchBaseData;
+
+    constructor() { }
 }
 
 export class FetchBoardDetailedData implements Action {
@@ -62,6 +64,8 @@ export class SetLoadingComplete implements Action {
 
 export class ClearData implements Action {
     public readonly type = ThreatActionTypes.ClearData;
+
+    constructor() { }
 }
 
 export type threatActions = 
