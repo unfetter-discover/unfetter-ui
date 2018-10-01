@@ -8,6 +8,7 @@ import { MasterListDialogTableHeaders } from '../../global/components/master-lis
 import { SideBoardDataSource } from './side-board.datasource';
 import { ThreatFeatureState } from '../store/threat.reducers';
 import { pluck, filter } from 'rxjs/operators';
+import { getSelectedBoard } from '../store/threat.selectors';
 
 @Component({
   selector: 'side-board',
@@ -20,7 +21,8 @@ export class SideBoardComponent implements OnInit {
 
   readonly baseThreatUrl = '/threat-beta';
 
-  threatBoardName$: Observable<string>;
+  public threatBoardName$: Observable<string>;
+
 
   masterListOptions = {
     dataSource: null,
@@ -40,6 +42,12 @@ export class SideBoardComponent implements OnInit {
     this.masterListOptions.columns.id.classes =
       (row: any) => isSameThreatBoard(row) ? 'current-item' : 'cursor-pointer';
     this.masterListOptions.columns.id.selectable = (row: any) => !isSameThreatBoard(row);
+
+    this.threatBoardName$ = this.store.select(getSelectedBoard)
+      .pipe(
+        filter((board) => board && board.name !== undefined),
+        pluck('name')
+      );
   }
 
   /**

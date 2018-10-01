@@ -9,7 +9,7 @@ export enum ThreatActionTypes {
     SetIntrusionSets = '[Threat] Set Intrusion Sets',
     SetArticles = '[Threat] Set Articles',
     SetBoardList = '[Threat] Set Board List',
-    SetSelectedBoard = '[Threat] Set Selected Board',
+    SetSelectedBoardId = '[Threat] Set Selected Board Id',
     SetLoadingComplete = '[Threat] Set Loading Complete',
     ClearData = '[Threat] Clear Data'
 }
@@ -50,10 +50,10 @@ export class SetBoardList implements Action {
     constructor(public payload: ThreatBoard[]) { }
 }
 
-export class SetSelectedBoard implements Action {
-    public readonly type = ThreatActionTypes.SetSelectedBoard;
+export class SetSelectedBoardId implements Action {
+    public readonly type = ThreatActionTypes.SetSelectedBoardId;
 
-    constructor(public payload: ThreatBoard) { }
+    constructor(public payload: string) { }
 }
 
 export class SetLoadingComplete implements Action {
@@ -75,6 +75,6 @@ export type threatActions =
     | SetIntrusionSets
     | SetArticles
     | SetBoardList
-    | SetSelectedBoard
+    | SetSelectedBoardId
     | SetLoadingComplete 
     | ClearData;

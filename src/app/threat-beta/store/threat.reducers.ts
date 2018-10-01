@@ -14,7 +14,7 @@ export interface ThreatState {
     intrusionSets: IntrusionSet[],
     articles: Article[],
     loadingComplete: boolean,
-    selectedBoard: ThreatBoard
+    selectedBoardId: string
 }
 
 export const initialState: ThreatState = {
@@ -23,7 +23,7 @@ export const initialState: ThreatState = {
     intrusionSets: [],
     articles: [],
     loadingComplete: false,
-    selectedBoard: null
+    selectedBoardId: null
 }
 
 export function threatReducer(state = initialState, action: threatActions): ThreatState {    
@@ -54,10 +54,10 @@ export function threatReducer(state = initialState, action: threatActions): Thre
                 ...state,
                 boardList: action.payload
             };
-        case ThreatActionTypes.SetSelectedBoard:
+        case ThreatActionTypes.SetSelectedBoardId:
             return {
                 ...state,
-                selectedBoard: action.payload
+                selectedBoardId: action.payload
             };
         case ThreatActionTypes.SetLoadingComplete:
             return {

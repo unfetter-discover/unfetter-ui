@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { filter, pluck } from 'rxjs/operators';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
+import { filter, pluck, finalize } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+
+import { ThreatFeatureState } from '../store/threat.reducers';
+import * as fromThreat from '../store/threat.actions';
 
 @Component({
   selector: 'board-layout',
@@ -13,15 +17,29 @@ export class BoardLayoutComponent implements OnInit {
 
   public failedToLoad = new BehaviorSubject(false).asObservable();
 
-  public boardId$;
+  public boardId$: Observable<string>;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(
+    private route: ActivatedRoute,
+    private store: Store<ThreatFeatureState>
+  ) { }
 
   ngOnInit() {
     this.boardId$ = this.route.params
       .pipe(
         filter((params) => params && params.boardId),
         pluck('boardId')
+      );
+
+    const selectedBoard$: Subscription = this.boardId$
+      .pipe(finalize(() => selectedBoard$ && selectedBoard$.unsubscribe()))
+      .subscribe(
+        (id) => {
+          this.store.dispatch(new fromThreat.SetSelectedBoardId(id));
+        },
+        (err) => {
+          console.log(err);
+        }
       );
   }
 
