@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
@@ -13,9 +12,6 @@ import * as utilityActions from '../../root-store/utility/utility.actions';
   styleUrls: ['./article.component.scss']
 })
 export class ArticleComponent implements OnInit, OnDestroy {
-  public finishedLoadingAll$: Observable<boolean> = new BehaviorSubject(true).asObservable(); // TODO
-
-  public failedToLoad = new BehaviorSubject(false).asObservable();
   public form: FormGroup;
 
   constructor(

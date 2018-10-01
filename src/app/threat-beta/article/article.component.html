@@ -1,35 +1,10 @@
-<ng-container *ngIf="(finishedLoadingAll$|async) === true; else loadingBlock">
-  <div #layout class="layout" *ngIf="(failedToLoad|async) === false; else failedToLoadBlock">
-    <mat-sidenav-container class="fixed-page-height">
-      <mat-sidenav class="side-panel fixed-page-height zIndex1" mode="side" opened="true">
-        <side-board></side-board>
-      </mat-sidenav>
-      <mat-sidenav-content class="sidenavContentPolyfill320 fixed-page-height">
-        <threat-header></threat-header>
-        <!-- TODO [threat]="feed" [boardId]="threatBoardId" [created]="board?.created"> </threat-header> -->
-        <div class="main-panel flex">
-          <span class="flex1" id="card1Wrapper">
-            <article-report-pane [form]="form"></article-report-pane>    
-          </span>
-          <span class="flex1" id="card2Wrapper">
-            <article-editor [form]="form"></article-editor>
-          </span>
-        </div>
-      </mat-sidenav-content>
-    </mat-sidenav-container>
+<div id="articleComponent">
+  <div class="main-panel flex">
+    <span class="flex1" id="card1Wrapper">
+      <article-report-pane [form]="form"></article-report-pane>
+    </span>
+    <span class="flex1" id="card2Wrapper">
+      <article-editor [form]="form"></article-editor>
+    </span>
   </div>
-</ng-container>
-
-<ng-template #loadingBlock>
-  <loading-spinner></loading-spinner>
-</ng-template>
-
-<ng-template #failedToLoadBlock>
-  <div class="container fadeIn">
-    <div class="row mt-15">
-      <div class="col-xs-10 col-xs-offset-1">
-        <error-card errorTitle="Threat Dashboard" errorBody="Failed to load. Check the network and URL."></error-card>
-      </div>
-    </div>
-  </div>
-</ng-template>
+</div>

@@ -14,6 +14,8 @@ import { ThreatHeaderComponent } from './threat-header/threat-header.component';
 import { SideBoardComponent } from './side-board/side-board.component';
 import { ArticleEditorComponent } from './article/article-editor/article-editor.component';
 import { ArticleReportPaneComponent } from './article/article-report-pane/article-report-pane.component';
+import { MasterLayoutComponent } from './master-layout/master-layout.component';
+import { BoardLayoutComponent } from './board-layout/board-layout.component';
 
 @NgModule({
   imports: [
@@ -32,7 +34,9 @@ import { ArticleReportPaneComponent } from './article/article-report-pane/articl
     ThreatHeaderComponent, 
     SideBoardComponent,
     ArticleEditorComponent,
-    ArticleReportPaneComponent
+    ArticleReportPaneComponent,
+    MasterLayoutComponent,
+    BoardLayoutComponent
   ],
   providers: [
     ThreatBetaGuard,

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ThreatBoard } from 'stix/unfetter/threat-board';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'threat-header',
@@ -15,15 +16,16 @@ export class ThreatHeaderComponent implements OnInit {
   public boardLink: string;
   public articleLink: string;
 
-  constructor() {
-    const base = '/threat-beta';
-    this.feedLink = `${base}/feed`; // TODO /${this.assessmentId}`;
-    this.boardLink = `${base}/board`; // TODO /${this.assessmentId}`;
-    this.articleLink = `${base}/article`; // TODO /${this.assessmentId}`;
-   }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
-
+    const base = '/threat-beta';
+    this.route.params.subscribe(params => {
+      const id = params.id;
+      this.feedLink = `${base}/${id}/feed`;
+      this.boardLink = `${base}/${id}/board`;
+      this.articleLink = `${base}/${id}/article`;
+    });
   }
 
 }
