@@ -21,7 +21,7 @@ export class SideBoardComponent implements OnInit {
 
   readonly baseThreatUrl = '/threat-beta';
 
-  public threatBoardName$: Observable<string>;
+  public selectedBoard$: Observable<ThreatBoard>;
 
 
   masterListOptions = {
@@ -43,11 +43,7 @@ export class SideBoardComponent implements OnInit {
       (row: any) => isSameThreatBoard(row) ? 'current-item' : 'cursor-pointer';
     this.masterListOptions.columns.id.selectable = (row: any) => !isSameThreatBoard(row);
 
-    this.threatBoardName$ = this.store.select(getSelectedBoard)
-      .pipe(
-        filter((board) => board && board.name !== undefined),
-        pluck('name')
-      );
+    this.selectedBoard$ = this.store.select(getSelectedBoard);
   }
 
   /**

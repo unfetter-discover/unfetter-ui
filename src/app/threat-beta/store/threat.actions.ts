@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Malware, IntrusionSet } from 'stix';
+import { Malware, IntrusionSet, Report } from 'stix';
 import { Article, ThreatBoard } from 'stix/unfetter/index';
 
 export enum ThreatActionTypes {
@@ -9,8 +9,11 @@ export enum ThreatActionTypes {
     SetIntrusionSets = '[Threat] Set Intrusion Sets',
     SetArticles = '[Threat] Set Articles',
     SetBoardList = '[Threat] Set Board List',
+    SetFeedReports = '[Threat] Set Feed Reports',
+    SetAttachedReports = '[Threat] Set Attached Reports',
     SetSelectedBoardId = '[Threat] Set Selected Board Id',
-    SetLoadingComplete = '[Threat] Set Loading Complete',
+    SetDashboardLoadingComplete = '[Threat] Set Dashboard Loading Complete',
+    SetThreatboardLoadingComplete = '[Threat] Set Threatboard Loading Complete',
     ClearData = '[Threat] Clear Data'
 }
 
@@ -50,14 +53,32 @@ export class SetBoardList implements Action {
     constructor(public payload: ThreatBoard[]) { }
 }
 
+export class SetFeedReports implements Action {
+    public readonly type = ThreatActionTypes.SetFeedReports;
+
+    constructor(public payload: Report[]) { }
+}
+
+export class SetAttachedReports implements Action {
+    public readonly type = ThreatActionTypes.SetAttachedReports;
+
+    constructor(public payload: Report[]) { }
+}
+
 export class SetSelectedBoardId implements Action {
     public readonly type = ThreatActionTypes.SetSelectedBoardId;
 
     constructor(public payload: string) { }
 }
 
-export class SetLoadingComplete implements Action {
-    public readonly type = ThreatActionTypes.SetLoadingComplete;
+export class SetDashboardLoadingComplete implements Action {
+    public readonly type = ThreatActionTypes.SetDashboardLoadingComplete;
+
+    constructor(public payload: boolean) { }
+}
+
+export class SetThreatboardLoadingComplete implements Action {
+    public readonly type = ThreatActionTypes.SetThreatboardLoadingComplete;
 
     constructor(public payload: boolean) { }
 }
@@ -75,6 +96,9 @@ export type threatActions =
     | SetIntrusionSets
     | SetArticles
     | SetBoardList
+    | SetFeedReports
+    | SetAttachedReports
     | SetSelectedBoardId
-    | SetLoadingComplete 
+    | SetDashboardLoadingComplete 
+    | SetThreatboardLoadingComplete
     | ClearData;

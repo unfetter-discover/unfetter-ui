@@ -1,6 +1,6 @@
 import { AppState } from '../../root-store/app.reducers';
 import { Article, ThreatBoard } from 'stix/unfetter/index';
-import { Malware, IntrusionSet } from 'stix';
+import { Malware, IntrusionSet, Report } from 'stix';
 
 import { ThreatActionTypes, threatActions } from './threat.actions';
 
@@ -13,8 +13,13 @@ export interface ThreatState {
     malware: Malware[],
     intrusionSets: IntrusionSet[],
     articles: Article[],
-    loadingComplete: boolean,
-    selectedBoardId: string
+    // Partial report information to show in the feed
+    feedReports: Report[],
+    // Reports attached to a threat board
+    attachedReports: Report[],
+    selectedBoardId: string,
+    dashboardLoadingComplete: boolean,
+    threatboardLoadingComplete: boolean
 }
 
 export const initialState: ThreatState = {
@@ -22,17 +27,24 @@ export const initialState: ThreatState = {
     malware: [],
     intrusionSets: [],
     articles: [],
-    loadingComplete: false,
-    selectedBoardId: null
+    feedReports: [],
+    attachedReports: [],
+    selectedBoardId: null,
+    dashboardLoadingComplete: false,
+    threatboardLoadingComplete: true
 }
 
 export function threatReducer(state = initialState, action: threatActions): ThreatState {    
     switch (action.type) {
         case ThreatActionTypes.FetchBaseData: 
+            return {
+                ...state,
+                dashboardLoadingComplete: false
+            };
         case ThreatActionTypes.FetchBoardDetailedData:
             return {
                 ...state,
-                loadingComplete: false
+                threatboardLoadingComplete: false
             };
         case ThreatActionTypes.SetMalware:
             return {
@@ -54,15 +66,30 @@ export function threatReducer(state = initialState, action: threatActions): Thre
                 ...state,
                 boardList: action.payload
             };
+        case ThreatActionTypes.SetFeedReports:
+            return {
+                ...state,
+                feedReports: action.payload
+            };
+        case ThreatActionTypes.SetAttachedReports:
+            return {
+                ...state,
+                attachedReports: action.payload
+            };
         case ThreatActionTypes.SetSelectedBoardId:
             return {
                 ...state,
                 selectedBoardId: action.payload
             };
-        case ThreatActionTypes.SetLoadingComplete:
+        case ThreatActionTypes.SetThreatboardLoadingComplete:
             return {
                 ...state,
-                loadingComplete: action.payload
+                threatboardLoadingComplete: action.payload
+            };
+        case ThreatActionTypes.SetDashboardLoadingComplete:
+            return {
+                ...state,
+                dashboardLoadingComplete: action.payload
             };
         case ThreatActionTypes.ClearData:
             return initialState;
