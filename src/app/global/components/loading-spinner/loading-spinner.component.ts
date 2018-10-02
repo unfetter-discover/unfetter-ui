@@ -7,4 +7,6 @@ import { Constance } from '../../../utils/constance';
     templateUrl: 'loading-spinner.component.html'
 })
 export class LoadingSpinnerComponent {
+    @Input()
+    public height: string = '100vh';
 }

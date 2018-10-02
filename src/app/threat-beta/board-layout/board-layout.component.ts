@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
-import { filter, pluck, finalize } from 'rxjs/operators';
+import { filter, pluck, finalize, switchMap, map, take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import { ThreatFeatureState } from '../store/threat.reducers';
@@ -13,7 +13,7 @@ import * as fromThreat from '../store/threat.actions';
   styleUrls: ['./board-layout.component.scss']
 })
 export class BoardLayoutComponent implements OnInit {
-  public finishedLoadingAll$: Observable<boolean> = new BehaviorSubject(true).asObservable(); // TODO
+  public finishedLoadingAll$: Observable<boolean>; // TODO
 
   public failedToLoad = new BehaviorSubject(false).asObservable();
 
@@ -31,16 +31,30 @@ export class BoardLayoutComponent implements OnInit {
         pluck('boardId')
       );
 
-    const selectedBoard$: Subscription = this.boardId$
-      .pipe(finalize(() => selectedBoard$ && selectedBoard$.unsubscribe()))
+    const selectedBoardChange$: Subscription = this.boardId$
+      .pipe(
+        // switchMap((id) => {
+        //   return this.store.select('threat')
+        //     .pipe(
+        //       pluck<any, boolean>('dashboardLoadingComplete'),
+        //       filter((dashboardLoadingComplete) => dashboardLoadingComplete),
+        //       take(1),
+        //       map(() => id)
+        //     )
+        // }),
+        finalize(() => selectedBoardChange$ && selectedBoardChange$.unsubscribe())
+      )
       .subscribe(
         (id) => {
           this.store.dispatch(new fromThreat.SetSelectedBoardId(id));
+          this.store.dispatch(new fromThreat.FetchBoardDetailedData(id));
         },
         (err) => {
           console.log(err);
         }
       );
+
+    this.finishedLoadingAll$ = this.store.select('threat').pipe(pluck('threatboardLoadingComplete'));
   }
 
 }

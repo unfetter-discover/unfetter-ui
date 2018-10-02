@@ -39,11 +39,13 @@ export function threatReducer(state = initialState, action: threatActions): Thre
         case ThreatActionTypes.FetchBaseData: 
             return {
                 ...state,
+                selectedBoardId: null,
                 dashboardLoadingComplete: false
             };
         case ThreatActionTypes.FetchBoardDetailedData:
             return {
                 ...state,
+                attachedReports: [],
                 threatboardLoadingComplete: false
             };
         case ThreatActionTypes.SetMalware:

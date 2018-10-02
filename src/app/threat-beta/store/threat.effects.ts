@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
+import { tap, switchMap, map, mergeMap, withLatestFrom, pluck, filter } from 'rxjs/operators';
+import { forkJoin as observableForkJoin, of as observableOf } from 'rxjs';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { tap, switchMap, map, mergeMap } from 'rxjs/operators';
-import { forkJoin as observableForkJoin } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { Malware, IntrusionSet, Report } from 'stix';
 import { ThreatBoard } from 'stix/unfetter/index';
 
@@ -10,6 +11,9 @@ import { GenericApi } from '../../core/services/genericapi.service';
 import { StixUrls } from '../../global/enums/stix-urls.enum';
 import * as fromThreat from './threat.actions';
 import { StixApiOptions } from '../../global/models/stix-api-options';
+import { ThreatFeatureState } from './threat.reducers';
+import { getSelectedBoard } from './threat.selectors';
+import { take } from 'rxjs/internal/operators/take';
 
 @Injectable()
 export class ThreatEffects {
@@ -51,8 +55,45 @@ export class ThreatEffects {
             })
         );
 
+    @Effect()
+    public getDetailedBoardData = this.actions$
+        .pipe(
+            ofType(ThreatActionTypes.FetchBoardDetailedData),
+            switchMap((id) => {                
+                return this.store.select(getSelectedBoard)
+                    .pipe(
+                        filter((board) => board !== undefined),
+                        switchMap((board) => {
+                            if (board.reports && board.reports.length) {
+                                const reportOptions: StixApiOptions = {
+                                    filter: {
+                                        'stix.reports': {
+                                            $in: board.reports
+                                        }
+                                    },
+                                    sort: {
+                                        'stix.created': -1
+                                    },
+                                    metaproperties: true
+                                };
+                                return this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, reportOptions);
+                            } else {
+                                return observableOf([]);
+                            }
+                        })
+                    )
+            }),
+            mergeMap((reports) => {
+                return [
+                    new fromThreat.SetAttachedReports(reports),
+                    new fromThreat.SetThreatboardLoadingComplete(true)
+                ];
+            })
+        );
+
     constructor(
         private actions$: Actions,
-        private genericApi: GenericApi
+        private genericApi: GenericApi,
+        private store: Store<ThreatFeatureState>
     ) { }
 }
