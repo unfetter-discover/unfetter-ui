@@ -17,5 +17,21 @@ export const getSelectedBoardId = createSelector(
 export const getSelectedBoard = createSelector(
     getThreatBoards,
     getSelectedBoardId,
-    (boards, selectedId) => boards.find((board) => board.id === selectedId)
+    (boards, selectedBoardId) => boards.find((board) => board.id === selectedBoardId)
+);
+
+export const getAttachedReports = createSelector(
+    selectThreatState,
+    (state) => state.attachedReports
+);
+
+export const getSelectedReportId = createSelector(
+    selectThreatState,
+    (state) => state.selectedReportId
+);
+
+export const getSelectedReport = createSelector(
+    getAttachedReports,
+    getSelectedReportId,
+    (reports, selectedReportId) => reports.find((report) => report.id === selectedReportId)
 );

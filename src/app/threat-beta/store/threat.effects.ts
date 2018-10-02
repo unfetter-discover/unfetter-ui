@@ -22,7 +22,7 @@ export class ThreatEffects {
     public getBaseData = this.actions$
         .pipe(
             ofType(ThreatActionTypes.FetchBaseData),
-            switchMap(() => {
+            switchMap(() => {                
                 const reportOptions: StixApiOptions = {
                     project: {
                         'stix.name': 1,
@@ -68,7 +68,7 @@ export class ThreatEffects {
                             if (board.reports && board.reports.length) {
                                 const reportOptions: StixApiOptions = {
                                     filter: {
-                                        'stix.reports': {
+                                        _id: {
                                             $in: board.reports
                                         }
                                     },
@@ -77,7 +77,7 @@ export class ThreatEffects {
                                     },
                                     metaproperties: true
                                 };
-                                // TODO figure out why this isnt bringing back reports
+
                                 return this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, reportOptions);
                             } else {
                                 return observableOf([]);

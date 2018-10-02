@@ -18,6 +18,7 @@ export interface ThreatState {
     // Reports attached to a threat board
     attachedReports: Report[],
     selectedBoardId: string,
+    selectedReportId: string,
     dashboardLoadingComplete: boolean,
     threatboardLoadingComplete: boolean
 }
@@ -30,6 +31,7 @@ export const initialState: ThreatState = {
     feedReports: [],
     attachedReports: [],
     selectedBoardId: null,
+    selectedReportId: null,
     dashboardLoadingComplete: false,
     threatboardLoadingComplete: true
 }
@@ -46,6 +48,7 @@ export function threatReducer(state = initialState, action: threatActions): Thre
             return {
                 ...state,
                 attachedReports: [],
+                selectedReportId: null,
                 threatboardLoadingComplete: false
             };
         case ThreatActionTypes.SetMalware:
@@ -74,14 +77,30 @@ export function threatReducer(state = initialState, action: threatActions): Thre
                 feedReports: action.payload
             };
         case ThreatActionTypes.SetAttachedReports:
-            return {
-                ...state,
-                attachedReports: action.payload
-            };
+            const { payload: reports } = action;
+            if (reports && reports.length) {
+                return {
+                    ...state,
+                    // Set first report as selected report
+                    selectedReportId: reports[0].id,
+                    attachedReports: reports
+                };
+            } else {
+                return {
+                    ...state,
+                    selectedReportId: null,
+                    attachedReports: []
+                };
+            }
         case ThreatActionTypes.SetSelectedBoardId:
             return {
                 ...state,
                 selectedBoardId: action.payload
+            };
+        case ThreatActionTypes.SetSelectedReportId:
+            return {
+                ...state,
+                selectedReportId: action.payload
             };
         case ThreatActionTypes.SetThreatboardLoadingComplete:
             return {

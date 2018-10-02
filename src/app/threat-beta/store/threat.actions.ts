@@ -3,8 +3,11 @@ import { Malware, IntrusionSet, Report } from 'stix';
 import { Article, ThreatBoard } from 'stix/unfetter/index';
 
 export enum ThreatActionTypes {
+    // API/Effect related actions
     FetchBaseData = '[Threat/API] Fetch Base Data',
     FetchBoardDetailedData = '[Threat/API] Fetch Board DetailedData',
+
+    // Reducer related actions
     SetMalware = '[Threat] Set Malware',
     SetIntrusionSets = '[Threat] Set Intrusion Sets',
     SetArticles = '[Threat] Set Articles',
@@ -12,6 +15,7 @@ export enum ThreatActionTypes {
     SetFeedReports = '[Threat] Set Feed Reports',
     SetAttachedReports = '[Threat] Set Attached Reports',
     SetSelectedBoardId = '[Threat] Set Selected Board Id',
+    SetSelectedReportId = '[Threat] Set Selected Report Id',
     SetDashboardLoadingComplete = '[Threat] Set Dashboard Loading Complete',
     SetThreatboardLoadingComplete = '[Threat] Set Threatboard Loading Complete',
     ClearData = '[Threat] Clear Data'
@@ -71,6 +75,12 @@ export class SetSelectedBoardId implements Action {
     constructor(public payload: string) { }
 }
 
+export class SetSelectedReportId implements Action {
+    public readonly type = ThreatActionTypes.SetSelectedReportId;
+
+    constructor(public payload: string) { }
+}
+
 export class SetDashboardLoadingComplete implements Action {
     public readonly type = ThreatActionTypes.SetDashboardLoadingComplete;
 
@@ -99,6 +109,7 @@ export type threatActions =
     | SetFeedReports
     | SetAttachedReports
     | SetSelectedBoardId
+    | SetSelectedReportId
     | SetDashboardLoadingComplete 
     | SetThreatboardLoadingComplete
     | ClearData;
