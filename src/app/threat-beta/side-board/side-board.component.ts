@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { ThreatBoard } from 'stix/unfetter/threat-board';
+import { Report } from 'stix';
 
 import { MasterListDialogTableHeaders } from '../../global/components/master-list-dialog/master-list-dialog.component';
 import { SideBoardDataSource } from './side-board.datasource';
@@ -18,6 +19,7 @@ import { getSelectedBoard } from '../store/threat.selectors';
 export class SideBoardComponent implements OnInit {
   @Input()
   public boardId: string;
+  public reports$: Observable<Report[]>;
 
   readonly baseThreatUrl = '/threat-beta';
 
@@ -37,6 +39,8 @@ export class SideBoardComponent implements OnInit {
   ) { }
   
   ngOnInit() {
+    this.reports$ = this.store.select('threat').pipe(pluck('attachedReports'));
+
     this.masterListOptions.dataSource = new SideBoardDataSource(this.store);
     const isSameThreatBoard = (row: any) => row && row.id === this.boardId;
     this.masterListOptions.columns.id.classes =

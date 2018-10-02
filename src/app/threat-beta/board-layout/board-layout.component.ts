@@ -33,15 +33,6 @@ export class BoardLayoutComponent implements OnInit {
 
     const selectedBoardChange$: Subscription = this.boardId$
       .pipe(
-        // switchMap((id) => {
-        //   return this.store.select('threat')
-        //     .pipe(
-        //       pluck<any, boolean>('dashboardLoadingComplete'),
-        //       filter((dashboardLoadingComplete) => dashboardLoadingComplete),
-        //       take(1),
-        //       map(() => id)
-        //     )
-        // }),
         finalize(() => selectedBoardChange$ && selectedBoardChange$.unsubscribe())
       )
       .subscribe(

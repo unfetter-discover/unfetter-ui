@@ -63,6 +63,7 @@ export class ThreatEffects {
                 return this.store.select(getSelectedBoard)
                     .pipe(
                         filter((board) => board !== undefined),
+                        take(1),
                         switchMap((board) => {
                             if (board.reports && board.reports.length) {
                                 const reportOptions: StixApiOptions = {
@@ -76,6 +77,7 @@ export class ThreatEffects {
                                     },
                                     metaproperties: true
                                 };
+                                // TODO figure out why this isnt bringing back reports
                                 return this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, reportOptions);
                             } else {
                                 return observableOf([]);
