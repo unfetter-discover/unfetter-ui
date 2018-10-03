@@ -10,6 +10,7 @@ import { SideBoardDataSource } from './side-board.datasource';
 import { ThreatFeatureState } from '../store/threat.reducers';
 import { pluck, filter } from 'rxjs/operators';
 import { getSelectedBoard } from '../store/threat.selectors';
+import * as threatActions from '../store/threat.actions';
 
 @Component({
   selector: 'side-board',
@@ -48,6 +49,10 @@ export class SideBoardComponent implements OnInit {
     this.masterListOptions.columns.id.selectable = (row: any) => !isSameThreatBoard(row);
 
     this.selectedBoard$ = this.store.select(getSelectedBoard);
+  }
+
+  public reportClicked(reportId: string): void {
+    this.store.dispatch(new threatActions.SetSelectedReportId(reportId));
   }
 
   /**

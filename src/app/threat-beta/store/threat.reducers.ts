@@ -33,7 +33,7 @@ export const initialState: ThreatState = {
     selectedBoardId: null,
     selectedReportId: null,
     dashboardLoadingComplete: false,
-    threatboardLoadingComplete: true
+    threatboardLoadingComplete: false
 }
 
 export function threatReducer(state = initialState, action: threatActions): ThreatState {    

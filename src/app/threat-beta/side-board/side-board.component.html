@@ -21,7 +21,8 @@
       [label]="report.name" 
       expandable="false" 
       showCount="false" 
-      *ngFor="let report of reports$ | async"></sidepanel-list-item>
+      *ngFor="let report of reports$ | async" 
+      (click)="reportClicked(report.id)"></sidepanel-list-item>
 
   </unfetter-side-panel>
 </div>
