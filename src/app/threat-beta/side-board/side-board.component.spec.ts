@@ -1,8 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { StoreModule } from '@ngrx/store';
+
 import { GlobalModule } from '../../global/global.module';
 import { SideBoardComponent } from './side-board.component';
+import mockThreatReducer from '../testing/mock-reducer';
 
 
 describe('SideBoardComponent', () => {
@@ -12,9 +15,11 @@ describe('SideBoardComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SideBoardComponent],
-      imports: [GlobalModule,
+      imports: [
+        GlobalModule,
         RouterTestingModule,
         NoopAnimationsModule,
+        StoreModule.forRoot(mockThreatReducer)
       ],
     })
       .compileComponents();
