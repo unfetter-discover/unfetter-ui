@@ -21,7 +21,7 @@ export class ThreatHeaderComponent {
     this._boardId = v;
     this.feedLink = `${this.BASE_URL}/${this._boardId}/feed`;
     this.boardLink = `${this.BASE_URL}/${this._boardId}/board`;
-    this.articleLink = `${this.BASE_URL}/${this._boardId}/article`;
+    this.articleLink = `${this.BASE_URL}/${this._boardId}/article/new`;
   }
 
   public get boardId () { return this._boardId; }

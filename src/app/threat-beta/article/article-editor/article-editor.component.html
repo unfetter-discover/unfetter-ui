@@ -1,5 +1,5 @@
 <div id="articleEditorComponent">
-  <form [formGroup]="form">
+  <form [formGroup]="form" (ngSubmit)="submitArticle()">
     <mat-card class="uf-mat-card card">
       <mat-card-content class="cardContent">
         <br>
@@ -44,7 +44,7 @@
         <span>&nbsp;</span>
         <button type="button" mat-button color="primary">DELETE</button>
         <span>&nbsp;</span>
-        <button type="button" mat-raised-button color="primary">SAVE</button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="form.status !== 'VALID'">SAVE</button>
       </div>
     </div>
   </form>
