@@ -1,0 +1,32 @@
+@import '../../threat-beta.common';
+@import '../../../../styles/variables';
+
+#articleEditorComponent {
+    position: relative;
+}
+
+.card {
+    overflow-y: auto;
+    // To account for fixed controls
+    padding-bottom: 64px;
+    height: calc(100vh - #{$navbar-height}px - 128px - 48px);
+}
+
+.articleControlWrapper {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: #fff;
+    box-shadow: 0 -5px 5px -5px rgba(0, 0, 0, 0.2),
+    0 -10px 20px -10px rgba(0, 0, 0, 0.2);
+    z-index: 5;
+
+    >.text-right {
+      padding: 10px 24px;
+    }
+}
+
+.cardContent {
+    max-width: $card-max-content-width - 48px;    
+}

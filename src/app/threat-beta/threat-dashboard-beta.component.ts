@@ -18,7 +18,7 @@ export class ThreatDashboardBetaComponent implements OnInit {
 
   public threatBoardId: string;
 
-  public finishedLoadingAll$: Observable<boolean> = new BehaviorSubject(true).asObservable();
+  public finishedLoadingAll$: Observable<boolean> = new BehaviorSubject(true).asObservable(); // TODO
 
   public failedToLoad = new BehaviorSubject(false).asObservable();
 

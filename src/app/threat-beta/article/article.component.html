@@ -1,4 +1,10 @@
-<threat-header></threat-header> <!-- TODO [threat]="article" [boardId]="threatBoardId" [created]="board?.created"></threat-header>-->
-<div class="main-panel">
-    Article about individual board here.
+<div id="articleComponent">
+  <div class="main-panel flex">
+    <span class="flex1" id="card1Wrapper">
+      <article-report-pane [form]="form"></article-report-pane>
+    </span>
+    <span class="flex1" id="card2Wrapper">
+      <article-editor [form]="form"></article-editor>
+    </span>
   </div>
+</div>

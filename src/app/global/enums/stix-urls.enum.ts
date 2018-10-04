@@ -4,6 +4,7 @@ export enum StixUrls {
     COURSE_OF_ACTION = 'api/course-of-actions',
     IDENTITY = 'api/identities',
     INDICATOR = 'api/indicators',
+    INTRUSION_SET = 'api/intrusion-sets',
     MALWARE = 'api/malwares',
     MARKING_DEFINITION = 'api/marking-definitions',
     OBSERVED_DATA = 'api/observed-data',
@@ -12,5 +13,8 @@ export enum StixUrls {
     SIGHTING = 'api/sightings',
     THREAT_ACTOR = 'api/threat-actors',
     TOOL = 'api/tools',
+    X_UNFETTER_ASSESSMENT = 'api/x-unfetter-assessments',
+    X_UNFETTER_ARTICLE = 'api/x-unfetter-articles',
+    X_UNFETTER_SENSOR = 'api/x-unfetter-sensors',
     X_UNFETTER_THREAT_BOARD = 'api/x-unfetter-threat-boards',
 }

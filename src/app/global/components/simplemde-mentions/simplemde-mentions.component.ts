@@ -46,6 +46,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
   public hoveredRowIndex = -1;
   @ViewChild('userMentions') public userMentions: ElementRef;
   @ViewChild('mde') public mde: Simplemde | any;
+  public formDirty = false;
   
   public mdeOptions: SimpleMDE.Options = {
     ...SimpleMDEConfig.basicConfig,
@@ -249,6 +250,14 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
         }
       }      
     });
+
+    this.codeMirror.on('blur', () => {
+      this.onTouchedCallback();
+      if (!this.formDirty) {
+        this.onChangeCallback(this.value);
+      }
+      this.formDirty = true;
+    });
   }
 
   public addMention() {
@@ -290,6 +299,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
     if (v !== this._innerValue && this.onChangeCallback) {
       this._innerValue = v;
       this.onChangeCallback(v);
+      this.formDirty = true;
     }
   }
 

@@ -303,6 +303,30 @@ export class BaselineEffects {
         )
 
     @Effect()
+    public addCapability = this.actions$
+        .ofType(baselineActions.ADD_CAPABILITY)
+        .pipe(
+            pluck('payload'),
+            switchMap(( capability: Capability) => {
+                const json = {
+                    data: { attributes: capability }
+                } as JsonApi<JsonApiData<Capability>>;
+                let url = Constance.X_UNFETTER_CAPABILITY_URL;
+                if (capability.id) {
+                    url = `${url}/${capability.id}`;
+                    return this.genericServiceApi
+                    .patchAs<Capability>(url, json);
+                } else {
+                    return this.genericServiceApi
+                    .postAs<Capability>(url, json);
+                }
+            }),
+            map((capability) => {
+                return new baselineActions.FetchCapabilities();
+            })
+        )
+
+    @Effect()
     public removeCapabilityGroupFromBaseline = this.actions$
         .ofType(baselineActions.REMOVE_CAPABILITY_GROUP_FROM_BASELINE)
         .pipe(

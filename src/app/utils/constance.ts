@@ -92,6 +92,11 @@ export const Constance = {
   // TODO change icon
   X_UNFETTER_THREAT_BOARD_ICON: 'assets/icon/stix-icons/2018/report.svg',
 
+  X_UNFETTER_ARTICLE_URL: 'api/x-unfetter-articles',
+  X_UNFETTER_ARTICLE_TYPE: 'x-unfetter-article',
+  // TODO change icon
+  X_UNFETTER_ARTICLE_ICON: 'assets/icon/stix-icons/2018/report.svg',
+
   X_UNFETTER_ASSESSMENT_NAVIGATE_URL: 'assess/navigate',
   X_UNFETTER_ASSESSMENT_URL: 'api/x-unfetter-assessments',
   X_UNFETTER_ASSESSMENT_TYPE: 'x-unfetter-assessment',

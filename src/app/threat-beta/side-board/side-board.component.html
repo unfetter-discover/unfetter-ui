@@ -1,0 +1,28 @@
+<div id="sideBoardComponent" *ngIf="selectedBoard$ | async as selectedBoard">
+  <unfetter-side-panel class="side-panel" [item]="selectedBoard" collapsible="false" width="320">
+
+    <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
+    <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
+    <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
+
+    <master-list-dialog-trigger 
+      title="Threat Boards" 
+      width="750px" 
+      height="400px" 
+      [dataSource]="masterListOptions.dataSource"
+      [columns]="masterListOptions.columns" 
+      (tabChange)="onFilterTabChanged($event)" 
+      (create)="onCreate($event)" 
+      (select)="onCellSelected($event)"
+      (edit)="onEdit($event)" 
+      (delete)="onDelete($event)"></master-list-dialog-trigger>   
+
+    <sidepanel-list-item 
+      [label]="report.name" 
+      expandable="false" 
+      showCount="false" 
+      *ngFor="let report of reports$ | async" 
+      (click)="reportClicked(report.id)"></sidepanel-list-item>
+
+  </unfetter-side-panel>
+</div>

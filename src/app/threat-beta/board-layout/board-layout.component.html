@@ -1,0 +1,17 @@
+<ng-container *ngIf="(finishedLoadingAll$|async)===true; else loadingBlock">
+  <div id="boardLayoutComponent">
+    <mat-sidenav-container class="fixed-page-height">
+      <mat-sidenav class="side-panel fixed-page-height zIndex1" mode="side" opened="true">
+        <side-board [boardId]="boardId$ | async"></side-board>
+      </mat-sidenav>
+      <mat-sidenav-content class="sidenavContentPolyfill320 fixed-page-height">
+        <threat-header [boardId]="boardId$ | async"></threat-header>
+        <router-outlet></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+</ng-container>
+
+<ng-template #loadingBlock>
+  <loading-spinner height="calc(100vh - 64px)"></loading-spinner>
+</ng-template>
