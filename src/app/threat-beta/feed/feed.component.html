@@ -1,30 +1,5 @@
-<ng-container *ngIf="(finishedLoadingAll$|async) === true; else loadingBlock">
-  <div #layout class="layout" *ngIf="(failedToLoad|async) === false; else failedToLoadBlock">
-    <mat-sidenav-container>
-      <mat-sidenav class="side-panel" mode="side" opened="true">
-        <side-board></side-board>
-      </mat-sidenav>
-      <mat-sidenav-content class="sidenavContentPolyfill320">
-        <threat-header></threat-header>
-        <!-- TODO [threat]="feed" [boardId]="threatBoardId" [created]="board?.created"> </threat-header> -->
-        <div class="main-panel min-tab-height">
-          Feed for a specific board here.
-        </div>
-      </mat-sidenav-content>
-    </mat-sidenav-container>
+<div id="feedComponenet">
+  <div class="main-panel min-tab-height">
+    Feed for a specific board here.
   </div>
-</ng-container>
-
-<ng-template #loadingBlock>
-  <loading-spinner></loading-spinner>
-</ng-template>
-
-<ng-template #failedToLoadBlock>
-  <div class="container fadeIn">
-    <div class="row mt-15">
-      <div class="col-xs-10 col-xs-offset-1">
-        <error-card errorTitle="Threat Dashboard" errorBody="Failed to load. Check the network and URL."></error-card>
-      </div>
-    </div>
-  </div>
-</ng-template>
+</div>
