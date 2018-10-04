@@ -19,7 +19,7 @@
         <div class="mb-6">          
           <h4 [class.textWarn]="form.get('content').dirty && form.get('content').hasError('required')">Content<sup>*</sup></h4>
           <simplemde-mentions formControlName="content" [class.mdeError]="form.get('content').dirty && form.get('content').hasError('required')" ngDefaultControl></simplemde-mentions>
-          <mat-error [style.visibility]="form.get('content').dirty && form.get('content').hasError('required') ? 'visible' : 'hidden'">
+          <mat-error [class.showUfMatError]="form.get('content').dirty && form.get('content').hasError('required')" class="ufMatError">
             Content is <strong>required</strong>
           </mat-error>
         </div>

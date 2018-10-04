@@ -3,9 +3,11 @@ import { Location } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, forkJoin as observableForkJoin, of as observableOf } from 'rxjs';
-import { pluck, distinctUntilChanged, map, startWith, finalize, take, switchMap } from 'rxjs/operators';
+import { pluck, distinctUntilChanged, map, startWith, finalize, take, switchMap, withLatestFrom } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Article } from 'stix/unfetter/index';
+import { Report } from 'stix';
+
 
 import { MasterConfig } from '../../../core/services/run-config.service';
 import { ThreatFeatureState } from '../../store/threat.reducers';
@@ -65,10 +67,16 @@ export class ArticleEditorComponent implements OnInit {
     this.sourceNames$ = this.form.get('sources').valueChanges
       .pipe(
         startWith(this.form.get('sources').value),
-        map((sourceIds: string[]) => {
-          // TODO get real source names
-          return sourceIds
-            .map((sourceId) => 'A placeholder name');
+        withLatestFrom(this.store.select('threat').pipe(pluck('attachedReports'))),
+        map(([sourceIds, reports]: [string[], Report[]]) => {
+          return sourceIds.map((sourceId) => {
+            const foundReport = reports.find((report) => report.id === sourceId);
+            if (foundReport) {
+              return foundReport.name;
+            } else {
+              return 'Unknown';
+            }
+          });
         })
       );
 

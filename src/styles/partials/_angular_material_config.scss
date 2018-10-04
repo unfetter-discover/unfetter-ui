@@ -199,6 +199,16 @@ a.mat-button {
   text-decoration: none;
 }
 
+.ufMatError {
+  font-size: 75%;
+  transition: 300ms cubic-bezier(0.55, 0, 0.55, 0.2);
+  opacity: 1;
+
+  &:not(.showUfMatError) {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
 
 // Polyfill for browser compatibility
 .sidenavContentPolyfill250 {
