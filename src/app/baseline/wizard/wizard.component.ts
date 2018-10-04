@@ -1,27 +1,24 @@
-import { of as observableOf,  Observable ,  Subscription  } from 'rxjs';
-
-import { take, filter, distinctUntilChanged, pluck, tap } from 'rxjs/operators';
-import { Location } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, Renderer2, ViewChildren, ViewChild } from '@angular/core';
-import { MatDialog, MatSelect, MatSnackBar } from '@angular/material';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { MatDialog, MatSelect } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Observable, of as observableOf, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, pluck, take } from 'rxjs/operators';
+import { Assess3Meta } from 'stix/assess/v3';
 import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
 import { Key } from 'ts-keycode-enum';
-import { GenericApi } from '../../core/services/genericapi.service';
 import { heightCollapse } from '../../global/animations/height-collapse';
-import { UserProfile } from '../../models/user/user-profile';
-import { AppState } from '../../root-store/app.reducers';
-import { CleanBaselineWizardData, FetchAttackPatterns, FetchBaseline, FetchCapabilities, FetchCapabilityGroups, SaveBaseline, SetCurrentBaselineCapability, SetCurrentBaselineGroup, SetCurrentBaselineObjectAssessment } from '../store/baseline.actions';
-import { BaselineState } from '../store/baseline.reducers';
-import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
-import { Measurements } from './models/measurements';
-import { Assess3Meta } from 'stix/assess/v3';
-import { CapabilityComponent } from './capability/capability.component';
-import { MarkingDefinition } from '../../models';
 import { MarkingsChipsComponent } from '../../global/components/marking-definitions/markings-chips.component';
 import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
+import { MarkingDefinition } from '../../models';
+import { UserProfile } from '../../models/user/user-profile';
+import { AppState } from '../../root-store/app.reducers';
+import { CleanBaselineWizardData, FetchBaseline, FetchCapabilities, FetchCapabilityGroups, SaveBaseline, SetCurrentBaselineCapability, SetCurrentBaselineGroup, SetCurrentBaselineObjectAssessment, FetchAttackPatterns } from '../store/baseline.actions';
+import { BaselineState } from '../store/baseline.reducers';
+import { AttackPatternChooserComponent } from './attack-pattern-chooser/attack-pattern-chooser.component';
+import { CapabilityComponent } from './capability/capability.component';
+import { Measurements } from './models/measurements';
 
 type ButtonLabel = 'SAVE' | 'CONTINUE';
 
@@ -48,12 +45,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public page = 1;
   public totalPages = 0;
   public insertMode = false;
-  public openedSidePanel: string = this.sidePanelNames[0];
+  public openedSidePanel: string;
   public navigation: { id: string, label: string, page: number };
   public navigations: any[];   // These are group and capability nodes only - not including 'Group Setup' and 'Summary'
   
   private currentBaseline: AssessmentSet;
-  private objAssessments: ObjectAssessment[];
   public allCategories: Category[] = [];
   public baselineGroups: Category[] = [];
   public currentBaselineGroup = {} as Category;
@@ -71,14 +67,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
   public selectedFrameworkAttackPatterns: Observable<AttackPattern[]> = observableOf([]);
 
   private readonly subscriptions: Subscription[] = [];
+  finishedLoading: boolean = false;
   
   constructor(
-    private genericApi: GenericApi,
-    private snackBar: MatSnackBar,
-    private location: Location,
     private route: ActivatedRoute,
     private router: Router,
-    private renderer: Renderer2,
     private userStore: Store<AppState>,
     private wizardStore: Store<BaselineState>,
     private changeDetection: ChangeDetectorRef,
@@ -110,11 +103,11 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
       filter((loaded: boolean) => loaded && loaded === true))
       .subscribe(
         (loaded: boolean) => {
-          const panel = this.determineFirstOpenSidePanel();
-          if (panel) {
-            this.page = 1;
-            this.openedSidePanel = 'categories';
-          }
+          let step, stepName;
+          [ step, stepName ] = this.determineFirstOpenSidePanel();
+          this.page = step;
+          this.openedSidePanel = stepName;
+          this.finishedLoading = loaded;
           this.updateWizardData();
         },
         (err) => console.log(err));
@@ -296,14 +289,49 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @description name of first side panel with data
    * @return {string} name of first open side panel
    */
-  public determineFirstOpenSidePanel(): string {
-    // TODO: For now, go to first panel (Group Setup), but eventually
-    //       want to check for first incomplete capability in this assessment set
+  public determineFirstOpenSidePanel(): [ number, string ] {
+    let step = 1;   // Start at GROUP SETUP
+    let stepName = 'categories';
+    let foundFirstPanel = false;
 
-    let hasContents = [ this.sidePanelNames[0] ];
+    // Narrow object assessments to those which are associated to caps for this category
+    this.baselineGroups.forEach((category) => {
+      if (foundFirstPanel) {
+        return;
+      }
 
-    // return first panel w/ data
-    return hasContents[0];
+      step++;
+      stepName = 'capability-selector';
+      let capsForThisCategory = this.getCapabilities(category);
+      capsForThisCategory.forEach((capability) => {
+        if (foundFirstPanel) {
+          return;
+        }
+  
+        step++;
+        stepName = 'capabilities';
+        let oaForThisCap = this.baselineObjAssessments.find((oa) => oa.object_ref === capability.id);
+        oaForThisCap.assessed_objects.forEach((ao) => {
+          if (foundFirstPanel) {
+            return;
+          }
+    
+          // If we don't have 3 values in the questions array, this is where we should start
+          const unanswered = ao.questions.filter((q) => q.score === undefined || q.score === '');
+          if (ao.questions.length < 3 || unanswered.length > 0) {
+            foundFirstPanel = true;
+          }
+        });
+      });
+    });
+
+    if (foundFirstPanel) {
+      // Return first panel w/o complete set data
+      return [ step, stepName ];
+    } else {
+      // Start at first panel by default
+      return [ 1, 'categories' ];
+    }
   }
 
   /*
@@ -531,7 +559,9 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
    * @return {boolean} true if first page of first side panel otherwise false
    */
   public isFirstPageOfFirstSidePanel(): boolean {
-    const isFirstPanel = this.openedSidePanel === this.determineFirstOpenSidePanel();
+    let step, stepName;
+    [ step, stepName ] = this.determineFirstOpenSidePanel();
+    const isFirstPanel = this.openedSidePanel === stepName;
     return isFirstPanel && this.isFirstPage();
   }
 

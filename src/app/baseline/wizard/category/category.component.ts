@@ -1,10 +1,9 @@
 
 import { pluck, distinctUntilChanged } from 'rxjs/operators';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { Category, Capability } from 'stix/assess/v3/baseline';
+import { Category } from 'stix/assess/v3/baseline';
 import * as assessActions from '../../store/baseline.actions';
 import * as assessReducers from '../../store/baseline.reducers';
 
@@ -20,14 +19,9 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   public addCategory: Category = new Category();
   public selectedCategories: Category[] = [];
   public categories: Category[];
-  private baselineCapabilities: Capability[];
   private subscriptions: Subscription[] = [];
     
-  constructor(
-    private wizardStore: Store<assessReducers.BaselineState>,
-    private route: ActivatedRoute,
-    private router: Router,
-  ) { }
+  constructor(private wizardStore: Store<assessReducers.BaselineState>) { }
 
   ngOnInit() {
 
@@ -49,20 +43,7 @@ export class CategoryComponent implements OnInit, AfterViewInit, OnDestroy {
         },
         (err) => console.log(err));
   
-    const catSub3$ = this.wizardStore
-      .select('baseline').pipe(
-      pluck('baselineCapabilities'),
-      distinctUntilChanged())
-      .subscribe(
-        (capabilities: Capability[]) => {
-          this.baselineCapabilities = capabilities;
-        },
-        (err) => console.log(err));
-    
-    this.subscriptions.push(catSub1$, catSub2$, catSub3$);
-
-    this.wizardStore.dispatch(new assessActions.FetchCapabilityGroups());
-    this.wizardStore.dispatch(new assessActions.FinishedLoading(true));
+    this.subscriptions.push(catSub1$, catSub2$);
   }
 
   ngAfterViewInit() {
