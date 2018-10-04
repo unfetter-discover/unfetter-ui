@@ -14,6 +14,8 @@ import { cleanObjectProperties } from '../../../global/static/clean-object-prope
 import { getSelectedBoard } from '../../store/threat.selectors';
 import * as threatActions from '../../store/threat.actions';
 import * as utilityActions from '../../../root-store/utility/utility.actions';
+import { GenericApi } from '../../../core/services/genericapi.service';
+import { GridFSFile } from '../../../global/models/grid-fs-file';
 
 @Component({
   selector: 'article-editor',
@@ -27,6 +29,9 @@ export class ArticleEditorComponent implements OnInit {
   public blockAttachments$: Observable<boolean>;
   public sourceNames$: Observable<string[]>;
   public editMode: boolean;
+  public uploadProgress: number;
+  public files: File[];
+  public blockAttachments: boolean;
 
   private boardId: string;
   private editArticleId: string;
@@ -35,6 +40,7 @@ export class ArticleEditorComponent implements OnInit {
     public location: Location,
     private store: Store<ThreatFeatureState>,
     private threatService: ThreatDashboardBetaService,
+    private genericApi: GenericApi,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -65,11 +71,33 @@ export class ArticleEditorComponent implements OnInit {
             .map((sourceId) => 'A placeholder name');
         })
       );
+
+    this.store
+      .select('config')
+      .pipe(
+        pluck('runConfig'),
+        distinctUntilChanged(),
+      )
+      .subscribe(
+        (cfg: MasterConfig) => {
+          this.blockAttachments = cfg.blockAttachments;
+        }
+      );
   }
 
   public async submitArticle(): Promise<void> {
     const submitErrorMsg = '';
     const tempArticle = new Article(cleanObjectProperties({}, this.form.value));
+
+    const [uploadError, filesToUpload] = await this.uploadFiles();
+    if (uploadError) {
+      this.store.dispatch(new utilityActions.OpenSnackbar('Unable to upload attachments'));
+    } else if (filesToUpload && filesToUpload.length) {
+      if (!tempArticle.metaProperties) {
+        (tempArticle.metaProperties as any) = {};
+      }
+      tempArticle.metaProperties.attachments = filesToUpload;
+    }
 
     let success;
     if (this.editMode) {
@@ -85,6 +113,34 @@ export class ArticleEditorComponent implements OnInit {
     if (!success) {
       this.store.dispatch(new utilityActions.OpenSnackbar('An Error Occured While Saving'));
     }
+  }
+
+  private uploadFiles(): Promise<[any, GridFSFile[]]> {
+    this.uploadProgress = 0;
+    return new Promise((resolve) => {
+      if (this.blockAttachments) {
+        console.log('Attachments are blocked');
+        resolve([null, null]);
+        return;
+      }
+      const newFiles = this.files && this.files.length ? this.files.filter((file) => !(file as any).existingFile) : [];
+      if (newFiles.length) {
+        const uploadFile$ = this.genericApi.uploadAttachments(newFiles, (prog) => this.uploadProgress = prog)
+          .pipe(
+            finalize(() => this.uploadProgress = 0 || uploadFile$ && uploadFile$.unsubscribe())
+          )
+          .subscribe(
+            (response) => {
+              resolve([null, response]);
+            },
+            (err) => {
+              resolve([err, null]);
+            }
+          );
+      } else {
+        resolve([null, null]);
+      }
+    });
   }
 
   private async createNewArticle(tempArticle: Article): Promise<boolean> {
