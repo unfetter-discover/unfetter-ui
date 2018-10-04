@@ -75,7 +75,7 @@ export class BaselineEffects {
                 
                 // Pass along empty array if there are no object assessments yet
                 if (observables.length === 0) {
-                    return observableOf(new baselineActions.SetAndReadCapabilities(new Capability[0]));
+                    return observableOf(new baselineActions.SetAndReadCapabilities([]));
                 } else {
                     return observableForkJoin(...observables).pipe(
                         map((arr) => {
