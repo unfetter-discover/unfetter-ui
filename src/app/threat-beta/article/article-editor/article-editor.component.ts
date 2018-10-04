@@ -93,6 +93,7 @@ export class ArticleEditorComponent implements OnInit {
         .pipe(
           take(1),
           switchMap((board) => {
+            // Add article
             // TODO handle edge case - article doesnt have created_by_ref
             tempArticle.created_by_ref = board.created_by_ref;
             return observableForkJoin(
@@ -101,6 +102,7 @@ export class ArticleEditorComponent implements OnInit {
             );
           }),
           switchMap(([newArticle, board]) => {
+            // Add article reference to board
             if (!board.articles) {
               board.articles = [];
             }
