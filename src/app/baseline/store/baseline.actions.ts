@@ -11,6 +11,7 @@ export const CLEAN_BASELINE_WIZARD_DATA = '[Baseline] CLEAN_BASELINE_WIZARD_DATA
 export const FETCH_BASELINE = '[Baseline] FETCH_BASELINE';
 export const FETCH_CAPABILITY_GROUPS = '[Baseline] FETCH_CAPABILITY_GROUPS';
 export const SET_CAPABILITY_GROUPS = '[Baseline] SET_CAPABILITY_GROUPS';
+export const SET_INITIAL_BASELINE_GROUPS = '[Baseline] SET_INITIAL_BASELINE_GROUPS'
 export const SET_BASELINE_GROUPS = '[Baseline] SET_BASELINE_GROUPS';
 export const SET_CURRENT_BASELINE_GROUP = '[Baseline] SET_CURRENT_BASELINE_GROUP';
 export const FETCH_CAPABILITIES = '[Baseline] FETCH_CAPABILITIES';
@@ -134,6 +135,12 @@ export class RemoveCapabilityGroupFromBaseline implements Action {
     public readonly type = REMOVE_CAPABILITY_GROUP_FROM_BASELINE;
 
     constructor(public payload: Category) { }
+}
+
+export class SetInitialBaselineGroups implements Action {
+    public readonly type = SET_INITIAL_BASELINE_GROUPS;
+
+    constructor(public payload: Category[]) { }
 }
 
 export class SetBaselineGroups implements Action {
@@ -281,6 +288,7 @@ export type BaselineActions =
     ReplaceCapabilityInBaseline |
     RemoveCapabilitiesFromBaseline |
     RemoveObjectAssessmentsFromBaseline |
+    SetInitialBaselineGroups |
     SetBaselineGroups |
     SetCapabilities |
     SetBaselineCapabilities |

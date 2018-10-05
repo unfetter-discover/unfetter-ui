@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, Effect } from '@ngrx/effects';
 import { Action, Store } from '@ngrx/store';
-import { forkJoin as observableForkJoin, of as observableOf } from 'rxjs';
+import { forkJoin as observableForkJoin, of as observableOf, Observable } from 'rxjs';
 import { catchError, filter, map, mergeMap, pluck, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { AssessmentSet, Capability, Category, ObjectAssessment } from 'stix/assess/v3/baseline';
 import { AttackPattern } from 'stix/unfetter/attack-pattern';
@@ -73,15 +73,20 @@ export class BaselineEffects {
                     return this.baselineService.fetchCapability(objAssessment.object_ref);
                 });
                 
-                return observableForkJoin(...observables).pipe(
-                    map((arr) => {
-                        return new baselineActions.SetAndReadCapabilities(arr);
-                    }),
-                    catchError((err) => {
-                        console.log(err);
-                        return observableOf(new baselineActions.FailedToLoad(true));
-                    })
-                );
+                // Pass along empty array if there are no object assessments yet
+                if (observables.length === 0) {
+                    return observableOf(new baselineActions.SetAndReadCapabilities([]));
+                } else {
+                    return observableForkJoin(...observables).pipe(
+                        map((arr) => {
+                            return new baselineActions.SetAndReadCapabilities(arr);
+                        }),
+                        catchError((err) => {
+                            console.log(err);
+                            return observableOf(new baselineActions.FailedToLoad(true));
+                        })
+                    );
+                }
             })
         );
 
@@ -98,20 +103,41 @@ export class BaselineEffects {
                         catList.push(capability.category);
                     }
                 });
-                const observables = catList
-                    .map((catId) => {
-                        return this.baselineService.fetchCategory(catId);
-                    });
-                return observableForkJoin(...observables);
+
+                // If not categories, send an empty group list
+                if (catList.length === 0) {
+                    return observableOf(new Array<Category>());
+                } else {
+                    const observables = catList
+                        .map((catId) => {
+                            return this.baselineService.fetchCategory(catId);
+                        });
+                    return observableForkJoin(...observables);
+                }
             }),
-            mergeMap((groups) => {
-                const actions: Action[] = [
-                    new baselineActions.SetBaselineGroups(groups),
-                    new baselineActions.FinishedLoading(true) ];
-                    return actions;
+            map((groups) => {
+                // baseline groups must be received first by wizard component
+                // before proceeding with FinishedLoading, so we'll set groups
+                // with its own action, and have the resulting effect do the
+                // 'FinishedLoading' action
+                return new baselineActions.SetInitialBaselineGroups(groups);
+                // const actions: Action[] = [
+                //     new baselineActions.SetBaselineGroups(groups),
+                //     new baselineActions.FinishedLoading(true) ];
+                // return actions;
             })
         )
 
+    @Effect()
+    public setInitialBaselineGroups = this.actions$
+        .ofType(baselineActions.SET_INITIAL_BASELINE_GROUPS)
+        .pipe(
+            pluck('payload'),
+            map((groups: Category[]) => {
+                return new baselineActions.FinishedLoading(true);
+            })
+        )
+    
     @Effect({ dispatch: false })
     public setCurrentBaselineObjectAssessment = this.actions$
         .ofType(baselineActions.SET_CURRENT_BASELINE_OBJECT_ASSESSMENT)
