@@ -1,2 +1,82 @@
 @import '../../../styles/_variables.scss';
 @import '../threat-beta.common';
+
+#search-bar {
+
+    .search-input {
+        width: 100%;
+        margin-bottom: 5px;
+        background: white;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .4);
+
+        mat-icon {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+    }
+
+}
+
+:host ::ng-deep #search-bar .mat-form-field-wrapper {
+    padding-bottom: 0;
+    .mat-form-field-underline {
+        display: none;
+    }
+}
+
+#feed-content {
+
+    padding: 15px;
+
+    #reports-carousel, #related-boards-carousel {
+        margin-bottom: 20px;
+    }
+
+    #reports-list, #related-boards-list {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .board-report, .related-board {
+        width: 200px;
+        height: 250px;
+        margin-right: 20px;
+    }
+
+    .report-image {
+        height: 100px;
+        background-size: 200px 100px;
+    }
+
+    .report-info {
+        width: 200px;
+        height: 150px;
+        padding: 16px;
+    }
+
+    .report-title {
+        font-size: 16px;
+        color: white;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #activities-list {
+    }
+
+}
+
+#trends-trench {
+
+    width: 380px;
+    margin-left: 10px;
+    padding: 15px;
+    background: white;
+    box-shadow: 1px 0 8px 0 rgba(0, 0, 0, .8);
+
+    #contributors {
+    }
+
+}
