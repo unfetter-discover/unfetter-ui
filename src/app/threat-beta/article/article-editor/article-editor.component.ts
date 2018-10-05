@@ -37,6 +37,7 @@ export class ArticleEditorComponent implements OnInit {
 
   private boardId: string;
   private editArticleId: string;
+  private articleToEdit: Article;
 
   constructor(
     public location: Location,
@@ -53,7 +54,19 @@ export class ArticleEditorComponent implements OnInit {
     
     if (this.editMode) {
       this.editArticleId = this.route.snapshot.params.articleId;
-      // TODO populate form
+      this.store.select('threat')
+        .pipe(
+          take(1)
+        )
+        .subscribe((threatState) => {
+          const found = threatState.articles.length && threatState.articles.find((art) => art.id === this.editArticleId);
+          if (found) {
+            this.articleToEdit = found;
+            this.setEditValues();
+          } else {
+            this.store.dispatch(new utilityActions.NavigateToErrorPage(404));
+          }                    
+        });
     }
 
     this.blockAttachments$ = this.store
@@ -93,6 +106,19 @@ export class ArticleEditorComponent implements OnInit {
       );
   }
 
+  private setEditValues(): void {
+    if (this.articleToEdit.name) {
+      this.form.get('name').patchValue(this.articleToEdit.name);
+    }
+    if (this.articleToEdit.content) {      
+      this.form.get('content').patchValue(this.articleToEdit.content);
+    }
+    if (this.articleToEdit.sources && this.articleToEdit.sources.length) {      
+      this.form.get('sources').patchValue(this.articleToEdit.sources);
+    }
+    // TODO handle attachments
+  }
+
   public async submitArticle(): Promise<void> {
     const submitErrorMsg = '';
     const tempArticle = new Article(cleanObjectProperties({}, this.form.value));
@@ -104,7 +130,28 @@ export class ArticleEditorComponent implements OnInit {
       if (!tempArticle.metaProperties) {
         (tempArticle.metaProperties as any) = {};
       }
-      tempArticle.metaProperties.attachments = filesToUpload;
+      if (this.editMode && this.articleToEdit.metaProperties && this.articleToEdit.metaProperties.attachments && this.articleToEdit.metaProperties.attachments.length) {
+        const attachmentsToKeep = this.articleToEdit.metaProperties.attachments
+          .filter((att) => {
+            return this.files
+              .filter((file) => (file as any)._id)
+              .find((file) => (file as any)._id === att._id)
+          });
+        tempArticle.metaProperties.attachments = attachmentsToKeep.concat(filesToUpload);
+      } else {
+        tempArticle.metaProperties.attachments = filesToUpload;
+      }
+    } else if (this.editMode && this.articleToEdit.metaProperties && this.articleToEdit.metaProperties.attachments) {
+      if (!tempArticle.metaProperties) {
+        (tempArticle.metaProperties as any) = {};
+      }
+      const attachmentsToKeep = this.articleToEdit.metaProperties.attachments
+        .filter((att) => {
+          return this.files
+            .filter((file) => (file as any)._id)
+            .find((file) => (file as any)._id === att._id)
+        });
+      tempArticle.metaProperties.attachments = attachmentsToKeep;
     }
 
     let success;
@@ -194,9 +241,21 @@ export class ArticleEditorComponent implements OnInit {
   }
 
   private async editArticle(tempArticle: Article): Promise<boolean> {
-    // TODO
     return new Promise((resolve: (boolean) => void, reject: (boolean) => void) => {
-
+      tempArticle.id = this.articleToEdit.id;
+      const editArticle$ = this.threatService.editArticle(tempArticle)
+        .pipe(finalize(() => editArticle$ && editArticle$.unsubscribe()))
+        .subscribe(
+          (updatedArticle) => {
+            this.store.dispatch(new threatActions.UpdateArticle(updatedArticle));
+            this.store.dispatch(new utilityActions.OpenSnackbar('Article Successfully Updated'));
+            resolve(true);
+          },
+          (err) => {
+            console.log(err);
+            reject(false);
+          }
+        );
     });
   }
 }

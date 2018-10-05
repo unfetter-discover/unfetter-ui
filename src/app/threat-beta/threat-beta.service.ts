@@ -19,6 +19,11 @@ export class ThreatDashboardBetaService {
             );
     }
 
+    public editArticle(article: Article): Observable<Article> {
+        return this.genericApi.patch(`${StixUrls.X_UNFETTER_ARTICLE}/${article.id}`, { data: { attributes: article } })
+            .pipe(pluck('attributes'));
+    }
+
     public updateBoard(board: ThreatBoard): Observable<ThreatBoard> {
         return this.genericApi.patch(
             `${StixUrls.X_UNFETTER_THREAT_BOARD}/${board.id}`, 

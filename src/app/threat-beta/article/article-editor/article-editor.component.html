@@ -33,7 +33,7 @@
 
         <div *ngIf="!(blockAttachments$ | async)" class="mb-6">
           <h4>Attachments</h4>
-          <file-list (filesChange)="files = $event"></file-list>
+          <file-list [existingFiles]="articleToEdit && articleToEdit.metaProperties && articleToEdit.metaProperties.attachments" (filesChange)="files = $event"></file-list>
         </div>
 
       </mat-card-content>
