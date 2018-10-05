@@ -16,9 +16,11 @@
                     <created-by-ref (orgSelected)="orgSelected($event)"></created-by-ref>
                     <div class="flex-cols">
                         <span class="mat-title">Compile Categories to Assess*</span>
-                        <mat-checkbox class="" [value]="assessMeta.includesIndicators" color="primary" formControlName="includesIndicators">Indicators</mat-checkbox>
-                        <mat-checkbox class="" [value]="assessMeta.includesMitigations" color="primary" formControlName="includesMitigations">Mitigations</mat-checkbox>
-                        <mat-checkbox class="" [value]="showToSelectBaselines" color="primary" (change)="showToSelectBaselines = !showToSelectBaselines">Capabilities</mat-checkbox>
+                        <mat-checkbox class="" [value]="assessMeta.includesIndicators" color="primary"
+                                      formControlName="includesIndicators" (change)="indChange($event)">Indicators</mat-checkbox>
+                        <mat-checkbox class="" [value]="assessMeta.includesMitigations" color="primary"
+                                      formControlName="includesMitigations" (change)="mitChange($event)">Mitigations</mat-checkbox>
+                        <mat-checkbox class="" [value]="showToSelectBaselines" color="primary" (change)="baselineChange($event)">Capabilities</mat-checkbox>
                         <span *ngIf="showToSelectBaselines">
                             <mat-radio-group formControlName="baselineRef" *ngIf="(baselines | async); else createNewBaseline">
                                 <mat-radio-button color="primary" *ngFor="let baseline of (baselines | async); trackBy: trackByFn" [value]="baseline.id">
@@ -53,7 +55,7 @@
                 </mat-card-content>
                 <mat-card-actions>
                     <button mat-button (click)="onCancel($event)">CANCEL</button>
-                    <button mat-raised-button color="primary" [disabled]="form.status === 'INVALID'" type="submit">CONTINUE</button>
+                    <button mat-raised-button color="primary" [disabled]="disableContinue()" type="submit">CONTINUE</button>
                 </mat-card-actions>
             </form>
         </mat-card>
