@@ -5,7 +5,7 @@ import { pluck, map, filter } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import { Report } from 'stix';
-import { ThreatBoard } from 'stix/unfetter';
+import { ThreatBoard } from 'stix/unfetter/index';
 
 import { ThreatFeatureState } from '../store/threat.reducers';
 import { getSelectedBoard } from '../store/threat.selectors';
