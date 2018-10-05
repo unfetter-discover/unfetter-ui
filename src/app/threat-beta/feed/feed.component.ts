@@ -21,11 +21,19 @@ export class FeedComponent implements OnInit {
     public threatBoard: ThreatBoard;
     private _boardLoaded = false;
 
-    public reports = {};
+    public reports = [];
     private _reportsLoaded = false;
+    public hoverIndex = -1;
 
     public boards = {};
     private _boardsLoaded = false;
+
+    public readonly sorts = [
+        { name: 'Newest', sorter: this.sortByLastModified },
+        { name: 'Oldest', sorter: this.sortByFirstCreated },
+        { name: 'Likes', sorter: this.sortByMostLikes },
+        { name: 'Comments', sorter: this.sortByMostComments },
+    ];
 
     constructor(
         private store: Store<ThreatFeatureState>,
@@ -49,13 +57,12 @@ export class FeedComponent implements OnInit {
 
                     this.store.select('threat')
                         .pipe(
-                            pluck('boardList'),
-                            filter((b: any) => b.id !== board.id)
+                            pluck('boardList')
                         )
                         .subscribe(
-                            (boards) => {
-                                console.log(`(${new Date().toISOString()}) board list`, boards);
-                                this.boards = boards;
+                            (boards: any[]) => {
+                                this.boards = boards.filter(b => b.id !== board.id);
+                                console.log(`(${new Date().toISOString()}) board list`, this.boards);
                                 this._boardsLoaded = true;
                             },
                             (err) => console.log(`(${new Date().toISOString()}) Error loading boards:`, err)
@@ -63,11 +70,13 @@ export class FeedComponent implements OnInit {
 
                     this.store.select('threat')
                         .pipe(
-                            pluck('attachedReports')
+                            pluck('feedReports')
                         )
                         .subscribe(
-                            (reports) => {
-                                this.reports = reports;
+                            (reports: any[]) => {
+                                console.log('feed reports', reports);
+                                this.reports = reports.sort(this.sortByLastModified);
+                                console.log('full reports', this.reports);
                                 this._reportsLoaded = true;
                             },
                             (err) => console.log(`(${new Date().toISOString()}) Error loading reports:`, err)
@@ -96,13 +105,30 @@ export class FeedComponent implements OnInit {
 
     public getBoardBackground(board: any) {
         const colors = [
-            ['slateblue'],
-            ['brown'],
-            ['forestgreen'],
-            ['deeppurple'],
+            ['indianred', 'firebrick'],
+            ['rebeccapurple', 'indigo'],
+            ['olivedrab', 'olive'],
+            ['slateblue', 'darkslateblue'],
+            ['cadetblue', 'darkslategray'],
         ];
         const n = board.name.charCodeAt(0) % colors.length;
-        return colors[n];
+        return `linear-gradient(${colors[n][0]}, ${colors[n][1]})`;
+    }
+
+    public sortByFirstCreated(a: any, b: any) {
+        return a.created.localeCompare(b.created);
+    }
+
+    public sortByLastModified(a: any, b: any) {
+        return b.modified.localeCompare(a.modified);
+    }
+
+    public sortByMostLikes(a: any, b: any) {
+        return b.modified.localeCompare(a.modified);
+    }
+
+    public sortByMostComments(a: any, b: any) {
+        return b.modified.localeCompare(a.modified);
     }
 
 }
