@@ -45,25 +45,86 @@
         margin-right: 20px;
     }
 
-    .report-image {
-        height: 100px;
-        background-size: 200px 100px;
+    .board-report {
+        .report-image {
+            height: 100px;
+            background-size: 200px 100px;
+
+            .report-fabs {
+                text-align: center;
+
+                .fab-row {
+                    padding-top: 10px;
+
+                    button[mat-mini-fab] {
+                        color: black;
+                        background: white;
+                    }
+                }
+            }
+        }
+    
+        .report-info {
+            width: 200px;
+            height: 150px;
+            padding: 16px;
+        }
+    
+        .report-title {
+            font-size: 16px;
+            color: white;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .report-badge {
+            position: absolute;
+            top: 44px;
+            height: 26px;
+            background: transparent;
+            font-size: 20px;
+            color:  blue;
+        }
     }
 
-    .report-info {
-        width: 200px;
-        height: 150px;
+    .related-board {
         padding: 16px;
-    }
 
-    .report-title {
-        font-size: 16px;
-        color: white;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        .board-title {
+            width: 168px;
+            height: 150px;
+            font-size: 16px;
+            color: white;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .board-owner {
+            width: 168px;
+            height: 30px;
+            font-size: 14px;
+            color: lightgray;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .board-options {
+            width: 168px;
+            height: 30px;
+            font-size: 16px;
+            color: white;
+        }
     }
 
     #activities-list {
+        .activity-sort-options {
+            margin: 10px;
+            text-align: right;
+
+            mat-radio-button {
+                padding: 0 12px;
+            }
+        }
     }
 
 }
@@ -77,6 +138,25 @@
     box-shadow: 1px 0 8px 0 rgba(0, 0, 0, .8);
 
     #contributors {
+        .contributor {
+            margin-left: 16px;
+            margin-bottom: 12px;
+        }
+
+        .contributor-avatar {
+            width: 40px;
+            height: 40px;
+            margin-right: 8px;
+            border-radius: 20px;
+            line-height: 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .contributor-userid {
+            height: 40px;
+            line-height: 40px;
+        }
     }
 
 }
