@@ -67,12 +67,17 @@ export class CreateComponent implements OnInit {
     this.form = Assess3Form();
   }
 
+  public disableContinue(): boolean {
+    const assessmentTypeSelected = (this.assessMeta.includesIndicators || this.assessMeta.includesMitigations || this.form.get('baselineRef').value);
+    return !this.form.get('title').value || !assessmentTypeSelected;
+  }
+
   /**
    * @description
    * @return {void}
    */
   public submitForm(): void {
-    this.assessMeta = this.formToAssessment(this.form);
+    this.updateMeta();
     this.store.dispatch(new assessActions.StartAssessment(this.assessMeta as any));
   }
 
@@ -80,7 +85,15 @@ export class CreateComponent implements OnInit {
    * @description
    * @param form 
    */
-  public formToAssessment(form: FormGroup): Assess3Meta {
+  private updateMeta() {
+    this.assessMeta = this.formToAssessment(this.form);
+  }
+
+  /**
+   * @description
+   * @param form 
+   */
+  private formToAssessment(form: FormGroup): Assess3Meta {
     const assessment = Object.assign(new Assess3Meta(), form.value);
     return assessment;
   }
@@ -110,6 +123,31 @@ export class CreateComponent implements OnInit {
    */
   public orgSelected(orgId: string): void {
     this.form.get('created_by_ref').patchValue(orgId);
+  }
+
+  /**
+   * @description updates assessMeta upon selection of Indicators checkbox
+   * @param {event} event
+   * @return {void}
+   */
+  public indChange(event): void {
+    this.updateMeta();
+  }
+
+  /**
+   * @description updates assessMeta upon selection of Mitigations checkbox
+   * @param {event} event
+   * @return {void}
+   */
+  public mitChange(event): void {
+    this.updateMeta();
+  }
+
+  public baselineChange(event): void {
+    this.showToSelectBaselines = !this.showToSelectBaselines;
+    if (!this.showToSelectBaselines) {
+      this.form.get('baselineRef').patchValue(null);
+    }
   }
 
   /**
