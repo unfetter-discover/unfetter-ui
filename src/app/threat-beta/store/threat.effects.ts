@@ -27,9 +27,11 @@ export class ThreatEffects {
             switchMap(() => {                
                 const options: StixApiOptions = {
                     project: {
+                        'stix.id': 1,
                         'stix.name': 1,
                         'stix.description': 1,
                         'stix.external_references': 1,
+                        'stix.modified': 1,
                         'metaProperties': 1
                     },
                     sort: { 

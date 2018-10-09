@@ -1,5 +1,106 @@
-<div id="feedComponenet">
-  <div class="main-panel min-tab-height">
-    Feed for a specific board here.
-  </div>
+<div id="search-bar" class="">
+    <mat-form-field class="search-input">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput type="text" placeholder="Search this board">
+    </mat-form-field>
 </div>
+
+<mat-sidenav-container class="flex">
+        
+    <mat-sidenav-content class="min-tab-height">
+
+        <div id="feed-content" class="flex1">
+
+            <div id="reports-carousel">
+                <div id="reports-label"><h4>Reports</h4></div>
+                <div id="reports-list" *ngIf="reportsLoaded; else loadingBlock">
+                    <div *ngFor="let report of reports; index as repidx" class="board-report"
+                            [style.background-image]="getReportBackground(report)"
+                            (mouseenter)="hoverIndex = repidx" (mouseleave)="hoverIndex = -1">
+                        <div class='report-image' [style.background-image]="getReportBackgroundImage(report)">
+                            <div class='report-fabs' *ngIf="hoverIndex === repidx">
+                                <div class="fab-row">
+                                    <button mat-mini-fab>
+                                        <mat-icon class="mat-24">done</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="fab-row">
+                                    <button mat-mini-fab>
+                                        <mat-icon class="mat-24">launch</mat-icon>
+                                    </button>
+                                    <button mat-mini-fab [style.background]="'transparent'">
+                                        <mat-icon class="mat-24"></mat-icon>
+                                    </button>
+                                    <button mat-mini-fab>
+                                        <mat-icon class="mat-24">share</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="fab-row">
+                                    <button mat-mini-fab>
+                                        <mat-icon class="mat-24">delete</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="report-info">
+                            <div class='report-title'>{{ report.name }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="related-boards-carousel">
+                <div id="related-boards-label"><h4>Related Boards</h4></div>
+                <div id="related-boards-list" *ngIf="boardsLoaded; else loadingBlock">
+                    <div *ngFor="let board of boards" class="related-board"
+                            [style.background]="getBoardBackground(board)">
+                        <div class='board-title'>{{ board.name }}</div>
+                        <div class='board-owner'>Owner Name</div>
+                        <div class='board-options'>FOLLOW</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="activities-list">
+                <div id="activities-nav-bar" class="flex">
+                    <h4>Activity</h4>
+                    <div class="flex1 activity-sort-options">
+                        Sort by:
+                        <mat-radio-group>
+                            <mat-radio-button *ngFor="let opt of sorts; index as optidx" value="{{ optidx }}"
+                                    (disabled)="true" checked="{{ optidx === 0 }}">{{ opt.name }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div id="activity-feed" *ngIf="boardLoaded; else loadingBlock">
+                    Latests comments / article go here.
+                </div>
+            </div>
+
+        </div>
+
+    </mat-sidenav-content>
+
+    <mat-sidenav id="trends-trench" opened mode="side" position="end">
+
+        <div id="contributors">
+            <div id="contributors-label"><h4>Contributors</h4></div>
+            <div id="contributors-list" *ngIf="boardLoaded; else loadingBlock">
+                <div class="flex contributor">
+                    <div class="contributor-avatar" [style.background-color]="'darkorange'">JD</div>
+                    <div class="contributor-userid flex1">Jane Doe</div>
+                </div>
+                <div class="flex contributor">
+                    <div class="contributor-avatar" [style.background-color]="'teal'">JS</div>
+                    <div class="contributor-userid flex1">John Smith</div>
+                </div>
+            </div>
+        </div>
+
+    </mat-sidenav>
+
+</mat-sidenav-container>
+
+<ng-template #loadingBlock>
+    <loading-spinner height="250px"></loading-spinner>
+</ng-template>
