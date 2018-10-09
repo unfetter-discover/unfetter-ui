@@ -19,7 +19,8 @@ const routes: Routes = [
         path: ':boardId',
         component: BoardLayoutComponent,
         children: [
-          { path: 'article', component: ArticleComponent },
+          { path: 'article/new', component: ArticleComponent },
+          { path: 'article/edit/:articleId', component: ArticleComponent },
           { path: 'board', component: BoardComponent },
           { path: 'feed', component: FeedComponent },
         ]

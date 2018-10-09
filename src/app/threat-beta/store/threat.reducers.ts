@@ -112,6 +112,76 @@ export function threatReducer(state = initialState, action: threatActions): Thre
                 ...state,
                 dashboardLoadingComplete: action.payload
             };
+        case ThreatActionTypes.AddArticle:
+            return {
+                ...state,
+                articles: [...state.articles, action.payload]
+            }
+        case ThreatActionTypes.UpdateArticle: {
+            const articleIndex = state.articles.findIndex(
+                (article) => article.id === action.payload.id
+            );
+            if (articleIndex > -1) {
+                const articlesCopy = [...state.articles];
+                articlesCopy[articleIndex] = action.payload;
+                return {
+                    ...state,
+                    articles: articlesCopy
+                };
+            } else {
+                return state;
+            }
+        }
+        case ThreatActionTypes.DeleteArticle: {
+            const articleIndex = state.articles.findIndex(
+                (article) => article.id === action.payload
+            );
+            if (articleIndex > -1) {
+                const articlesCopy = [...state.articles];
+                articlesCopy.splice(articleIndex, 1);
+                return {
+                    ...state,
+                    articles: articlesCopy
+                };
+            } else {
+                return state;
+            }
+        }
+        case ThreatActionTypes.AddBoard:
+            return {
+                ...state,
+                boardList: [...state.boardList, action.payload]
+            }
+        case ThreatActionTypes.UpdateBoard: {
+            const boardIndex = state.boardList.findIndex(
+                (board) => board.id === action.payload.id
+            );
+            if (boardIndex > -1) {
+                const boardsCopy = [...state.boardList];
+                boardsCopy[boardIndex] = action.payload;
+                return {
+                    ...state,
+                    boardList: boardsCopy
+                };
+            } else {
+                return state;
+            }
+        }
+        case ThreatActionTypes.DeleteBoard: {
+            const boardIndex = state.boardList.findIndex(
+                (board) => board.id === action.payload
+            );
+            if (boardIndex > -1) {
+                const boardsCopy = [...state.boardList];
+                boardsCopy.splice(boardIndex, 1);
+                return {
+                    ...state,
+                    boardList: boardsCopy
+                };
+            } else {
+                return state;
+            }
+        }
         case ThreatActionTypes.ClearData:
             return initialState;
         default:

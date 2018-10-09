@@ -1,5 +1,5 @@
 <div id="articleEditorComponent">
-  <form [formGroup]="form">
+  <form [formGroup]="form" (ngSubmit)="submitArticle()">
     <mat-card class="uf-mat-card card">
       <mat-card-content class="cardContent">
         <br>
@@ -19,7 +19,7 @@
         <div class="mb-6">          
           <h4 [class.textWarn]="form.get('content').dirty && form.get('content').hasError('required')">Content<sup>*</sup></h4>
           <simplemde-mentions formControlName="content" [class.mdeError]="form.get('content').dirty && form.get('content').hasError('required')" ngDefaultControl></simplemde-mentions>
-          <mat-error [style.visibility]="form.get('content').dirty && form.get('content').hasError('required') ? 'visible' : 'hidden'">
+          <mat-error [class.showUfMatError]="form.get('content').dirty && form.get('content').hasError('required')" class="ufMatError">
             Content is <strong>required</strong>
           </mat-error>
         </div>
@@ -33,18 +33,22 @@
 
         <div *ngIf="!(blockAttachments$ | async)" class="mb-6">
           <h4>Attachments</h4>
-          <file-list></file-list>
+          <file-list [existingFiles]="articleToEdit && articleToEdit.metaProperties && articleToEdit.metaProperties.attachments" (filesChange)="files = $event"></file-list>
         </div>
 
       </mat-card-content>
     </mat-card>
     <div class="articleControlWrapper">
+      <div *ngIf="uploadProgress > 0">
+        <mat-progress-bar mode="determinate" [value]="uploadProgress" *ngIf="uploadProgress < 100"></mat-progress-bar>
+        <mat-progress-bar mode="indeterminate" *ngIf="uploadProgress === 100"></mat-progress-bar>
+      </div>
       <div class="max-card-width text-right">
         <button type="button" mat-button (click)="location.back()">CLOSE</button>
         <span>&nbsp;</span>
         <button type="button" mat-button color="primary">DELETE</button>
         <span>&nbsp;</span>
-        <button type="button" mat-raised-button color="primary">SAVE</button>
+        <button type="submit" mat-raised-button color="primary" [disabled]="form.status !== 'VALID'">SAVE</button>
       </div>
     </div>
   </form>

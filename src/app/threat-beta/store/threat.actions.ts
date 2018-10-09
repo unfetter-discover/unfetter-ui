@@ -18,6 +18,14 @@ export enum ThreatActionTypes {
     SetSelectedReportId = '[Threat] Set Selected Report Id',
     SetDashboardLoadingComplete = '[Threat] Set Dashboard Loading Complete',
     SetThreatboardLoadingComplete = '[Threat] Set Threatboard Loading Complete',
+    
+    AddArticle = '[Threat] Add Article',
+    UpdateArticle = '[Threat] Update Article',
+    DeleteArticle = '[Threat] Delete Article',
+    AddBoard = '[Threat] Add Board',
+    UpdateBoard = '[Threat] Update Board',
+    DeleteBoard = '[Threat] Delete Board',
+
     ClearData = '[Threat] Clear Data'
 }
 
@@ -93,6 +101,42 @@ export class SetThreatboardLoadingComplete implements Action {
     constructor(public payload: boolean) { }
 }
 
+export class AddArticle implements Action {
+    public readonly type = ThreatActionTypes.AddArticle;
+
+    constructor(public payload: Article) { }
+}
+
+export class UpdateArticle implements Action {
+    public readonly type = ThreatActionTypes.UpdateArticle;
+
+    constructor(public payload: Article) { }
+}
+
+export class DeleteArticle implements Action {
+    public readonly type = ThreatActionTypes.DeleteArticle;
+
+    constructor(public payload: string) { }
+}
+
+export class AddBoard implements Action {
+    public readonly type = ThreatActionTypes.AddBoard;
+
+    constructor(public payload: ThreatBoard) { }
+}
+
+export class UpdateBoard implements Action {
+    public readonly type = ThreatActionTypes.UpdateBoard;
+
+    constructor(public payload: ThreatBoard) { }
+}
+
+export class DeleteBoard implements Action {
+    public readonly type = ThreatActionTypes.DeleteBoard;
+
+    constructor(public payload: string) { }
+}
+
 export class ClearData implements Action {
     public readonly type = ThreatActionTypes.ClearData;
 
@@ -112,4 +156,10 @@ export type threatActions =
     | SetSelectedReportId
     | SetDashboardLoadingComplete 
     | SetThreatboardLoadingComplete
+    | AddArticle
+    | UpdateArticle
+    | DeleteArticle
+    | AddBoard
+    | UpdateBoard
+    | DeleteBoard
     | ClearData;

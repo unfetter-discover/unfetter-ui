@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { MatProgressBarModule } from '@angular/material';
 
 import { ThreatDashboardBetaComponent } from './threat-dashboard-beta.component';
 import { FeedComponent } from './feed/feed.component';
@@ -27,6 +28,7 @@ import { ThreatEffects } from './store/threat.effects';
     CommonModule,
     GlobalModule,
     FormsModule,
+    MatProgressBarModule,
     ReactiveFormsModule,
     routing,
     StoreModule.forFeature('threat', threatReducer),

@@ -4,7 +4,7 @@ import { forkJoin as observableForkJoin, of as observableOf, throwError } from '
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Malware, IntrusionSet, Report } from 'stix';
-import { ThreatBoard } from 'stix/unfetter/index';
+import { ThreatBoard, Article } from 'stix/unfetter/index';
 
 import { ThreatActionTypes } from './threat.actions';
 import { GenericApi } from '../../core/services/genericapi.service';
@@ -25,7 +25,7 @@ export class ThreatEffects {
         .pipe(
             ofType(ThreatActionTypes.FetchBaseData),
             switchMap(() => {                
-                const reportOptions: StixApiOptions = {
+                const options: StixApiOptions = {
                     project: {
                         'stix.name': 1,
                         'stix.description': 1,
@@ -43,7 +43,7 @@ export class ThreatEffects {
                     this.genericApi.getStix<ThreatBoard[]>(StixUrls.X_UNFETTER_THREAT_BOARD),
                     this.genericApi.getStix<Malware[]>(StixUrls.MALWARE),
                     this.genericApi.getStix<IntrusionSet[]>(StixUrls.INTRUSION_SET),
-                    this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, reportOptions)
+                    this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, options)
                 );
             }),
             mergeMap(([threatBoards, malware, intrusionSets, reports]) => {
@@ -72,8 +72,9 @@ export class ThreatEffects {
                             filter((board) => board !== undefined),
                             take(1),
                             switchMap((board) => {
+                                const obs = [];
                                 if (board.reports && board.reports.length) {
-                                    const reportOptions: StixApiOptions = {
+                                    const options: StixApiOptions = {
                                         filter: {
                                             _id: {
                                                 $in: board.reports
@@ -85,14 +86,35 @@ export class ThreatEffects {
                                         metaproperties: true
                                     };
 
-                                    return this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, reportOptions);
+                                    obs.push(this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, options));
                                 } else {
-                                    return observableOf([]);
+                                    obs.push(observableOf([]));
                                 }
+
+                                if (board.articles && board.articles.length) {
+                                    const options: StixApiOptions = {
+                                        filter: {
+                                            _id: {
+                                                $in: board.articles
+                                            }
+                                        },
+                                        sort: {
+                                            'stix.created': -1
+                                        },
+                                        metaproperties: true
+                                    };
+
+                                    obs.push(this.genericApi.getStix<Article[]>(StixUrls.X_UNFETTER_ARTICLE, null, options));
+                                } else {
+                                    obs.push(observableOf([]));
+                                }
+
+                                return observableForkJoin(obs);
                             }),
-                            mergeMap((reports) => {
+                            mergeMap(([reports, articles]) => {
                                 return [
                                     new threatActions.SetAttachedReports(reports),
+                                    new threatActions.SetArticles(articles),
                                     new threatActions.SetThreatboardLoadingComplete(true)
                                 ];
                             })
