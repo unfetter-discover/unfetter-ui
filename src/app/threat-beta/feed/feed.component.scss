@@ -30,13 +30,54 @@
 
     #reports-carousel, #related-boards-carousel {
         margin-bottom: 20px;
+
+        .carousel-button {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            top: 16%;
+            z-index: 100;
+            margin: 0 16px;
+            background: rgba(127, 127, 127, .4);
+            border: 2px solid white;
+            border-radius: 50%;
+            color: rgba(255, 255, 255, .4);
+
+            mat-icon {
+                font-size: 36px;
+                margin-left: -12px;
+            }
+        }
+        .carousel-button:hover {
+            // border-color: white;
+            background: rgba(255, 255, 255, .3);
+            color: white;
+        }
+        .carousel-button[disabled] {
+            border-color: rgba(0, 0, 0, .6);
+            background: rgba(0, 0, 0, .4);
+            // color: rgba(0, 0, 0, .7);
+            color: gray;
+        }
+        .carousel-button.carousel-left {
+            left: 0;
+        }
+        .carousel-button.carousel-right {
+            right: 0;
+        }
+
+        h4 {
+            display: inline-block;
+        }
     }
 
     #reports-list, #related-boards-list {
         display: flex;
         flex-direction: row;
-        overflow-x: auto;
-        overflow-y: hidden;
+        margin-top: -11px;
+        padding-top: 11px;
+        overflow-x: hidden;
+        transition: margin-left 0.5s ease;
     }
 
     .board-report, .related-board {
@@ -59,6 +100,10 @@
                     button[mat-mini-fab] {
                         color: black;
                         background: white;
+                    }
+                    button[mat-mini-fab][disabled] {
+                        color: white;
+                        background: gray;
                     }
                 }
             }
@@ -131,6 +176,8 @@
 
 #trends-trench {
 
+    display: flex;
+    flex-direction: column;
     width: 380px;
     margin-left: 10px;
     padding: 15px;
@@ -138,6 +185,8 @@
     box-shadow: 1px 0 8px 0 rgba(0, 0, 0, .8);
 
     #contributors {
+        flex: 1;
+
         .contributor {
             margin-left: 16px;
             margin-bottom: 12px;
@@ -147,7 +196,7 @@
             width: 40px;
             height: 40px;
             margin-right: 8px;
-            border-radius: 20px;
+            border-radius: 50%;
             line-height: 40px;
             text-align: center;
             color: white;

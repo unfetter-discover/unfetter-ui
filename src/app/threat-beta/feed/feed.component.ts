@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import { pluck, map, filter } from 'rxjs/operators';
@@ -21,12 +21,22 @@ export class FeedComponent implements OnInit {
     public threatBoard: ThreatBoard;
     private _boardLoaded = false;
 
+    public readonly carouselItemWidth = 200;
+    public readonly carouselItemPadding = 20;
+
     public reports = [];
     private _reportsLoaded = false;
-    public hoverIndex = -1;
+    public reportHoverIndex = -1;
+    public reportsHover = false;
+    public reportsPage = 0;
+    @ViewChild('reportsView') reportsView: ElementRef;
 
     public boards = {};
     private _boardsLoaded = false;
+    public boardHoverIndex = -1;
+    public boardsHover = false;
+    public boardsPage = 0;
+    @ViewChild('boardsView') boardsView: ElementRef;
 
     public readonly sorts = [
         { name: 'Newest', sorter: this.sortByLastModified },
@@ -74,8 +84,9 @@ export class FeedComponent implements OnInit {
                         )
                         .subscribe(
                             (reports: any[]) => {
-                                console.log('feed reports', reports);
-                                this.reports = reports.sort(this.sortByLastModified);
+                                this.reports = reports
+                                        .map(report => ({ ...report, vetted: board.reports.includes(report.id) }))
+                                        .sort(this.sortByLastModified);
                                 console.log('full reports', this.reports);
                                 this._reportsLoaded = true;
                             },
@@ -129,6 +140,58 @@ export class FeedComponent implements OnInit {
 
     public sortByMostComments(a: any, b: any) {
         return b.modified.localeCompare(a.modified);
+    }
+
+    public isFirstReport() {
+        return this.reportsPage === 0;
+    }
+
+    public isLastReport() {
+        return this.reportsPage >= this.reportsPages - 1;
+    }
+
+    public scrollReportsLeft() {
+        if (this.reportsPage > 0) {
+            this.reportsPage--;
+            if (this.reportsView) {
+                this.reportsView.nativeElement.style['margin-left'] = `${this.reportsOffset}px`;
+            }
+        }
+    }
+
+    public scrollReportsRight() {
+        if (this.reportsPage < this.reportsPages - 1) {
+            this.reportsPage++;
+            if (this.reportsView) {
+                this.reportsView.nativeElement.style['margin-left'] = `${this.reportsOffset}px`;
+            }
+        }
+    }
+
+    private get reportsPerPage() {
+        let perPage = 1;
+        if (this.reportsView) {
+            const itemWidth = this.carouselItemWidth + this.carouselItemPadding;
+            const reportsWidth = this.reportsView.nativeElement.offsetWidth +
+                    (Number.parseInt(this.reportsView.nativeElement.style['margin-left'] || 0, 10));
+            perPage = Math.floor(reportsWidth / itemWidth);
+            if (reportsWidth - perPage * itemWidth < this.carouselItemPadding) {
+                perPage++;
+            }
+        }
+        return Math.max(perPage, 1);
+    }
+
+    public get reportsPages() {
+        return Math.ceil(this.reports.length / this.reportsPerPage);
+    }
+
+    public get reportsOffset() {
+        return this.reportsPage * this.reportsPerPage * -220;
+    }
+
+    public get boardUpdateTime() {
+        return new Date(this.threatBoard.modified).toUTCString();
     }
 
 }
