@@ -25,6 +25,7 @@ import {
     MatToolbarModule,
     MatTooltipModule,
     MatRadioModule,
+    MatBadgeModule,
 } from '@angular/material';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { SimplemdeModule, SIMPLEMDE_CONFIG } from 'ng2-simplemde';
@@ -99,6 +100,7 @@ import { TextHighlightComponent } from './components/text-highlight/text-highlig
 
 const matModules = [
     MatAutocompleteModule,
+    MatBadgeModule,
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
