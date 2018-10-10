@@ -91,6 +91,7 @@ import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AuthService } from '../core/services/auth.service';
 import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
+import { TimesPipe } from './pipes/times.pipe';
 import { UnfetterCarouselComponent, PrimedDirective } from './components/tactics-pane/tactics-carousel/unf-carousel.component';
 import { ScrollTrapDirective } from './directives/scroll-trap.directive';
 import { SimplemdeMentionsComponent } from './components/simplemde-mentions/simplemde-mentions.component';
@@ -171,6 +172,7 @@ const unfetterComponents = [
     TacticsTreemapComponent,
     TacticsPaneComponent,
     TimeAgoPipe,
+    TimesPipe,
     TreemapComponent,
     MarkdownEditorComponent,
     SelectionListComponent,
@@ -213,7 +215,7 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,       
+        ...unfetterComponents,
     ],
     exports: [
         ...unfetterComponents,

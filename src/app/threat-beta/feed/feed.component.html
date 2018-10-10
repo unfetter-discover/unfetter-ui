@@ -13,52 +13,66 @@
 
             <div id="reports-carousel">
 
-                <div id="reports-label"><h4>Reports</h4></div>
+                <div id="reports-label">
+                    <h4>Reports</h4>
+                    <div style="float:right;" *ngIf="reportsPages > 1">
+                        <button mat-icon-button *ngFor="let ii of reportsPages | times"
+                                style="width:20px; height:20px; line-height:20px;">
+                            <mat-icon [style.font-size]="(reportsPage === ii) ? '14px' : '9px'"
+                                [style.color]="(reportsPage === ii) ? 'green' : 'black'"
+                                (click)="scrollToReportsPage(ii)">lens</mat-icon>
+                        </button>
+                    </div>
+                </div>
 
-                <div #reportsView id="reports-list" *ngIf="reportsLoaded; else loadingBlock"
+                <div *ngIf="reportsLoaded; else loadingBlock"
                         (mouseenter)="reportsHover = true" (mouseleave)="reportsHover = false">
 
-                    <button *ngIf="reportsHover" mat-icon-button mat-mini-fab class="carousel-button carousel-left"
-                            [disabled]="isFirstReport()" (click)="scrollReportsLeft()">
-                        <mat-icon aria-label="scroll reports left">keyboard_arrow_left</mat-icon>
-                    </button>
+                    <div class="carousel-glass" *ngIf="reportsHover && (reportsPages > 1)">
+                        <button mat-icon-button mat-mini-fab class="carousel-button carousel-left"
+                                [disabled]="isFirstReport()" (click)="scrollReportsLeft()">
+                            <mat-icon aria-label="scroll reports left">keyboard_arrow_left</mat-icon>
+                        </button>
+                        <button mat-icon-button mat-mini-fab class="carousel-button carousel-right"
+                                [disabled]="isLastReport()" (click)="scrollReportsRight()">
+                            <mat-icon aria-label="scroll reports right">keyboard_arrow_right</mat-icon>
+                        </button>
+                    </div>
 
-                    <button *ngIf="reportsHover" mat-icon-button mat-mini-fab class="carousel-button carousel-right"
-                            [disabled]="isLastReport()" (click)="scrollReportsRight()">
-                        <mat-icon aria-label="scroll reports right">keyboard_arrow_right</mat-icon>
-                    </button>
-
-                    <div *ngFor="let report of reports; index as repidx" id="{{ report.id }}"
-                            class="board-report" [style.background-image]="getReportBackground(report)"
-                            matBadge="!" matBadgeDescription="new" matBadgeColor="warn"
-                            matBadgePosition="before" matBadgeHidden="{{ report.vetted }}"
-                            (mouseenter)="reportHoverIndex = repidx" (mouseleave)="reportHoverIndex = -1">
-                        <div class='report-image' [style.background-image]="getReportBackgroundImage(report)">
-                            <div class='report-fabs' *ngIf="reportHoverIndex === repidx">
-                                <div class="fab-row">
-                                    <button mat-mini-fab [disabled]="report.vetted">
-                                        <mat-icon class="mat-24" aria-label="approve report">done</mat-icon>
-                                    </button>
-                                </div>
-                                <div class="fab-row">
-                                    <button mat-mini-fab [style.margin-right]="'24px'">
-                                        <mat-icon class="mat-24" aria-label="report quick view">launch</mat-icon>
-                                    </button>
-                                    <button mat-mini-fab [style.margin-left]="'24px'" disabled>
-                                        <mat-icon class="mat-24" aria-label="share report">share</mat-icon>
-                                    </button>
-                                </div>
-                                <div class="fab-row">
-                                    <button mat-mini-fab>
-                                        <mat-icon class="mat-24" aria-label="reject report">delete</mat-icon>
-                                    </button>
+                    <div #reportsView id="reports-list" [style.margin-left]="reportsOffset + 'px'">
+                        <div *ngFor="let report of reports; index as repidx" id="{{ report.id }}"
+                                class="board-report" [style.background-image]="getReportBackground(report)"
+                                matBadge="!" matBadgeDescription="new" matBadgeColor="warn"
+                                matBadgePosition="before" matBadgeHidden="{{ report.vetted }}"
+                                (mouseenter)="reportHoverIndex = repidx" (mouseleave)="reportHoverIndex = -1">
+                            <div class='report-image' [style.background-image]="getReportBackgroundImage(report)">
+                                <div class='report-fabs' *ngIf="reportHoverIndex === repidx">
+                                    <div class="fab-row">
+                                        <button mat-mini-fab [disabled]="report.vetted">
+                                            <mat-icon class="mat-24" aria-label="approve report">done</mat-icon>
+                                        </button>
+                                    </div>
+                                    <div class="fab-row">
+                                        <button mat-mini-fab [style.margin-right]="'24px'">
+                                            <mat-icon class="mat-24" aria-label="report quick view">launch</mat-icon>
+                                        </button>
+                                        <button mat-mini-fab [style.margin-left]="'24px'" disabled>
+                                            <mat-icon class="mat-24" aria-label="share report">share</mat-icon>
+                                        </button>
+                                    </div>
+                                    <div class="fab-row">
+                                        <button mat-mini-fab>
+                                            <mat-icon class="mat-24" aria-label="reject report">delete</mat-icon>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="report-info">
-                            <div class='report-title'>{{ report.name }}</div>
+                            <div class="report-info">
+                                <div class='report-title'>{{ report.name }}</div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
             </div>

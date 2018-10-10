@@ -29,6 +29,8 @@ export class FeedComponent implements OnInit {
     public reportHoverIndex = -1;
     public reportsHover = false;
     public reportsPage = 0;
+    private _reportsPerPage: number;
+    private _reportsPages: number;
     @ViewChild('reportsView') reportsView: ElementRef;
 
     public boards = {};
@@ -88,6 +90,7 @@ export class FeedComponent implements OnInit {
                                         .map(report => ({ ...report, vetted: board.reports.includes(report.id) }))
                                         .sort(this.sortByLastModified);
                                 console.log('full reports', this.reports);
+                                this.calculateReportsWindow();
                                 this._reportsLoaded = true;
                             },
                             (err) => console.log(`(${new Date().toISOString()}) Error loading reports:`, err)
@@ -150,27 +153,11 @@ export class FeedComponent implements OnInit {
         return this.reportsPage >= this.reportsPages - 1;
     }
 
-    public scrollReportsLeft() {
-        if (this.reportsPage > 0) {
-            this.reportsPage--;
-            if (this.reportsView) {
-                this.reportsView.nativeElement.style['margin-left'] = `${this.reportsOffset}px`;
-            }
-        }
-    }
-
-    public scrollReportsRight() {
-        if (this.reportsPage < this.reportsPages - 1) {
-            this.reportsPage++;
-            if (this.reportsView) {
-                this.reportsView.nativeElement.style['margin-left'] = `${this.reportsOffset}px`;
-            }
-        }
-    }
-
-    private get reportsPerPage() {
-        let perPage = 1;
-        if (this.reportsView) {
+    private calculateReportsWindow() {
+        if (!this.reportsView) {
+            requestAnimationFrame(() => this.calculateReportsWindow());
+        } else {
+            let perPage = 1;
             const itemWidth = this.carouselItemWidth + this.carouselItemPadding;
             const reportsWidth = this.reportsView.nativeElement.offsetWidth +
                     (Number.parseInt(this.reportsView.nativeElement.style['margin-left'] || 0, 10));
@@ -178,16 +165,43 @@ export class FeedComponent implements OnInit {
             if (reportsWidth - perPage * itemWidth < this.carouselItemPadding) {
                 perPage++;
             }
+            this._reportsPerPage = Math.max(perPage, 1);
+            this._reportsPages = Math.ceil(this.reports.length / this._reportsPerPage);
         }
-        return Math.max(perPage, 1);
+    }
+
+    private get reportsPerPage() {
+        return this._reportsPerPage;
     }
 
     public get reportsPages() {
-        return Math.ceil(this.reports.length / this.reportsPerPage);
+        return this._reportsPages;
     }
 
-    public get reportsOffset() {
-        return this.reportsPage * this.reportsPerPage * -220;
+    private get reportsOffset() {
+        return this.reportsPage * this._reportsPerPage * -220;
+    }
+
+    public scrollReportsLeft() {
+        if (this.reportsPage > 0) {
+            this.reportsPage--;
+            // this.reportsView.nativeElement.style['margin-left'] = `${this.reportsOffset}px`;
+        }
+    }
+
+    public scrollReportsRight() {
+        if (this.reportsPage < this.reportsPages - 1) {
+            this.reportsPage++;
+            // this.reportsView.nativeElement.style['margin-left'] = `${this.reportsOffset}px`;
+        }
+    }
+
+    public scrollToReportsPage(page: number) {
+        page = Math.max(0, Math.min(page, this.reportsPages - 1));
+        if (this.reportsPage !== page) {
+            this.reportsPage = page;
+            // this.reportsView.nativeElement.style['margin-left'] = `${this.reportsOffset}px`;
+        }
     }
 
     public get boardUpdateTime() {
