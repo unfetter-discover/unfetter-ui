@@ -33,11 +33,13 @@ export class FeedComponent implements OnInit {
     private _reportsPages: number;
     @ViewChild('reportsView') reportsView: ElementRef;
 
-    public boards = {};
+    public boards = [];
     private _boardsLoaded = false;
     public boardHoverIndex = -1;
     public boardsHover = false;
     public boardsPage = 0;
+    private _boardsPerPage: number;
+    private _boardsPages: number;
     @ViewChild('boardsView') boardsView: ElementRef;
 
     public readonly sorts = [
@@ -75,6 +77,7 @@ export class FeedComponent implements OnInit {
                             (boards: any[]) => {
                                 this.boards = boards.filter(b => b.id !== board.id);
                                 console.log(`(${new Date().toISOString()}) board list`, this.boards);
+                                this.calculateBoardsWindow();
                                 this._boardsLoaded = true;
                             },
                             (err) => console.log(`(${new Date().toISOString()}) Error loading boards:`, err)
@@ -89,7 +92,7 @@ export class FeedComponent implements OnInit {
                                 this.reports = reports
                                         .map(report => ({ ...report, vetted: board.reports.includes(report.id) }))
                                         .sort(this.sortByLastModified);
-                                console.log('full reports', this.reports);
+                                console.log(`(${new Date().toISOString()}) reports list`, this.reports);
                                 this.calculateReportsWindow();
                                 this._reportsLoaded = true;
                             },
@@ -98,6 +101,142 @@ export class FeedComponent implements OnInit {
                 },
                 (err) => console.log(`(${new Date().toISOString()}) Error loading threat board:`, err)
             )
+    }
+
+    private calculateReportsWindow() {
+        if (!this.reportsView) {
+            requestAnimationFrame(() => this.calculateReportsWindow());
+        } else {
+            let perPage = 1;
+            const itemWidth = this.carouselItemWidth + this.carouselItemPadding;
+            const reportsWidth = this.reportsView.nativeElement.offsetWidth +
+                    (Number.parseInt(this.reportsView.nativeElement.style['margin-left'] || 0, 10));
+            perPage = Math.floor(reportsWidth / itemWidth);
+            if (reportsWidth - perPage * itemWidth < this.carouselItemPadding) {
+                perPage++;
+            }
+            this._reportsPerPage = Math.max(perPage, 1);
+            this._reportsPages = Math.ceil(this.reports.length / this._reportsPerPage);
+        }
+    }
+
+    private get reportsPerPage() {
+        return this._reportsPerPage;
+    }
+
+    public get reportsPages() {
+        return this._reportsPages;
+    }
+
+    private get reportsOffset() {
+        return this.reportsPage * this._reportsPerPage * -220;
+    }
+
+    public isFirstReport() {
+        return this.reportsPage === 0;
+    }
+
+    public isLastReport() {
+        return this.reportsPage >= this._reportsPages - 1;
+    }
+
+    public scrollReportsLeft() {
+        if (this.reportsPage > 0) {
+            this.reportsPage--;
+        }
+    }
+
+    public scrollReportsRight() {
+        if (this.reportsPage < this._reportsPages - 1) {
+            this.reportsPage++;
+        }
+    }
+
+    public scrollToReportsPage(page: number) {
+        page = Math.max(0, Math.min(page, this._reportsPages - 1));
+        if (this.reportsPage !== page) {
+            this.reportsPage = page;
+        }
+    }
+
+    public approveReport(id: string) {
+        // We need to submit some kind of request to move a report from the "potentials" metaproperty to the
+        // reports array inside the threatboard document.
+        console.log(`Request to approve report '${id}' received`);
+    }
+
+    public rejectReport(id: string) {
+        // We need to submit some kind of request to delete a report from the "potentials" metaproperty or from the
+        // reports array inside the threatboard document.
+        console.log(`Request to reject report '${id}' received`);
+    }
+
+    public viewReport(id: string) {
+        console.log(`Request to view report '${id}' received`);
+    }
+
+    public shareReport(id: string) {
+        console.log(`Request to share report '${id}' received`);
+    }
+
+    private calculateBoardsWindow() {
+        if (!this.boardsView) {
+            requestAnimationFrame(() => this.calculateBoardsWindow());
+        } else {
+            let perPage = 1;
+            const itemWidth = this.carouselItemWidth + this.carouselItemPadding;
+            const boardsWidth = this.boardsView.nativeElement.offsetWidth +
+                    (Number.parseInt(this.boardsView.nativeElement.style['margin-left'] || 0, 10));
+            perPage = Math.floor(boardsWidth / itemWidth);
+            if (boardsWidth - perPage * itemWidth < this.carouselItemPadding) {
+                perPage++;
+            }
+            this._boardsPerPage = Math.max(perPage, 1);
+            this._boardsPages = Math.ceil(this.boards.length / this._boardsPerPage);
+        }
+    }
+
+    private get boardsPerPage() {
+        return this._boardsPerPage;
+    }
+
+    public get boardsPages() {
+        return this._boardsPages;
+    }
+
+    private get boardsOffset() {
+        return this.boardsPage * this._boardsPerPage * -220;
+    }
+
+    public isFirstBoard() {
+        return this.boardsPage === 0;
+    }
+
+    public isLastBoard() {
+        return this.boardsPage >= this._boardsPages - 1;
+    }
+
+    public scrollBoardsLeft() {
+        if (this.boardsPage > 0) {
+            this.boardsPage--;
+        }
+    }
+
+    public scrollBoardsRight() {
+        if (this.boardsPage < this._boardsPages - 1) {
+            this.boardsPage++;
+        }
+    }
+
+    public scrollToBoardsPage(page: number) {
+        page = Math.max(0, Math.min(page, this._boardsPages - 1));
+        if (this.boardsPage !== page) {
+            this.boardsPage = page;
+        }
+    }
+
+    public followBoard(id: string) {
+        console.log(`Request to follow board '${id}' received`);
     }
 
     public getReportBackground(report: any) {
@@ -143,65 +282,6 @@ export class FeedComponent implements OnInit {
 
     public sortByMostComments(a: any, b: any) {
         return b.modified.localeCompare(a.modified);
-    }
-
-    public isFirstReport() {
-        return this.reportsPage === 0;
-    }
-
-    public isLastReport() {
-        return this.reportsPage >= this.reportsPages - 1;
-    }
-
-    private calculateReportsWindow() {
-        if (!this.reportsView) {
-            requestAnimationFrame(() => this.calculateReportsWindow());
-        } else {
-            let perPage = 1;
-            const itemWidth = this.carouselItemWidth + this.carouselItemPadding;
-            const reportsWidth = this.reportsView.nativeElement.offsetWidth +
-                    (Number.parseInt(this.reportsView.nativeElement.style['margin-left'] || 0, 10));
-            perPage = Math.floor(reportsWidth / itemWidth);
-            if (reportsWidth - perPage * itemWidth < this.carouselItemPadding) {
-                perPage++;
-            }
-            this._reportsPerPage = Math.max(perPage, 1);
-            this._reportsPages = Math.ceil(this.reports.length / this._reportsPerPage);
-        }
-    }
-
-    private get reportsPerPage() {
-        return this._reportsPerPage;
-    }
-
-    public get reportsPages() {
-        return this._reportsPages;
-    }
-
-    private get reportsOffset() {
-        return this.reportsPage * this._reportsPerPage * -220;
-    }
-
-    public scrollReportsLeft() {
-        if (this.reportsPage > 0) {
-            this.reportsPage--;
-            // this.reportsView.nativeElement.style['margin-left'] = `${this.reportsOffset}px`;
-        }
-    }
-
-    public scrollReportsRight() {
-        if (this.reportsPage < this.reportsPages - 1) {
-            this.reportsPage++;
-            // this.reportsView.nativeElement.style['margin-left'] = `${this.reportsOffset}px`;
-        }
-    }
-
-    public scrollToReportsPage(page: number) {
-        page = Math.max(0, Math.min(page, this.reportsPages - 1));
-        if (this.reportsPage !== page) {
-            this.reportsPage = page;
-            // this.reportsView.nativeElement.style['margin-left'] = `${this.reportsOffset}px`;
-        }
     }
 
     public get boardUpdateTime() {

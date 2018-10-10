@@ -34,6 +34,16 @@ mat-sidenav-content {
     #reports-carousel, #related-boards-carousel {
         margin-bottom: 20px;
 
+        .carousel-pager {
+            float: right;
+
+            .pager-bullet {
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
+            }
+        }
+
         .carousel-glass {
             position: absolute;
             width: -moz-available;
@@ -89,6 +99,7 @@ mat-sidenav-content {
         // this margin/padding allows the badges to appear properly
         margin-top: -11px;
         padding-top: 11px;
+        padding-left: 11px;
 
         // hides the horizontal scrollbar for the carousel
         overflow-x: hidden;
@@ -175,6 +186,14 @@ mat-sidenav-content {
             height: 30px;
             font-size: 16px;
             color: white;
+
+            button {
+                padding-left: 0px;
+                text-align: left;
+            }
+            button[disabled] {
+                color: lightgray;
+            }
         }
     }
 
