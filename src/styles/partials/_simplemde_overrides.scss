@@ -1,6 +1,10 @@
 @import 'variables';
 
-$mde-background: #f2f2f2;
+simplemde {
+  // Import simple mde seperately so it doesnt interfere with codemirror
+  color: red !important;
+  @import 'simplemde/dist/simplemde.min.css';
+}
 
 .mdeError {
     .editor-toolbar {

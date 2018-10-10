@@ -98,6 +98,7 @@ import { SimplemdeMentionsComponent } from './components/simplemde-mentions/simp
 import { SimpleMDEConfig } from './static/simplemde-config';
 import { MarkdownMentionsComponent } from './components/markdown-mentions/markdown-mentions.component';
 import { TextHighlightComponent } from './components/text-highlight/text-highlight.component';
+import { CodeEditorComponent } from './components/code-editor/code-editor.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -186,6 +187,7 @@ const unfetterComponents = [
     MarkdownMentionsComponent,
     ScrollTrapDirective,
     TextHighlightComponent,
+    CodeEditorComponent,
 ];
 
 @NgModule({

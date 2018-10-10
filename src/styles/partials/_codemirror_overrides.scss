@@ -1,0 +1,34 @@
+.uf-codeMirror {
+    @import 'codemirror/theme/material.css';
+    @import 'codemirror/addon/fold/foldgutter.css';
+
+    .cm-s-material .CodeMirror-code .cm-string {
+      color: #C3E88D;
+    }
+
+    .cm-s-material .CodeMirror-code .cm-tag {
+      color: rgba(255, 83, 112, 1);
+    }
+
+    .cm-s-material .CodeMirror-code .cm-attribute {
+      color: #FFCB6B;
+    }
+}
+
+.uf-codeMirror .CodeMirror {
+    * {
+        font-family: Monaco,
+        Menlo,
+        "Ubuntu Mono",
+        "Droid Sans Mono",
+        Consolas,
+        monospace;
+    }
+
+    .CodeMirror-code .cm-comment {
+      background: inherit;
+      border-radius: inherit;
+    }
+}
+
+

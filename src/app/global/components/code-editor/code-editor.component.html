@@ -1,0 +1,10 @@
+<div class="codeEditorComponent uf-codeMirror">
+  <div class="toolbar">
+    <mat-form-field *ngIf="!readOnly">
+      <mat-select [(ngModel)]="selectedLang">
+        <mat-option *ngFor="let lang of langs" [value]="lang">{{lang}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div #cm></div>
+</div>
