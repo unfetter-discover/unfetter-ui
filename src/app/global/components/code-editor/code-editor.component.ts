@@ -1,5 +1,8 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, forwardRef, Input, OnInit } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
+import { MatTooltip } from '@angular/material';
+import { Subject } from 'rxjs';
+import { debounceTime, finalize, map } from 'rxjs/operators';
 import * as CodeMirror from 'codemirror';
 
 import 'codemirror/addon/fold/foldcode.js';
@@ -20,7 +23,8 @@ import 'codemirror/mode/sql/sql.js';
 import 'codemirror/keymap/emacs.js';
 import 'codemirror/keymap/sublime.js';
 import 'codemirror/keymap/vim.js';
-import { MatTooltip } from '@angular/material';
+
+import { FormatHelpers } from '../../static/format-helpers';
 
 export interface ExtendedEditorConfiguration extends CodeMirror.EditorConfiguration {
   autoCloseBrackets?: boolean;
@@ -28,7 +32,7 @@ export interface ExtendedEditorConfiguration extends CodeMirror.EditorConfigurat
   matchBrackets?: boolean;
 }
 
-export type ufCodeMirrorModes = 'JSON' | 'YAML' | 'YML' | 'XML' | 'Shell' | 'PowerShell' | 'SQL' | 'Text';
+export type ufCodeMirrorModes = 'JSON' | 'YAML' | 'YML' | 'XML' | 'Shell' | 'PowerShell' | 'SQL' | 'Other';
 export type ufCodeMirrorKeymaps = 'sublime' | 'emacs' | 'vim';
 export type ufCodeMirrorThemes = 'material' | 'idea';
 
@@ -50,7 +54,7 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
   public cm: ElementRef;
   public codemirror: CodeMirror.Editor;  
   public langs: ufCodeMirrorModes[] = [
-    'Text',
+    'Other',
     'JSON',
     'PowerShell',
     'Shell',
@@ -69,7 +73,7 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
   public readOnly = false;
 
   @Input()
-  public syntaxCtrl: FormControl;
+  public syntaxCtrl: FormControl = new FormControl('');
 
   @Input()
   public set selectedLang(v: ufCodeMirrorModes) {
@@ -115,9 +119,10 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
   private onTouchedCallback: () => {};
   private onChangeCallback: (_: any) => {};
   private readonly FLASH_TOOLTIP_TIMER: number = 500;
-  private formDirty = false;  
+  private formDirty = false;
+  private onChangeSubject = new Subject<null>();
   private _innerValue: string;
-  private _selectedLang: ufCodeMirrorModes = 'Text';
+  private _selectedLang: ufCodeMirrorModes = 'Other';
   private _selectedKeymap: ufCodeMirrorKeymaps = 'sublime';
   private _lineWrapping: boolean = false;
   private _theme: ufCodeMirrorThemes = 'idea';
@@ -134,6 +139,22 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
     } else {
       this.syntaxCtrl = new FormControl(this.selectedLang);
     }
+
+    const change$ = this.onChangeSubject
+      .pipe(
+        debounceTime(20),
+        finalize(() => change$ && change$.unsubscribe())
+      )
+      .subscribe(
+        () => {
+          if (this.codemirror) {
+            this.value = FormatHelpers.normalizeQuotes(this.codemirror.getValue());
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   }
 
   ngAfterViewInit() {
@@ -198,9 +219,7 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
     }
 
     this.codemirror.setValue(this.value || '');
-    this.codemirror.on('change', () => {
-      this.value = this.codemirror.getValue();
-    });
+    this.codemirror.on('change', () => this.onChangeSubject.next());
   }
 
   public handleCopy(event: { isSuccess: true }, toolTip: MatTooltip) {
@@ -250,6 +269,7 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
    * @param v 
    */
   writeValue(v: string) {
+    console.log('~~~ write val', v, this.codemirror);
     if (v !== this._innerValue) {
       this._innerValue = v;
       if (this.codemirror) {
