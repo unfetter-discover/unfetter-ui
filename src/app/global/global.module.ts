@@ -29,6 +29,7 @@ import {
 } from '@angular/material';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { SimplemdeModule, SIMPLEMDE_CONFIG } from 'ng2-simplemde';
+import { ClipboardModule } from 'ngx-clipboard';
 
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
@@ -196,6 +197,7 @@ const unfetterComponents = [
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
+        ClipboardModule,
         MarkdownModule.forRoot({
             markedOptions: {
                 provide: MarkedOptions,
