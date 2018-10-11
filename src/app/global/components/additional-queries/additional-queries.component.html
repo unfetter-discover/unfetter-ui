@@ -13,12 +13,15 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field class="full-width mb-6">
+      <!-- <mat-form-field class="full-width mb-6">
         <textarea matInput required placeholder="Query" formControlName="query" (keyup)="queryChange(localForm.get('query'))"></textarea>
         <mat-error *ngIf="localForm.get('query').hasError('required')">
           Query is <strong>required</strong>
         </mat-error>
-      </mat-form-field>
+      </mat-form-field> -->
+
+      <h5>Query</h5>
+      <code-editor formControlName="query"></code-editor>
       
       <pii-check-message [formCtrl]="localForm.get('query')"></pii-check-message>
 

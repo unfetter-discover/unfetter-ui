@@ -1,4 +1,12 @@
-<div class="codeEditorComponent uf-codeMirror">
+<div class="codeEditorComponent uf-codeMirror" [class.readOnly]="readOnly">
+
+  <div class="readOnlyControls" *ngIf="readOnly">
+    <button mat-icon-button ngxClipboard [cbContent]="value" (cbOnError)="handleCopy($event, tooltip)" (cbOnSuccess)="handleCopy($event, tooltip)">
+      <mat-icon>content_copy</mat-icon>
+      <div #tooltip="matTooltip" matTooltip="{{ copyText }}" class="inlineBlock"></div>
+    </button>
+  </div>
+
   <div class="toolbar" *ngIf="!readOnly">
     <label>Syntax:&nbsp;&nbsp;</label>
     <mat-form-field>
@@ -29,5 +37,7 @@
       </mat-select>
     </mat-form-field>
   </div>
+
   <div #cm></div>
+
 </div>

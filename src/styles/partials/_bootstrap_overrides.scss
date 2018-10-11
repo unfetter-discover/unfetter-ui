@@ -11,6 +11,13 @@ pre code {
     color: inherit !important;
 }
 
+code,
+kbd,
+pre,
+samp {
+  @include monospace;
+}
+
 .assessmentsTheme code {
    @include lightenAccentColors('background-color', 0.15);
    @include darkenAccentColors('color', 18%);

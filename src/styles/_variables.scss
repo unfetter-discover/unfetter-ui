@@ -105,6 +105,10 @@ $mde-background: #f2f2f2;
     font-feature-settings: 'liga';
 }
 
+@mixin monospace {
+    font-family: Monaco, Menlo, "Ubuntu Mono", "Droid Sans Mono", Consolas, monospace;
+}
+
 @function rgba-to-rgb($rgba, $background: #fff) {
         @return mix(rgb(red($rgba), green($rgba), blue($rgba)), $background, alpha($rgba) * 100%);
 }
