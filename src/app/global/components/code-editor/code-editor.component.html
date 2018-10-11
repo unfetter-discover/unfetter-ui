@@ -1,8 +1,31 @@
 <div class="codeEditorComponent uf-codeMirror">
-  <div class="toolbar">
-    <mat-form-field *ngIf="!readOnly">
+  <div class="toolbar" *ngIf="!readOnly">
+    <label>Syntax:&nbsp;&nbsp;</label>
+    <mat-form-field>
       <mat-select [(ngModel)]="selectedLang">
-        <mat-option *ngFor="let lang of langs" [value]="lang">{{lang}}</mat-option>
+        <mat-option *ngFor="let lang of langs" [value]="lang">{{ lang }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <label>Keymap:&nbsp;&nbsp;</label>
+    <mat-form-field>
+      <mat-select [(ngModel)]="selectedKeymap">
+        <mat-option *ngFor="let keymap of keymaps" [value]="keymap">{{ keymap | capitalize }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+    <label>Word Wrap:&nbsp;&nbsp;</label>
+    <mat-form-field>
+      <mat-select [(ngModel)]="lineWrapping">
+        <mat-option [value]="false">No</mat-option>
+        <mat-option [value]="true">Yes</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <label>Theme:&nbsp;&nbsp;</label>
+    <mat-form-field>
+      <mat-select [(ngModel)]="theme">
+        <mat-option value="material">Dark</mat-option>
+        <mat-option value="idea">Light</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
