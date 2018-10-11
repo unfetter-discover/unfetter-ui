@@ -1,10 +1,13 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { pluck } from 'rxjs/operators';
 import { fadeInOut } from '../global/animations/fade-in-out';
 import { Router } from '@angular/router';
 import { MasterListDialogTableHeaders } from '../global/components/master-list-dialog/master-list-dialog.component';
 import { ThreatBoard } from 'stix/unfetter/threat-board';
+import { Store } from '@ngrx/store';
+import { ThreatFeatureState } from './store/threat.reducers';
 
 @Component({
   selector: 'threat-dashboard-beta',
@@ -26,7 +29,12 @@ export class ThreatDashboardBetaComponent implements OnInit {
 
   private location: Location;
 
-  readonly baseAssessUrl = '/threat-beta';
+  readonly baseAssessUrl = '/threat-beta/';
+  readonly boardFeedRoute = 'feed';
+  readonly boardRoute = 'board';
+  readonly articleRoute = 'article';
+
+  public boards$: Observable<ThreatBoard[]>;
 
   masterListOptions = {
     dataSource: null,
@@ -36,11 +44,19 @@ export class ThreatDashboardBetaComponent implements OnInit {
     createRoute: this.baseAssessUrl + '/create',
   };
 
-  constructor(private router: Router) { // private location: Location) {
+  constructor(private router: Router, private store: Store<ThreatFeatureState>) { // private location: Location) {
 
-   }
+  }
 
   ngOnInit() {
+    this.boards$ = this.store.select('threat').pipe(pluck('boardList'));
+  }
+
+  public boardClicked(reportId): Promise<boolean> {
+    let routePromise: Promise<boolean>;
+    routePromise = this.router.navigate([this.baseAssessUrl, reportId, this.boardFeedRoute]);
+    routePromise.catch((e) => console.log(e));
+    return routePromise;
   }
 
   /**
@@ -98,10 +114,10 @@ export class ThreatDashboardBetaComponent implements OnInit {
     // this.confirmDelete({ name, rollupId });
   }
 
-    /**
-   * @description noop
-   * @return {Promise<boolean>}
-   */
+  /**
+ * @description noop
+ * @return {Promise<boolean>}
+ */
   public onFilterTabChanged($event?: UIEvent): Promise<boolean> {
     console.log('noop');
     return Promise.resolve(false);
@@ -122,7 +138,7 @@ export class ThreatDashboardBetaComponent implements OnInit {
    * @return {Promise<boolean>}
    */
   public onCellSelected(threatBoard: ThreatBoard): Promise<boolean> {
-    if (!threatBoard || !threatBoard.id ) {
+    if (!threatBoard || !threatBoard.id) {
       return Promise.resolve(false);
     }
     // TODO this.store.dispatch(new CleanAssessmentResultData());

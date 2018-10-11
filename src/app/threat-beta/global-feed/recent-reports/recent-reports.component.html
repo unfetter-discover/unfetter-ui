@@ -1,0 +1,56 @@
+<div class="top">
+  <div id="reports-carousel">
+    <div id="reports-label">
+      <p class="header-text inline">
+        Latest Reports
+      </p>
+      <div class="carousel-pager" *ngIf="reportsPages > 1">
+        <button mat-icon-button class="pager-bullet" *ngFor="let rpg of reportsPages | times">
+          <mat-icon [style.font-size]="(reportsPage === rpg) ? '14px' : '9px'" [style.color]="(reportsPage === rpg) ? 'green' : 'black'"
+            (click)="scrollToReportsPage(rpg)">lens</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="reportsLoaded; else loadingBlock" (mouseenter)="reportsHover = true" (mouseleave)="reportsHover = false">
+
+      <div class="carousel-glass" *ngIf="reportsHover && (reportsPages > 1)">
+        <button mat-icon-button mat-mini-fab class="carousel-button carousel-left" [disabled]="isFirstReport()" (click)="scrollReportsLeft()">
+          <mat-icon aria-label="scroll reports left">keyboard_arrow_left</mat-icon>
+        </button>
+        <button mat-icon-button mat-mini-fab class="carousel-button carousel-right" [disabled]="isLastReport()" (click)="scrollReportsRight()">
+          <mat-icon aria-label="scroll reports right">keyboard_arrow_right</mat-icon>
+        </button>
+      </div>
+
+      <div #reportsView id="reports-list" [style.margin-left]="reportsOffset + 'px'">
+        <div *ngFor="let report of reports; index as repidx" id="{{ report.id }}" class="board-report"
+          [style.background-image]="getReportBackground(report)" matBadge="!" matBadgeDescription="new" matBadgeColor="warn"
+          matBadgePosition="before" matBadgeHidden="{{ report.vetted }}" (mouseenter)="reportHoverIndex = repidx"
+          (mouseleave)="reportHoverIndex = -1">
+          <div class='report-image' [style.background-image]="getReportBackgroundImage(report)">
+            <div class='report-fabs' *ngIf="reportHoverIndex === repidx">
+              <div class="fab-row">
+                <button mat-mini-fab [style.margin-right]="'24px'" title="Report Quick View" (click)="viewReport(report.id)">
+                  <mat-icon class="mat-24" aria-label="report quick view">launch</mat-icon>
+                </button>
+                <button mat-mini-fab [style.margin-left]="'24px'" disabled title="Share Report" (click)="shareReport(report.id)">
+                  <mat-icon class="mat-24" aria-label="share report">share</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="report-info">
+            <div class='report-title'>{{ report.name }}</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- ends reports list -->
+
+  </div><!-- ends reports carousel -->
+</div>
+
+<ng-template #loadingBlock>
+  <loading-spinner height="250px"></loading-spinner>
+</ng-template>

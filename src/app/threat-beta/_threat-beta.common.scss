@@ -10,8 +10,12 @@ $tab-content-height: calc(100vh - #{$navbar-height}px - #{$tab-wrapper-height});
 $card-max-content-width: 750px;
 
 @mixin with-margin-centered() {
-    margin-left: 24px;
-    margin-right: 24px; 
+  margin-left: 24px;
+  margin-right: 24px;
+}
+
+.header-text {
+  font-size: 16px;
 }
 
 .side-panel {
@@ -38,37 +42,41 @@ $card-max-content-width: 750px;
 }
 
 .flex {
-    display: flex;
+  display: flex;
 
-    .flex-grow {
-        flex: 1 1 auto;
-    }
+  .flex-grow {
+    flex: 1 1 auto;
+  }
 }
 
 .flex-cols {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 .main-panel {
-    background: $main-panel-color;
+  background: $main-panel-color;
 }
 
 .fixed-page-height {
-    height: $page-height;
+  height: $page-height;
 }
 
 .min-page-height {
-    min-height: $page-height;
+  min-height: $page-height;
 }
 
 .fixed-tab-height {
-    height: $tab-content-height;
+  height: $tab-content-height;
 }
 
 .min-tab-height {
-    min-height: $tab-content-height;
+  min-height: $tab-content-height;
 }
 
 .max-card-width {
-    max-width: $card-max-content-width;
+  max-width: $card-max-content-width;
+}
+
+.noUnderline {
+  text-decoration: none;
 }

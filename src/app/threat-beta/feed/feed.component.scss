@@ -2,7 +2,6 @@
 @import '../threat-beta.common';
 
 #search-bar {
-
     .search-input {
         width: 100%;
         margin-bottom: 5px;
@@ -16,8 +15,14 @@
     }
 
 }
+
+.mat-badge-content {
+    left: 8px !important;
+}
+
 :host ::ng-deep #search-bar .mat-form-field-wrapper {
     padding-bottom: 0;
+
     .mat-form-field-underline {
         display: none;
     }
@@ -70,18 +75,22 @@ mat-sidenav-content {
                 margin-left: -12px;
             }
         }
+
         .carousel-button:hover {
             border-color: white;
             color: white;
         }
+
         .carousel-button[disabled] {
             border-color: rgba(0, 0, 0, .1);
             background: rgba(0, 0, 0, .4);
             color: gray;
         }
+
         .carousel-button.carousel-left {
             left: 0;
         }
+
         .carousel-button.carousel-right {
             right: 0;
         }
@@ -109,15 +118,19 @@ mat-sidenav-content {
     }
 
     .board-report, .related-board {
-        width: 200px;
-        height: 250px;
-        margin-right: 20px;
+        width: 210px;
+        margin-right: 7px;
+        border-radius: 4px;
     }
 
     .board-report {
+        height: 210px;
+
         .report-image {
-            height: 100px;
+            height: 105px;
             background-size: 200px 100px;
+            border-top-right-radius: 4px;
+            border-top-left-radius: 4px;
 
             .report-fabs {
                 text-align: center;
@@ -129,6 +142,7 @@ mat-sidenav-content {
                         color: black;
                         background: white;
                     }
+
                     button[mat-mini-fab][disabled] {
                         color: white;
                         background: gray;
@@ -138,7 +152,7 @@ mat-sidenav-content {
         }
     
         .report-info {
-            width: 200px;
+            width: 210px;
             height: 150px;
             padding: 16px;
         }
@@ -162,6 +176,8 @@ mat-sidenav-content {
 
     .related-board {
         padding: 16px;
+
+        height: 254px;
 
         .board-title {
             width: 168px;
@@ -191,6 +207,7 @@ mat-sidenav-content {
                 padding-left: 0px;
                 text-align: left;
             }
+
             button[disabled] {
                 color: lightgray;
             }

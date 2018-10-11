@@ -1,35 +1,44 @@
 <ng-container *ngIf="(finishedLoadingAll$|async) === true; else loadingBlock">
   <div #layout class="layout" *ngIf="(failedToLoad|async) === false; else failedToLoadBlock">
-      <mat-sidenav-container>
-          <mat-sidenav class="side-panel" mode="side" opened="true">
-            <unfetter-side-panel class="side-panel" [item]="{ name: assessmentName$ | async }" collapsible="false" width="320">
-      
-              <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
-              <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
-              <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
-      
-              <master-list-dialog-trigger title="Threat Boards" width="750px" height="400px" [dataSource]="masterListOptions.dataSource"
-                [columns]="masterListOptions.columns" (tabChange)="onFilterTabChanged($event)" (create)="onCreate($event)" (select)="onCellSelected($event)"
-                (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
-      
-              <!-- <markings-chips [model]="summary"></markings-chips>
-              <sidepanel-list-item [label]="(summary$ | async)?.name" [items]="([summary$|async])" expandable="true">
-                <mat-list-item *ngFor="let summ of ([summary$|async]); trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
-                  <h4 mat-line>
-                    {{summ?.name}}
-                  </h4>
-                  <div mat-line class="mat-caption"> {{summ?.assessment_objects[0]?.stix?.type}} </div>
-                </mat-list-item>
-              </sidepanel-list-item> -->
-      
-            </unfetter-side-panel>
-          </mat-sidenav>
-    <mat-sidenav-content class="sidenavContentPolyfill320">
-      <div class="main-panel">
-        Latest Reports and Such
-      </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+    <mat-sidenav-container>
+      <mat-sidenav class="side-panel mat-elevation-z16" mode="side" opened="true">
+        <div class="flex flex-cols side-nav-top">
+          <div class="flex1"></div>
+          <div class="flex flex-row">
+            <nav mat-tab-nav-bar class="indent uf-tabs-borderless">
+              <a class="noUnderline tabs" mat-tab-link [routerLink]="myBoardsLink" routerLinkActive #myboards="routerLinkActive"
+                [active]="myboards.isActive">MY BOARDS</a>
+              <a class="noUnderline tabs" mat-tab-link [routerLink]="followingBoardsLink" routerLinkActive #followingboards="routerLinkActive"
+                [active]="followingboards.isActive">FOLLOWING</a>
+            </nav>
+          </div>
+        </div>
+        <div class="side-nav-item header-text" *ngFor="let board of boards$ | async" (click)="boardClicked(board.id)">
+          {{board.name}}
+        </div>
+      </mat-sidenav>
+      <mat-sidenav-content class="sidenavContentPolyfill320">
+        <div class="main-panel">
+          <global-feed></global-feed>
+        </div>
+      </mat-sidenav-content>
+      <mat-sidenav opened mode="side" position="end" class="right-side-panel mat-elevation-z16">
+        <div id="recentTitle" class="flexItemsCenter">
+          <div class="side-panel-header">
+            <div class="height-100-percent">
+              <div class="flexRow">
+                <div class="flexColumn">
+                  <h5 class="inlineBlock title">RELATED</h5>
+                  <div></div>
+                </div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <related></related> -->
+      </mat-sidenav>
+    </mat-sidenav-container>
   </div>
 </ng-container>
 
