@@ -10,14 +10,21 @@ import 'codemirror/addon/edit/closetag.js';
 import 'codemirror/mode/javascript/javascript.js';
 import 'codemirror/mode/yaml/yaml.js';
 import 'codemirror/mode/xml/xml.js';
+import 'codemirror/mode/shell/shell.js';
+import 'codemirror/mode/powershell/powershell.js';
+import 'codemirror/mode/sql/sql.js';
+import 'codemirror/keymap/emacs.js';
+import 'codemirror/keymap/sublime.js';
+import 'codemirror/keymap/vim.js';
 
 export interface ExtendedEditorConfiguration extends CodeMirror.EditorConfiguration {
   autoCloseBrackets?: boolean;
   autoCloseTags?: boolean;
 }
 
-export type ufCodeMirrorModes = 'JSON' | 'YAML' | 'YML' | 'XML' | 'Text';
-export type ufCodeMirrorThemes = 'material';
+export type ufCodeMirrorModes = 'JSON' | 'YAML' | 'YML' | 'XML' | 'Shell' | 'PowerShell' | 'SQL' | 'Text';
+export type ufCodeMirrorKeymaps = 'sublime' | 'emacs' | 'vim';
+export type ufCodeMirrorThemes = 'material' | 'idea';
 
 @Component({
   selector: 'code-editor',
@@ -39,15 +46,21 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor 
   public langs: ufCodeMirrorModes[] = [
     'Text',
     'JSON',
-    'YAML',
+    'PowerShell',
+    'Shell',
+    'SQL',
     'XML',
+    'YAML'
+  ];
+
+  public keymaps: ufCodeMirrorKeymaps[] = [
+    'sublime',
+    'emacs',
+    'vim'
   ];
 
   @Input()
   public readOnly = false;
-
-  @Input()
-  public theme: ufCodeMirrorThemes = 'material';
 
   @Input()
   public set selectedLang(v: ufCodeMirrorModes) {
@@ -59,11 +72,45 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor 
 
   public get selectedLang() { return this._selectedLang; }
 
+  @Input()
+  public set selectedKeymap(v: ufCodeMirrorKeymaps) {
+    this._selectedKeymap = v;
+    if (this.codemirror) {
+      this.refreshCodeMirror();
+    }
+  }
+
+  public get selectedKeymap() { return this._selectedKeymap; }
+
+  @Input()
+  public set lineWrapping(v: boolean) {
+    this._lineWrapping = v;
+    if (this.codemirror) {
+      this.refreshCodeMirror();
+    }
+  }
+
+  public get lineWrapping() { return this._lineWrapping; }
+
+  @Input()
+  public set theme(v: ufCodeMirrorThemes) {
+    this._theme = v;
+    console.log('~~~~~', this.theme);
+    if (this.codemirror) {
+      this.refreshCodeMirror();
+    }
+  }
+
+  public get theme() { return this._theme; }
+
   private onTouchedCallback: () => {};
   private onChangeCallback: (_: any) => {};
   private _innerValue: string;
   private formDirty = false;  
   private _selectedLang: ufCodeMirrorModes = 'Text';
+  private _selectedKeymap: ufCodeMirrorKeymaps = 'sublime';
+  private _lineWrapping: boolean = false;
+  private _theme: ufCodeMirrorThemes = 'material';
 
   constructor() { }
 
@@ -87,6 +134,8 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor 
       lineNumbers: true,
       theme: this.theme,
       foldGutter: true,
+      keyMap: this._selectedKeymap,
+      lineWrapping: this.lineWrapping,
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       readOnly: this.readOnly
     };
@@ -108,12 +157,22 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor 
         config.autoCloseTags = true;
         this.codemirror = CodeMirror(this.cm.nativeElement, config);
         break;
+      case 'Shell':
+        config.mode = 'shell';
+        this.codemirror = CodeMirror(this.cm.nativeElement, config);
+        break;
+      case 'SQL':
+        config.mode = 'text/x-sql';
+        this.codemirror = CodeMirror(this.cm.nativeElement, config);
+        break;
+      case 'PowerShell':
+        config.mode = 'powershell';
+        this.codemirror = CodeMirror(this.cm.nativeElement, config);
+        break;
       default:
         // Default to text
         this.codemirror = CodeMirror(this.cm.nativeElement, config);
     }
-
-    console.log('Setting value as: ', this.value || '');
 
     this.codemirror.setValue(this.value || '');
     this.codemirror.on('change', () => {
@@ -156,6 +215,9 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor 
   writeValue(v: string) {
     if (v !== this._innerValue) {
       this._innerValue = v;
+      if (this.codemirror) {
+        this.codemirror.setValue(this._innerValue);
+      }
     }
   }
 

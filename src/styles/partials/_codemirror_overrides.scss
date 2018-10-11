@@ -1,23 +1,15 @@
 .uf-codeMirror {
-    @import 'codemirror/theme/material.css';
-    @import 'codemirror/addon/fold/foldgutter.css';
+  @import 'codemirror/theme/material.css';
+  @import 'codemirror/theme/idea.css';
+  @import 'codemirror/addon/fold/foldgutter.css';
 
-    .cm-s-material .CodeMirror-code .cm-string {
-      color: #C3E88D;
-    }
+  .CodeMirror {
+    padding: 0;
+    border: none;
+    border-radius: 0;
 
-    .cm-s-material .CodeMirror-code .cm-tag {
-      color: rgba(255, 83, 112, 1);
-    }
-
-    .cm-s-material .CodeMirror-code .cm-attribute {
-      color: #FFCB6B;
-    }
-}
-
-.uf-codeMirror .CodeMirror {
     * {
-        font-family: Monaco,
+      font-family: Monaco,
         Menlo,
         "Ubuntu Mono",
         "Droid Sans Mono",
@@ -29,6 +21,37 @@
       background: inherit;
       border-radius: inherit;
     }
+  }
+
+  // ~~~ Material (dark) ~~~
+
+  .cm-s-material .CodeMirror-code .cm-string {
+    color: #C3E88D;
+  }
+
+  .cm-s-material .CodeMirror-code .cm-tag {
+    color: rgba(255, 83, 112, 1);
+  }
+
+  .cm-s-material .CodeMirror-code .cm-attribute {
+    color: #FFCB6B;
+  }
+
+  // ~~~ Idea (light) ~~~
+
+  .cm-s-idea .CodeMirror-gutters {
+    border-right: none;
+  }
+
+  .cm-s-idea .CodeMirror-code span.cm-string {
+    color: #008000;
+  }
+
+  .cm-s-idea .CodeMirror-code span.cm-property {
+    color: black;
+  }
+
+  .cm-s-idea .CodeMirror-code span.cm-attribute {
+    color: #0000FF;
+  }
 }
-
-
