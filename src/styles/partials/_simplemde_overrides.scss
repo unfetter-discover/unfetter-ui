@@ -13,8 +13,8 @@ simplemde {
   }
 }
 
-.mdeError {
-    .editor-toolbar {
+.mdeError, .cmError {
+    .editor-toolbar, .toolbar {
         border-left: 1px solid $warn-color;
         border-right: 1px solid $warn-color;
         border-top: 1px solid $warn-color;

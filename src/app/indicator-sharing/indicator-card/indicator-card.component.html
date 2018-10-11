@@ -105,7 +105,7 @@
         </div>
       </div>
 
-      <mat-tab-group>
+      <mat-tab-group #tabGroup>
         <mat-tab label="Details">
           <div *ngIf="indicator.description">
             <label>Description</label>
@@ -203,13 +203,9 @@
             <h4 class="fw400">User Created Queries</h4>
             <div *ngFor="let query of indicator.metaProperties.additional_queries; let i = index">
               <label>{{ query.name }}</label>
-              <!-- <button mat-icon-button color="primary" ngxClipboard [cbContent]="query.query" (cbOnError)="handleCopy($event, copyTooltip)" (cbOnSuccess)="handleCopy($event, copyTooltip)">
-                <mat-icon>content_copy</mat-icon>
-                <div #copyTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
-              </button> -->
-              <div class="mb-6" *ngIf="query.query">
-                <!-- <code class="codeBlock">{{ query.query }}</code> -->
-                <code-editor [(ngModel)]="query.query" readOnly="true" selectedLang="query.syntax"></code-editor>
+              <!-- Code Mirror does not render properly if it's not visible -->
+              <div class="mb-6" *ngIf="tabGroup.selectedIndex === 1">
+                <code-editor value="{{ query.query }}" readOnly="true" selectedLang="{{ query.syntax }}"></code-editor>
               </div>
               <div *ngIf="query.details">
                 <label>Details</label>

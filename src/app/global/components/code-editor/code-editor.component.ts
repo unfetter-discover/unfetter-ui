@@ -116,6 +116,21 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
 
   public get theme() { return this._theme; }
 
+  @Input()
+  set value(v: string) {
+    if (v !== this._innerValue) {
+      this._innerValue = v;
+      this.formDirty = true;
+      if (this.onChangeCallback) {
+        this.onChangeCallback(v);
+      }
+    }
+  }
+
+  get value(): string {
+    return this._innerValue;
+  }
+
   private onTouchedCallback: () => {};
   private onChangeCallback: (_: any) => {};
   private readonly FLASH_TOOLTIP_TIMER: number = 500;
@@ -220,6 +235,15 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
 
     this.codemirror.setValue(this.value || '');
     this.codemirror.on('change', () => this.onChangeSubject.next());
+    this.codemirror.on('blur', () => {
+      if (this.onTouchedCallback) {
+        this.onTouchedCallback();
+      }
+      if (!this.formDirty && this.onChangeCallback) {
+        this.onChangeCallback(this.value);
+      }
+      this.formDirty = true;
+    });
   }
 
   public handleCopy(event: { isSuccess: true }, toolTip: MatTooltip) {
@@ -235,18 +259,7 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
     toolTip.show();
     setTimeout(() => toolTip.hide(), this.FLASH_TOOLTIP_TIMER);
   }
-
-  set value(v: string) {
-    if (v !== this._innerValue && this.onChangeCallback) {
-      this._innerValue = v;
-      this.formDirty = true;
-      this.onChangeCallback(v);
-    }
-  }
-
-  get value(): string {
-    return this._innerValue;
-  }
+  
 
   /**
    * @override ControlValueAccessor
@@ -269,7 +282,6 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
    * @param v 
    */
   writeValue(v: string) {
-    console.log('~~~ write val', v, this.codemirror);
     if (v !== this._innerValue) {
       this._innerValue = v;
       if (this.codemirror) {
