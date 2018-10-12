@@ -230,7 +230,20 @@ mat-sidenav-content {
         }
 
         .activity-avatar {
+            margin-right: 8px;
             background-size: cover;
+        }
+
+        .subactivity-avatar {
+            width: 30px;
+            height: 30px;
+            margin-left: 6px;
+            margin-right: 12px;
+            background-size: cover;
+        }
+
+        .comment-button, .like-button {
+            font-size: 14px;
         }
     }
 
@@ -242,6 +255,11 @@ mat-sidenav-content {
 
     mat-card-title, mat-card-subtitle {
         margin-bottom: 8px;
+        font-size: 14px;
+    }
+    mat-card-title {
+        font-weight: bold;
+        letter-spacing: .1px;
     }
 
     .CodeMirror, .CodeMirror-scroll {
