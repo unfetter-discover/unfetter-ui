@@ -8,7 +8,7 @@ import { MatButtonModule, MatInputModule } from '@angular/material';
 import { AdditionalQueriesComponent } from './additional-queries.component';
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 
-fdescribe('AdditionalQueriesComponent', () => {
+describe('AdditionalQueriesComponent', () => {
 
     let fixture: ComponentFixture<AdditionalQueriesComponent>;
     let component: AdditionalQueriesComponent;
