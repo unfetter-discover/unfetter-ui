@@ -20,9 +20,7 @@ import 'codemirror/mode/shell/shell.js';
 import 'codemirror/mode/powershell/powershell.js';
 import 'codemirror/mode/sql/sql.js';
 
-import 'codemirror/keymap/emacs.js';
 import 'codemirror/keymap/sublime.js';
-import 'codemirror/keymap/vim.js';
 
 import { FormatHelpers } from '../../static/format-helpers';
 
@@ -33,7 +31,8 @@ export interface ExtendedEditorConfiguration extends CodeMirror.EditorConfigurat
 }
 
 export type ufCodeMirrorModes = 'JSON' | 'YAML' | 'YML' | 'XML' | 'Shell' | 'PowerShell' | 'SQL' | 'Other';
-export type ufCodeMirrorKeymaps = 'sublime' | 'emacs' | 'vim';
+// Currently, only sublime is being used
+export type ufCodeMirrorKeymaps = 'sublime';
 export type ufCodeMirrorThemes = 'material' | 'idea';
 
 @Component({
@@ -63,9 +62,7 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
     'YAML'
   ];
   public keymaps: ufCodeMirrorKeymaps[] = [
-    'sublime',
-    'emacs',
-    'vim'
+    'sublime'
   ];
   public copyText: string = 'Copied';
 

@@ -7,7 +7,54 @@
     border-left: 1px solid transparent;
     border-right: 1px solid transparent;
     border-top: 1px solid transparent;
-  }  
+    background-color: $mde-background;
+    
+    .toolbar-inner {
+      transition: opacity 0.1s ease-in-out;
+      opacity: alpha($dark-text-dimmed) / alpha($dark-text-default);
+    }
+
+    &:hover .toolbar-inner {
+      opacity: 1;
+    }
+  }
+
+  // To match simplemde
+  .separator {
+    display: inline-block;
+    width: 0;
+    border-left: 1px solid #d9d9d9;
+    border-right: 1px solid #fff;
+    color: transparent;
+    text-indent: -10px;
+    margin: 0 6px;
+  }
+
+  // To Match simplemde
+  .control-icon {
+    outline: none !important;
+    font-size: 24px;
+    transform: translateY(4px);
+    display: inline-block;
+    text-align: center;
+    color: $dark-text-default;
+    text-decoration: none !important;
+    width: 30px;
+    height: 30px;
+    margin: 0;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+
+    .material-icons {
+      transform: translateY(2px);
+    }
+
+    &.active, &:hover {
+      background: #fcfcfc;
+      border-color: #95a5a6;
+    }
+  }
 
   .CodeMirror {
     padding: 0;
@@ -56,6 +103,10 @@
   .cm-s-idea .CodeMirror-gutters {
     border-right: 1px solid #e7e7e7;
     background-color: $mde-background;
+  }
+
+  .cm-s-idea .CodeMirror-code span.cm-tag {
+    color: #000080;
   }
 
   .cm-s-idea .CodeMirror-code span.cm-property {
