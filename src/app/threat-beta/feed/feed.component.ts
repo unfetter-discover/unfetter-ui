@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
-import { pluck, map, filter } from 'rxjs/operators';
+import { pluck, map, filter, take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
 import { Report } from 'stix';
@@ -10,6 +10,7 @@ import { ThreatBoard } from 'stix/unfetter/index';
 import { ThreatFeatureState } from '../store/threat.reducers';
 import { getSelectedBoard } from '../store/threat.selectors';
 import * as fromThreat from '../store/threat.actions';
+import { AppState } from '../../root-store/app.reducers';
 
 @Component({
     selector: 'feed',
@@ -19,7 +20,8 @@ import * as fromThreat from '../store/threat.actions';
 export class FeedComponent implements OnInit {
 
     public threatBoard: ThreatBoard;
-    private _boardLoaded = false;
+    private _threatboardLoaded = false;
+    private user;
 
     public readonly carouselItemWidth = 200;
     public readonly carouselItemPadding = 20;
@@ -42,34 +44,57 @@ export class FeedComponent implements OnInit {
     private _boardsPages: number;
     @ViewChild('boardsView') boardsView: ElementRef;
 
-    public readonly sorts = [
-        { name: 'Newest', sorter: this.sortByLastModified },
-        { name: 'Oldest', sorter: this.sortByFirstCreated },
-        { name: 'Likes', sorter: this.sortByMostLikes },
-        { name: 'Comments', sorter: this.sortByMostComments },
+    public activity = [];
+    private _activityLoaded = false;
+    private readonly sorts = [
+        { name: 'Newest', enabled: true, sorter: this.sortByLastModified, },
+        { name: 'Oldest', enabled: true, sorter: this.sortByFirstCreated, },
+        { name: 'Likes', enabled: false, sorter: this.sortByMostLikes, },
+        { name: 'Comments', enabled: false, sorter: this.sortByMostComments, },
     ];
+    public activitySort = 0;
+    public addNewComment = false;
+    public commentData = {
+        text: '',
+        source: null,
+    };
 
     constructor(
-        private store: Store<ThreatFeatureState>,
+        private boardStore: Store<ThreatFeatureState>,
+        private appStore: Store<AppState>,
         private sanitizer: DomSanitizer,
     ) {
     }
 
-    public get boardLoaded() { return this._boardLoaded; }
+    public get threatboardLoaded() { return this._threatboardLoaded; }
 
     public get reportsLoaded() { return this._reportsLoaded; }
 
     public get boardsLoaded() { return this._boardsLoaded; }
 
+    public get activityLoaded() { return this._activityLoaded; }
+
+    public get activitySorts() { return this.sorts.map(sort => sort.name) }
+
     ngOnInit() {
-        this.store.select(getSelectedBoard)
+        this.appStore.select('users')
+            .pipe(
+                pluck('userProfile'),
+                take(1)
+            )
+            .subscribe(
+                user => this.user = user,
+                err => console.log('could not load user', err)
+            );
+
+        this.boardStore.select(getSelectedBoard)
             .subscribe(
                 (board) => {
                     console.log('retrieved threat board:', board);
                     this.threatBoard = board;
-                    this._boardLoaded = true;
+                    this._threatboardLoaded = true;
 
-                    this.store.select('threat')
+                    this.boardStore.select('threat')
                         .pipe(
                             pluck('boardList')
                         )
@@ -83,7 +108,7 @@ export class FeedComponent implements OnInit {
                             (err) => console.log(`(${new Date().toISOString()}) Error loading boards:`, err)
                         );
 
-                    this.store.select('threat')
+                    this.boardStore.select('threat')
                         .pipe(
                             pluck('feedReports')
                         )
@@ -97,6 +122,19 @@ export class FeedComponent implements OnInit {
                                 this._reportsLoaded = true;
                             },
                             (err) => console.log(`(${new Date().toISOString()}) Error loading reports:`, err)
+                        );
+
+                    this.boardStore.select('threat')
+                        .pipe(
+                            pluck('articles')
+                        )
+                        .subscribe(
+                            (articles: any[]) => {
+                                this.activity = articles.sort(this.sorts[this.activitySort].sorter);
+                                console.log(`(${new Date().toISOString()}) Complete board feed:`, articles);
+                                this._activityLoaded = true;
+                            },
+                            (err) => console.log(`(${new Date().toISOString()}) Error loading board article:`, err)
                         );
                 },
                 (err) => console.log(`(${new Date().toISOString()}) Error loading threat board:`, err)
@@ -160,15 +198,19 @@ export class FeedComponent implements OnInit {
     }
 
     public approveReport(id: string) {
-        // We need to submit some kind of request to move a report from the "potentials" metaproperty to the
-        // reports array inside the threatboard document.
-        console.log(`Request to approve report '${id}' received`);
+        const report = this.reports.find(r => r.id === id);
+        if (report) {
+            report.vetted = true;
+            // TODO persist!
+        }
     }
 
     public rejectReport(id: string) {
-        // We need to submit some kind of request to delete a report from the "potentials" metaproperty or from the
-        // reports array inside the threatboard document.
-        console.log(`Request to reject report '${id}' received`);
+        const report = this.reports.findIndex(r => r.id === id);
+        if (report >= 0) {
+            this.reports.splice(report, 1);
+            // TODO persist!
+        }
     }
 
     public viewReport(id: string) {
@@ -253,7 +295,8 @@ export class FeedComponent implements OnInit {
 
     public getReportBackgroundImage(report: any) {
         return this.sanitizer.bypassSecurityTrustStyle(
-                `url(${report.metaProperties.image}), linear-gradient(transparent, transparent)`);
+                (report.metaProperties.image ? `url(${report.metaProperties.image}), ` : '') +
+                'linear-gradient(transparent, transparent)');
     }
 
     public getBoardBackground(board: any) {
@@ -282,6 +325,71 @@ export class FeedComponent implements OnInit {
 
     public sortByMostComments(a: any, b: any) {
         return b.modified.localeCompare(a.modified);
+    }
+
+    public wrap(item) {
+        return { item };
+    }
+
+    public getActivityAvatar(feedItem: any) {
+        return this.sanitizer.bypassSecurityTrustStyle(
+            `url('/assets/icon/dashboard-logos/icon-admin.png')`);
+    }
+
+    public getActivityImage(feedItem: any) {
+        return this.sanitizer.bypassSecurityTrustStyle(
+            `url('assets/images/backgrounds/unfetter_header3_sm_bkgd.png')`);
+    }
+
+    public hasActivityComments(feedItem: any) {
+        if (!feedItem || !feedItem.type) {
+            return false;
+        }
+        if (feedItem.type === 'x-unfetter-article') {
+            return feedItem.metaProperties && feedItem.metaProperties.comments
+                    && (feedItem.metaProperties.comments.length > 0);
+        }
+        return feedItem.replies && (feedItem.replies.length > 0);
+    }
+
+    public startActivityComment(comment: string = '', source: any = null) {
+        this.commentData = { text: comment, source };
+        this.addNewComment = (source && source.id) ? source.id : true;
+    }
+
+    public submitActivityComment(comment: string, source: any) {
+        const date = new Date();
+        const newComment = {
+            id: `comment--${date.getTime()}`,
+            type: 'x-unfetter-comment',
+            user: {
+                id: 'need user id',
+                userName: 'new user name',
+                avatar_url: null,
+            },
+            content: comment,
+            submitted: date,
+            created: date.toUTCString(),
+            modified: date.toUTCString(),
+            source: source ? source.id : this.threatBoard.id,
+            replies: null,
+        };
+        if (source) {
+            if (source.type === 'x-unfetter-article') {
+                newComment.replies = [];
+                if (!source.metaProperties.comments) {
+                    source.metaProperties.comments = [];
+                }
+                source.metaProperties.comments.push(newComment);
+            } else if (source.replies) {
+                source.replies.push(newComment);
+            }
+        } else {
+            newComment.replies = [];
+            this.activity = [...this.activity, newComment].sort(this.sorts[this.activitySort].sorter);
+        }
+        // TODO persist both comment and source (if not null)
+        this.addNewComment = false;
     }
 
     public get boardUpdateTime() {

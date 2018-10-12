@@ -224,8 +224,29 @@ mat-sidenav-content {
                 padding: 0 12px;
             }
         }
+
+        mat-card {
+            margin-bottom: 16px;
+        }
+
+        .activity-avatar {
+            background-size: cover;
+        }
     }
 
+}
+:host ::ng-deep #activities-list {
+    mat-card-header {
+        margin-bottom: 8px;
+    }
+
+    mat-card-title, mat-card-subtitle {
+        margin-bottom: 8px;
+    }
+
+    .CodeMirror, .CodeMirror-scroll {
+        min-height: 100px;
+    }
 }
 
 #trends-trench {
