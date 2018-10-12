@@ -199,7 +199,9 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
       case 'JSON':
         config.mode = { name: 'javascript', json: true };
         config.autoCloseBrackets = true;
-        config.matchBrackets = true;
+        if (!this.readOnly) {
+          config.matchBrackets = true;
+        }
         this.codemirror = CodeMirror(this.cm.nativeElement, config);
         break;
       case 'YAML':
