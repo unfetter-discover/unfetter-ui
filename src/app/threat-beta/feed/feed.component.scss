@@ -248,6 +248,7 @@ mat-sidenav-content {
     }
 
 }
+
 :host ::ng-deep #activities-list {
     mat-card-header {
         margin-bottom: 8px;
@@ -257,6 +258,7 @@ mat-sidenav-content {
         margin-bottom: 8px;
         font-size: 14px;
     }
+
     mat-card-title {
         font-weight: bold;
         letter-spacing: .1px;
