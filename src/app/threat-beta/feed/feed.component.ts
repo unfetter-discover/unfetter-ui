@@ -128,7 +128,7 @@ export class FeedComponent implements OnInit {
         return this._reportsPages;
     }
 
-    private get reportsOffset() {
+    public get reportsOffset() {
         return this.reportsPage * this._reportsPerPage * -220;
     }
 
@@ -204,7 +204,7 @@ export class FeedComponent implements OnInit {
         return this._boardsPages;
     }
 
-    private get boardsOffset() {
+    public get boardsOffset() {
         return this.boardsPage * this._boardsPerPage * -220;
     }
 
