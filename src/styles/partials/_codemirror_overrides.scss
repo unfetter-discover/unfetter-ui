@@ -8,7 +8,7 @@
     border-right: 1px solid transparent;
     border-top: 1px solid transparent;
     background-color: $mde-background;
-    
+
     .toolbar-inner {
       transition: opacity 0.1s ease-in-out;
       opacity: alpha($dark-text-dimmed) / alpha($dark-text-default);
@@ -79,6 +79,15 @@
   }
 
   // ~~~ Material (dark) ~~~
+
+  .cm-s-material {
+    background-color: #303030;
+  }
+
+  .cm-s-material .CodeMirror-gutters {
+    border-right: 1px solid rgba(83, 127, 126, 0.3);
+    background-color: #303030;
+  }
 
   .cm-s-material .CodeMirror-code .cm-string {
     color: #C3E88D;

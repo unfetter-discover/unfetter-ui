@@ -9,6 +9,7 @@
     z-index: 2;
     right: 1px;
     top: 1px;
+    background: radial-gradient($mde-background, rgba($mde-background, 0.5));
 }
 
 .toolbar {
