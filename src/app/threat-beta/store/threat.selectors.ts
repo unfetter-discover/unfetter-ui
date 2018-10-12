@@ -25,6 +25,11 @@ export const getAttachedReports = createSelector(
     (state) => state.attachedReports
 );
 
+export const getThreatBoardReports = createSelector(
+    selectThreatState,
+    (state) => [...state.attachedReports, ...state.potentialReports]
+);
+
 export const getSelectedReportId = createSelector(
     selectThreatState,
     (state) => state.selectedReportId
