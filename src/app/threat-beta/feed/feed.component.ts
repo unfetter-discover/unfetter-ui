@@ -159,6 +159,12 @@ export class FeedComponent implements OnInit {
     public recalculateWindows() {
         this.calculateReportsWindow();
         this.calculateBoardsWindow();
+        if (this.reportsPage > this._reportsPages) {
+            this.reportsPage = this._reportsPages - 1;
+        }
+        if (this.boardsPage > this._boardsPages) {
+            this.boardsPage = this._boardsPages - 1;
+        }
     }
 
     private calculateReportsWindow() {
