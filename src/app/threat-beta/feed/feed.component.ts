@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { pluck, map, filter, take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
@@ -11,6 +11,7 @@ import { ThreatFeatureState } from '../store/threat.reducers';
 import { getSelectedBoard, getThreatBoardReports } from '../store/threat.selectors';
 import * as fromThreat from '../store/threat.actions';
 import { AppState } from '../../root-store/app.reducers';
+import { getOrganizations } from '../../root-store/stix/stix.selectors';
 
 // TODO make generic carousel component
 // TODO apply search filter
@@ -26,7 +27,7 @@ export class FeedComponent implements OnInit {
     private _threatboardLoaded = false;
 
     private user: any;
-    private users: any;
+    private users: any[];
 
     public readonly carouselItemWidth = 200;
     public readonly carouselItemPadding = 20;
@@ -91,7 +92,7 @@ export class FeedComponent implements OnInit {
         this.appStore.select('users')
             .pipe(
                 pluck('userProfile'),
-                take(1)
+                take(1),
             )
             .subscribe(
                 user => {
@@ -99,6 +100,19 @@ export class FeedComponent implements OnInit {
                     this.user = user;
                 },
                 err => console.log('could not load user', err)
+            );
+
+        forkJoin(
+                this.appStore.select(getOrganizations).pipe(take(1)),
+                this.appStore.select('users').pipe(pluck('userList'), take(1))
+            )
+            .subscribe(
+                ([orgs, users]) => {
+                    const morgs = orgs.map(org => ({...org, userName: org.name}));
+                    this.users = [...morgs, ...users as any[]];
+                    console.log(`(${new Date().toISOString()}) got user and orgs lists:`, this.users);
+                },
+                err => console.log('could not load users', err)
             );
 
         this.boardStore.select(getSelectedBoard)
@@ -235,6 +249,7 @@ export class FeedComponent implements OnInit {
         const report = this.reports.findIndex(r => r.id === id);
         if (report >= 0) {
             this.reports.splice(report, 1);
+            this.recalculateWindows();
             // TODO persist!
         }
     }
@@ -362,9 +377,14 @@ export class FeedComponent implements OnInit {
         if (feedItem) {
             if (feedItem.user && feedItem.user.avatar_url) {
                 return this.sanitizer.bypassSecurityTrustStyle(`url('${feedItem.user.avatar_url}')`);
+            } else if (feedItem.created_by_ref) {
+                const user = this.users.find(u => u.id === feedItem.created_by_ref);
+                if (user && user.avatar_url) {
+                    return this.sanitizer.bypassSecurityTrustStyle(`url('${user.avatar_url}')`);
+                }
             }
         }
-        return this.sanitizer.bypassSecurityTrustStyle(`url('/assets/icon/dashboard-logos/icon-admin.png')`);
+        return '';
     }
 
     public getActivityImage(feedItem: any) {
@@ -433,7 +453,6 @@ export class FeedComponent implements OnInit {
             type: 'x-unfetter-comment',
             user: {
                 id: this.user.identity.id,
-                userName: this.getUserName(this.user),
                 avatar_url: this.user.auth.avatar_url,
             },
             content: comment,
@@ -462,7 +481,7 @@ export class FeedComponent implements OnInit {
         this.addNewComment = false;
     }
 
-    private getUserName(user: any) {
+    public getUserName(user: any) {
         let name = [];
         if (user) {
             if (user.user) {
@@ -473,11 +492,15 @@ export class FeedComponent implements OnInit {
                 name = [user.userName].filter(n => !!n);
             }
             if ((name.length === 0) && user.identity) {
-                name = [user.identity.id];
+                name = [user.identity.name].filter(n => !!n);
             }
             if ((name.length === 0) && user.created_by_ref) {
-                // TODO need to find the referenced user's information
-                name = [user.created_by_ref];
+                const refuser = this.users.find(u => u.id === user.created_by_ref);
+                if (refuser) {
+                    return this.getUserName({...refuser, created_by_ref: undefined});
+                } else {
+                    name = [user.created_by_ref];
+                }
             }
         }
         return name.join(' ');
