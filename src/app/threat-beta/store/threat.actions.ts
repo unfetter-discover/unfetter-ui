@@ -14,6 +14,7 @@ export enum ThreatActionTypes {
     SetBoardList = '[Threat] Set Board List',
     SetFeedReports = '[Threat] Set Feed Reports',
     SetAttachedReports = '[Threat] Set Attached Reports',
+    SetPotentialReports = '[Threat] Set Potential Reports',
     SetSelectedBoardId = '[Threat] Set Selected Board Id',
     SetSelectedReportId = '[Threat] Set Selected Report Id',
     SetDashboardLoadingComplete = '[Threat] Set Dashboard Loading Complete',
@@ -73,6 +74,12 @@ export class SetFeedReports implements Action {
 
 export class SetAttachedReports implements Action {
     public readonly type = ThreatActionTypes.SetAttachedReports;
+
+    constructor(public payload: Report[]) { }
+}
+
+export class SetPotentialReports implements Action {
+    public readonly type = ThreatActionTypes.SetPotentialReports;
 
     constructor(public payload: Report[]) { }
 }
@@ -152,6 +159,7 @@ export type threatActions =
     | SetBoardList
     | SetFeedReports
     | SetAttachedReports
+    | SetPotentialReports
     | SetSelectedBoardId
     | SetSelectedReportId
     | SetDashboardLoadingComplete 

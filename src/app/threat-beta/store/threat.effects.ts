@@ -41,8 +41,12 @@ export class ThreatEffects {
                     metaproperties: true
                 };
 
+                const boardOptions: StixApiOptions = {
+                    metaproperties: true
+                };
+
                 return observableForkJoin(
-                    this.genericApi.getStix<ThreatBoard[]>(StixUrls.X_UNFETTER_THREAT_BOARD),
+                    this.genericApi.getStix<ThreatBoard[]>(StixUrls.X_UNFETTER_THREAT_BOARD, null, boardOptions),
                     this.genericApi.getStix<Malware[]>(StixUrls.MALWARE),
                     this.genericApi.getStix<IntrusionSet[]>(StixUrls.INTRUSION_SET),
                     this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, options)
@@ -75,11 +79,31 @@ export class ThreatEffects {
                             take(1),
                             switchMap((board) => {
                                 const obs = [];
+
                                 if (board.reports && board.reports.length) {
                                     const options: StixApiOptions = {
                                         filter: {
                                             _id: {
                                                 $in: board.reports
+                                            }
+                                        },
+                                        sort: {
+                                            'stix.created': -1
+                                        },
+                                        metaproperties: true
+                                    };
+
+                                    obs.push(this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, options));
+                                } else {
+                                    obs.push(observableOf([]));
+                                }
+
+                                if (board.metaProperties && board.metaProperties.potentials &&
+                                        board.metaProperties.potentials.length) {
+                                    const options: StixApiOptions = {
+                                        filter: {
+                                            _id: {
+                                                $in: board.metaProperties.potentials
                                             }
                                         },
                                         sort: {
@@ -113,9 +137,10 @@ export class ThreatEffects {
 
                                 return observableForkJoin(obs);
                             }),
-                            mergeMap(([reports, articles]) => {
+                            mergeMap(([reports, potentials, articles]) => {
                                 return [
                                     new threatActions.SetAttachedReports(reports),
+                                    new threatActions.SetPotentialReports(potentials),
                                     new threatActions.SetArticles(articles),
                                     new threatActions.SetThreatboardLoadingComplete(true)
                                 ];

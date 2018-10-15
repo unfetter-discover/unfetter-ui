@@ -17,6 +17,7 @@ export interface ThreatState {
     feedReports: Report[],
     // Reports attached to a threat board
     attachedReports: Report[],
+    potentialReports: Report[],
     selectedBoardId: string,
     selectedReportId: string,
     dashboardLoadingComplete: boolean,
@@ -30,6 +31,7 @@ export const initialState: ThreatState = {
     articles: [],
     feedReports: [],
     attachedReports: [],
+    potentialReports: [],
     selectedBoardId: null,
     selectedReportId: null,
     dashboardLoadingComplete: false,
@@ -90,6 +92,19 @@ export function threatReducer(state = initialState, action: threatActions): Thre
                     ...state,
                     selectedReportId: null,
                     attachedReports: []
+                };
+            }
+        case ThreatActionTypes.SetPotentialReports:
+            const { payload: potentials } = action;
+            if (potentials && potentials.length) {
+                return {
+                    ...state,
+                    potentialReports: potentials
+                };
+            } else {
+                return {
+                    ...state,
+                    potentialReports: []
                 };
             }
         case ThreatActionTypes.SetSelectedBoardId:
