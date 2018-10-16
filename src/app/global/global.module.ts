@@ -67,6 +67,8 @@ import { SidepanelComponent } from './components/sidepanel/sidepanel.component';
 import { SidepanelListItemComponent } from './components/sidepanel/sidepanel-list-item.component';
 import { SidepanelMiniItemComponent } from './components/sidepanel/sidepanel-mini-item.component';
 import { SidepanelOptionItemComponent } from './components/sidepanel/sidepanel-option-item.component';
+import { SidepanelNavControlComponent } from './components/sidepanel/sidepanel-nav-control.component';
+import { SidepanelCustomContentComponent } from './components/sidepanel/sidepanel-custom-content.component';
 import { SpeedDialComponent } from './components/speed-dial/speed-dial.component';
 import { StixTableComponent } from './components/stix-table/stix-table.component';
 import { TacticsCarouselComponent } from './components/tactics-pane/tactics-carousel/tactics-carousel.component';
@@ -163,6 +165,8 @@ const unfetterComponents = [
     SidepanelListItemComponent,
     SidepanelMiniItemComponent,
     SidepanelOptionItemComponent,
+    SidepanelNavControlComponent,
+    SidepanelCustomContentComponent,
     SophisticationPipe,
     SpeedDialComponent,
     StixTableComponent,

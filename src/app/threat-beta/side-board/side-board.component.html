@@ -1,6 +1,8 @@
 <div id="sideBoardComponent" *ngIf="selectedBoard$ | async as selectedBoard">
   <unfetter-side-panel class="side-panel" [item]="selectedBoard" collapsible="false" width="320">
 
+    <sidepanel-nav-control routerLink="/threat-beta"></sidepanel-nav-control>
+
     <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
     <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
     <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
@@ -17,12 +19,35 @@
       (edit)="onEdit($event)" 
       (delete)="onDelete($event)"></master-list-dialog-trigger>   
 
-    <sidepanel-list-item 
+    <!-- <sidepanel-list-item 
       [label]="report.name" 
       expandable="false" 
       showCount="false" 
       *ngFor="let report of reports$ | async" 
-      (click)="reportClicked(report.id)"></sidepanel-list-item>
+      (click)="reportClicked(report.id)"></sidepanel-list-item> -->
+
+    <sidepanel-custom-content>
+      <!-- TODO add account circles -->
+      <mat-tab-group>
+        <mat-tab label="BOUNDARIES">foo</mat-tab>
+        <mat-tab label="REPORTS">
+          <div 
+            class="report-list-item cursor-pointer flex flexItemsCenter"
+            *ngFor="let report of reports$ | async" 
+            (click)="reportClicked(report.id)"
+            [class.selectedReport]="selectedReport === report.id">
+            <span class="flex1">
+              <h5>{{ report.name }}</h5>
+              <p>
+                <a routerLink="/stix/identities/{{ report.created_by_ref }}">{{ report.creator_name }}</a>
+                &nbsp;&nbsp;{{ report.created | date:'mediumDate' }}
+              </p>
+            </span>
+            <mat-icon class="mat-24 selectedReportArrow">keyboard_arrow_right</mat-icon>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </sidepanel-custom-content>
 
   </unfetter-side-panel>
 </div>

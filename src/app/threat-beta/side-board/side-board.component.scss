@@ -1,0 +1,16 @@
+.report-list-item {
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.selectedReportArrow {
+    visibility: hidden;
+}
+
+.selectedReport {
+    background-color: #f5f5f5;
+    
+    .selectedReportArrow {
+        visibility: visible;
+    }
+}

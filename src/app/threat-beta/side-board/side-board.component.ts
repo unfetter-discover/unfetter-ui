@@ -3,13 +3,13 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { ThreatBoard } from 'stix/unfetter/threat-board';
+import { pluck, filter, withLatestFrom, map, finalize } from 'rxjs/operators';
 import { Report } from 'stix';
 
 import { MasterListDialogTableHeaders } from '../../global/components/master-list-dialog/master-list-dialog.component';
 import { SideBoardDataSource } from './side-board.datasource';
 import { ThreatFeatureState } from '../store/threat.reducers';
-import { pluck, filter } from 'rxjs/operators';
-import { getSelectedBoard } from '../store/threat.selectors';
+import { getSelectedBoard, getSelectedReportId } from '../store/threat.selectors';
 import * as threatActions from '../store/threat.actions';
 
 @Component({
@@ -25,6 +25,7 @@ export class SideBoardComponent implements OnInit {
   readonly baseThreatUrl = '/threat-beta';
 
   public selectedBoard$: Observable<ThreatBoard>;
+  public selectedReport: string = '';
 
 
   masterListOptions = {
@@ -40,7 +41,32 @@ export class SideBoardComponent implements OnInit {
   ) { }
   
   ngOnInit() {
-    this.reports$ = this.store.select('threat').pipe(pluck('attachedReports'));
+    this.reports$ = this.store.select('threat')
+      .pipe(
+        pluck<any, Report[]>('attachedReports'),
+        withLatestFrom(this.store.select('stix')),
+        map(([reports, stixState]) => {
+          return reports.map((report): any => {
+            const matchingIdentity = stixState.identities.find((identity) => identity.id === report.created_by_ref);
+            const creatorName = matchingIdentity ? matchingIdentity.name : 'Unknown';
+            return {
+              ...report,
+              creator_name: creatorName
+            };
+          });
+        })
+      );
+
+    const selectedReport$ = this.store.select(getSelectedReportId)
+        .pipe(finalize(() => selectedReport$ && selectedReport$.unsubscribe()))
+        .subscribe(
+          (id) => {
+            this.selectedReport = id;
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
 
     this.masterListOptions.dataSource = new SideBoardDataSource(this.store);
     const isSameThreatBoard = (row: any) => row && row.id === this.boardId;
