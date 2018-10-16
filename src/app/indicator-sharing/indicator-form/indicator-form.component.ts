@@ -460,7 +460,7 @@ export class IndicatorFormComponent implements OnInit {
       if (this.editData.metaProperties.additional_queries) {
         this.editData.metaProperties.additional_queries.forEach((query) => {
           const additionalQueriesForm = AdditionalQueriesForm();
-          additionalQueriesForm.setValue(query);
+          additionalQueriesForm.patchValue(query);
           (this.form.get('metaProperties').get('additional_queries') as FormArray).push(additionalQueriesForm);
         });
       }

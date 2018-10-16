@@ -29,6 +29,7 @@ import {
 } from '@angular/material';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { SimplemdeModule, SIMPLEMDE_CONFIG } from 'ng2-simplemde';
+import { ClipboardModule } from 'ngx-clipboard';
 
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
@@ -98,6 +99,7 @@ import { SimplemdeMentionsComponent } from './components/simplemde-mentions/simp
 import { SimpleMDEConfig } from './static/simplemde-config';
 import { MarkdownMentionsComponent } from './components/markdown-mentions/markdown-mentions.component';
 import { TextHighlightComponent } from './components/text-highlight/text-highlight.component';
+import { CodeEditorComponent } from './components/code-editor/code-editor.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -186,6 +188,7 @@ const unfetterComponents = [
     MarkdownMentionsComponent,
     ScrollTrapDirective,
     TextHighlightComponent,
+    CodeEditorComponent,
 ];
 
 @NgModule({
@@ -194,6 +197,7 @@ const unfetterComponents = [
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
+        ClipboardModule,
         MarkdownModule.forRoot({
             markedOptions: {
                 provide: MarkedOptions,

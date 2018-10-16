@@ -1,0 +1,21 @@
+@import '../../../../styles/variables';
+
+.uf-codeMirror {
+    position: relative;
+}
+
+.readOnlyControls {
+    position: absolute;
+    z-index: 2;
+    right: 1px;
+    top: 1px;
+    background: radial-gradient($mde-background, rgba($mde-background, 0.5));
+}
+
+.toolbar {
+    background: $mde-background;
+    height: 50px;
+    border-bottom: 1px solid #e7e7e7;
+    padding-left: 20px;
+    padding-right: 20px;
+}

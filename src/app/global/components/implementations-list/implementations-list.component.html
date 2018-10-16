@@ -16,16 +16,16 @@
               </button>
             </mat-card-title>
           </mat-card-header>
-          <mat-card-content>
+          <mat-card-content [formGroupName]="i">
             <div *ngIf="query.value.query">
               <label>Query</label>
               <p>
-                <code class="codeBlock">{{ query.value.query }}</code>
+                <code-editor formControlName="query" readOnly="true" [syntaxCtrl]="form.get('metaProperties').get('additional_queries').at(i).get('syntax')"></code-editor>
               </p>
             </div>
             <div *ngIf="query.value.details">
               <label>Details</label>
-              <markdown [data]="query.value.details"></markdown>
+              <markdown [data]="query.value.details" ></markdown>
             </div>
           </mat-card-content>
         </mat-card>
@@ -51,12 +51,15 @@
               </mat-error>
             </mat-form-field>
 
-            <mat-form-field class="full-width mb-6">
+            <!-- <mat-form-field class="full-width mb-6">
               <textarea matInput required placeholder="Query" formControlName="query" (keyup)="queryChange(form.get('metaProperties').get('additional_queries').at(i).get('query'))"></textarea>
               <mat-error *ngIf="form.get('metaProperties').get('additional_queries').at(i).get('query').hasError('required')">
                 Query is <strong>required</strong>
               </mat-error>
-            </mat-form-field>
+            </mat-form-field> -->
+
+            <h5>Query</h5>
+            <code-editor formControlName="query" [syntaxCtrl]="form.get('metaProperties').get('additional_queries').at(i).get('syntax')"></code-editor>
             
             <pii-check-message [formCtrl]="form.get('metaProperties').get('additional_queries').at(i).get('query')"></pii-check-message>
 

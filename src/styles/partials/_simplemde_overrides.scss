@@ -1,9 +1,20 @@
 @import 'variables';
 
-$mde-background: #f2f2f2;
+simplemde {
+  // Import simple mde seperately so it doesnt interfere with codemirror
+  color: red !important;
+  @import 'simplemde/dist/simplemde.min.css';
 
-.mdeError {
-    .editor-toolbar {
+  .CodeMirror {
+    border: 1px solid $mde-background;
+    border-top: 1px solid #e7e7e7;
+    background: $mde-background;
+    border-radius: initial;
+  }
+}
+
+.mdeError, .cmError {
+    .editor-toolbar, .toolbar {
         border-left: 1px solid $warn-color;
         border-right: 1px solid $warn-color;
         border-top: 1px solid $warn-color;
@@ -18,13 +29,6 @@ $mde-background: #f2f2f2;
 
 .editor-toolbar.disabled-for-preview a:not(.no-disable) {
     background: $mde-background;
-}
-
-.CodeMirror {
-    border: 1px solid $mde-background;
-    border-top: 1px solid #e7e7e7;
-    background: $mde-background;
-    border-radius: initial;
 }
 
 .editor-toolbar {

@@ -55,7 +55,7 @@ describe('AdditionalQueriesComponent', () => {
                 additional_queries: new FormArray([])
             })
         });
-        component.localForm.setValue({'name': name, 'query': value, details });
+        component.localForm.patchValue({'name': name, 'query': value, details });
         component.addToParent();
         const queries = component.parentForm.get('metaProperties').get('additional_queries').value;
         expect(queries.length).toEqual(1);
