@@ -113,7 +113,7 @@
                                 class="related-board" [style.background]="getBoardBackground(board)"
                                 (mouseenter)="boardHoverIndex = bidx" (mouseleave)="boardHoverIndex = -1">
                             <div class='board-title'>{{ board.name }}</div>
-                            <div class='board-owner'>Owner Name</div>
+                            <div class='board-owner'>{{ getUserName(board) }}</div>
                             <div class='board-options'>
                                 <button mat-button disabled (click)="followBoard(board.id)">FOLLOW</button>
                             </div>
@@ -272,7 +272,7 @@
             <div class="flex1 activity-content">
                 <mat-card-header>
                     <mat-card-title>{{ item.name }}</mat-card-title>
-                    <mat-card-subtitle>{{ item.created_by_ref }}</mat-card-subtitle>
+                    <mat-card-subtitle>{{ getUserName(item) }}</mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>
                     <markdown [data]="item.content"></markdown>
