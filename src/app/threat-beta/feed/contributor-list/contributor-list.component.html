@@ -1,0 +1,17 @@
+<div id="contributors">
+    <div id="contributors-label"><h4>Contributors</h4></div>
+    <div id="contributors-list" *ngIf="threatBoard; else loadingBlock">
+        <div class="flex contributor">
+            <div class="contributor-avatar" [style.background-color]="'darkorange'">JD</div>
+            <div class="contributor-userid flex1">Jane Doe</div>
+        </div>
+        <div class="flex contributor">
+            <div class="contributor-avatar" [style.background-color]="'teal'">JS</div>
+            <div class="contributor-userid flex1">John Smith</div>
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingBlock>
+    <loading-spinner height="250px"></loading-spinner>
+</ng-template>

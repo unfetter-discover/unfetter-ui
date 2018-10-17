@@ -1,0 +1,42 @@
+.related-board {
+    width: 210px;
+    min-width: 210px;
+    height: 254px;
+    margin-right: 7px;
+    border-radius: 4px;
+    padding: 16px;
+
+    .board-title {
+        width: 168px;
+        height: 150px;
+        font-size: 18px;
+        color: white;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .board-owner {
+        width: 168px;
+        height: 30px;
+        font-size: 14px;
+        color: lightgray;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .board-options {
+        width: 168px;
+        height: 30px;
+        font-size: 16px;
+        color: white;
+
+        button {
+            padding-left: 0px;
+            text-align: left;
+        }
+
+        button[disabled] {
+            color: lightgray;
+        }
+    }
+}
