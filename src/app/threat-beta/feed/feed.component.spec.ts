@@ -10,11 +10,16 @@ import { SideBoardComponent } from '../side-board/side-board.component';
 import { ThreatHeaderComponent } from '../threat-header/threat-header.component';
 import { GlobalModule } from '../../global/global.module';
 import { threatReducer } from '../store/threat.reducers';
+import { ContributorListComponent } from './contributor-list/contributor-list.component';
+import { ReportsCarouselComponent } from './feed-carousel/reports-carousel.component';
+import { RelatedBoardsCarouselComponent } from './feed-carousel/related-boards-carousel.component';
+import { ActivityFeedComponent } from './activity-feed/activity-feed.component';
+import { FeedCarouselComponent } from './feed-carousel/feed-carousel.component';
 
 describe('FeedComponent', () => {
 
-    let component: FeedComponent;
     let fixture: ComponentFixture<FeedComponent>;
+    let component: FeedComponent;
 
     beforeEach(async(() => {
         TestBed
@@ -29,6 +34,11 @@ describe('FeedComponent', () => {
                 ],
                 declarations: [
                     FeedComponent,
+                    FeedCarouselComponent,
+                    ReportsCarouselComponent,
+                    RelatedBoardsCarouselComponent,
+                    ActivityFeedComponent,
+                    ContributorListComponent,
                     ThreatHeaderComponent,
                     SideBoardComponent,
                 ],
@@ -45,5 +55,11 @@ describe('FeedComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    /*
+     * TODO:
+     * - add board data to the store to mimic loading threatboard data
+     * - check board update time
+     */
 
 });
