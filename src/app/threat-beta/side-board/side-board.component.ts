@@ -9,7 +9,7 @@ import { Report } from 'stix';
 import { MasterListDialogTableHeaders } from '../../global/components/master-list-dialog/master-list-dialog.component';
 import { SideBoardDataSource } from './side-board.datasource';
 import { ThreatFeatureState } from '../store/threat.reducers';
-import { getSelectedBoard, getSelectedReportId } from '../store/threat.selectors';
+import { getSelectedBoard, getSelectedReportId, getBoundaryObjects } from '../store/threat.selectors';
 import * as threatActions from '../store/threat.actions';
 
 @Component({
@@ -25,6 +25,7 @@ export class SideBoardComponent implements OnInit {
   readonly baseThreatUrl = '/threat-beta';
 
   public selectedBoard$: Observable<ThreatBoard>;
+  public boundaryObj$: Observable<any>;
   public selectedReport: string = '';
 
 
@@ -75,6 +76,7 @@ export class SideBoardComponent implements OnInit {
     this.masterListOptions.columns.id.selectable = (row: any) => !isSameThreatBoard(row);
 
     this.selectedBoard$ = this.store.select(getSelectedBoard);
+    this.boundaryObj$ = this.store.select(getBoundaryObjects);
   }
 
   public reportClicked(reportId: string): void {

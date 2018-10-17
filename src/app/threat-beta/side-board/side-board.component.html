@@ -29,8 +29,59 @@
     <sidepanel-custom-content>
       <!-- TODO add account circles -->
       <mat-tab-group>
-        <mat-tab label="BOUNDARIES">foo</mat-tab>
+        <mat-tab label="BOUNDARIES">
+
+          <mat-accordion multi="true" displayMode="flat" class="accordion" *ngIf="boundaryObj$ | async as boundaryObj">
+            <sidepanel-list-item label="Targets" [items]="boundaryObj?.targets" expandable="true">
+              <mat-list-item *ngFor="let target of boundaryObj?.targets" class="list-divider">
+                  <div mat-line>{{ target }}</div>
+              </mat-list-item>
+            </sidepanel-list-item>
+
+            <sidepanel-list-item label="Malware" [items]="boundaryObj?.malware" expandable="true">
+              <mat-list-item *ngFor="let malware of boundaryObj?.malware" class="list-divider">
+                  <div mat-line>
+                      <a routerLink="/stix/malwares/{{malware.id}}">{{malware?.name}}</a>
+                  </div>
+              </mat-list-item>
+            </sidepanel-list-item>
+
+            <sidepanel-list-item label="Intrusion Sets" [items]="boundaryObj?.intrusion_sets" expandable="true">
+              <mat-list-item *ngFor="let intrusion of boundaryObj?.intrusion_sets" class="list-divider">
+                  <div mat-line>
+                      <a routerLink="/stix/intrusion-sets/{{intrusion.id}}">{{intrusion.name}}</a>
+                  </div>
+              </mat-list-item>
+            </sidepanel-list-item>
+
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>                
+                <mat-panel-title>
+                  <span style="margin-left: 1px;">Dates</span>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-list dense>
+                <mat-list-item class="list-divider">
+                  <div mat-line>Start Date: {{ boundaryObj.start_date | date:'mediumDate' }}</div>
+                  <div mat-line>End Date: {{ boundaryObj.end_date | date:'mediumDate' }}</div>
+                </mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+
+            <!-- TODO we curretly don't record External references in threat boards, should probably remove this -->
+            <sidepanel-list-item label="External References" [items]="selectedBoard?.external_references" expandable="true">
+              <mat-list-item *ngFor="let extRef of selectedBoard?.external_references" class="list-divider">
+                <div mat-line>
+                  <a href="{{ extRef.url }}" target="_blank">{{ extRef.source_name }}</a>
+                </div>
+              </mat-list-item>
+            </sidepanel-list-item>
+
+          </mat-accordion>
+          <br>
+        </mat-tab>
         <mat-tab label="REPORTS">
+
           <div 
             class="report-list-item cursor-pointer flex flexItemsCenter"
             *ngFor="let report of reports$ | async" 
@@ -45,6 +96,7 @@
             </span>
             <mat-icon class="mat-24 selectedReportArrow">keyboard_arrow_right</mat-icon>
           </div>
+
         </mat-tab>
       </mat-tab-group>
     </sidepanel-custom-content>
