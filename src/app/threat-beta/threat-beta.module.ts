@@ -25,7 +25,7 @@ import { routing } from './threat-beta.routing';
 import { ThreatDashboardBetaService } from './threat-beta.service';
 import { ThreatDashboardBetaComponent } from './threat-dashboard-beta.component';
 import { ThreatHeaderComponent } from './threat-header/threat-header.component';
-import { ActivityFeedComponent } from './feed/activity-feed/activity-feed.component';
+import { ActivityListComponent } from './feed/activity-list/activity-list.component';
 import { ContributorListComponent } from './feed/contributor-list/contributor-list.component';
 import { ReportsCarouselComponent } from './feed/feed-carousel/reports-carousel.component';
 import { RelatedBoardsCarouselComponent } from './feed/feed-carousel/related-boards-carousel.component';
@@ -60,7 +60,7 @@ import { FeedCarouselComponent } from './feed/feed-carousel/feed-carousel.compon
     RecentActivityComponent,
     RecentReportsComponent,
     GlobalActivitySortComponent,
-    ActivityFeedComponent,
+    ActivityListComponent,
     ContributorListComponent,
     FeedCarouselComponent,
     ReportsCarouselComponent,

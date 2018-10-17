@@ -11,7 +11,7 @@ import {
 import { MarkdownModule } from 'ngx-markdown';
 import { SimplemdeModule } from 'ng2-simplemde';
 
-import { ActivityFeedComponent } from './activity-feed.component';
+import { ActivityListComponent } from './activity-list.component';
 import { LoadingSpinnerComponent } from '../../../global/components/loading-spinner/loading-spinner.component';
 import { FieldSortPipe } from '../../../global/pipes/field-sort.pipe';
 import { TimeAgoPipe } from '../../../global/pipes/time-ago.pipe';
@@ -19,8 +19,8 @@ import { reducers } from '../../../root-store/app.reducers';
 
 describe('ActivityFeedComponent', () => {
 
-    let fixture: ComponentFixture<ActivityFeedComponent>;
-    let component: ActivityFeedComponent;
+    let fixture: ComponentFixture<ActivityListComponent>;
+    let component: ActivityListComponent;
 
     beforeEach(async(() => {
         TestBed
@@ -36,7 +36,7 @@ describe('ActivityFeedComponent', () => {
                     StoreModule.forRoot(reducers),
                 ],
                 declarations: [
-                    ActivityFeedComponent,
+                    ActivityListComponent,
                     LoadingSpinnerComponent,
                     FieldSortPipe,
                     TimeAgoPipe,
@@ -46,7 +46,7 @@ describe('ActivityFeedComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ActivityFeedComponent);
+        fixture = TestBed.createComponent(ActivityListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

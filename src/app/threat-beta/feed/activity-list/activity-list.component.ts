@@ -19,11 +19,11 @@ import { getOrganizations } from '../../../root-store/stix/stix.selectors';
  *      is just the article with a comment thread component built within it).
  */
 @Component({
-    selector: 'activity-feed',
-    templateUrl: './activity-feed.component.html',
-    styleUrls: ['./activity-feed.component.scss']
+    selector: 'activity-list',
+    templateUrl: './activity-list.component.html',
+    styleUrls: ['./activity-list.component.scss']
 })
-export class ActivityFeedComponent implements OnInit {
+export class ActivityListComponent implements OnInit {
 
     /**
      * The threatboard the feed belongs to. We only use this when persisting comments added to the threatboard itself.

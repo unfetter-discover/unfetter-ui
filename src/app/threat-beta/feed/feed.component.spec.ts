@@ -13,8 +13,8 @@ import { threatReducer } from '../store/threat.reducers';
 import { ContributorListComponent } from './contributor-list/contributor-list.component';
 import { ReportsCarouselComponent } from './feed-carousel/reports-carousel.component';
 import { RelatedBoardsCarouselComponent } from './feed-carousel/related-boards-carousel.component';
-import { ActivityFeedComponent } from './activity-feed/activity-feed.component';
 import { FeedCarouselComponent } from './feed-carousel/feed-carousel.component';
+import { ActivityListComponent } from './activity-list/activity-list.component';
 
 describe('FeedComponent', () => {
 
@@ -37,7 +37,7 @@ describe('FeedComponent', () => {
                     FeedCarouselComponent,
                     ReportsCarouselComponent,
                     RelatedBoardsCarouselComponent,
-                    ActivityFeedComponent,
+                    ActivityListComponent,
                     ContributorListComponent,
                     ThreatHeaderComponent,
                     SideBoardComponent,
