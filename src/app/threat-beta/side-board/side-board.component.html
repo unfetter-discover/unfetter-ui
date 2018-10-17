@@ -27,7 +27,14 @@
       (click)="reportClicked(report.id)"></sidepanel-list-item> -->
 
     <sidepanel-custom-content>
-      <!-- TODO add account circles -->
+
+      <div id="contributorList">
+        <span *ngFor="let contributor of contributors$ | async; let i = index" class="contributorListItem" [style.left.px]="i * 30" [style.z-index]="10 - i">
+          <img src="{{ contributor.avatar_url }}" alt="{{ contributor.userName }}\'s avatar" class="contributorImg" matTooltip="{{ contributor.userName }}">
+        </span>
+      </div>
+      <br>
+
       <mat-tab-group>
         <mat-tab label="BOUNDARIES">
 

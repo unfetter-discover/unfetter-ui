@@ -11,6 +11,7 @@ import { SideBoardDataSource } from './side-board.datasource';
 import { ThreatFeatureState } from '../store/threat.reducers';
 import { getSelectedBoard, getSelectedReportId, getBoundaryObjects } from '../store/threat.selectors';
 import * as threatActions from '../store/threat.actions';
+import { UserListItem } from '../../models/user/user-profile';
 
 @Component({
   selector: 'side-board',
@@ -26,6 +27,7 @@ export class SideBoardComponent implements OnInit {
 
   public selectedBoard$: Observable<ThreatBoard>;
   public boundaryObj$: Observable<any>;
+  public contributors$: Observable<UserListItem[]>;
   public selectedReport: string = '';
 
 
@@ -57,6 +59,15 @@ export class SideBoardComponent implements OnInit {
           });
         })
       );
+
+    this.contributors$ = this.store.select(getSelectedBoard)
+        .pipe(
+          withLatestFrom(this.store.select('users').pipe(pluck<any, UserListItem[]>('userList'))),
+          map(([board, userList]) => {
+            // TODO add logic to handle returning the correct contributors
+            return userList.slice(0, 5);
+          })
+        );
 
     const selectedReport$ = this.store.select(getSelectedReportId)
         .pipe(finalize(() => selectedReport$ && selectedReport$.unsubscribe()))
