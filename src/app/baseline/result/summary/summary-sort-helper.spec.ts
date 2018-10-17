@@ -8,17 +8,6 @@ describe('SummarySortHelper', () => {
     expect(new SummarySortHelper()).toBeTruthy();
   });
 
-  it('should check if the first of two values is unset, but not zero', () => {
-    expect(SummarySortHelper.isFirstValueOnlyUnset(null, null)).toEqual(false);
-    expect(SummarySortHelper.isFirstValueOnlyUnset(null, {})).toEqual(true);
-    expect(SummarySortHelper.isFirstValueOnlyUnset({}, null)).toEqual(false);
-    expect(SummarySortHelper.isFirstValueOnlyUnset({}, {})).toEqual(false);
-    expect(SummarySortHelper.isFirstValueOnlyUnset(0, {})).toEqual(false);
-    expect(SummarySortHelper.isFirstValueOnlyUnset(0, null)).toEqual(false);
-    expect(SummarySortHelper.isFirstValueOnlyUnset(null, 0)).toEqual(true);
-    expect(SummarySortHelper.isFirstValueOnlyUnset({}, 0)).toEqual(false);
-  });
-
   it('should sort killchain risk objects by risk decending', () => {
     let riskObjects: AssessKillChainType[] = [];
     let expected: AssessKillChainType[] = [];
