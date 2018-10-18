@@ -81,8 +81,8 @@
     padding-top: 11px;
     padding-left: 11px;
 
-    // hides the horizontal scrollbar for the carousel
-    overflow-x: hidden;
+    // hides the scrollbars for the carousel
+    overflow: hidden;
 
     // the transition allows left-right scrolling to go smoothly
     transition: margin-left 0.5s ease;

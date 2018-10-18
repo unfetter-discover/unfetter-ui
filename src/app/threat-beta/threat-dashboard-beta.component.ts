@@ -52,9 +52,9 @@ export class ThreatDashboardBetaComponent implements OnInit {
     this.boards$ = this.store.select('threat').pipe(pluck('boardList'));
   }
 
-  public boardClicked(reportId): Promise<boolean> {
+  public boardView(boardId): Promise<boolean> {
     let routePromise: Promise<boolean>;
-    routePromise = this.router.navigate([this.baseAssessUrl, reportId, this.boardFeedRoute]);
+    routePromise = this.router.navigate([this.baseAssessUrl, boardId, this.boardFeedRoute]);
     routePromise.catch((e) => console.log(e));
     return routePromise;
   }
