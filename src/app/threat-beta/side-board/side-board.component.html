@@ -75,15 +75,6 @@
               </mat-list>
             </mat-expansion-panel>
 
-            <!-- TODO we curretly don't record External references in threat boards, should probably remove this -->
-            <sidepanel-list-item label="External References" [items]="selectedBoard?.external_references" expandable="true">
-              <mat-list-item *ngFor="let extRef of selectedBoard?.external_references" class="list-divider">
-                <div mat-line>
-                  <a href="{{ extRef.url }}" target="_blank">{{ extRef.source_name }}</a>
-                </div>
-              </mat-list-item>
-            </sidepanel-list-item>
-
           </mat-accordion>
           <br>
         </mat-tab>

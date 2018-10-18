@@ -1,7 +1,7 @@
 <ng-container *ngIf="(finishedLoadingAll$|async) === true; else loadingBlock">
   <div #layout class="layout" *ngIf="(failedToLoad|async) === false; else failedToLoadBlock">
     <mat-sidenav-container>
-      <mat-sidenav class="side-panel mat-elevation-z16" mode="side" opened="true">
+      <mat-sidenav class="side-panel mat-elevation-z8" mode="side" opened="true">
         <div class="flex flex-cols side-nav-top">
         </div>
         <mat-tab-group>
@@ -54,7 +54,7 @@
           <global-feed></global-feed>
         </div>
       </mat-sidenav-content>
-      <mat-sidenav opened mode="side" position="end" class="right-side-panel mat-elevation-z16">
+      <mat-sidenav opened mode="side" position="end" class="right-side-panel mat-elevation-z8">
         <div id="recentTitle" class="flexItemsCenter">
           <div class="side-panel-header">
             <div class="height-100-percent">
