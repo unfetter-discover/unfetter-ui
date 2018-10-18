@@ -96,7 +96,7 @@ export class ArticleEditorComponent implements OnInit {
     this.store
       .select('config')
       .pipe(
-        pluck('runConfig'),
+        pluck('runCofig'),
         distinctUntilChanged(),
       )
       .subscribe(
@@ -104,6 +104,12 @@ export class ArticleEditorComponent implements OnInit {
           this.blockAttachments = cfg.blockAttachments;
         }
       );
+  }
+
+  public removeSource(index: number): void {
+    const sourcesVal: any[] = this.form.get('sources').value;
+    sourcesVal.splice(index, 1);
+    this.form.get('sources').patchValue(sourcesVal);
   }
 
   private setEditValues(): void {
@@ -156,6 +162,9 @@ export class ArticleEditorComponent implements OnInit {
 
     let success;
     if (this.editMode) {
+      if (!this.form.get('sources').value.length) {
+        tempArticle.sources = [];
+      }
       success = await this.editArticle(tempArticle);
     } else {
       success = await this.createNewArticle(tempArticle);
