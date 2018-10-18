@@ -17,7 +17,10 @@
         <div class="theme-color-primary theme-bg-primary-lighter side-panel-header">
 
             <mat-toolbar class="theme-color-accent" id="options-toolbar">
-                <span class="push-right"></span>
+                <span>
+                    <ng-content select="sidepanel-nav-control"></ng-content>
+                </span>
+                <span class="flex1"></span>
                 <span>
                     <button mat-icon-button [matMenuTriggerFor]="optionsMenu" matTooltip="Options Menu">
                         <mat-icon class="mat-24 options-toggle" aria-hidden="false" aria-label="Options Menu">more_vert</mat-icon>
@@ -43,6 +46,7 @@
         <mat-accordion multi="true" displayMode="flat" class="accordion">
             <ng-content select="sidepanel-list-item"></ng-content>
         </mat-accordion>
+        <ng-content select="sidepanel-custom-content"></ng-content>
 
     </div>
 

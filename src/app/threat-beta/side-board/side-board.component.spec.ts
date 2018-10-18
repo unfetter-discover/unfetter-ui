@@ -7,7 +7,6 @@ import { GlobalModule } from '../../global/global.module';
 import { SideBoardComponent } from './side-board.component';
 import mockThreatReducer from '../testing/mock-reducer';
 
-
 describe('SideBoardComponent', () => {
   let component: SideBoardComponent;
   let fixture: ComponentFixture<SideBoardComponent>;

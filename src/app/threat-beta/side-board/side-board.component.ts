@@ -3,14 +3,15 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { ThreatBoard } from 'stix/unfetter/threat-board';
+import { pluck, filter, withLatestFrom, map, finalize } from 'rxjs/operators';
 import { Report } from 'stix';
 
 import { MasterListDialogTableHeaders } from '../../global/components/master-list-dialog/master-list-dialog.component';
 import { SideBoardDataSource } from './side-board.datasource';
 import { ThreatFeatureState } from '../store/threat.reducers';
-import { pluck, filter } from 'rxjs/operators';
-import { getSelectedBoard } from '../store/threat.selectors';
+import { getSelectedBoard, getSelectedReportId, getBoundaryObjects } from '../store/threat.selectors';
 import * as threatActions from '../store/threat.actions';
+import { UserListItem } from '../../models/user/user-profile';
 
 @Component({
   selector: 'side-board',
@@ -25,6 +26,9 @@ export class SideBoardComponent implements OnInit {
   readonly baseThreatUrl = '/threat-beta';
 
   public selectedBoard$: Observable<ThreatBoard>;
+  public boundaryObj$: Observable<any>;
+  public contributors$: Observable<UserListItem[]>;
+  public selectedReport: string = '';
 
 
   masterListOptions = {
@@ -40,7 +44,41 @@ export class SideBoardComponent implements OnInit {
   ) { }
   
   ngOnInit() {
-    this.reports$ = this.store.select('threat').pipe(pluck('attachedReports'));
+    this.reports$ = this.store.select('threat')
+      .pipe(
+        pluck<any, Report[]>('attachedReports'),
+        withLatestFrom(this.store.select('stix')),
+        map(([reports, stixState]) => {
+          return reports.map((report): any => {
+            const matchingIdentity = stixState.identities.find((identity) => identity.id === report.created_by_ref);
+            const creatorName = matchingIdentity ? matchingIdentity.name : 'Unknown';
+            return {
+              ...report,
+              creator_name: creatorName
+            };
+          });
+        })
+      );
+
+    this.contributors$ = this.store.select(getSelectedBoard)
+        .pipe(
+          withLatestFrom(this.store.select('users').pipe(pluck<any, UserListItem[]>('userList'))),
+          map(([board, userList]) => {
+            // TODO add logic to handle returning the correct contributors
+            return userList.slice(0, 5);
+          })
+        );
+
+    const selectedReport$ = this.store.select(getSelectedReportId)
+        .pipe(finalize(() => selectedReport$ && selectedReport$.unsubscribe()))
+        .subscribe(
+          (id) => {
+            this.selectedReport = id;
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
 
     this.masterListOptions.dataSource = new SideBoardDataSource(this.store);
     const isSameThreatBoard = (row: any) => row && row.id === this.boardId;
@@ -49,6 +87,7 @@ export class SideBoardComponent implements OnInit {
     this.masterListOptions.columns.id.selectable = (row: any) => !isSameThreatBoard(row);
 
     this.selectedBoard$ = this.store.select(getSelectedBoard);
+    this.boundaryObj$ = this.store.select(getBoundaryObjects);
   }
 
   public reportClicked(reportId: string): void {

@@ -1,6 +1,8 @@
 <div id="sideBoardComponent" *ngIf="selectedBoard$ | async as selectedBoard">
   <unfetter-side-panel class="side-panel" [item]="selectedBoard" collapsible="false" width="320">
 
+    <sidepanel-nav-control routerLink="/threat-beta"></sidepanel-nav-control>
+
     <sidepanel-option-item label="Edit" icon="mode_edit" (click)="onEdit($event)"></sidepanel-option-item>
     <sidepanel-option-item label="Share" icon="share" disabled="true" (click)="onShare($event)"></sidepanel-option-item>
     <sidepanel-option-item label="Delete" icon="delete" (click)="onDeleteCurrent($event)"></sidepanel-option-item>
@@ -17,12 +19,94 @@
       (edit)="onEdit($event)" 
       (delete)="onDelete($event)"></master-list-dialog-trigger>   
 
-    <sidepanel-list-item 
+    <!-- <sidepanel-list-item 
       [label]="report.name" 
       expandable="false" 
       showCount="false" 
       *ngFor="let report of reports$ | async" 
-      (click)="reportClicked(report.id)"></sidepanel-list-item>
+      (click)="reportClicked(report.id)"></sidepanel-list-item> -->
+
+    <sidepanel-custom-content>
+
+      <div id="contributorList">
+        <span *ngFor="let contributor of contributors$ | async; let i = index" class="contributorListItem" [style.left.px]="i * 30" [style.z-index]="10 - i">
+          <img src="{{ contributor.avatar_url }}" alt="{{ contributor.userName }}\'s avatar" class="contributorImg" matTooltip="{{ contributor.userName }}">
+        </span>
+      </div>
+      <br>
+
+      <mat-tab-group>
+        <mat-tab label="BOUNDARIES">
+
+          <mat-accordion multi="true" displayMode="flat" class="accordion" *ngIf="boundaryObj$ | async as boundaryObj">
+            <sidepanel-list-item label="Targets" [items]="boundaryObj?.targets" expandable="true">
+              <mat-list-item *ngFor="let target of boundaryObj?.targets" class="list-divider">
+                  <div mat-line>{{ target }}</div>
+              </mat-list-item>
+            </sidepanel-list-item>
+
+            <sidepanel-list-item label="Malware" [items]="boundaryObj?.malware" expandable="true">
+              <mat-list-item *ngFor="let malware of boundaryObj?.malware" class="list-divider">
+                  <div mat-line>
+                      <a routerLink="/stix/malwares/{{malware.id}}">{{malware?.name}}</a>
+                  </div>
+              </mat-list-item>
+            </sidepanel-list-item>
+
+            <sidepanel-list-item label="Intrusion Sets" [items]="boundaryObj?.intrusion_sets" expandable="true">
+              <mat-list-item *ngFor="let intrusion of boundaryObj?.intrusion_sets" class="list-divider">
+                  <div mat-line>
+                      <a routerLink="/stix/intrusion-sets/{{intrusion.id}}">{{intrusion.name}}</a>
+                  </div>
+              </mat-list-item>
+            </sidepanel-list-item>
+
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>                
+                <mat-panel-title>
+                  <span style="margin-left: 1px;">Dates</span>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <mat-list dense>
+                <mat-list-item class="list-divider">
+                  <div mat-line>Start Date: {{ boundaryObj.start_date | date:'mediumDate' }}</div>
+                  <div mat-line>End Date: {{ boundaryObj.end_date | date:'mediumDate' }}</div>
+                </mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+
+            <!-- TODO we curretly don't record External references in threat boards, should probably remove this -->
+            <sidepanel-list-item label="External References" [items]="selectedBoard?.external_references" expandable="true">
+              <mat-list-item *ngFor="let extRef of selectedBoard?.external_references" class="list-divider">
+                <div mat-line>
+                  <a href="{{ extRef.url }}" target="_blank">{{ extRef.source_name }}</a>
+                </div>
+              </mat-list-item>
+            </sidepanel-list-item>
+
+          </mat-accordion>
+          <br>
+        </mat-tab>
+        <mat-tab label="REPORTS">
+
+          <div 
+            class="report-list-item cursor-pointer flex flexItemsCenter"
+            *ngFor="let report of reports$ | async" 
+            (click)="reportClicked(report.id)"
+            [class.selectedReport]="selectedReport === report.id">
+            <span class="flex1">
+              <h5>{{ report.name }}</h5>
+              <p>
+                <a routerLink="/stix/identities/{{ report.created_by_ref }}">{{ report.creator_name }}</a>
+                &nbsp;&nbsp;{{ report.created | date:'mediumDate' }}
+              </p>
+            </span>
+            <mat-icon class="mat-24 selectedReportArrow">keyboard_arrow_right</mat-icon>
+          </div>
+
+        </mat-tab>
+      </mat-tab-group>
+    </sidepanel-custom-content>
 
   </unfetter-side-panel>
 </div>
