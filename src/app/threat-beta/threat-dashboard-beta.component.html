@@ -3,19 +3,51 @@
     <mat-sidenav-container>
       <mat-sidenav class="side-panel mat-elevation-z16" mode="side" opened="true">
         <div class="flex flex-cols side-nav-top">
-          <div class="flex1"></div>
-          <div class="flex flex-row">
-            <nav mat-tab-nav-bar class="indent uf-tabs-borderless">
-              <a class="noUnderline tabs" mat-tab-link [routerLink]="myBoardsLink" routerLinkActive #myboards="routerLinkActive"
-                [active]="myboards.isActive">MY BOARDS</a>
-              <a class="noUnderline tabs" mat-tab-link [routerLink]="followingBoardsLink" routerLinkActive #followingboards="routerLinkActive"
-                [active]="followingboards.isActive">FOLLOWING</a>
-            </nav>
-          </div>
         </div>
-        <div class="side-nav-item header-text" *ngFor="let board of boards$ | async" (click)="boardClicked(board.id)">
-          {{board.name}}
-        </div>
+        <mat-tab-group>
+            <mat-tab label="MY BOARDS">
+              <div class="side-nav-item header-text" *ngFor="let board of boards$ | async">
+                <div>
+                {{board.name}}
+                </div>
+                <div class="flex1"></div>
+                <button mat-icon-button [matMenuTriggerFor]="menu" class="align mat-24">
+                  <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="boardView(board.id)" *ngIf="!canCrud"> <!-- TODO reverse & fix "canCrud" check -->
+                    <mat-icon>details</mat-icon>
+                    <span>View</span>
+                  </button>
+                  <button mat-menu-item (click)="editBoard(board.id)" *ngIf="!canCrud">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+                  </button>
+                  <button mat-menu-item (click)="deleteBoard(board.id)" *ngIf="!canCrud">
+                      <mat-icon>delete</mat-icon>
+                      <span>Delete</span>
+                  </button>
+              </mat-menu>
+              </div>
+            </mat-tab>
+            <mat-tab label="FOLLOWING">
+              <div class="side-nav-item header-text" *ngFor="let board of boards$ | async"> <!-- TODO use different list of boards -->
+                <div>
+                {{board.name}}
+                </div>
+                <div class="flex1"></div>
+                <button mat-icon-button [matMenuTriggerFor]="menu" class="align mat-24">
+                  <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="boardClicked(board.id)" *ngIf="!canCrud">
+                    <mat-icon>details</mat-icon>
+                    <span>View</span>
+                  </button>
+              </mat-menu>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
       </mat-sidenav>
       <mat-sidenav-content class="sidenavContentPolyfill320">
         <div class="main-panel">
