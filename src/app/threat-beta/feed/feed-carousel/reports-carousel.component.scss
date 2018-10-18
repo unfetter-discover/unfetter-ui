@@ -53,6 +53,8 @@
     }
 }
 
-.mat-badge-content {
-    left: 8px !important;
+:host ::ng-deep .mat-badge-small.mat-badge-overlap.mat-badge-before {
+    .mat-badge-content {
+        left: 8px;
+    }
 }
