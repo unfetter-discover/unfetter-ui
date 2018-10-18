@@ -96,7 +96,7 @@ export class ArticleEditorComponent implements OnInit {
     this.store
       .select('config')
       .pipe(
-        pluck('runCofig'),
+        pluck('runConfig'),
         distinctUntilChanged(),
       )
       .subscribe(
