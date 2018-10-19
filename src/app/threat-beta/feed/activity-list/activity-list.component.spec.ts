@@ -26,7 +26,7 @@ import * as boardActions from '../../store/threat.actions';
 import { threatReducer } from '../../store/threat.reducers';
 import { StixCoreEnum } from 'stix';
 
-fdescribe('ActivityListComponent', () => {
+describe('ActivityListComponent', () => {
 
     let fixture: ComponentFixture<ActivityListComponent>;
     let component: ActivityListComponent;
