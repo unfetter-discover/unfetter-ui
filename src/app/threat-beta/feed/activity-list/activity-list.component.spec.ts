@@ -24,6 +24,7 @@ import { AppState, reducers } from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
 import * as boardActions from '../../store/threat.actions';
 import { threatReducer } from '../../store/threat.reducers';
+import { StixCoreEnum } from 'stix';
 
 fdescribe('ActivityListComponent', () => {
 
@@ -64,8 +65,8 @@ fdescribe('ActivityListComponent', () => {
     const mockArticles = [
         new Article({
             id: 'x-unfetter-article--1',
-            name: 'Articles of Programming',
-            content: 'We the Coders, in order to program a more perfect application, ...',
+            name: 'Latin',
+            content: 'Lorem ipsum dolor sit amet ...',
             created_by_ref: '1234',
             created: new Date(),
             modified: new Date(),
@@ -78,11 +79,12 @@ fdescribe('ActivityListComponent', () => {
 
     const mockThreatBoard = new ThreatBoard({
         id: 'tb1',
-        type: 'x-unfetter-threat-board',
+        type: StixCoreEnum.REPORT, // <-- this is BS
         name: 'Empty Threats',
         created: new Date(),
-        modified: new Date(),
+        modified: new Date().toISOString(), // <-- this is BS
         metaProperties: {
+            published: false,
             comments: [
                 {
                     submitted: new Date(),
@@ -108,6 +110,7 @@ fdescribe('ActivityListComponent', () => {
             targets: [],
         },
         reports: [],
+        toJson: null // <-- this is BS
     });
 
     beforeEach(async(() => {
@@ -156,8 +159,7 @@ fdescribe('ActivityListComponent', () => {
 
     /*
      * TODO:
-     * - give the component a threatboard
-     * - add store for user, users and threatboard article/comments (give the latter a lot of stuff)
+     * - add store for users, make a lot of threatboard comments
      * - check user identities on feed items
      * - sort feed by newest, oldest, most likes and most comments
      * - click add comment; confirm changed display
