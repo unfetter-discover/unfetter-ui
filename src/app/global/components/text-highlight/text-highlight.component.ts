@@ -48,6 +48,7 @@ export class TextHighlightComponent implements OnInit {
   private readonly FAB_HEIGHT = 40;
   private _showFab = false;
   private selection: Selection;  
+  private recentTagIds: string[] = [];
 
   constructor(private elementRef: ElementRef) { }
 
@@ -100,6 +101,8 @@ export class TextHighlightComponent implements OnInit {
   }
 
   public onTagClick(id: string) {
+    const idSet = new Set([...this.recentTagIds, id]);
+    this.recentTagIds = Array.from(idSet);
     this.tagClicked.emit({
       id,
       selection: this.selection 

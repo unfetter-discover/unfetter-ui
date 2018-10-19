@@ -34,7 +34,7 @@
       </div> -->
       <div id="searchResults">
         <div *ngFor="let stix of searchResults$ | async" class="searchResultItem">
-          <a (click)="onTagClick(stix.id)">{{ stix.name }}</a>
+          <a (click)="onTagClick(stix.id)">{{ stix.name || 'Unknown' }}</a>
         </div>
       </div>
     </div>

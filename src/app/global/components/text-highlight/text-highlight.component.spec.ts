@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { MatButtonModule } from '@angular/material';
+import { MatButtonModule, MatInputModule } from '@angular/material';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 import { TextHighlightComponent } from './text-highlight.component';
 
@@ -11,7 +12,11 @@ describe('TextHighlightComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ TextHighlightComponent ],
-      imports: [MatButtonModule],
+      imports: [
+        MatButtonModule,
+        MatInputModule,
+        OverlayModule
+      ],
       schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
