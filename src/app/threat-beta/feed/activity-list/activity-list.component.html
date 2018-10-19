@@ -15,21 +15,22 @@
 
         <mat-card>
             <mat-card-content>
-                <button mat-button *ngIf="addNewComment !== true" (click)="startActivityComment()">
+                <button mat-button *ngIf="commentTarget !== true" (click)="commentTarget = true">
                     <i class="material-icons comment-button">chat_bubble</i> Add a comment
                 </button>
-                <ng-container *ngIf="addNewComment === true">
-                    <ng-container *ngTemplateOutlet="commentInput"></ng-container>
-                </ng-container>
+                <comment-input *ngIf="commentTarget === true" (cancel)="commentTarget = false"
+                        (submit)="submitActivityComment($event)"></comment-input>
             </mat-card-content>
         </mat-card>
 
         <ng-container *ngFor="let item of activity">
             <ng-container *ngIf="item.type === 'x-unfetter-article'">
-                <ng-container *ngTemplateOutlet="articleTemplate;context:{ item: item }"></ng-container>
+                <ng-container *ngTemplateOutlet="articleTemplate;context:{article:item}"></ng-container>
             </ng-container>
-            <ng-container *ngIf="item.type === 'x-unfetter-comment'">
-                <ng-container *ngTemplateOutlet="commentTemplate;context:{ item: item }"></ng-container>
+            <ng-container *ngIf="item.comment">
+                <mat-card class="uf-mat-card">
+                    <ng-container *ngTemplateOutlet="commentTemplate;context:{item:item,parent:null}"></ng-container>
+                </mat-card>
             </ng-container>
         </ng-container>
 
@@ -41,156 +42,105 @@
     <loading-spinner height="250px"></loading-spinner>
 </ng-template>
 
-<ng-template #commentInput>
-    <div class="mt-20 overFlowHidden">
-        <div class="mb-6">
-            <simplemde [(ngModel)]="commentData.text"></simplemde>
-        </div>
-        <div class="text-right">
-            <button mat-button
-                    (click)="addNewComment = false; commentData.text = ''">CANCEL</button>
-            <button mat-raised-button color="primary" [disabled]="commentData.text === ''"
-                    (click)="submitActivityComment(commentData.text, commentData.source)">SAVE</button>
+<ng-template #commentTemplate let-item="item" let-parent="parent">
+
+    <div class="flex">
+        <div mat-card-avatar class="activity-avatar" [style.background-image]="getActivityAvatar(item)"></div>
+        <div class="flex1 activity-content">
+            <mat-card-header>
+                <mat-card-title>{{ getUserName(item) }}</mat-card-title>
+                <mat-card-subtitle> &bull; {{ item.submitted | timeAgo }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <markdown [data]="item.comment.content"></markdown>
+            </mat-card-content>
         </div>
     </div>
-</ng-template>
 
-<ng-template #commentTemplate let-item="item">
+    <mat-card-actions>
+        <button mat-button class="like-button" [style.color]="hasLikedActivity(item) ? 'blue' : 'inherit'"
+                (click)="clickActivityLike(item)">
+            <i class="material-icons">thumb_up</i>
+            <span [style.margin]="'0 6px'">Like</span>
+            <span *ngIf="hasActivityLikes(item)">({{ item.comment.likes.length }})</span>
+        </button>
+        <button mat-button *ngIf="commentTarget !== item" class="comment-button" (click)="commentTarget = item">
+            <i class="material-icons">chat_bubble</i> Reply
+        </button>
+    </mat-card-actions>
 
-    <mat-card class="uf-mat-card">
-
-        <div class="flex">
-            <div mat-card-avatar class="activity-avatar" [style.background-image]="getActivityAvatar(item)"></div>
-            <div class="flex1 activity-content">
-                <mat-card-header>
-                    <mat-card-title>{{ getUserName(item) }}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <markdown [data]="item.content"></markdown>
-                </mat-card-content>
-            </div>
-        </div>
-
-        <mat-card-actions [style.padding]="0" [style.text-align]="'left'">
-            <button mat-button class="like-button" [style.color]="hasLikedActivity(item) ? 'blue' : 'inherit'"
-                    (click)="clickActivityLike(item)">
-                <i class="material-icons">thumb_up</i>
-                <span [style.margin]="'0 6px'">Like</span>
-                <span *ngIf="hasActivityLikes(item)">({{ item.likes.length }})</span>
-            </button>
-            <button mat-button *ngIf="addNewComment !== item.id" class="comment-button"
-                    (click)="startActivityComment(null, item)">
-                <i class="material-icons">chat_bubble</i> Reply
-            </button>
-        </mat-card-actions>
-
-        <mat-card-footer [style.padding]="'0 24px 24px 24px'">
-            <ng-container *ngIf="addNewComment === item.id">
-                <ng-container *ngTemplateOutlet="commentInput"></ng-container>
-            </ng-container>
-            <div *ngIf="hasActivityComments(item)">
-                <div *ngFor="let reply of item.replies | sortByField: 'submitted'" class="flex">
-                    <div mat-card-avatar class="subactivity-avatar"
-                            [style.background-image]="getActivityAvatar(reply)"></div>
-                    <div class="flex1 activity-content">
-                        <mat-card-header>
-                            <mat-card-title>{{ getUserName(reply) }}</mat-card-title>
-                            <mat-card-subtitle> &bull; {{ reply.submitted | timeAgo }}</mat-card-subtitle>
-                        </mat-card-header>
-                        <mat-card-content>
-                            <markdown [data]="reply.content"></markdown>
-                        </mat-card-content>
-                    </div>
+    <mat-card-footer [style.padding]="'0 24px 24px 64px'">
+        <hr *ngIf="!parent && ((item.comment.replies && item.comment.replies.length) || (commentTarget === item))">
+        <comment-input *ngIf="commentTarget === item" (cancel)="commentTarget = false"
+                (submit)="submitActivityComment($event)"></comment-input>
+        <div *ngIf="hasActivityComments(item)">
+            <div *ngFor="let reply of item.comment.replies | sortByField: 'submitted'" class="flex">
+                <div mat-card-avatar class="activity-avatar"
+                        [style.background-image]="getActivityAvatar(reply)"></div>
+                <div class="flex1 activity-content">
+                    <mat-card-header>
+                        <mat-card-title>{{ getUserName(reply) }}</mat-card-title>
+                        <mat-card-subtitle> &bull; {{ reply.submitted | timeAgo }}</mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <markdown [data]="reply.comment.content"></markdown>
+                        <button mat-button class="like-button"
+                                [style.margin-left]="'-16px'" [style.line-height]="'20px'"
+                                [style.color]="hasLikedActivity(reply) ? 'blue' : 'inherit'"
+                                (click)="clickActivityLike(reply)">
+                            <i class="material-icons">thumb_up</i>
+                            <span [style.margin]="'0 6px'">Like</span>
+                            <span *ngIf="hasActivityLikes(reply)">({{ reply.comment.likes.length }})</span>
+                        </button>
+                    </mat-card-content>
                 </div>
             </div>
-        </mat-card-footer>
-
-    </mat-card>
+        </div>
+    </mat-card-footer>
 
 </ng-template>
 
-<ng-template #articleTemplate let-item="item">
+<ng-template #articleTemplate let-article="article">
 
     <mat-card class="uf-mat-card">
 
         <div class="flex">
-            <div mat-card-avatar class="activity-avatar" [style.background-image]="getActivityAvatar(item)"></div>
+            <div mat-card-avatar class="activity-avatar" [style.background-image]="getActivityAvatar(article)"></div>
             <div class="flex1 activity-content">
                 <mat-card-header>
-                    <mat-card-title>{{ item.name }}</mat-card-title>
-                    <mat-card-subtitle>{{ getUserName(item) }}</mat-card-subtitle>
+                    <mat-card-title>{{ article.name }}</mat-card-title>
+                    <mat-card-subtitle>
+                        {{ getUserName(article) }} &bull; Last edited {{ article.modified | timeAgo }}
+                    </mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>
-                    <markdown [data]="item.content"></markdown>
-                    <img *ngIf="item.image" mat-card-image src="{{ getActivityImage(item.image) }}">
+                    <markdown [data]="article.content"></markdown>
+                    <img *ngIf="article.image" mat-card-image src="{{ getActivityImage(article.image) }}">
                 </mat-card-content>
             </div>
         </div>
 
-        <mat-card-actions [style.padding]="0" [style.text-align]="'left'">
-            <button mat-button class="like-button" [style.color]="hasLikedActivity(item) ? 'blue' : 'inherit'"
-                    (click)="clickActivityLike(item)">
+        <mat-card-actions>
+            <button mat-button class="like-button" [style.color]="hasLikedActivity(article) ? 'blue' : 'inherit'"
+                    (click)="clickActivityLike(article)">
                 <i class="material-icons">thumb_up</i>
                 <span [style.margin]="'0 6px'">Like</span>
-                <span *ngIf="hasActivityLikes(item)">({{ item.metaProperties.likes.length }})</span>
+                <span *ngIf="hasActivityLikes(article)">({{ article.metaProperties.likes.length }})</span>
             </button>
-            <button mat-button *ngIf="addNewComment !== item.id" class="comment-button"
-                    (click)="startActivityComment(null, item)">
+            <button mat-button *ngIf="commentTarget !== article" class="comment-button"
+                    (click)="commentTarget = article">
                 <i class="material-icons">chat_bubble</i> Add a comment
             </button>
         </mat-card-actions>
 
-        <mat-card-footer [style.padding]="'0 24px 24px 24px'">
-            <ng-container *ngIf="addNewComment === item.id">
-                <ng-container *ngTemplateOutlet="commentInput"></ng-container>
-            </ng-container>
-            <div label="Comments" *ngIf="hasActivityComments(item)">
-                <div *ngFor="let comment of item.metaProperties.comments | sortByField: 'submitted'" class="flex">
-                    <div mat-card-avatar class="subactivity-avatar"
-                            [style.background-image]="getActivityAvatar(comment)"></div>
-                    <div class="flex1 activity-content">
-                        <mat-card-header>
-                            <mat-card-title>{{ getUserName(comment) }}</mat-card-title>
-                            <mat-card-subtitle> &bull; {{ comment.submitted | timeAgo }}</mat-card-subtitle>
-                        </mat-card-header>
-                        <mat-card-content>
-                            <markdown [data]="comment.content"></markdown>
-                        </mat-card-content>
-                        <mat-card-actions [style.padding]="0" [style.text-align]="'left'">
-                            <button mat-button class="like-button"
-                                    [style.color]="hasLikedActivity(comment) ? 'blue' : 'inherit'"
-                                    (click)="clickActivityLike(comment)">
-                                <i class="material-icons">thumb_up</i>
-                                <span [style.margin]="'0 6px'">Like</span>
-                                <span *ngIf="hasActivityLikes(comment)">({{ comment.likes.length }})</span>
-                            </button>
-                            <button mat-button *ngIf="addNewComment !== comment.id" class="comment-button"
-                                    (click)="startActivityComment(null, comment)">
-                                <i class="material-icons">chat_bubble</i> Reply
-                            </button>
-                        </mat-card-actions>
-                        <mat-card-footer [style.padding]="'0 24px 24px 24px'">
-                            <ng-container *ngIf="addNewComment === comment.id">
-                                <ng-container *ngTemplateOutlet="commentInput"></ng-container>
-                            </ng-container>
-                            <div *ngIf="hasActivityComments(comment)">
-                                <div *ngFor="let reply of comment.replies | sortByField: 'submitted'" class="flex">
-                                    <div mat-card-avatar class="subactivity-avatar"
-                                            [style.background-image]="getActivityAvatar(reply)"></div>
-                                    <div class="flex1 activity-content">
-                                        <mat-card-header>
-                                            <mat-card-title>{{ getUserName(reply) }}</mat-card-title>
-                                            <mat-card-subtitle> &bull; {{ reply.submitted | timeAgo }}</mat-card-subtitle>
-                                        </mat-card-header>
-                                        <mat-card-content>
-                                            <markdown [data]="reply.content"></markdown>
-                                        </mat-card-content>
-                                    </div>
-                                </div>
-                            </div>
-                        </mat-card-footer>
-                    </div>
-                </div>
+        <mat-card-footer [style.padding]="'0 24px 24px 64px'">
+            <comment-input *ngIf="commentTarget === article" (cancel)="commentTarget = false"
+                    (submit)="submitActivityComment($event)"></comment-input>
+            <div label="Comments" *ngIf="hasActivityComments(article)">
+                <hr/>
+                <ng-container *ngFor="let comment of article.metaProperties.comments | sortByField: 'submitted'">
+                    <ng-container *ngTemplateOutlet="commentTemplate;context:{item:comment,parent:article}"></ng-container>
+                </ng-container>
             </div>
         </mat-card-footer>
 

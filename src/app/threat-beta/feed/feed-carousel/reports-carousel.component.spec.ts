@@ -9,9 +9,11 @@ import {
 
 import { ReportsCarouselComponent } from './reports-carousel.component';
 import { FeedCarouselComponent } from './feed-carousel.component';
+import { ThreatDashboardBetaService } from '../../threat-beta.service';
+import MockThreatDashboardBetaService from '../../testing/mock-threat.service';
 import { LoadingSpinnerComponent } from '../../../global/components/loading-spinner/loading-spinner.component';
-import { reducers } from '../../../root-store/app.reducers';
 import { TimesPipe } from '../../../global/pipes/times.pipe';
+import { reducers } from '../../../root-store/app.reducers';
 
 describe('ReportsCarouselComponent', () => {
 
@@ -33,6 +35,9 @@ describe('ReportsCarouselComponent', () => {
                     LoadingSpinnerComponent,
                     TimesPipe,
                 ],
+                providers: [
+                    { provide: ThreatDashboardBetaService, useValue: MockThreatDashboardBetaService },
+                ]
             })
             .compileComponents();
     }));

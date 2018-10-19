@@ -6,9 +6,11 @@ import { Store } from '@ngrx/store';
 
 import { ThreatBoard } from 'stix/unfetter/index';
 
+import { ThreatDashboardBetaService } from '../../threat-beta.service';
+import { UserCitationService } from '../user-citations.service';
 import { ThreatFeatureState } from '../../store/threat.reducers';
 import { AppState } from '../../../root-store/app.reducers';
-import { getOrganizations } from '../../../root-store/stix/stix.selectors';
+import { generateUUID } from '../../../global/static/generate-uuid';
 
 /**
  * Lists the comments and article on a threatboard. Potentially will also list comments on a report that is a part of
@@ -31,14 +33,9 @@ export class ActivityListComponent implements OnInit {
     @Input() threatBoard: ThreatBoard;
 
     /**
-     * The current user. Needed for when they add
+     * The current user. Needed for when they add a comment or reply.
      */
     private user: any;
-
-    /**
-     * The full list of users and organizations for displaying the name of the writer of a comment or article.
-     */
-    private users: any[];
 
     /**
      * The full list of comments (with replies) and threatboard article (with comments and replies). Should also list
@@ -63,15 +60,13 @@ export class ActivityListComponent implements OnInit {
      * Detects the user wishes to add a comment to a comment or article, pointing to the id of the object. They can
      * therefore only comment on one thing at a time.
      */
-    public addNewComment = false;
-    public commentData = {
-        text: '',
-        source: null,
-    };
+    public commentTarget: boolean | any = false;
 
     constructor(
+        private threatboardService: ThreatDashboardBetaService,
         private boardStore: Store<ThreatFeatureState>,
         private appStore: Store<AppState>,
+        private citations: UserCitationService,
         private sanitizer: DomSanitizer,
     ) {
     }
@@ -90,21 +85,7 @@ export class ActivityListComponent implements OnInit {
                 err => console.log('could not load user', err)
             );
 
-        // TODO we shouldn't be grabbing organizations here; articles and comments should be written by users, not orgs
-        forkJoin(
-                this.appStore.select(getOrganizations).pipe(take(1)),
-                this.appStore.select('users').pipe(pluck('userList'), take(1))
-            )
-            .subscribe(
-                ([orgs, users]) => {
-                    const morgs = orgs.map(org => ({...org, userName: org.name}));
-                    this.users = [...morgs, ...users as any[]];
-                    console.log(`(${new Date().toISOString()}) got user and orgs lists:`, this.users);
-                },
-                err => console.log('could not load users', err)
-            );
-
-        // TODO need both article(s?) and comments
+        // TODO need reports (that have comments) too
         this.boardStore.select('threat')
             .pipe(
                 pluck('articles')
@@ -112,6 +93,10 @@ export class ActivityListComponent implements OnInit {
             .subscribe(
                 (articles: any[]) => {
                     console.log(`(${new Date().toISOString()}) Got article:`, articles);
+                    if (this.threatBoard && this.threatBoard.metaProperties
+                            && this.threatBoard.metaProperties.comments) {
+                        articles.push(...this.threatBoard.metaProperties.comments);
+                    }
                     this._activity = articles;
                     this._loaded = true;
                 },
@@ -126,34 +111,26 @@ export class ActivityListComponent implements OnInit {
     public get activity() { return this._activity.sort(this.activitySorts[this.activeSort].sorter); }
 
     public sortByFirstCreated(a: any, b: any) {
-        return a.created.localeCompare(b.created);
+        return (a.created || a.submitted).toString().localeCompare(b.created || b.submitted);
     }
 
     public sortByLastModified(a: any, b: any) {
-        return b.modified.localeCompare(a.modified);
+        return (b.modified || b.submitted).toString().localeCompare(a.modified || a.submitted);
     }
 
     public sortByMostLikes(a: any, b: any) {
-        return (b.metaProperties.likes || []).length - (a.metaProperties.likes || []).length;
+        return ((b.metaProperties || b.comment || {}).likes || []).length -
+                ((a.metaProperties || a.comment || {}).likes || []).length;
     }
 
     public sortByMostComments(a: any, b: any) {
-        return (b.replies || b.metaProperties.comments || []).length -
-                (a.replies || a.metaProperties.comments || []).length;
+        let adata = (a && a.metaProperties) ? a.metaProperties.comments : ((a.comment) ? a.comment.replies : []) || [];
+        let bdata = (b && b.metaProperties) ? b.metaProperties.comments : ((b.comment) ? b.comment.replies : []) || [];
+        return bdata.length - adata.length;
     }
 
     public getActivityAvatar(feedItem: any) {
-        if (feedItem) {
-            if (feedItem.user && feedItem.user.avatar_url) {
-                return this.sanitizer.bypassSecurityTrustStyle(`url('${feedItem.user.avatar_url}')`);
-            } else if (feedItem.created_by_ref) {
-                const user = this.users.find(u => u.id === feedItem.created_by_ref);
-                if (user && user.avatar_url) {
-                    return this.sanitizer.bypassSecurityTrustStyle(`url('${user.avatar_url}')`);
-                }
-            }
-        }
-        return '';
+        return this.citations.getAvatar(feedItem);
     }
 
     public getActivityImage(feedItem: any) {
@@ -161,130 +138,169 @@ export class ActivityListComponent implements OnInit {
     }
 
     public hasActivityLikes(feedItem: any) {
-        if (!feedItem) {
-            return false;
-        }
-        if (feedItem.type === 'x-unfetter-article') {
-            return feedItem.metaProperties && feedItem.metaProperties.likes
-                    && (feedItem.metaProperties.likes.length > 0);
-        }
-        return feedItem && feedItem.likes && feedItem.likes.length;
+        return (this.getActivityLikes(feedItem) || []).length > 0;
     }
 
     public hasLikedActivity(feedItem: any) {
-        return this.hasActivityLikes(feedItem) &&
-                (feedItem.likes || feedItem.metaProperties.likes).some(user => this.user.identity.id);
+        return (this.getActivityLikes(feedItem) || []).some(user => this.user.identity.id);
+    }
+
+    private getActivityLikes(feedItem: any) {
+        let likes = null;
+        if (feedItem) {
+            if ((feedItem.type === 'x-unfetter-article') || (feedItem.type === 'report')) {
+                if (!feedItem.metaProperties) {
+                    feedItem.metaProperties = {};
+                }
+                if (!feedItem.metaProperties.likes) {
+                    feedItem.metaProperties.likes = [];
+                }
+                likes = feedItem.metaProperties.likes;
+            } else if (feedItem.comment) {
+                if (!feedItem.comment.likes) {
+                    feedItem.comment.likes = [];
+                }
+                likes = feedItem.comment.likes;
+            }
+        }
+        return likes;
     }
 
     public clickActivityLike(feedItem: any) {
-        if (!feedItem) {
-            return;
-        }
-        let likes = feedItem.likes;
-        if (feedItem.type === 'x-unfetter-article') {
-            if (!feedItem.metaProperties) {
-                feedItem.metaProperties = {};
+        const likes = this.getActivityLikes(feedItem);
+        if (likes) {
+            const liked = likes.findIndex(user => user === this.user.identity.id);
+            if (liked < 0) {
+                likes.push(this.user.identity.id);
+            } else {
+                likes.splice(liked, 1);
             }
-            if (!feedItem.metaProperties.likes) {
-                feedItem.metaProperties.likes = [];
-            }
-            likes = feedItem.metaProperties.likes;
+            // find the top parent (threatboard or article or report) of this feedItem
+            this._activity.some(acty => {
+                if (this.isFeedItemInActivity(feedItem, acty)) {
+                    if (acty.type === 'x-unfetter-article') {
+                        this.threatboardService.editArticle(acty)
+                            .subscribe(
+                                (response) => console.log(`(${new Date().toISOString()}) article updated`),
+                                (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)
+                            );
+                    } else if (acty.type === 'report') {
+                        // TODO not yet implemented
+                    } else if (acty.comment) {
+                        this.threatboardService.updateBoard(this.threatBoard)
+                            .subscribe(
+                                (response) => console.log(`(${new Date().toISOString()}) board likes updated`),
+                                (err) => console.log(`(${new Date().toISOString()}) error updating board likes`, err),
+                            );
+                    }
+                    return true;
+                }
+            });
         }
-        const liked = likes.findIndex(user => user === this.user.identity.id);
-        if (liked < 0) {
-            likes.push(this.user.identity.id);
-        } else {
-            likes.splice(liked, 1);
+    }
+
+    private isFeedItemInActivity(feedItem, activity) {
+        if (feedItem === activity) {
+            return true;
         }
-        // TODO persist
+        if (activity.metaProperties && activity.metaProperties.comments) {
+            return activity.metaProperties.comments.some(comment => {
+                return (feedItem === comment) || (comment.comment && comment.comment.replies &&
+                        comment.comment.replies.some((reply) => feedItem === reply));
+            });
+        }
+        if (activity.comment && activity.comment.replies) {
+            return activity.comment.replies.some(reply => feedItem === reply);
+        }
+        return false;
     }
 
     public hasActivityComments(feedItem: any) {
-        if (!feedItem || !feedItem.type) {
+        if (!feedItem) {
             return false;
         }
-        if (feedItem.type === 'x-unfetter-article') {
+        if ((feedItem.type === 'x-unfetter-article') || (feedItem.type === 'report')) {
             return feedItem.metaProperties && feedItem.metaProperties.comments
                     && (feedItem.metaProperties.comments.length > 0);
         }
-        return feedItem.replies && (feedItem.replies.length > 0);
+        return feedItem.comment && feedItem.comment.replies && (feedItem.comment.replies.length > 0);
     }
 
-    public startActivityComment(comment: string = '', source: any = null) {
-        this.commentData = { text: comment, source };
-        this.addNewComment = (source && source.id) ? source.id : true;
-    }
-
-    public submitActivityComment(comment: string, source: any) {
+    public submitActivityComment(comment: string) {
         const date = new Date();
         const newComment = {
-            id: `comment--${date.getTime()}`, // TODO should be uuid
-            type: 'x-unfetter-comment',
+            id: `x-unfetter-comment--${generateUUID()}`,
             user: {
                 id: this.user.identity.id,
                 avatar_url: this.user.auth.avatar_url,
             },
-            content: comment,
             submitted: date,
-            created: date.toUTCString(),
-            modified: date.toUTCString(),
-            source: source ? source.id : this.threatBoard.id,
-            likes: [],
-            replies: null,
-        };
-        if (source) {
-            if (source.type === 'x-unfetter-article') {
-                newComment.replies = [];
-                if (!source.metaProperties.comments) {
-                    source.metaProperties.comments = [];
-                }
-                source.metaProperties.comments.push(newComment);
-            } else {
-                source.replies.push(newComment);
+            comment: {
+                content: comment,
+                likes: [],
+                replies: undefined,
             }
+        };
+        if (this.commentTarget === true) {
+            newComment.comment.replies = [];
+            this.submitThreatBoardComment(newComment);
         } else {
-            newComment.replies = [];
-            this._activity = [...this.activity, newComment];
+            this._activity.some(acty => {
+                if (this.isFeedItemInActivity(this.commentTarget, acty)) {
+                    if (acty.type === 'x-unfetter-article') {
+                        this.addArticleComment(acty, newComment);
+                    } else if (acty.type === 'report') {
+                        // TODO not yet implemented
+                    } else if (acty.comment) {
+                        this.submitThreatBoardComment(newComment);
+                    }
+                    return true;
+                }
+            });
         }
-        // TODO persist both comment and source (if not null)
-        this.addNewComment = false;
+        this.commentTarget = false;
+    }
+
+    private submitThreatBoardComment(comment: any) {
+        if (this.threatBoard) {
+            if (!this.threatBoard.metaProperties.comments) {
+                this.threatBoard.metaProperties.comments = [];
+            }
+            this.threatBoard.metaProperties.comments.push(comment);
+            this.threatboardService.updateBoard(this.threatBoard)
+                .subscribe(
+                    (response) => {
+                        console.log(`(${new Date().toISOString()}) board updated`);
+                        this._activity = [...this.activity, comment];
+                    },
+                    (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
+                );
+        }
+    }
+
+    private addArticleComment(article: any, comment: any) {
+        if (this.commentTarget === article) {
+            comment.comment.replies = [];
+            if (!article.metaProperties.comments) {
+                article.metaProperties.comments = [];
+            }
+            article.metaProperties.comments.push(comment);
+        } else if (this.commentTarget.comment && this.commentTarget.comment.replies) {
+            this.commentTarget.comment.replies.push(comment);
+        }
+        this.threatboardService.editArticle(article)
+            .subscribe(
+                (response) => console.log(`(${new Date().toISOString()}) article updated`),
+                (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)
+            );
     }
 
     /**
      * Attempts to grab a displayable name (rather than the UUID) of the person or organization that wrote a given
      * activity feed item. This code is checking for organizations, too, which it shouldn't need to do. :/
      */
-    public getUserName(user: any) {
-        let name = [];
-        if (user) {
-            if (user.user) {
-                user = user.user;
-            }
-            name = [user.firstName, user.lastName].filter(n => !!n);
-            if (name.length === 0) {
-                name = [user.userName].filter(n => !!n);
-            }
-            if ((name.length === 0) && user.identity) {
-                name = [user.identity.name].filter(n => !!n);
-            }
-            if ((name.length === 0) && user.created_by_ref) {
-                const refuser = this.users.find(u => u.id === user.created_by_ref);
-                if (refuser) {
-                    return this.getUserName({...refuser, created_by_ref: undefined});
-                } else {
-                    name = [user.created_by_ref];
-                }
-            }
-            if ((name.length === 0) && user.id) {
-                const refuser = this.users.find(u => u.id === user.id);
-                if (refuser) {
-                    return this.getUserName({...refuser, created_by_ref: undefined, id: undefined});
-                } else {
-                    name = [user.created_by_ref];
-                }
-            }
-        }
-        return name.join(' ');
+    public getUserName(feedItem: any) {
+        return this.citations.getUserName(feedItem);
     }
 
 }
