@@ -1,3 +1,5 @@
+@import '../../../../styles/variables';
+
 .textHighlightComponent {
     position: relative;
 }
@@ -12,4 +14,39 @@
   &.inlineBlock {
       display: inline-block !important;
   }
+}
+
+#searchList {
+    border-radius: 4px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#searchWrapper, #searchResults {
+    padding: 4px;
+}
+
+#searchResults {
+    overflow-y: auto;
+    margin-top: -35px;
+}
+
+.searchResultItem {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    a {
+        color: $dark-text-default;
+    }
+}
+
+#searchInput ::ng-deep {
+    transform: translateY(-14px);
+
+    .mat-icon {
+        transform: translateY(5px);
+    }
 }

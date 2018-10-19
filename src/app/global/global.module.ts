@@ -27,6 +27,7 @@ import {
     MatRadioModule,
     MatBadgeModule,
 } from '@angular/material';
+import {OverlayModule} from '@angular/cdk/overlay';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { SimplemdeModule, SIMPLEMDE_CONFIG } from 'ng2-simplemde';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -125,7 +126,7 @@ const matModules = [
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule,
+    MatTooltipModule,    
 ];
 
 const unfetterComponents = [
@@ -202,6 +203,7 @@ const unfetterComponents = [
         FormsModule,
         ReactiveFormsModule,
         ClipboardModule,
+        OverlayModule,
         MarkdownModule.forRoot({
             markedOptions: {
                 provide: MarkedOptions,
