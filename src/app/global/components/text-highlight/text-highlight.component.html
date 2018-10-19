@@ -5,11 +5,12 @@
     #fab 
     #trigger="cdkOverlayOrigin" 
     cdkOverlayOrigin
-    matTooltip="{{ toolTipText }}" 
-    (click)="onClick()" 
     [class.inlineBlock]="showFab"
   >
-    <button mat-mini-fab color="accent">
+    <button mat-mini-fab color="accent" matTooltip="{{ toolTipText }}" (click)="onClick()" *ngIf="action === 'QUOTE'">
+      <i class="material-icons mat-24">add</i>
+    </button>
+    <button mat-mini-fab color="accent" *ngIf="action === 'TAG'">
       <i class="material-icons mat-24">add</i>
     </button>
   </span>
@@ -18,22 +19,22 @@
     [cdkConnectedOverlayOrigin]="trigger" 
     [cdkConnectedOverlayOpen]="showFab"
     [cdkConnectedOverlayPositions]="positions"
-    maxHeight="searchListHeight"
+    height="searchListHeight"
     width="searchListWidth"
     cdkConnectedOverlay
     *ngIf="action === 'TAG'"
   >
     <div #searchList id="searchList" class="mat-elevation-z18" [ngStyle]="{ 'max-width.px': searchListWidth, 'max-height.px': searchListHeight }">
-      <div id="searchWrapper">
-        <!-- <input type="text" id="searchInput"> -->
+      <!-- TODO add search bar back after there's a way to keep the text selected -->
+      <!-- <div id="searchWrapper">
         <mat-form-field floatLabel="never" id="searchInput" class="full-width">
-          <input matInput #filter placeholder="Search">
+          <input matInput #filter placeholder="Search" [formControl]="searchTerm$" (focus)="$event.preventDefault()">
           <mat-icon matPrefix>search</mat-icon>
         </mat-form-field>
-      </div>
+      </div> -->
       <div id="searchResults">
-        <div *ngFor="let stix of stix$ | async" class="searchResultItem">
-          <a>{{ stix.name }}</a>
+        <div *ngFor="let stix of searchResults$ | async" class="searchResultItem">
+          <a (click)="onTagClick(stix.id)">{{ stix.name }}</a>
         </div>
       </div>
     </div>
