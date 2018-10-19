@@ -1,0 +1,9 @@
+<div class="mt-20 overFlowHidden">
+    <div class="mb-6">
+        <simplemde [(ngModel)]="text" [options]="{ autofocus: true }"></simplemde>
+    </div>
+    <div class="text-right">
+        <button mat-button (click)="onCancel()">CANCEL</button>
+        <button mat-raised-button color="primary" [disabled]="text === ''" (click)="onSubmit()">SAVE</button>
+    </div>
+</div>

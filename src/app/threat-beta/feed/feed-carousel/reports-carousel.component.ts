@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { ThreatBoard } from 'stix/unfetter/index';
 
 import { FeedCarouselComponent } from './feed-carousel.component';
+import { ThreatDashboardBetaService } from '../../threat-beta.service';
 import { ThreatFeatureState } from '../../store/threat.reducers';
 import { getThreatBoardReports } from '../../store/threat.selectors';
 
@@ -32,15 +33,13 @@ export class ReportsCarouselComponent implements OnInit, OnChanges {
     @ViewChild('carousel') carousel: FeedCarouselComponent;
 
     constructor(
+        private threatboardService: ThreatDashboardBetaService,
         private boardStore: Store<ThreatFeatureState>,
         private sanitizer: DomSanitizer,
     ) {
     }
 
     ngOnInit() {
-        if (this.threatBoard) {
-            this.loadReports();
-        }
     }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -92,28 +91,58 @@ export class ReportsCarouselComponent implements OnInit, OnChanges {
     /**
      * Vet the given potential report by its id. If we are "accidentally" given a vetted report to begin with, this
      * function will have no effect (although the button should be disabled on the UI).
-     * 
-     * TODO We need to persist the change
      */
     public approveReport(id: string) {
         const report = this.reports.find(r => r.id === id);
         if (report) {
             report.vetted = true;
-            // TODO persist!
+        }
+        if (this.threatBoard) {
+            if (this.threatBoard.metaProperties && this.threatBoard.metaProperties.potentials) {
+                const index = this.threatBoard.metaProperties.potentials.indexOf(id);
+                if (index >= 0) {
+                    this.threatBoard.metaProperties.potentials.splice(index, 1);                    
+                }
+            }
+            if (!this.threatBoard.reports) {
+                this.threatBoard.reports = [];
+            }
+            this.threatBoard.reports.push(id);
+            this.threatboardService.updateBoard(this.threatBoard)
+                .subscribe(
+                    (response) => console.log(`(${new Date().toISOString()}) board updated`),
+                    (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
+                );
         }
     }
 
     /**
      * Remove the report by the given id from this threatboard, whether it's a vetted or potential report.
-     * 
-     * TODO We need to persist the change
      */
     public rejectReport(id: string) {
         const report = this.reports.findIndex(r => r.id === id);
         if (report >= 0) {
             this.reports.splice(report, 1);
-            this.carousel.calculateWindow();
-            // TODO persist!
+            requestAnimationFrame(() => this.carousel.calculateWindow());
+            if (this.threatBoard) {
+                if (this.threatBoard.metaProperties && this.threatBoard.metaProperties.potentials) {
+                    const index = this.threatBoard.metaProperties.potentials.indexOf(id);
+                    if (index >= 0) {
+                        this.threatBoard.metaProperties.potentials.splice(index, 1);                    
+                    }
+                }
+                if (this.threatBoard.reports) {
+                    const index = this.threatBoard.reports.indexOf(id);
+                    if (index >= 0) {
+                        this.threatBoard.reports.splice(index, 1);                    
+                    }
+                }
+                this.threatboardService.updateBoard(this.threatBoard)
+                    .subscribe(
+                        (response) => console.log(`(${new Date().toISOString()}) board updated`),
+                        (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
+                    );
+            }
         }
     }
 

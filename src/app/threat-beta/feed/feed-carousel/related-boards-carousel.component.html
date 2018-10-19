@@ -3,7 +3,7 @@
         <div *ngFor="let board of boards; index as idx" id="{{ board.id }}"
                 class="related-board" [style.background]="getBoardBackground(board)">
             <div class='board-title'>{{ board.name }}</div>
-            <div class='board-owner'>{{ getUserName(board) }}</div>
+            <div class='board-owner'>{{ getOwner(board) }}</div>
             <div class='board-options'>
                 <button mat-button disabled (click)="followBoard(board.id)">FOLLOW</button>
             </div>
