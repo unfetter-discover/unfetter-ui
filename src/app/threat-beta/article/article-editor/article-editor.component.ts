@@ -106,6 +106,12 @@ export class ArticleEditorComponent implements OnInit {
       );
   }
 
+  public removeSource(index: number): void {
+    const sourcesVal: any[] = this.form.get('sources').value;
+    sourcesVal.splice(index, 1);
+    this.form.get('sources').patchValue(sourcesVal);
+  }
+
   private setEditValues(): void {
     if (this.articleToEdit.name) {
       this.form.get('name').patchValue(this.articleToEdit.name);
@@ -156,6 +162,9 @@ export class ArticleEditorComponent implements OnInit {
 
     let success;
     if (this.editMode) {
+      if (!this.form.get('sources').value.length) {
+        tempArticle.sources = [];
+      }
       success = await this.editArticle(tempArticle);
     } else {
       success = await this.createNewArticle(tempArticle);

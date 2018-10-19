@@ -27,7 +27,11 @@
         <div *ngIf="sourceNames$ | async as sourceNames" class="mb-6">
           <h4 *ngIf="sourceNames.length">Sources</h4>
           <mat-chip-list>
-            <mat-chip *ngFor="let source of sourceNames" class="cursor-pointer chipListChip">{{ source }}</mat-chip>
+            <mat-chip *ngFor="let source of sourceNames; let i = index" class="cursor-pointer chipListChip" removable="true">
+              <span>{{ source }}</span>
+              <span class="flex1">&nbsp;</span>
+              <mat-icon class="material-icons" matChipRemove (click)="removeSource(i)">cancel</mat-icon>
+            </mat-chip>
           </mat-chip-list>
         </div>
 

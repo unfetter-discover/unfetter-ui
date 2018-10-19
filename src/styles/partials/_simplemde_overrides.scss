@@ -2,7 +2,6 @@
 
 simplemde {
   // Import simple mde seperately so it doesnt interfere with codemirror
-  color: red !important;
   @import 'simplemde/dist/simplemde.min.css';
 
   .CodeMirror {
@@ -22,6 +21,15 @@ simplemde {
 
     .CodeMirror {
         border-left: 1px solid $warn-color;
+        border-right: 1px solid $warn-color;
+        border-bottom: 1px solid $warn-color;
+    }
+
+    .CodeMirror-sided {
+        border-right: none !important;
+    }
+
+    .editor-preview-active-side {
         border-right: 1px solid $warn-color;
         border-bottom: 1px solid $warn-color;
     }
