@@ -41,7 +41,7 @@ export class ActivityListComponent implements OnInit {
      * The full list of comments (with replies) and threatboard article (with comments and replies). Should also list
      * comments made on reports that are a part of the threatboard.
      */
-    private _activity = [];
+    private _activity = {};
 
     private _loaded = false;
 
@@ -95,9 +95,11 @@ export class ActivityListComponent implements OnInit {
                     console.log(`(${new Date().toISOString()}) Got article:`, articles);
                     if (this.threatBoard && this.threatBoard.metaProperties
                             && this.threatBoard.metaProperties.comments) {
-                        articles.push(...this.threatBoard.metaProperties.comments);
+                        this.threatBoard.metaProperties.comments.forEach(comment => {
+                            this._activity[comment.comment.id] = comment;
+                        });
                     }
-                    this._activity = articles;
+                    articles.forEach(article => this._activity[article.id] = article);
                     this._loaded = true;
                 },
                 (err) => console.log(`(${new Date().toISOString()}) Error loading board article:`, err)
@@ -108,7 +110,7 @@ export class ActivityListComponent implements OnInit {
 
     public get sorts() { return Object.keys(this.activitySorts); }
 
-    public get activity() { return this._activity.sort(this.activitySorts[this.activeSort].sorter); }
+    public get activity() { return Object.values(this._activity).sort(this.activitySorts[this.activeSort].sorter); }
 
     public sortByFirstCreated(a: any, b: any) {
         return (a.created || a.submitted).toString().localeCompare(b.created || b.submitted);
@@ -176,7 +178,7 @@ export class ActivityListComponent implements OnInit {
                 likes.splice(liked, 1);
             }
             // find the top parent (threatboard or article or report) of this feedItem
-            this._activity.some(acty => {
+            Object.values(this._activity).some((acty: any) => {
                 if (this.isFeedItemInActivity(feedItem, acty)) {
                     if (acty.type === 'x-unfetter-article') {
                         this.threatboardService.editArticle(acty)
@@ -245,7 +247,7 @@ export class ActivityListComponent implements OnInit {
             newComment.comment.replies = [];
             this.submitThreatBoardComment(newComment);
         } else {
-            this._activity.some(acty => {
+            Object.values(this._activity).some((acty: any) => {
                 if (this.isFeedItemInActivity(this.commentTarget, acty)) {
                     if (acty.type === 'x-unfetter-article') {
                         this.addArticleComment(acty, newComment);
@@ -271,7 +273,7 @@ export class ActivityListComponent implements OnInit {
                 .subscribe(
                     (response) => {
                         console.log(`(${new Date().toISOString()}) board updated`);
-                        this._activity = [...this.activity, comment];
+                        this._activity[comment.comment.id] = comment;
                     },
                     (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
                 );
