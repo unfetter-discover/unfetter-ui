@@ -12,20 +12,14 @@
 
 .edit-title-buttons {
     display: inline-block;
-
-    .edit-save-button {
-        background-color: $threat-dashboard-primary;
-        color: $light-text-default;
-    }
 }
 
 .boundaries-fieldsets {
-    vertical-align: top;
-
     .boundaries-column {
         display: inline-block;
         width: 256px;
         margin-right: 24px;
+        vertical-align: top;
 
         mat-form-field {
             width: 100%;
@@ -37,7 +31,7 @@
     margin-bottom: 24px;
 }
 
-.target-fieldset, .malware-fieldset, .intrusions-fieldset {
+.targets-fieldset, .malware-fieldset, .intrusions-fieldset {
     ::ng-deep {
         mat-chip {
             display: inline-block;
