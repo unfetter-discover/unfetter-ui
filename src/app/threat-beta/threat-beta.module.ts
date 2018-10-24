@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatProgressBarModule, MatRadioModule } from '@angular/material';
+import { MatProgressBarModule, MatRadioModule, MatDatepickerModule, MatNativeDateModule } from '@angular/material';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+
 import { GlobalModule } from '../global/global.module';
 import { ArticleEditorComponent } from './article/article-editor/article-editor.component';
 import { ArticleReportPaneComponent } from './article/article-report-pane/article-report-pane.component';
@@ -33,12 +34,13 @@ import { RelatedBoardsCarouselComponent } from './feed/feed-carousel/related-boa
 import { FeedCarouselComponent } from './feed/feed-carousel/feed-carousel.component';
 import { CommentInputComponent } from './feed/activity-list/comment-input.component';
 
-
 @NgModule({
   imports: [
     CommonModule,
     GlobalModule,
     FormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatProgressBarModule,
     MatRadioModule,
     ReactiveFormsModule,
