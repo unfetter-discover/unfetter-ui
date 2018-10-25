@@ -34,6 +34,8 @@ export class SummaryCalculationService {
   isCapabilityValue: boolean;
   isValidSophisticationDataValue: boolean;
 
+  percentCompleteValue: number;
+
   constructor() {
     this.numericRisk = 0;
     this.weakness = '';
@@ -103,6 +105,10 @@ export class SummaryCalculationService {
     this.isValidSophisticationDataValue = validData;
   }
 
+  public set percentComplete(newPctComp: number) {
+    this.percentCompleteValue = newPctComp;
+  }
+
   public get numericRisk(): number {
     return this.numericRiskValue;
   }
@@ -154,6 +160,10 @@ export class SummaryCalculationService {
     return this.isValidSophisticationDataValue
   }
 
+  public get percentComplete(): number {
+    return this.percentCompleteValue;
+  }
+
   public getRiskText(): string {
     return Number((this.numericRisk) * 100).toFixed(0);
   }
@@ -168,7 +178,9 @@ export class SummaryCalculationService {
     if (assessments) {
       assessments.forEach((assessment) => {
         if (assessment.risk && typeof assessment.risk === 'number') {
-          aggregateRisk += assessment.risk;
+          if (assessment.risk >= 0 && assessment.risk <= 1) {
+            aggregateRisk += assessment.risk;
+          }
         }
       });
       if (assessments.length > 0) {
