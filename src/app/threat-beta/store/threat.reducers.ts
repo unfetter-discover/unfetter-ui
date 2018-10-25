@@ -1,6 +1,6 @@
 import { AppState } from '../../root-store/app.reducers';
 import { Article, ThreatBoard } from 'stix/unfetter/index';
-import { Malware, IntrusionSet, Report } from 'stix';
+import { Malware, IntrusionSet, Report, AttackPattern } from 'stix';
 
 import { ThreatActionTypes, threatActions } from './threat.actions';
 
@@ -12,6 +12,7 @@ export interface ThreatState {
     boardList: ThreatBoard[],
     malware: Malware[],
     intrusionSets: IntrusionSet[],
+    attackPatterns: AttackPattern[],
     articles: Article[],
     // Partial report information to show in the feed
     feedReports: Report[],
@@ -28,6 +29,7 @@ export const initialState: ThreatState = {
     boardList: [],
     malware: [],
     intrusionSets: [],
+    attackPatterns: [],
     articles: [],
     feedReports: [],
     attachedReports: [],
@@ -62,6 +64,11 @@ export function threatReducer(state = initialState, action: threatActions): Thre
             return {
                 ...state,
                 intrusionSets: action.payload
+            };
+        case ThreatActionTypes.SetAttackPatterns:
+            return {
+                ...state,
+                attackPatterns: action.payload
             };
         case ThreatActionTypes.SetArticles:
             return {
