@@ -8,7 +8,7 @@ const getStixState = createFeatureSelector<StixState>('stix');
 export const getAttackPatternCount = createSelector(
     getPreferredKillchain,
     getVisualizationData,
-    (prefKillChain: string, visualizationData) => {
+    (prefKillChain: string, visualizationData): number => {
         const kc = visualizationData[prefKillChain];
         let apCount = 0;
         kc.phases.map((phase) => apCount += phase.tactics.length);

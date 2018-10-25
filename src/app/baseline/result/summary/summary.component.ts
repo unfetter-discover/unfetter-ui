@@ -103,8 +103,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
-    const idParamSub1$ = this.store
-      .select(getAttackPatternCount)
+    const idParamSub1$ = this.store.select(getAttackPatternCount)
       .pipe(
         distinctUntilChanged())
       .subscribe((count) => this.attackPatternCount = count);

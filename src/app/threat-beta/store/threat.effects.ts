@@ -3,7 +3,7 @@ import { tap, switchMap, map, mergeMap, withLatestFrom, pluck, filter, catchErro
 import { forkJoin as observableForkJoin, of as observableOf, throwError } from 'rxjs';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { Malware, IntrusionSet, Report, AttackPattern } from 'stix';
+import { Malware, IntrusionSet, Report } from 'stix';
 import { ThreatBoard, Article } from 'stix/unfetter/index';
 
 import { ThreatActionTypes } from './threat.actions';
@@ -44,33 +44,20 @@ export class ThreatEffects {
                     limit: 20,
                     metaproperties: true
                 };
-                
-                const attackPatternOptions: StixApiOptions = {
-                    project: {
-                        'stix.id': 1,
-                        'stix.name': 1,
-                        'stix.kill_chain_phases': 1
-                    },
-                    sort: {
-                        'stix.name': 1
-                    }
-                };
 
                 return observableForkJoin(
                     this.genericApi.getStix<ThreatBoard[]>(StixUrls.X_UNFETTER_THREAT_BOARD, null, boardOptions),
                     this.genericApi.getStix<Malware[]>(StixUrls.MALWARE),
                     this.genericApi.getStix<IntrusionSet[]>(StixUrls.INTRUSION_SET),
                     this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, reportOptions),
-                    this.genericApi.getStix<AttackPattern[]>(StixUrls.ATTACK_PATTERN, null, attackPatternOptions)
                 );
             }),
-            mergeMap(([threatBoards, malware, intrusionSets, reports, attackPatterns]) => {
+            mergeMap(([threatBoards, malware, intrusionSets, reports]) => {
                 return [
                     new threatActions.SetBoardList(threatBoards),
                     new threatActions.SetMalware(malware),
                     new threatActions.SetIntrusionSets(intrusionSets),
                     new threatActions.SetFeedReports(reports),
-                    new threatActions.SetAttackPatterns(attackPatterns),
                     new threatActions.SetDashboardLoadingComplete(true)
                 ];
             })

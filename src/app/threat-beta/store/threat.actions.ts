@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Malware, IntrusionSet, Report, AttackPattern } from 'stix';
+import { Malware, IntrusionSet, Report } from 'stix';
 import { Article, ThreatBoard } from 'stix/unfetter/index';
 
 export enum ThreatActionTypes {
@@ -10,7 +10,6 @@ export enum ThreatActionTypes {
     // Reducer related actions
     SetMalware = '[Threat] Set Malware',
     SetIntrusionSets = '[Threat] Set Intrusion Sets',
-    SetAttackPatterns = '[Threat] Set Attack Patterns',
     SetArticles = '[Threat] Set Articles',
     SetBoardList = '[Threat] Set Board List',
     SetFeedReports = '[Threat] Set Feed Reports',
@@ -53,12 +52,6 @@ export class SetIntrusionSets implements Action {
     public readonly type = ThreatActionTypes.SetIntrusionSets;
 
     constructor(public payload: IntrusionSet[]) { }
-}
-
-export class SetAttackPatterns implements Action {
-    public readonly type = ThreatActionTypes.SetAttackPatterns;
-
-    constructor(public payload: AttackPattern[]) { }
 }
 
 export class SetArticles implements Action {
@@ -162,7 +155,6 @@ export type threatActions =
     | FetchBoardDetailedData
     | SetMalware
     | SetIntrusionSets
-    | SetAttackPatterns
     | SetArticles
     | SetBoardList
     | SetFeedReports

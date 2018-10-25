@@ -5,6 +5,7 @@ import { Dictionary } from 'stix/common/dictionary';
 import { AppState } from '../app.reducers';
 import { TacticChain, Tactic } from '../../global/components/tactics-pane/tactics.model';
 import { getConfigState } from '../config/config.selectors';
+import { getPreferredKillchain } from '../users/user.selectors';
 
 export const getStixState = (state: AppState) => state.stix;
 
@@ -16,6 +17,28 @@ export const getOrganizations = createSelector(
                 .filter((identity) => identity.identity_class && identity.identity_class.toLowerCase() === 'organization');
         } else {
             return null;
+        }
+    }
+);
+
+export const getPreferredKillchainAttackPatterns = createSelector(
+    getStixState,
+    getPreferredKillchain,
+    (stixState, preferredKillchain): AttackPattern[] => {
+        if (stixState.attackPatterns && stixState.attackPatterns.length) {
+            if (!preferredKillchain) {
+                return stixState.attackPatterns;
+            } else {
+                return stixState.attackPatterns.filter((ap) => {
+                    if (ap.kill_chain_phases && ap.kill_chain_phases.length) {
+                        return ap.kill_chain_phases.map((kc) => kc.kill_chain_name).includes(preferredKillchain);
+                    } else {
+                        return false;
+                    }
+                });
+            }
+        } else {
+            return [];
         }
     }
 );
