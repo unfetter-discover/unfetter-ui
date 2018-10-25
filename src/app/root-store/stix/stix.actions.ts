@@ -1,8 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Identity, MarkingDefinition } from 'stix';
-import { Dictionary } from 'stix/common/dictionary';
-
-import { TacticChain } from '../../global/components/tactics-pane/tactics.model';
+import { Identity, MarkingDefinition, AttackPattern } from 'stix';
 
 export const FETCH_IDENTITIES = '[Stix] Fetch Identities';
 export const SET_IDENTITIES = '[Stix] Set Identities';
@@ -44,7 +41,7 @@ export class FetchAttackPatterns implements Action {
 
 export class SetAttackPatterns implements Action {
     public readonly type = SET_ATTACK_PATTERNS;
-    constructor(public payload: Dictionary<TacticChain>) { }
+    constructor(public payload: AttackPattern[]) { }
 }
 
 export class FetchStix implements Action {

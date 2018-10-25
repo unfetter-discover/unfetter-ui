@@ -1,17 +1,13 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { getPreferredKillchain } from '../../../root-store/users/user.selectors';
 import { StixState } from '../../../root-store/stix/stix.reducers';
+import { getVisualizationData } from '../../../root-store/stix/stix.selectors';
 
 const getStixState = createFeatureSelector<StixState>('stix');
 
-export const getVisaluzationData = createSelector(
-    getStixState,
-    (state: StixState) => state.visualizationData
-);
-
 export const getAttackPatternCount = createSelector(
     getPreferredKillchain,
-    getVisaluzationData,
+    getVisualizationData,
     (prefKillChain: string, visualizationData) => {
         const kc = visualizationData[prefKillChain];
         let apCount = 0;

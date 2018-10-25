@@ -7,15 +7,13 @@ import { TacticChain } from '../../global/components/tactics-pane/tactics.model'
 export interface StixState {
     identities: Identity[],
     markingDefinitions: MarkingDefinition[],
-    attackPatterns: AttackPattern[],
-    visualizationData: Dictionary<TacticChain>
+    attackPatterns: AttackPattern[]
 }
 
 export const initialState: StixState = {
     identities: [],
     markingDefinitions: [],
-    attackPatterns: [],
-    visualizationData: {}
+    attackPatterns: []
 }
 
 export function stixReducer(state = initialState, action: stixActions.StixActions): StixState {
@@ -31,18 +29,9 @@ export function stixReducer(state = initialState, action: stixActions.StixAction
                 markingDefinitions: action.payload
             };
         case stixActions.SET_ATTACK_PATTERNS:
-            const patterns = [];
-            if (action.payload) {
-                Object.values(action.payload).forEach(chain => {
-                    chain.phases.forEach(phase => {
-                        phase.tactics.forEach(tactic => patterns.push(tactic));
-                    });
-                });
-            }
             return {
                 ...state,
-                attackPatterns: patterns,
-                visualizationData: { ...action.payload }
+                attackPatterns: action.payload
             };
         case stixActions.CLEAR_STIX:
             return {

@@ -65,104 +65,10 @@ export class StixEffects {
     public fetchAttackPatterns = this.actions$
         .ofType(stixActions.FETCH_ATTACK_PATTERNS)
         .pipe(
-            switchMap(() => this.store.select('config')
-                .pipe(
-                    filter((configState: ConfigState) => configState.configurations.killChains && configState.configurations.killChains.length),
-                    take(1)
-                )
-            ),
-            switchMap((configState: ConfigState) => {
-                return observableForkJoin(
-                    observableOf(configState.configurations.killChains), 
-                    this.attackPatternService.fetchByFramework()
-                );
-            }),
-            map(([killChains, patterns]) => this.createTacticsChains(killChains, patterns as any)),
-            map(attackPatterns => new stixActions.SetAttackPatterns(attackPatterns))
-        );
-    
-    /**
-     * @description Group the given attack patterns into TacticChain objects, ordered according to the configuration
-     */
-    private createTacticsChains(killChains: any, patterns: AttackPattern[]) {
-        const tactics: Dictionary<TacticChain> = killChains.reduce((chains, framework) => {
-            const chain: TacticChain = {
-                id: framework.name,
-                name: this.normalizeTerm(framework.name),
-                phases: framework.phase_names.map(phase => {
-                    return { id: phase, name: this.normalizeTerm(phase), tactics: [] };
-                }),
-            };
-            chains[framework.name] = chain;
-            return chains;
-        }, {});
-        patterns.forEach((pattern: any) => {
-            if (pattern && pattern.attributes && pattern.attributes.kill_chain_phases) {
-                const tactic = this.mapTactic(pattern);
-                pattern.attributes.kill_chain_phases.forEach(phase => {
-                    let chain = phase.kill_chain_name;
-                    if (tactics[chain]) {
-                        /* tslint:disable:triple-equals */
-                        let chainphase = tactics[chain].phases.find(p => p.id == phase.phase_name);
-                        /* tslint:enable:triple-equals */
-                        if (chainphase) {
-                            chainphase.tactics.push(tactic);
-                        } else {
-                            console.log(`${new Date().toISOString()} bad tactic, no matching phase`,
-                                tactic, phase, chain, tactics[chain]);
-                        }
-                    } else {
-                        console.log(`${new Date().toISOString()} bad tactic, no matching chain`, tactic, chain);
-                    }
-                });
-            }
-        });
-        Object.values(tactics).forEach(chain => {
-            const orderedPhases = chain.phases.map(phase => phase.name);
-            chain.phases.forEach(phase => {
-                phase.tactics.forEach(tactic => {
-                    return tactic.phases.sort((a, b) => orderedPhases.indexOf(a) - orderedPhases.indexOf(b));
-                });
-                phase.tactics.sort((a, b) => a.name.localeCompare(b.name));
-            });
-        })
-        return tactics;
-    }
-
-    /**
-     * @description Create a Tactic object from the given AttackPattern
-     */
-    private mapTactic(pattern: any): Tactic {
-        const tactic: Tactic = {
-            id: pattern.id,
-            name: pattern.attributes.name,
-            version: pattern.attributes.version,
-            created: pattern.attributes.created,
-            modified: pattern.attributes.modified,
-            description: pattern.attributes.description,
-            sophistication_level: pattern.x_unfetter_sophistication_level,
-            phases: pattern.attributes.kill_chain_phases.map(phase => phase.phase_name),
-            labels: pattern.attributes.labels || [],
-            sources: (pattern.attributes as any).x_mitre_data_sources || [],
-            platforms: (pattern.attributes as any).x_mitre_platforms || [],
-            references: pattern.attributes.external_references || [],
-            analytics: [],
-        };
-        return tactic;
-    }
-
-    /**
-     * @description convert the given term into something more human-readable
-     */
-    protected normalizeTerm(term: string): string {
-        return term
-            .replace(/\-/g, ' ')
-            .split(/\s+/)
-            .map(w => w[0].toUpperCase() + w.slice(1))
-            .join(' ')
-            .replace(/\sAnd\s/g, ' and ')
-            ;
-    }
+            switchMap(() => this.attackPatternService.fetchByFramework()),
+            RxjsHelpers.unwrapJsonApi(),
+            map(attackPatterns => new stixActions.SetAttackPatterns(attackPatterns as any))
+        );    
 
     constructor(
         private actions$: Actions,
