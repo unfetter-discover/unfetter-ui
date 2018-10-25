@@ -32,6 +32,17 @@ export const getVisualizationData = createSelector(
     }
 );
 
+export const getAttackPatternsWithArbitrarilyRenamedPropertiesForHeatMap = createSelector(
+    getStixState,
+    (stixState): Tactic[] => {
+        if (stixState.attackPatterns && stixState.attackPatterns.length) {
+            return stixState.attackPatterns.map(ap => mapTactic(ap));
+        } else {
+            return [];
+        }
+    }
+);
+
 /**
  * @description Group the given attack patterns into TacticChain objects, ordered according to the configuration
  */
