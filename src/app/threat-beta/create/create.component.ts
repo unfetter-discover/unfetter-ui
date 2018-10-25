@@ -10,10 +10,18 @@ import { ThreatBoard } from 'stix/unfetter/index';
 
 import { ThreatDashboardBetaService } from '../threat-beta.service';
 import { ThreatFeatureState } from '../store/threat.reducers';
-import { SelectOption } from './select-option';
+import * as boardActions from '../store/threat.actions';
+import { AppState } from '../../root-store/app.reducers';
+import { generateUUID } from '../../global/static/generate-uuid';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { SortHelper } from '../../global/static/sort-helper';
 import { Constance } from '../../utils/constance';
+import { SelectOption } from './select-option';
+
+enum PageActions {
+    CREATE = 'create',
+    EDIT = 'update',
+}
 
 @Component({
     selector: 'create',
@@ -22,7 +30,7 @@ import { Constance } from '../../utils/constance';
 })
 export class CreateComponent implements OnInit {
 
-    private action: 'create' | 'edit' = 'create';
+    private action: PageActions = PageActions.CREATE;
 
     @Input() threatboard: ThreatBoard = new ThreatBoard({
         name: null,
@@ -31,6 +39,8 @@ export class CreateComponent implements OnInit {
             end_date: null,
         },
     } as ThreatBoard);
+
+    private user: any;
 
     public maxStartDate;
 
@@ -59,6 +69,7 @@ export class CreateComponent implements OnInit {
     constructor(
         private threatboardService: ThreatDashboardBetaService,
         private boardStore: Store<ThreatFeatureState>,
+        private appStore: Store<AppState>,
         private genericApi: GenericApi,
         private route: ActivatedRoute,
         private router: Router,
@@ -67,8 +78,7 @@ export class CreateComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (this.route.snapshot.routeConfig.path !== 'create') {
-            // modifying an existing threat board
+        if (this.route.snapshot.routeConfig.path !== PageActions.CREATE.toString()) {
             const id = this.route.snapshot.paramMap.get('id');
             this.boardStore.select('threat')
                 .pipe(
@@ -78,31 +88,53 @@ export class CreateComponent implements OnInit {
                 .subscribe(
                     (boards: any[]) => {
                         if (!boards || !boards.length) {
-                            console.log('Received nothing from the threatboard store!');
+                            console.log(`${this.timestamp()} Received nothing from the threatboard store!`);
                         } else {
                             const threatboard = boards.find(board => board.id === id);
                             if (!threatboard) {
-                                console.log('Requested threatboard not found!!');
+                                console.log(`${this.timestamp()} Requested threatboard not found!!`);
                             } else {
-                                this.threatboard = {...threatboard} as ThreatBoard;
-                                if (!this.threatboard.boundaries.targets) {
-                                    this.threatboard.boundaries.targets = [];
-                                }
-                                if (!this.threatboard.boundaries.malware) {
-                                    this.threatboard.boundaries.malware = [];
-                                }
-                                if (!this.threatboard.boundaries.intrusion_sets) {
-                                    this.threatboard.boundaries.intrusion_sets = [];
-                                }
-                                this.action = 'edit';
+                                this.convertThreatBoard(threatboard);
+                                this.action = PageActions.EDIT;
                             }
                         }
                     },
-                    (err) => console.log(`(${new Date().toISOString()}) could not load board ${id}`, err),
-                    () => this.loading = false
+                    (err) => console.log(`${this.timestamp()} could not load board ${id}`, err),
+                    () => this.loadOptions()
                 );
         }
 
+        this.appStore.select('users')
+            .pipe(
+                pluck('userProfile'),
+                take(1),
+            )
+            .subscribe(
+                user => this.user = user,
+                err => console.log(`${this.timestamp()} could not load user`, err),
+            );
+
+        this.loadOptions();
+    }
+
+    private convertThreatBoard(threatboard: any) {
+        const board = {...threatboard};
+        if (!board.boundaries) {
+            board.boundaries = {};
+        }
+        if (!board.boundaries.targets) {
+            board.boundaries.targets = [];
+        }
+        if (!board.boundaries.malware) {
+            board.boundaries.malware = [];
+        }
+        if (!board.boundaries.intrusion_sets) {
+            board.boundaries.intrusion_sets = [];
+        }
+        this.threatboard = board as ThreatBoard;
+    }
+
+    private loadOptions() {
         const observables = [];
 
         const malwareFilter = 'sort=' + encodeURIComponent(JSON.stringify({ name: '1' }));
@@ -120,18 +152,30 @@ export class CreateComponent implements OnInit {
             .subscribe(
                 (data: [Malware[], IntrusionSet[]]) => {
                     const [malware, intrusions] = data;
-                    this.malwares = malware
-                        .map((el) => ({ value: el.id, displayValue: el.attributes.name } as SelectOption))
-                        .sort(SortHelper.sortDescByField('displayValue'));
-                    this.intrusions = intrusions
-                        .map((el) => ({ value: el.id, displayValue: el.attributes.name } as SelectOption))
-                        .sort(SortHelper.sortDescByField('displayValue'));
+                    this.convertOptions(malware, intrusions);
                 },
-                (err) => console.log(err),
+                (err) => console.log(`${this.timestamp()} Could not load options data`, err),
                 () => this.loading = false
             );
     }
 
+    private convertOptions(malware: Malware[], intrusions: IntrusionSet[]) {
+        const boundaries: any = this.threatboard.boundaries;
+
+        this.malwares = malware
+            .map((el) => ({ value: el.id, displayValue: el.attributes.name } as SelectOption))
+            .sort(SortHelper.sortDescByField('displayValue'));
+        boundaries.malware = (boundaries.malware || []).map(mal => this.malwares.find(m => m.value === mal));
+
+        this.intrusions = intrusions
+            .map((el) => ({ value: el.id, displayValue: el.attributes.name } as SelectOption))
+            .sort(SortHelper.sortDescByField('displayValue'));
+        boundaries.intrusion_sets = (boundaries.intrusion_sets || []).map(is => this.intrusions.find(i => i.value === is));
+    }
+
+    /**
+     * @description determine if the form has the minimum information needed to save the board
+     */
     isValid() {
         return (!!this.threatboard.name && (this.threatboard.name.trim().length > 0)) &&
                 !!this.threatboard.boundaries.start_date;
@@ -202,7 +246,6 @@ export class CreateComponent implements OnInit {
         chips.add(value);
         const sortedChips = Array.from(chips).sort(SortHelper.sortDescByField<any, any>('displayValue'));
         this.threatboard.boundaries[stixType] = sortedChips;
-        console.log(`adding '${value}' to ${stixType}:`, this.threatboard.boundaries);
     }
 
     /**
@@ -222,7 +265,7 @@ export class CreateComponent implements OnInit {
      * @description go back to list view
      */
     public onCancel(event?: UIEvent): void {
-        if (this.action === 'create') {
+        if (this.action === PageActions.CREATE) {
             this.location.back();
         } else {
             this.router.navigate(['threat-beta', this.threatboard.id, 'feed']);
@@ -233,27 +276,63 @@ export class CreateComponent implements OnInit {
      * @description Save the threat board and then route to the dashboard view.
      */
     public onSave(event?: UIEvent): void {
-        if (this.action === 'edit') {
-            this.threatboardService.updateBoard(this.threatboard)
-                .subscribe(
-                    (response) => {
-                        console['debug'](`(${new Date().toISOString()}) board updated`, response);
-                        this.router.navigate(['threat-beta', this.threatboard.id, 'feed']);
-                    },
-                    (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
-                );
-        } else {
-            // creating a new board...
-            this.threatboardService.updateBoard(this.threatboard)
-                .subscribe(
-                    (response) => {
-                        console['debug'](`(${new Date().toISOString()}) board created`, response);
-                        // this.router.navigate(['threat-beta', this.threatboard.id, 'feed']);
-                    },
-                    (err) => console.log(`(${new Date().toISOString()}) error creating board`, err)
-                );
-        }
-        // TODO need to trigger "rescanning" reports for potential matches
+        const meta: any = this.threatboard.metaProperties || {};
+        const board: any = {
+            ...this.threatboard,
+            type: 'x-unfetter-threat-board',
+            id: this.threatboard.id || null,
+            created: this.threatboard.created || new Date(),
+            modified: new Date().toISOString(),
+            created_by_ref: this.threatboard.created_by_ref ||
+                    (this.user && this.user.identity ? this.user.identity.id : null) || null,
+            boundaries: {
+                ...this.threatboard.boundaries,
+                malware: this.mapBoundaries(this.threatboard.boundaries.malware),
+                intrusion_sets: this.mapBoundaries(this.threatboard.boundaries.intrusion_sets),
+            },
+            metaProperties: {
+                published: meta.published || false,
+                comments: meta.comments || [],
+                potentials: meta.potentials || [],
+            },
+        };
+
+        console.log(`calling ${this.action.toString()}Board()`);
+        this.threatboardService[`${this.action.toString()}Board`](board)
+            .subscribe(
+                (response) => {
+                    if (response && response.length && response[0].attributes) {
+                        board.id = response[0].attributes.id;
+                    }
+                    console['debug'](`${this.timestamp()} board ${this.action}d`, response);
+                    this.boardStore.dispatch(new boardActions.FetchBaseData());
+                    this.boardStore.dispatch(new boardActions.SetSelectedBoardId(board.id));
+                    this.boardStore.dispatch(new boardActions.FetchBoardDetailedData(board.id));
+                },
+                (err) => console.log(`${this.timestamp()} error ${this.action.toString().slice(0, -1)}ing board`, err),
+                () => this.router.navigate(['threat-beta', board.id, 'feed'])
+            );
     }
 
+    private mapBoundaries(values: any[]) {
+        if (values) {
+            return values.map(value => {
+                if (typeof value === 'string') {
+                    return value;
+                }
+                if (value.id) {
+                    return value.id;
+                }
+                if (value.value) {
+                    return value.value;
+                }
+                return undefined;
+            }).filter(value => !!value);
+        }
+        return [];
+    }
+
+    private timestamp() {
+        return `(${new Date().toISOString()})`;
+    }
 }
