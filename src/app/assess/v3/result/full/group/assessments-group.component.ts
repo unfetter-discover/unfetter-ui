@@ -210,6 +210,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     // match the assessed ids with assessed objects to populate the grouping section cards
     const displayedAssessedObjects = assessedObjects
       .filter((assessedObj) => stixIdSet.has(assessedObj.stix.id))
+      .filter((assessedObj) => assessedObj.risk >= 0 && assessedObj.risk <= 100)
       .map((assessedObj) => {
         const retObj = Object.assign(new DisplayedAssessmentObject(), assessedObj);
         retObj.risk = this.getRisk(assessedObj.stix.id);
@@ -370,6 +371,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       .assessedByAttackPattern
       .filter((ap) => ap._id === attackPatternId)
       .filter((ap) => ap && !Number.isNaN(ap.risk))
+      .filter((ap) => ap.risk >= 0 && ap.risk <= 1)
       .map((ap) => ap.risk)[0];
     return (risk !== undefined && !Number.isNaN(risk) ? risk : 1);
   }
@@ -391,6 +393,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     let count = 0;
     const sum = phaseObj.assessedObjects
       .map((ao) => ao.risk)
+      .filter((risk) => risk >= 0 && risk <= 1)
       .reduce((currentSum, risk) => {
         count++;
         return currentSum + risk;
