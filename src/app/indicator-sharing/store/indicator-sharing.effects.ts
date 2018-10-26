@@ -44,7 +44,6 @@ export class IndicatorSharingEffects {
         .ofType(indicatorSharingActions.FETCH_DATA)
         .pipe(
             switchMap(() => observableForkJoin(
-                this.indicatorSharingService.getIdentities(),
                 this.indicatorSharingService.getIndicators(),
                 this.indicatorSharingService.getAttackPatternsByIndicator()
                     .pipe(
@@ -62,15 +61,13 @@ export class IndicatorSharingEffects {
             )),
             map((results: any[]) => [
                 results[0].map((r) => r.attributes),
-                results[1].map((r) => r.attributes),
-                results[2],
-                results[3].map((r) => r.attributes),
+                results[1],
+                results[2].map((r) => r.attributes),
+                results[3],
                 results[4],
-                results[5],
-                results[6].map((r) => r.attributes)
+                results[5].map((r) => r.attributes)
             ]),
-            mergeMap(([identities, indicators, indicatorToApMap, sensors, indCount, intrToApMap, intrusionSets]) => [
-                new indicatorSharingActions.SetIdentities(identities),
+            mergeMap(([indicators, indicatorToApMap, sensors, indCount, intrToApMap, intrusionSets]) => [
                 new indicatorSharingActions.SetIndicators(indicators),
                 new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap),
                 new indicatorSharingActions.SetSensors(sensors),

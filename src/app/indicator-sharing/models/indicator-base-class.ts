@@ -21,7 +21,7 @@ export abstract class IndicatorBase {
     ) { }
 
     protected initBaseData() {
-        const getIdentities$ = this.store.select('indicatorSharing').pipe(
+        const getIdentities$ = this.store.select('stix').pipe(
             pluck('identities'),
             distinctUntilChanged())
             .subscribe(

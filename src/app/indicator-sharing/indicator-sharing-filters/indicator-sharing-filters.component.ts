@@ -42,7 +42,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
     public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>, 
     private fb: FormBuilder
   ) {
-    this.organizations$ = this.store.select('indicatorSharing')
+    this.organizations$ = this.store.select('stix')
       .pipe(
         pluck<any, any[]>('identities'),
         RxjsHelpers.sortByField('name', 'ASCENDING')
