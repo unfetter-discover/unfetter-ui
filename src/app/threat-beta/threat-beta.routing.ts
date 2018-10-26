@@ -11,9 +11,12 @@ const routes: Routes = [
   { 
     path: '', 
     component: MasterLayoutComponent,
-    children: [     
+    children: [
       {
         path: 'create', component: CreateComponent
+      }, 
+      {
+        path: 'edit/:id', component: CreateComponent
       }, 
       {
         path: ':boardId',

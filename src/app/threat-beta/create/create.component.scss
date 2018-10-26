@@ -1,2 +1,41 @@
 @import '../../../styles/_variables.scss';
 @import '../threat-beta.common';
+
+.edit-close-button {
+    margin-right: 20px;
+}
+
+.edit-title {
+    width: 500px;
+    color: $dark-text-default;
+}
+
+.edit-title-buttons {
+    display: inline-block;
+}
+
+.boundaries-fieldsets {
+    .boundaries-column {
+        display: inline-block;
+        width: 256px;
+        margin-right: 24px;
+        vertical-align: top;
+
+        mat-form-field {
+            width: 100%;
+        }
+    }
+}
+
+.dates-fieldset {
+    margin-bottom: 24px;
+}
+
+.targets-fieldset, .malware-fieldset, .intrusions-fieldset {
+    ::ng-deep {
+        mat-chip {
+            display: inline-block;
+            margin: 0px 8px 8px 0px;
+        }
+    }
+}

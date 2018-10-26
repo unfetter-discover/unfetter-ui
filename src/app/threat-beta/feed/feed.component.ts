@@ -34,7 +34,7 @@ export class FeedComponent implements OnInit {
         this.boardStore.select(getSelectedBoard)
             .subscribe(
                 (board) => {
-                    console.log(`(${new Date().toISOString()}) retrieved threat board:`, board);
+                    console['debug'](`(${new Date().toISOString()}) retrieved threat board:`, board);
                     this.threatBoard = board;
                     this._threatboardLoaded = true;
                 },
