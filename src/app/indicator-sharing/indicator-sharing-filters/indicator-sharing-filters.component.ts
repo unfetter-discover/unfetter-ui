@@ -121,7 +121,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
 
     this.attackPatterns$ = this.store.select(getPreferredKillchainAttackPatterns);
 
-    this.intrusionSets$ = this.store.select('indicatorSharing')
+    this.intrusionSets$ = this.store.select('stix')
       .pipe(
         pluck<any, any[]>('intrusionSets'),
         RxjsHelpers.sortByField('name', 'ASCENDING')

@@ -55,26 +55,23 @@ export class IndicatorSharingEffects {
                 this.indicatorSharingService.getInstrusionSetsByAttackPattern()
                     .pipe(
                         RxjsHelpers.unwrapJsonApi(),
-                    RxjsHelpers.relationshipArrayToObject('intrusionSets')
-                    ),
-                this.indicatorSharingService.getIntrusionSets()
+                        RxjsHelpers.relationshipArrayToObject('intrusionSets')
+                    )
             )),
             map((results: any[]) => [
                 results[0].map((r) => r.attributes),
                 results[1],
                 results[2].map((r) => r.attributes),
                 results[3],
-                results[4],
-                results[5].map((r) => r.attributes)
+                results[4]
             ]),
-            mergeMap(([indicators, indicatorToApMap, sensors, indCount, intrToApMap, intrusionSets]) => [
+            mergeMap(([indicators, indicatorToApMap, sensors, indCount, intrToApMap]) => [
                 new indicatorSharingActions.SetIndicators(indicators),
                 new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap),
                 new indicatorSharingActions.SetSensors(sensors),
                 new indicatorSharingActions.SetServerCallComplete(true),
                 new indicatorSharingActions.SetTotalIndicatorCount(indCount),
-                new indicatorSharingActions.SetIntrusionSetsByAttackPattern(intrToApMap),
-                new indicatorSharingActions.SetIntrusionSets(intrusionSets)
+                new indicatorSharingActions.SetIntrusionSetsByAttackPattern(intrToApMap)
             ])
         );
 
