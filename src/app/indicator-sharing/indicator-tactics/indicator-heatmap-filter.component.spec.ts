@@ -179,8 +179,8 @@ describe('IndicatorHeatMapFilterComponent', () => {
         component = fixture.componentInstance;
         let store = component.store;
         store.dispatch(new userActions.LoginUser(testUser));
-        store.dispatch(new stixActions.SetAttackPatterns(tactics));
-        store.dispatch(new indicatorSharingActions.SetAttackPatterns(mockAttackPatternData));
+        store.dispatch(new stixActions.SetAttackPatterns(mockAttackPatternData as any));
+        // store.dispatch(new indicatorSharingActions.SetAttackPatterns(mockAttackPatternData));
         fixture.detectChanges();
     });
 

@@ -161,12 +161,6 @@ describe('indicatorSharingReducer', () => {
         expect(reducedState.sensors[0]).toEqual(mockSensors[0]);
     });
 
-    it('should set attackPatterns', () => {
-        const reducedState = indicatorSharingReducer(initialState, new actions.SetAttackPatterns(mockAttackPatterns));
-        expect(reducedState).not.toEqual(initialState);
-        expect(reducedState.attackPatterns).toEqual(mockAttackPatterns);
-    });
-
     it('should set identities', () => {
         const reducedState = indicatorSharingReducer(initialState, new actions.SetIdentities(mockIdentities));
         expect(reducedState).not.toEqual(initialState);
