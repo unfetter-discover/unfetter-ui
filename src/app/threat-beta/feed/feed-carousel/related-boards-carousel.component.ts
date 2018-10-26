@@ -52,7 +52,7 @@ export class RelatedBoardsCarouselComponent implements OnChanges {
             .subscribe(
                 (boards: any[]) => {
                     this._boards = boards.filter(b => b.id !== this.threatBoard.id);
-                    console.log(`(${new Date().toISOString()}) board list`, this._boards);
+                    console['debug'](`(${new Date().toISOString()}) board list`, this._boards);
                     this.carousel.calculateWindow();
                     this._loaded = true;
                 },

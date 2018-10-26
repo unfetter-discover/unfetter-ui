@@ -62,7 +62,7 @@ export class ReportsCarouselComponent implements OnInit, OnChanges {
                     this._reports = reports
                         .map(report => ({ ...report, vetted: this.threatBoard.reports.includes(report.id) }))
                         .sort((a, b) => b.modified.localeCompare(a.modified));
-                    console.log(`(${new Date().toISOString()}) reports list`, this._reports);
+                    console['debug'](`(${new Date().toISOString()}) reports list`, this._reports);
                     this.carousel.calculateWindow();
                     this._loaded = true;
                 },
@@ -110,7 +110,7 @@ export class ReportsCarouselComponent implements OnInit, OnChanges {
             this.threatBoard.reports.push(id);
             this.threatboardService.updateBoard(this.threatBoard)
                 .subscribe(
-                    (response) => console.log(`(${new Date().toISOString()}) board updated`),
+                    (response) => console['debug'](`(${new Date().toISOString()}) board updated`),
                     (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
                 );
         }
@@ -139,7 +139,7 @@ export class ReportsCarouselComponent implements OnInit, OnChanges {
                 }
                 this.threatboardService.updateBoard(this.threatBoard)
                     .subscribe(
-                        (response) => console.log(`(${new Date().toISOString()}) board updated`),
+                        (response) => console['debug'](`(${new Date().toISOString()}) board updated`),
                         (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
                     );
             }

@@ -147,6 +147,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
           this.requestAncillaryDataLoad(summary);
           this.transformSummary(summary);
           this.summary = summary;
+
+          this.transformPctComplete();
         }),
     );
 
@@ -433,6 +435,20 @@ export class SummaryComponent implements OnInit, OnDestroy {
     if (this.summary) {
       this.summaryCalculationService.populateAssessmentsGrouping(this.summary.assessment_objects);
       this.summaryCalculationService.populateTechniqueBreakdown(this.summary.assessment_objects);
+    }
+  }
+
+  public transformPctComplete(): void {
+    if (this.summary) {
+      let completeQuestions = 0;
+
+      this.summary.assessment_objects.map((ao) => {
+        if (ao.risk >= 0 && ao.risk <= 1) {
+          completeQuestions++;
+        }
+      });
+
+      this.summaryCalculationService.percentComplete = (completeQuestions / this.summary.assessment_objects.length) * 100;
     }
   }
 

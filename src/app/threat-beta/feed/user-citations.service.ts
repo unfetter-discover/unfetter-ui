@@ -32,7 +32,7 @@ export class UserCitationService {
             ([orgs, users]) => {
                 const morgs = orgs.map(org => ({...org, userName: org.name}));
                 this.users = [...morgs, ...users as any[]];
-                console.log(`(${new Date().toISOString()}) got user and orgs lists:`, this.users);
+                console['debug'](`(${new Date().toISOString()}) got user and orgs lists:`, this.users);
             },
             err => console.log('could not load users', err)
         );

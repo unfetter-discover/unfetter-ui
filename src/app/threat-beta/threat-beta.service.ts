@@ -31,4 +31,8 @@ export class ThreatDashboardBetaService {
         )
         .pipe(pluck('attributes'));
     }
+
+    public createBoard(board: ThreatBoard): Observable<ThreatBoard> {
+        return this.genericApi.post(`${StixUrls.X_UNFETTER_THREAT_BOARD}`, { data: { attributes: board } });
+    }
 }

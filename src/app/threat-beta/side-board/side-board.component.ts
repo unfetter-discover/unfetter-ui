@@ -34,7 +34,7 @@ export class SideBoardComponent implements OnInit {
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
-    modifyRoute: this.baseThreatUrl + '/wizard/edit',
+    modifyRoute: this.baseThreatUrl + '/edit',
     createRoute: this.baseThreatUrl + '/create',
   };
 
