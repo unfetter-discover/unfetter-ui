@@ -17,6 +17,7 @@ import { ConfigKeys } from '../../global/enums/config-keys.enum';
 import { UserState } from '../../root-store/users/users.reducers';
 import { ObservedDataFilterComponent } from './observed-data-filter/observed-data-filter.component';
 import { Constance } from '../../utils/constance';
+import { getPreferredKillchainAttackPatterns } from '../../root-store/stix/stix.selectors';
 
 @Component({
   selector: 'indicator-sharing-filters',
@@ -34,7 +35,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
   public sensors$: Observable<any[]>;
   public heatmapVisible = false;
   public observedDataVisible = false;
-  public attackPatterns: any[] = [];
+  public attackPatterns$: Observable<any>;
 
   constructor(
     public dialog: MatDialog,
@@ -118,33 +119,7 @@ export class IndicatorSharingFiltersComponent implements OnInit {
       pluck(ConfigKeys.DATA_SOURCES),
       map((dataSources: string[]) => dataSources.sort()));
 
-    const getAttackPatterns$ = this.store.select('indicatorSharing')
-      .pipe(
-      pluck('attackPatterns'),
-      withLatestFrom(this.store.select('users')))
-      .subscribe(
-        ([attackPatterns, user]: [any[], UserState]) => {
-          if (user.userProfile && user.userProfile.preferences && user.userProfile.preferences.killchain) {
-            this.attackPatterns = attackPatterns
-              .filter((ap) => {
-                return ap.kill_chain_phases &&
-                  ap.kill_chain_phases
-                    .map((kc) => kc.kill_chain_name)
-                    .includes(user.userProfile.preferences.killchain);
-              });
-          } else {
-            this.attackPatterns = attackPatterns;
-          }
-        },
-        (err) => {
-          console.log(err);
-        },
-        () => {
-          if (getAttackPatterns$) {
-            getAttackPatterns$.unsubscribe();
-          }
-        }
-    );
+    this.attackPatterns$ = this.store.select(getPreferredKillchainAttackPatterns);
 
     this.intrusionSets$ = this.store.select('indicatorSharing')
       .pipe(

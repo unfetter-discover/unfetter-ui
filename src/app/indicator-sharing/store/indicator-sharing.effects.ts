@@ -52,7 +52,6 @@ export class IndicatorSharingEffects {
                         RxjsHelpers.relationshipArrayToObject('attackPatterns')
                     ),
                 this.indicatorSharingService.getSensors(),
-                this.indicatorSharingService.getAttackPatterns(),
                 this.indicatorSharingService.getTotalIndicatorCount(),
                 this.indicatorSharingService.getInstrusionSetsByAttackPattern()
                     .pipe(
@@ -66,17 +65,15 @@ export class IndicatorSharingEffects {
                 results[1].map((r) => r.attributes),
                 results[2],
                 results[3].map((r) => r.attributes),
-                results[4].map((r) => r.attributes),
+                results[4],
                 results[5],
-                results[6],
-                results[7].map((r) => r.attributes)
+                results[6].map((r) => r.attributes)
             ]),
-            mergeMap(([identities, indicators, indicatorToApMap, sensors, attackPatterns, indCount, intrToApMap, intrusionSets]) => [
+            mergeMap(([identities, indicators, indicatorToApMap, sensors, indCount, intrToApMap, intrusionSets]) => [
                 new indicatorSharingActions.SetIdentities(identities),
                 new indicatorSharingActions.SetIndicators(indicators),
                 new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap),
                 new indicatorSharingActions.SetSensors(sensors),
-                new indicatorSharingActions.SetAttackPatterns(attackPatterns),
                 new indicatorSharingActions.SetServerCallComplete(true),
                 new indicatorSharingActions.SetTotalIndicatorCount(indCount),
                 new indicatorSharingActions.SetIntrusionSetsByAttackPattern(intrToApMap),
@@ -145,7 +142,8 @@ export class IndicatorSharingEffects {
                 return observableForkJoin(...obs$);
             }),
             withLatestFrom(this.store.select('indicatorSharing')),
-            map(([responses, indicatorSharingStore]: [any, fromIndicators.IndicatorSharingState]) => {
+            withLatestFrom(this.store.select('stix')),
+            map(([[responses, indicatorSharingStore], stixState]) => {
                 const killChainPhaseSet = new Set();
 
                 const indicatorId = responses.length > 0 && responses[0].length > 0 && responses[0][0].attributes && responses[0][0].attributes.source_ref;
@@ -157,7 +155,7 @@ export class IndicatorSharingEffects {
 
                 responses
                     .filter((response) => response.length && response[0].attributes && response[0].attributes.target_ref)
-                    .map((response) => indicatorSharingStore.attackPatterns.find((attackPattern) => attackPattern.id === response[0].attributes.target_ref))
+                    .map((response) => stixState.attackPatterns.find((attackPattern) => attackPattern.id === response[0].attributes.target_ref))
                     .filter((attackPattern) => !!attackPattern && attackPattern.kill_chain_phases && attackPattern.kill_chain_phases.length)
                     .forEach((attackPattern) => {
                         attackPattern.kill_chain_phases.forEach((kcp) => killChainPhaseSet.add(JSON.stringify(kcp)));
