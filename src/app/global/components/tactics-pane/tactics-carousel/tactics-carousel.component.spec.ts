@@ -9,10 +9,11 @@ import { TacticsControlService } from '../tactics-control.service';
 import { TacticsTooltipService, TooltipEvent } from '../tactics-tooltip/tactics-tooltip.service';
 import { ResizeDirective } from '../../../directives/resize.directive';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
-import { mockUser, mockTactics, mockAttackPatterns, mockTargets } from '../tactics.model.test';
+import { mockUser, mockTactics, mockAttackPatterns, mockTargets, mockTacticsConfig } from '../tactics.model.test';
 import * as stixActions from '../../../../root-store/stix/stix.actions';
 import * as userActions from '../../../../root-store/users/user.actions';
 import { reducers, AppState } from '../../../../root-store/app.reducers';
+import { AddConfig } from '../../../../root-store/config/config.actions';
 
 describe('TacticCarouselComponent', () => {
 
@@ -46,8 +47,9 @@ describe('TacticCarouselComponent', () => {
         fixture = TestBed.createComponent(TacticsCarouselComponent);
         component = fixture.componentInstance;
         store = component['store'];
+        store.dispatch(new AddConfig(mockTacticsConfig));
         store.dispatch(new userActions.LoginUser(mockUser));
-        store.dispatch(new stixActions.SetAttackPatterns(mockTactics));
+        store.dispatch(new stixActions.SetAttackPatterns(mockAttackPatterns as any));
         fixture.detectChanges();
     });
 

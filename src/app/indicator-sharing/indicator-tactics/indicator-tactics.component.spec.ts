@@ -31,12 +31,14 @@ import {
     mockUser,
     mockTactics,
     mockTargets,
-    mockAttackPatternData
+    mockAttackPatternData,
+    mockTacticsConfig
 } from '../../global/components/tactics-pane/tactics.model.test';
 import * as stixActions from '../../root-store/stix/stix.actions';
 import * as userActions from '../../root-store/users/user.actions';
 import { reducers, AppState } from '../../root-store/app.reducers';
 import { UnfetterCarouselComponent } from '../../global/components/tactics-pane/tactics-carousel/unf-carousel.component';
+import { AddConfig } from '../../root-store/config/config.actions';
 
 describe('IndicatorTacticsComponent', () => {
 
@@ -87,8 +89,9 @@ describe('IndicatorTacticsComponent', () => {
         fixture = TestBed.createComponent(IndicatorTacticsComponent);
         component = fixture.componentInstance;
         store = TestBed.get(Store);
+        store.dispatch(new AddConfig(mockTacticsConfig));
         store.dispatch(new userActions.LoginUser(mockUser));
-        store.dispatch(new stixActions.SetAttackPatterns(mockTactics));
+        store.dispatch(new stixActions.SetAttackPatterns(mockAttackPatternData as any));
         fixture.detectChanges();
     });
 

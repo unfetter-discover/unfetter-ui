@@ -95,7 +95,7 @@ export class IndicatorFormComponent implements OnInit {
     private indicatorSharingService: IndicatorSharingService,
     private authService: AuthService,
     private genericApi: GenericApi,
-    private store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
+    public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
     public location: Location,
     private route: ActivatedRoute
   ) { 

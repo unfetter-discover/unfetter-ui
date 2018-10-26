@@ -54,7 +54,7 @@ export class SummaryStatisticsComponent implements OnInit {
 
   constructor(
     private indicatorSharingService: IndicatorSharingService,
-    private store: Store<IndicatorSharingFeatureState>,
+    public store: Store<IndicatorSharingFeatureState>,
   ) {
     this.dataCategories.forEach((dataCategory) => {
       this.barChartData[dataCategory] = [];
