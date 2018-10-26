@@ -3,7 +3,7 @@ import { mergeMap, switchMap, map, withLatestFrom, filter, tap, take } from 'rxj
 import { forkJoin as observableForkJoin, of as observableOf } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
-import { MarkingDefinition, AttackPattern } from 'stix';
+import { MarkingDefinition, AttackPattern, IntrusionSet } from 'stix';
 import { Dictionary } from 'stix/common/dictionary';
 import { Store } from '@ngrx/store';
 
@@ -29,6 +29,7 @@ export class StixEffects {
                 new stixActions.FetchAttackPatterns(),
                 new stixActions.FetchIdentities(),
                 new stixActions.FetchMarkingDefinitions(),
+                new stixActions.FetchIntrusionSets(),
             ])
         );
 
@@ -68,7 +69,22 @@ export class StixEffects {
             switchMap(() => this.attackPatternService.fetchByFramework()),
             RxjsHelpers.unwrapJsonApi(),
             map(attackPatterns => new stixActions.SetAttackPatterns(attackPatterns as any))
-        );    
+        ); 
+        
+    @Effect()
+    public fetchIntrusionSets = this.actions$
+        .ofType(stixActions.FETCH_INTRUSION_SETS)
+        .pipe(
+            switchMap(() => {
+                const options: StixApiOptions = {
+                    sort: {
+                        'stix.name': 1
+                    }
+                };
+                return this.genericApi.getStix<IntrusionSet[]>(StixUrls.INTRUSION_SET, null, options);
+            }),
+            map((sets) => new stixActions.SetIntrusionSets(sets))
+        );
 
     constructor(
         private actions$: Actions,

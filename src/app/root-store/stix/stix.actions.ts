@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Identity, MarkingDefinition, AttackPattern } from 'stix';
+import { Identity, MarkingDefinition, AttackPattern, IntrusionSet } from 'stix';
 
 export const FETCH_IDENTITIES = '[Stix] Fetch Identities';
 export const SET_IDENTITIES = '[Stix] Set Identities';
@@ -7,6 +7,8 @@ export const FETCH_MARKING_DEFINITIONS = '[Stix] Fetch Marking Definitions';
 export const SET_MARKING_DEFINITIONS = '[Stix] Set Marking Definitions';
 export const FETCH_ATTACK_PATTERNS = '[Stix] Fetch Attack Patterns';
 export const SET_ATTACK_PATTERNS = '[Stix] Set Attack Patterns';
+export const FETCH_INTRUSION_SETS = '[Stix] Fetch Intrusion Sets';
+export const SET_INTRUSION_SETS = '[Stix] Set Intrusion Sets';
 export const FETCH_STIX = '[Stix] Fetch Stix';
 export const CLEAR_STIX = '[Stix] Clear Stix';
 
@@ -44,6 +46,15 @@ export class SetAttackPatterns implements Action {
     constructor(public payload: AttackPattern[]) { }
 }
 
+export class FetchIntrusionSets implements Action {
+    public readonly type = FETCH_INTRUSION_SETS;
+}
+
+export class SetIntrusionSets implements Action {
+    public readonly type = SET_INTRUSION_SETS;
+    constructor(public payload: IntrusionSet[]) { }
+}
+
 export class FetchStix implements Action {
     public readonly type = FETCH_STIX;
 }
@@ -59,5 +70,7 @@ export type StixActions =
     SetMarkingDefinitions |
     FetchAttackPatterns |
     SetAttackPatterns |
+    FetchIntrusionSets |
+    SetIntrusionSets |
     FetchStix |
     ClearStix;
