@@ -44,7 +44,7 @@ export class ResultHeaderComponent implements OnInit {
     this.editUrl = `${editBase}/${this.rollupId}`;
     this.percentCompleted = this.calculationService.percentComplete;
     if (this.percentCompleted < 100) {
-      this.infoBarMsg = `${this.percentCompleted.toFixed(2)}% of your baseline is complete.`;
+      this.infoBarMsg = `${this.percentCompleted.toFixed(2)}% of your assessment is complete.`;
     }
   }
 
