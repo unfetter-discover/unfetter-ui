@@ -179,9 +179,14 @@ export class IndicatorSharingEffects {
     public refreshApMap = this.actions$
         .ofType(indicatorSharingActions.REFRESH_AP_MAP)
         .pipe(
-            switchMap((_) => this.indicatorSharingService.getAttackPatternsByIndicator()),
-            RxjsHelpers.unwrapJsonApi(),
-            RxjsHelpers.relationshipArrayToObject('attackPatterns'),
+            withLatestFrom(this.store.select('stix')),
+            switchMap(([_, stixState]) => {
+                return this.indicatorSharingService.getIndicatorToAttackPatternRelationships()
+                    .pipe(
+                        map((rels) => [rels, stixState.attackPatterns]),
+                        RxjsHelpers.stixRelationshipArrayToObject('source_ref')
+                    );
+            }),
             map((indicatorToApMap) => new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap))
         );
 
