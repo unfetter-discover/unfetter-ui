@@ -28,6 +28,7 @@ import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-o
 import { DisplayedAssessmentObject } from './models/displayed-assessment-object';
 import { FullAssessmentGroup } from './models/full-assessment-group';
 import { AssessmentGroup } from 'stix/assess/v3/baseline/assessment-group';
+import { getVisualizationData } from '../../../../../root-store/stix/stix.selectors';
 
 @Component({
   selector: 'unf-assess-group',
@@ -420,14 +421,14 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       .map((ap) => ap.attackPatternId);
 
     const s$ = this.appStore
-      .select('stix')
+      .select(getVisualizationData)
       .pipe(
         filter(() => this.activePhase !== undefined && this.activePhase.length > 0),
         switchMap(
-          (state) => {
+          (visualizationData) => {
             // get all the phases across the frameworks
-            const phases = Object.keys(state.visualizationData)
-              .map((curFramework) => state.visualizationData[curFramework].phases)
+            const phases = Object.keys(visualizationData)
+              .map((curFramework) => visualizationData[curFramework].phases)
               .reduce((acc, val) => acc.concat(val), []);
             // look for the currently viewed phase
             // TODO: there is potential to get the wrong phase if the phase id exists in two frameworks

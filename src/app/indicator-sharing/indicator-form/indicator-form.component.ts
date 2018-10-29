@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { of as observableOf, forkJoin as observableForkJoin, Observable, Subject } from 'rxjs';
+import { of as observableOf, forkJoin as observableForkJoin, Observable, Subject, combineLatest } from 'rxjs';
 import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize, take, withLatestFrom, map, filter } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Location } from '@angular/common';
@@ -29,6 +29,8 @@ import MarkingDefinitionHelpers from '../../global/static/marking-definition-hel
 import { HideFooter, NavigateToErrorPage } from '../../root-store/utility/utility.actions';
 import { AdditionalQueriesForm } from '../../global/form-models/additional-queries';
 import { DomHelper } from '../../global/static/dom-helper';
+import { Identity } from 'stix';
+import { getPreferredKillchainAttackPatterns } from '../../root-store/stix/stix.selectors';
 
 @Component({
   selector: 'indicator-form',
@@ -93,7 +95,7 @@ export class IndicatorFormComponent implements OnInit {
     private indicatorSharingService: IndicatorSharingService,
     private authService: AuthService,
     private genericApi: GenericApi,
-    private store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
+    public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
     public location: Location,
     private route: ActivatedRoute
   ) { 
@@ -136,24 +138,16 @@ export class IndicatorFormComponent implements OnInit {
     }
 
     const userId = this.authService.getUser()._id;
-    const getData$ = observableForkJoin(
-      this.indicatorSharingService.getIdentities(),
+    const getData$ = combineLatest(
+      this.store.select('stix').pipe(pluck<any, Identity[]>('identities')),
       this.indicatorSharingService.getUserProfileById(userId),
-      this.indicatorSharingService.getAttackPatterns()
+      this.store.select(getPreferredKillchainAttackPatterns)
     ).subscribe(
       (res) => {
-        const identities = res[0].map((r) => r.attributes);
+        const identities = res[0];
         const user = res[1].attributes;
         const userOrgs = user.organizations;
-        this.attackPatterns = res[2]
-          .map((r) => r.attributes)
-          .filter((ap) => {
-            if (user.preferences && user.preferences.killchain) {
-              return ap.kill_chain_phases && ap.kill_chain_phases.map((kc) => kc.kill_chain_name).includes(user.preferences.killchain);
-            } else {
-              return true;
-            }
-          });
+        this.attackPatterns = res[2];
         if (userOrgs && userOrgs.length) {
           this.organizations = userOrgs
             .filter((org) => org.approved)

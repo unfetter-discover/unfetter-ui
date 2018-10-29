@@ -6,6 +6,7 @@ import * as configActions from '../root-store/config/config.actions';
 import * as indicatorSharingActions from '../indicator-sharing/store/indicator-sharing.actions';
 import * as userActions from '../root-store/users/user.actions';
 import { testUser } from './test-user';
+import { SetAttackPatterns } from '../baseline/store/baseline.actions';
 
 // ~~~ root ~~~
 
@@ -107,6 +108,5 @@ export const indicatorToApMap = {
 
 export function makeMockIndicatorSharingStore(store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>) {
     store.dispatch(new indicatorSharingActions.SetIndicators(mockIndicators));
-    store.dispatch(new indicatorSharingActions.SetAttackPatterns(mockAttackPatterns));
     store.dispatch(new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap));
 }

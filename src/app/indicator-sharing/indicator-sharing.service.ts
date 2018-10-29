@@ -47,21 +47,6 @@ export class IndicatorSharingService {
         return this.genericApi.get(`${this.baseUrl}/attack-patterns-by-indicator`);
     }
 
-    public getAttackPatterns(): Observable<any> {
-        const projectObj = {
-            'stix.name': 1,
-            'stix.description': 1,
-            'stix.kill_chain_phases': 1,
-            'extendedProperties.x_mitre_data_sources': 1,
-            'extendedProperties.x_mitre_platforms': 1,
-            'stix.id': 1,
-        };
-        const sortObj = { 
-            'stix.name': 1 
-        };
-        return this.genericApi.get(`${this.attackPatternsUrl}?project=${JSON.stringify(projectObj)}&sort=${JSON.stringify(sortObj)}`);
-    }
-
     public addComment(comment, id) {
         const url = `${this.multiplesUrl}/${id}/comment`;
         return this.genericApi.patch(url, {data: { attributes: {'comment': comment}}});
@@ -85,11 +70,7 @@ export class IndicatorSharingService {
     public addLabel(label, id) {
         const url = `${this.multiplesUrl}/${id}/label`;
         return this.genericApi.patch(url, { data: { attributes: { 'label': label } } });
-    }
-
-    public getIdentities() {
-        return this.genericApi.get(this.identitiesUrl);
-    }    
+    }  
 
     public getUserProfileById(userId): Observable<any> {
         if (this.runMode !== undefined && this.runMode === 'DEMO') {

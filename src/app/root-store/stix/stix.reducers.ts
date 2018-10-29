@@ -1,4 +1,4 @@
-import { Identity, MarkingDefinition, AttackPattern } from 'stix';
+import { Identity, MarkingDefinition, AttackPattern, IntrusionSet } from 'stix';
 import { Dictionary } from 'stix/common/dictionary';
 
 import * as stixActions from './stix.actions';
@@ -8,14 +8,14 @@ export interface StixState {
     identities: Identity[],
     markingDefinitions: MarkingDefinition[],
     attackPatterns: AttackPattern[],
-    visualizationData: Dictionary<TacticChain>
+    intrusionSets: IntrusionSet[]
 }
 
 export const initialState: StixState = {
     identities: [],
     markingDefinitions: [],
     attackPatterns: [],
-    visualizationData: {}
+    intrusionSets: []
 }
 
 export function stixReducer(state = initialState, action: stixActions.StixActions): StixState {
@@ -31,18 +31,14 @@ export function stixReducer(state = initialState, action: stixActions.StixAction
                 markingDefinitions: action.payload
             };
         case stixActions.SET_ATTACK_PATTERNS:
-            const patterns = [];
-            if (action.payload) {
-                Object.values(action.payload).forEach(chain => {
-                    chain.phases.forEach(phase => {
-                        phase.tactics.forEach(tactic => patterns.push(tactic));
-                    });
-                });
-            }
             return {
                 ...state,
-                attackPatterns: patterns,
-                visualizationData: { ...action.payload }
+                attackPatterns: action.payload
+            };
+        case stixActions.SET_INTRUSION_SETS:
+            return {
+                ...state,
+                intrusionSets: action.payload
             };
         case stixActions.CLEAR_STIX:
             return {

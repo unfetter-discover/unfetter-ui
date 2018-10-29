@@ -127,3 +127,14 @@ export const mockTargets = [
         adds: { highlights: [ { value: 1, color: { bg: 'blue', fg: 'white' } } ] }
     }
 ];
+
+export const mockTacticsConfig = {
+    killChains: [
+        {
+            name: 'the_org',
+            phase_names: [
+                '0002', '0003'
+            ]
+        }
+    ]
+};

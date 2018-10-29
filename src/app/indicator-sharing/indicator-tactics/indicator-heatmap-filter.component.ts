@@ -80,7 +80,7 @@ export class IndicatorHeatMapFilterComponent implements AfterViewInit {
         // since there is a noticeable lag time when that occurs
         requestAnimationFrame(() => {
             const getAttackPatterns$ = this.store
-                .select('indicatorSharing').pipe(
+                .select('stix').pipe(
                 pluck('attackPatterns'),
                 take(1),
                 finalize(() => getAttackPatterns$ && getAttackPatterns$.unsubscribe()))

@@ -15,7 +15,7 @@
             <indicator-sharing-filters></indicator-sharing-filters>
         </mat-sidenav>
 
-        <mat-sidenav-content [class.sidenavContentPolyfill360]="filterOpen">
+        <mat-sidenav-content [class.sidenavContentPolyfill360]="filterOpen" class="zIndexAuto">
             <div id="mainWindow">
                 <button mat-button (click)="filterContainer.open()" id="showFiltersButton" *ngIf="!filterOpen" @fadeInOut>
                     <h5 class="inlineBlock">FILTERS&nbsp;&nbsp;</h5>

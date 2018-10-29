@@ -19,10 +19,8 @@ export const ADD_INDICATOR = '[Indicator Sharing] ADD_INDICATOR';
 export const UPDATE_INDICATOR = '[Indicator Sharing] UPDATE_INDICATOR';
 export const DELETE_INDICATOR = '[Indicator Sharing] DELETE_INDICATOR';
 
-export const SET_INTRUSION_SETS = '[Indicator Sharing] SET_INTRUSION_SETS';
 export const SET_SENSORS = '[Indicator Sharing] SET_SENSORS';
 export const SET_IDENTITIES = '[Indicator Sharing] SET_IDENTITIES';
-export const SET_ATTACK_PATTERNS = '[Indicator Sharing] SET_ATTACK_PATTERNS';
 export const SET_INDICATOR_TO_AP_MAP = '[Indicator Sharing] SET_INDICATOR_TO_AP_MAP';
 export const SET_INTRUSION_SETS_BY_ATTACK_PATTERN = '[Indicator Sharing] SET_INTRUSION_SETS_BY_ATTACK_PATTERN';
 export const CLEAR_DATA = '[Indicator Sharing] CLEAR_DATA';
@@ -76,12 +74,6 @@ export class SetTotalIndicatorCount implements Action {
     constructor(public payload: number) { }
 }
 
-export class SetAttackPatterns implements Action {
-    public readonly type = SET_ATTACK_PATTERNS;
-
-    constructor(public payload: any[]) { }
-}
-
 export class SetSortBy implements Action {
     public readonly type = SET_SORTBY;
 
@@ -104,12 +96,6 @@ export class DeleteIndicator implements Action {
     public readonly type = DELETE_INDICATOR;
 
     constructor(public payload: string) { }
-}
-
-export class SetIntrusionSets implements Action {
-    public readonly type = SET_INTRUSION_SETS;
-
-    constructor(public payload: any[]) { }
 }
 
 export class SetSensors implements Action {
@@ -187,12 +173,10 @@ export type IndicatorSharingActions =
     SetIndicators |
     SetFilteredIndicators |
     SetTotalIndicatorCount |
-    SetAttackPatterns |
     SetSortBy |
     AddIndicator |
     UpdateIndicator |
     DeleteIndicator |
-    SetIntrusionSets |
     SetSensors |
     SetIdentities |
     SetIndicatorToApMap |

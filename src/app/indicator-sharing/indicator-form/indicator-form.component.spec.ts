@@ -4,7 +4,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of as observableOf, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { StoreModule } from '@ngrx/store';
+import { StoreModule, ActionReducerMap } from '@ngrx/store';
 
 import { MatButtonModule } from '@angular/material';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
@@ -15,10 +15,19 @@ import { GenericApi } from '../../core/services/genericapi.service';
 import * as fromRoot from '../../root-store/app.reducers';
 
 import { IndicatorFormComponent } from './indicator-form.component';
+import { usersReducer } from '../../root-store/users/users.reducers';
+import { indicatorSharingReducer } from '../store/indicator-sharing.reducers';
+import { stixReducer } from '../../root-store/stix/stix.reducers';
+import { makeMockIndicatorSharingStore } from '../../testing/mock-store';
 
-describe('IndicatorFormComponent', () => {
+xdescribe('IndicatorFormComponent', () => {
   let component: IndicatorFormComponent;
   let fixture: ComponentFixture<IndicatorFormComponent>;
+
+  const mockReducer: ActionReducerMap<any> = {
+    ...fromRoot.reducers,
+    indicatorSharing: indicatorSharingReducer
+  };
 
   const mockIndService = {
     getIdentities: () => {
@@ -43,16 +52,6 @@ describe('IndicatorFormComponent', () => {
           ]
         }
       });
-    },
-    getAttackPatterns: () => {
-      return observableOf([
-        {
-          attributes: {
-            id: 'attack-pattern-1234',
-            name: 'test ap'
-          }
-        }
-      ]);
     },
     translateAllPatterns: (pattern) => {
       return observableOf({
@@ -115,7 +114,7 @@ describe('IndicatorFormComponent', () => {
       imports: [
         MatButtonModule,
         RouterTestingModule,
-        StoreModule.forRoot(fromRoot.reducers)
+        StoreModule.forRoot(mockReducer)
       ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
@@ -139,6 +138,8 @@ describe('IndicatorFormComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(IndicatorFormComponent);
     component = fixture.componentInstance;
+    const store = component.store;
+    makeMockIndicatorSharingStore(store);
     fixture.detectChanges();
   });
 
