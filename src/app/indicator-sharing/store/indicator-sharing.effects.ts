@@ -44,27 +44,26 @@ export class IndicatorSharingEffects {
     public fetchData = this.actions$
         .ofType(indicatorSharingActions.FETCH_DATA)
         .pipe(
-            switchMap(() => observableForkJoin(
-                this.indicatorSharingService.getIndicators(),
-                this.indicatorSharingService.getAttackPatternsByIndicator()
+            switchMap(() => {
+                // Wait until loading is complete for the STIX
+                return this.store.select('stix')
                     .pipe(
-                        RxjsHelpers.unwrapJsonApi(),
-                        RxjsHelpers.relationshipArrayToObject('attackPatterns')
+                        filter((state) => !!state.loadingComplete),
+                        take(1)
+                    );
+            }),
+            switchMap((stixState) => observableForkJoin(
+                this.indicatorSharingService.getIndicators(),
+                this.indicatorSharingService.getIndicatorToAttackPatternRelationships()
+                    .pipe(
+                        map((rels) => [rels, stixState.attackPatterns]),
+                        RxjsHelpers.stixRelationshipArrayToObject('source_ref')
                     ),
                 this.indicatorSharingService.getSensors(),
                 this.indicatorSharingService.getTotalIndicatorCount(),
                 this.indicatorSharingService.getAttackPatternToIntrusionSetRelationships()
                     .pipe(
-                        switchMap((rels) => forkJoin(
-                            observableOf(rels), 
-                            this.store.select('stix')
-                                .pipe(
-                                    pluck<any, IntrusionSet[]>('intrusionSets'),
-                                    filter((intS) => !!intS && intS.length > 0),
-                                    take(1)
-                                )
-                            )
-                        ),
+                        map((rels) => [rels, stixState.intrusionSets]),
                         RxjsHelpers.stixRelationshipArrayToObject()
                     )
             )),

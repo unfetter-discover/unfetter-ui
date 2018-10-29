@@ -1,6 +1,6 @@
 
 import { mergeMap, switchMap, map, withLatestFrom, filter, tap, take } from 'rxjs/operators';
-import { forkJoin as observableForkJoin, of as observableOf } from 'rxjs';
+import { forkJoin as observableForkJoin, of as observableOf, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { MarkingDefinition, AttackPattern, IntrusionSet } from 'stix';
@@ -25,31 +25,11 @@ export class StixEffects {
     public fetchStix = this.actions$
         .ofType(stixActions.FETCH_STIX)
         .pipe(
-            mergeMap(() => [
-                new stixActions.FetchAttackPatterns(),
-                new stixActions.FetchIdentities(),
-                new stixActions.FetchMarkingDefinitions(),
-                new stixActions.FetchIntrusionSets(),
-            ])
-        );
-
-    @Effect()
-    public fetchIdentities = this.actions$
-        .ofType(stixActions.FETCH_IDENTITIES)
-        .pipe(
-            switchMap(() => this.usersService.getOrganizations()),
-            RxjsHelpers.unwrapJsonApi(),
-            map(identities => new stixActions.SetIdentities(identities))
-        );
-
-    @Effect()
-    public fetchMarkings = this.actions$
-        .ofType(stixActions.FETCH_MARKING_DEFINITIONS)
-        .pipe(
             switchMap(() => {
-                const options: StixApiOptions = {
-                    sort: { 
-                        'stix.name': 1 
+
+                const markingOptions: StixApiOptions = {
+                    sort: {
+                        'stix.name': 1
                     },
                     project: {
                         'stix.id': 1,
@@ -57,33 +37,26 @@ export class StixEffects {
                         'stix.definition': 1,
                     }
                 };
-                return this.genericApi.getStix<MarkingDefinition[]>(StixUrls.MARKING_DEFINITION, null, options);
-            }),
-            map(markings => new stixActions.SetMarkingDefinitions(markings))
-        );
 
-    @Effect()
-    public fetchAttackPatterns = this.actions$
-        .ofType(stixActions.FETCH_ATTACK_PATTERNS)
-        .pipe(
-            switchMap(() => this.attackPatternService.fetchByFramework()),
-            RxjsHelpers.unwrapJsonApi(),
-            map(attackPatterns => new stixActions.SetAttackPatterns(attackPatterns as any))
-        ); 
-        
-    @Effect()
-    public fetchIntrusionSets = this.actions$
-        .ofType(stixActions.FETCH_INTRUSION_SETS)
-        .pipe(
-            switchMap(() => {
-                const options: StixApiOptions = {
+                const intrusionOptions: StixApiOptions = {
                     sort: {
                         'stix.name': 1
                     }
                 };
-                return this.genericApi.getStix<IntrusionSet[]>(StixUrls.INTRUSION_SET, null, options);
+                return forkJoin(
+                    this.usersService.getOrganizations().pipe(RxjsHelpers.unwrapJsonApi()),
+                    this.genericApi.getStix<MarkingDefinition[]>(StixUrls.MARKING_DEFINITION, null, markingOptions),
+                    this.attackPatternService.fetchByFramework().pipe(RxjsHelpers.unwrapJsonApi()),
+                    this.genericApi.getStix<IntrusionSet[]>(StixUrls.INTRUSION_SET, null, intrusionOptions)
+                );
             }),
-            map((sets) => new stixActions.SetIntrusionSets(sets))
+            mergeMap(([identities, markings, attackPatterns, sets]) => [
+                new stixActions.SetIdentities(identities),
+                new stixActions.SetMarkingDefinitions(markings),
+                new stixActions.SetAttackPatterns(attackPatterns as any),
+                new stixActions.SetIntrusionSets(sets),
+                new stixActions.SetLoadingComplete(true)
+            ])
         );
 
     constructor(

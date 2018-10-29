@@ -8,14 +8,16 @@ export interface StixState {
     identities: Identity[],
     markingDefinitions: MarkingDefinition[],
     attackPatterns: AttackPattern[],
-    intrusionSets: IntrusionSet[]
+    intrusionSets: IntrusionSet[],
+    loadingComplete: boolean
 }
 
 export const initialState: StixState = {
     identities: [],
     markingDefinitions: [],
     attackPatterns: [],
-    intrusionSets: []
+    intrusionSets: [],
+    loadingComplete: false
 }
 
 export function stixReducer(state = initialState, action: stixActions.StixActions): StixState {
@@ -39,6 +41,11 @@ export function stixReducer(state = initialState, action: stixActions.StixAction
             return {
                 ...state,
                 intrusionSets: action.payload
+            };
+        case stixActions.SET_LOADING_COMPLETE:
+            return {
+                ...state,
+                loadingComplete: action.payload
             };
         case stixActions.CLEAR_STIX:
             return {

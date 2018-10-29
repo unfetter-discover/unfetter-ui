@@ -108,10 +108,18 @@ export class RxjsHelpers {
                                 mapObj[key] = new Set();
                             }
                             const foundObj = objsWithName.find((obj) => obj.id === valueId);
-                            mapObj[key].add(JSON.stringify({ 
-                                id: valueId, 
-                                name: foundObj && foundObj.name ? foundObj.name : 'Unknown'
-                            }));
+                            if (foundObj) {
+                                mapObj[key].add(JSON.stringify({
+                                    ...foundObj,
+                                    name: foundObj && foundObj.name ? foundObj.name : 'Unknown',
+                                }));
+                            } else {
+                                mapObj[key].add(JSON.stringify({
+                                    id: valueId,
+                                    name: 'Unknown'
+                                }));
+                            }
+                            
                         });
                         for (const key in mapObj) {
                             mapObj[key] = Array.from(mapObj[key]).map((objString: string) => JSON.parse(objString))

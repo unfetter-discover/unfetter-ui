@@ -188,19 +188,29 @@ export class IndicatorSharingService {
         return this.genericApi.get(`${this.multiplesUrl}/${id}/publish`);
     }
 
-    /**
-     * @return {Observable} various STIX types
-     * @description Gives an object with an attack pattern IDs as the properties that point to a list of intrusion sets
-     */
-    public getInstrusionSetsByAttackPattern(): Observable<any> {
-        return this.genericApi.get(`${this.attackPatternsUrl}/intrusion-sets-by-attack-pattern`);
-    }
-
     public getAttackPatternToIntrusionSetRelationships(): Observable<Relationship[]> {
         const options: StixApiOptions = {
             filter: {
                 'stix.source_ref': {
                     $regex: '^intrusion-set--'
+                },
+                'stix.target_ref': {
+                    $regex: '^attack-pattern--'
+                }
+            },
+            project: {
+                'stix.source_ref': 1,
+                'stix.target_ref': 1
+            }
+        };
+        return this.genericApi.getStix<Relationship[]>(StixUrls.RELATIONSHIP, null, options);
+    }
+
+    public getIndicatorToAttackPatternRelationships(): Observable<Relationship[]> {
+        const options: StixApiOptions = {
+            filter: {
+                'stix.source_ref': {
+                    $regex: '^indicator--'
                 },
                 'stix.target_ref': {
                     $regex: '^attack-pattern--'
