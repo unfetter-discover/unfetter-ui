@@ -1,6 +1,7 @@
 import { forkJoin as observableForkJoin, of as observableOf,  Observable, throwError  } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
+import { Relationship } from 'stix';
 
 import { GenericApi } from '../core/services/genericapi.service';
 import { Constance } from '../utils/constance';
@@ -10,6 +11,8 @@ import { RxjsHelpers } from '../global/static/rxjs-helpers';
 import { IndicatorSharingSummaryStatistics } from './models/summary-statistics';
 import { SearchParameters } from './models/search-parameters';
 import { SortTypes } from './models/sort-types.enum';
+import { StixUrls } from '../global/enums/stix-urls.enum';
+import { StixApiOptions } from '../global/models/stix-api-options';
 
 @Injectable()
 export class IndicatorSharingService {
@@ -193,14 +196,21 @@ export class IndicatorSharingService {
         return this.genericApi.get(`${this.attackPatternsUrl}/intrusion-sets-by-attack-pattern`);
     }
 
-    public getIntrusionSets(): Observable<any> {
-        const projectObj = {
-            'stix.name': 1,
-            'stix.id': 1
-        }
-        const sortObj = {
-            'stix.name': 1
+    public getAttackPatternToIntrusionSetRelationships(): Observable<Relationship[]> {
+        const options: StixApiOptions = {
+            filter: {
+                'stix.source_ref': {
+                    $regex: '^intrusion-set--'
+                },
+                'stix.target_ref': {
+                    $regex: '^attack-pattern--'
+                }
+            },
+            project: {
+                'stix.source_ref': 1,
+                'stix.target_ref': 1
+            }
         };
-        return this.genericApi.get(`${this.intrusionSetsUrl}?project=${encodeURI(JSON.stringify(projectObj))}&sort=${encodeURI(JSON.stringify(sortObj))}`);
+        return this.genericApi.getStix<Relationship[]>(StixUrls.RELATIONSHIP, null, options);
     }
 }

@@ -86,6 +86,44 @@ export class RxjsHelpers {
             });
         };
     }
+
+    
+    /**
+     * @param  {'target_ref'|'source_ref'='target_ref'} keyProperty
+     * @returns {(Observable<T>) => Observable<any>}
+     * @description This takes an observable stream of [Relationship[], Extends StixCore[]], and will convert
+     *      it to a relationship map including the name of the related objects
+     */
+    public static stixRelationshipArrayToObject(keyProperty: 'target_ref' | 'source_ref' = 'target_ref') {
+        return <T>(source: Observable<T[]>) => {
+            return new Observable<any>((observer) => {
+                return source.subscribe({
+                    next([relArray, objsWithName]: any) {
+                        const mapObj: any = {};
+                        (relArray as any).forEach((item) => {
+                            const key = keyProperty === 'target_ref' ? item['target_ref'] : item['source_ref'];
+                            const valueId = keyProperty === 'target_ref' ? item['source_ref'] : item['target_ref'];
+
+                            if (!mapObj[key]) {
+                                mapObj[key] = new Set();
+                            }
+                            const foundObj = objsWithName.find((obj) => obj.id === valueId);
+                            mapObj[key].add(JSON.stringify({ 
+                                id: valueId, 
+                                name: foundObj && foundObj.name ? foundObj.name : 'Unknown'
+                            }));
+                        });
+                        for (const key in mapObj) {
+                            mapObj[key] = Array.from(mapObj[key]).map((objString: string) => JSON.parse(objString))
+                        }
+                        observer.next(mapObj);
+                    },
+                    error(err) { observer.error(err); },
+                    complete() { observer.complete(); }
+                });
+            });
+        };
+    }
     
     /**
      * @param  {ConfigKeys} configKey

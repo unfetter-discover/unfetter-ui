@@ -1,6 +1,6 @@
 
-import { forkJoin as observableForkJoin, of as observableOf, combineLatest as observableCombineLatest } from 'rxjs';
-import { withLatestFrom, switchMap, filter, map, mergeMap, pluck, skip, catchError } from 'rxjs/operators';
+import { forkJoin as observableForkJoin, of as observableOf, combineLatest as observableCombineLatest, forkJoin } from 'rxjs';
+import { withLatestFrom, switchMap, filter, map, mergeMap, pluck, skip, catchError, take } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -14,6 +14,7 @@ import { IndicatorSharingService } from '../indicator-sharing.service';
 import { Constance } from '../../utils/constance';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { SearchParameters } from '../models/search-parameters';
+import { IntrusionSet } from 'stix';
 
 @Injectable()
 export class IndicatorSharingEffects {
@@ -52,13 +53,22 @@ export class IndicatorSharingEffects {
                     ),
                 this.indicatorSharingService.getSensors(),
                 this.indicatorSharingService.getTotalIndicatorCount(),
-                this.indicatorSharingService.getInstrusionSetsByAttackPattern()
+                this.indicatorSharingService.getAttackPatternToIntrusionSetRelationships()
                     .pipe(
-                        RxjsHelpers.unwrapJsonApi(),
-                        RxjsHelpers.relationshipArrayToObject('intrusionSets')
+                        switchMap((rels) => forkJoin(
+                            observableOf(rels), 
+                            this.store.select('stix')
+                                .pipe(
+                                    pluck<any, IntrusionSet[]>('intrusionSets'),
+                                    filter((intS) => !!intS && intS.length > 0),
+                                    take(1)
+                                )
+                            )
+                        ),
+                        RxjsHelpers.stixRelationshipArrayToObject()
                     )
             )),
-            map((results: any[]) => [
+            map((results) => [
                 results[0].map((r) => r.attributes),
                 results[1],
                 results[2].map((r) => r.attributes),
