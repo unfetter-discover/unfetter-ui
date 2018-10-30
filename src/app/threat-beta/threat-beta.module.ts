@@ -33,6 +33,7 @@ import { ReportsCarouselComponent } from './feed/feed-carousel/reports-carousel.
 import { RelatedBoardsCarouselComponent } from './feed/feed-carousel/related-boards-carousel.component';
 import { FeedCarouselComponent } from './feed/feed-carousel/feed-carousel.component';
 import { CommentInputComponent } from './feed/activity-list/comment-input.component';
+import { DisplayCommentComponent } from './display-comment/display-comment.component';
 
 @NgModule({
   imports: [
@@ -70,6 +71,7 @@ import { CommentInputComponent } from './feed/activity-list/comment-input.compon
     ReportsCarouselComponent,
     RelatedBoardsCarouselComponent,
     CommentInputComponent,
+    DisplayCommentComponent,
   ],
   providers: [
     ThreatBetaGuard,

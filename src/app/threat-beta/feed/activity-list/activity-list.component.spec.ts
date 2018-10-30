@@ -25,6 +25,7 @@ import * as userActions from '../../../root-store/users/user.actions';
 import * as boardActions from '../../store/threat.actions';
 import { threatReducer } from '../../store/threat.reducers';
 import { StixCoreEnum } from 'stix';
+import { DisplayCommentComponent } from '../../display-comment/display-comment.component';
 
 describe('ActivityListComponent', () => {
 
@@ -129,6 +130,7 @@ describe('ActivityListComponent', () => {
                 declarations: [
                     ActivityListComponent,
                     CommentInputComponent,
+                    DisplayCommentComponent,
                     LoadingSpinnerComponent,
                     FieldSortPipe,
                     TimeAgoPipe,
