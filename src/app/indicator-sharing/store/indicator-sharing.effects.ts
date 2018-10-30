@@ -1,6 +1,6 @@
 
-import { forkJoin as observableForkJoin, of as observableOf, combineLatest as observableCombineLatest } from 'rxjs';
-import { withLatestFrom, switchMap, filter, map, mergeMap, pluck, skip, catchError } from 'rxjs/operators';
+import { forkJoin as observableForkJoin, of as observableOf, combineLatest as observableCombineLatest, forkJoin } from 'rxjs';
+import { withLatestFrom, switchMap, filter, map, mergeMap, pluck, skip, catchError, take } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -14,6 +14,7 @@ import { IndicatorSharingService } from '../indicator-sharing.service';
 import { Constance } from '../../utils/constance';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { SearchParameters } from '../models/search-parameters';
+import { IntrusionSet } from 'stix';
 
 @Injectable()
 export class IndicatorSharingEffects {
@@ -43,22 +44,30 @@ export class IndicatorSharingEffects {
     public fetchData = this.actions$
         .ofType(indicatorSharingActions.FETCH_DATA)
         .pipe(
-            switchMap(() => observableForkJoin(
-                this.indicatorSharingService.getIndicators(),
-                this.indicatorSharingService.getAttackPatternsByIndicator()
+            switchMap(() => {
+                // Wait until loading is complete for the STIX
+                return this.store.select('stix')
                     .pipe(
-                        RxjsHelpers.unwrapJsonApi(),
-                        RxjsHelpers.relationshipArrayToObject('attackPatterns')
+                        filter((state) => !!state.loadingComplete),
+                        take(1)
+                    );
+            }),
+            switchMap((stixState) => observableForkJoin(
+                this.indicatorSharingService.getIndicators(),
+                this.indicatorSharingService.getIndicatorToAttackPatternRelationships()
+                    .pipe(
+                        map((rels) => [rels, stixState.attackPatterns]),
+                        RxjsHelpers.stixRelationshipArrayToObject('source_ref')
                     ),
                 this.indicatorSharingService.getSensors(),
                 this.indicatorSharingService.getTotalIndicatorCount(),
-                this.indicatorSharingService.getInstrusionSetsByAttackPattern()
+                this.indicatorSharingService.getAttackPatternToIntrusionSetRelationships()
                     .pipe(
-                        RxjsHelpers.unwrapJsonApi(),
-                        RxjsHelpers.relationshipArrayToObject('intrusionSets')
+                        map((rels) => [rels, stixState.intrusionSets]),
+                        RxjsHelpers.stixRelationshipArrayToObject()
                     )
             )),
-            map((results: any[]) => [
+            map((results) => [
                 results[0].map((r) => r.attributes),
                 results[1],
                 results[2].map((r) => r.attributes),
@@ -170,9 +179,14 @@ export class IndicatorSharingEffects {
     public refreshApMap = this.actions$
         .ofType(indicatorSharingActions.REFRESH_AP_MAP)
         .pipe(
-            switchMap((_) => this.indicatorSharingService.getAttackPatternsByIndicator()),
-            RxjsHelpers.unwrapJsonApi(),
-            RxjsHelpers.relationshipArrayToObject('attackPatterns'),
+            withLatestFrom(this.store.select('stix')),
+            switchMap(([_, stixState]) => {
+                return this.indicatorSharingService.getIndicatorToAttackPatternRelationships()
+                    .pipe(
+                        map((rels) => [rels, stixState.attackPatterns]),
+                        RxjsHelpers.stixRelationshipArrayToObject('source_ref')
+                    );
+            }),
             map((indicatorToApMap) => new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap))
         );
 

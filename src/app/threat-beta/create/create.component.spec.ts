@@ -22,7 +22,7 @@ import MockThreatDashboardBetaService from '../testing/mock-threat.service';
 import { threatReducer } from '../store/threat.reducers';
 import { GenericApi } from '../../core/services/genericapi.service';
 
-fdescribe('CreateComponent', () => {
+describe('CreateComponent', () => {
 
     let fixture: ComponentFixture<CreateComponent>;
     let component: CreateComponent;
