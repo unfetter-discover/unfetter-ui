@@ -19,13 +19,14 @@ import { TacticsPaneComponent } from '../../../../../global/components/tactics-p
 import { TacticsTooltipComponent } from '../../../../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.component';
 import { TacticsTooltipService } from '../../../../../global/components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 import { TacticsTreemapComponent } from '../../../../../global/components/tactics-pane/tactics-treemap/tactics-treemap.component';
-import { mockTactics, mockUser } from '../../../../../global/components/tactics-pane/tactics.model.test';
+import { mockTactics, mockUser, mockAttackPatternData, mockTacticsConfig } from '../../../../../global/components/tactics-pane/tactics.model.test';
 import { TreemapComponent } from '../../../../../global/components/treemap/treemap.component';
 import { CapitalizePipe } from '../../../../../global/pipes/capitalize.pipe';
 import { AppState, reducers } from '../../../../../root-store/app.reducers';
 import * as userActions from '../../../../../root-store/users/user.actions';
 import * as stixActions from '../../../../../root-store/stix/stix.actions';
 import { SummaryTacticsComponent } from './summary-tactics.component';
+import { AddConfig } from '../../../../../root-store/config/config.actions';
 
 describe('SummaryTacticsComponent', () => {
 
@@ -77,8 +78,9 @@ describe('SummaryTacticsComponent', () => {
         fixture = TestBed.createComponent(SummaryTacticsComponent);
         component = fixture.componentInstance;
         store = TestBed.get(Store);
+        store.dispatch(new AddConfig(mockTacticsConfig));
         store.dispatch(new userActions.LoginUser(mockUser));
-        store.dispatch(new stixActions.SetAttackPatterns(mockTactics));
+        store.dispatch(new stixActions.SetAttackPatterns(mockAttackPatternData as any));
         fixture.detectChanges();
     });
 

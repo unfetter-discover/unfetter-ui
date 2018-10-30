@@ -15,6 +15,7 @@ import { TacticsTooltipComponent } from './tactics-tooltip/tactics-tooltip.compo
 import { TooltipEvent } from './tactics-tooltip/tactics-tooltip.service';
 import { TacticsTreemapComponent } from './tactics-treemap/tactics-treemap.component';
 import { Tactic, TacticChain } from './tactics.model';
+import { getVisualizationData } from '../../../root-store/stix/stix.selectors';
 
 @Component({
     selector: 'tactics-pane',
@@ -218,8 +219,7 @@ export class TacticsPaneComponent implements OnInit, OnDestroy {
             );
 
         this.chain$ = this.store
-            .select('stix').pipe(
-            pluck('visualizationData'),
+            .select(getVisualizationData).pipe(
             filter(t => t !== null),
             distinctUntilChanged())
             .subscribe(

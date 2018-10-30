@@ -1,6 +1,7 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { ThreatFeatureState, ThreatState } from './threat.reducers';
+import { getStixState } from '../../root-store/stix/stix.selectors';
 
 export const selectThreatState = createFeatureSelector<ThreatFeatureState, ThreatState>('threat');
 
@@ -26,7 +27,8 @@ export const getSelectedBoard = createSelector(
 export const getBoundaryObjects = createSelector(
     getSelectedBoard,
     selectThreatState,
-    (selectedBoard, threatState) => {
+    getStixState,
+    (selectedBoard, threatState, stixState) => {
         return {
             start_date: selectedBoard && selectedBoard.boundaries.start_date,
             end_date: selectedBoard && selectedBoard.boundaries.end_date,
@@ -35,7 +37,7 @@ export const getBoundaryObjects = createSelector(
                 && selectedBoard.boundaries.malware 
                 && selectedBoard.boundaries.malware.length
                 && selectedBoard.boundaries.malware.includes(malw.id)),
-            intrusion_sets: threatState.intrusionSets.filter((intSet) => selectedBoard 
+            intrusion_sets: stixState.intrusionSets.filter((intSet) => selectedBoard 
                 && selectedBoard.boundaries.intrusion_sets 
                 && selectedBoard.boundaries.intrusion_sets.length 
                 && selectedBoard.boundaries.intrusion_sets.includes(intSet.id))

@@ -13,10 +13,11 @@ import { HeatmapComponent } from '../../heatmap/heatmap.component';
 import { ResizeDirective } from '../../../directives/resize.directive';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CapitalizePipe } from '../../../pipes/capitalize.pipe';
-import { mockUser, mockTactics, mockAttackPatterns, mockTargets } from '../tactics.model.test';
+import { mockUser, mockTactics, mockAttackPatterns, mockTargets, mockTacticsConfig } from '../tactics.model.test';
 import * as stixActions from '../../../../root-store/stix/stix.actions';
 import * as userActions from '../../../../root-store/users/user.actions';
 import { reducers, AppState } from '../../../../root-store/app.reducers';
+import { AddConfig } from '../../../../root-store/config/config.actions';
 
 describe('TacticsHeatmapComponent', () => {
 
@@ -54,8 +55,9 @@ describe('TacticsHeatmapComponent', () => {
         component.targets = [];
         component.options = {};
         store = component['store'];
+        store.dispatch(new AddConfig(mockTacticsConfig));
         store.dispatch(new userActions.LoginUser(mockUser));
-        store.dispatch(new stixActions.SetAttackPatterns(mockTactics));
+        store.dispatch(new stixActions.SetAttackPatterns(mockAttackPatterns as any));
         fixture.detectChanges();
     });
 

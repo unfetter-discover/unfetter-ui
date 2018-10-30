@@ -1,7 +1,7 @@
 
-import { forkJoin as observableForkJoin,  Observable  } from 'rxjs';
+import { forkJoin as observableForkJoin,  Observable, combineLatest  } from 'rxjs';
 
-import { map } from 'rxjs/operators';
+import { map, pluck } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
@@ -9,6 +9,8 @@ import { IndicatorSharingSummaryStatistics } from '../models/summary-statistics'
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 import { ChartData } from '../../global/models/chart-data';
 import { Ng2ChartHelpers } from '../../global/static/ng2-chart-helpers';
+import { Store } from '@ngrx/store';
+import { IndicatorSharingFeatureState } from '../store/indicator-sharing.reducers';
 
 interface OrgMostData {
   org: string;
@@ -50,16 +52,19 @@ export class SummaryStatisticsComponent implements OnInit {
   public serverCallComplete: boolean = false;
   private identities: any[] = [];
 
-  constructor(private indicatorSharingService: IndicatorSharingService) {
+  constructor(
+    private indicatorSharingService: IndicatorSharingService,
+    public store: Store<IndicatorSharingFeatureState>,
+  ) {
     this.dataCategories.forEach((dataCategory) => {
       this.barChartData[dataCategory] = [];
     });
   }
 
   ngOnInit() {
-    const getStats$ = observableForkJoin(
+    const getStats$ = combineLatest(
       this.indicatorSharingService.getSummaryStatistics(), 
-      this.indicatorSharingService.getIdentities().pipe(RxjsHelpers.unwrapJsonApi())
+      this.store.select('stix').pipe(pluck('identities'))
     )
       .subscribe(
         ([stats, identities]: [IndicatorSharingSummaryStatistics[], any[]]) => {

@@ -1,33 +1,18 @@
 import { Action } from '@ngrx/store';
-import { Identity, MarkingDefinition } from 'stix';
-import { Dictionary } from 'stix/common/dictionary';
+import { Identity, MarkingDefinition, AttackPattern, IntrusionSet } from 'stix';
 
-import { TacticChain } from '../../global/components/tactics-pane/tactics.model';
-
-export const FETCH_IDENTITIES = '[Stix] Fetch Identities';
 export const SET_IDENTITIES = '[Stix] Set Identities';
-export const FETCH_MARKING_DEFINITIONS = '[Stix] Fetch Marking Definitions';
 export const SET_MARKING_DEFINITIONS = '[Stix] Set Marking Definitions';
-export const FETCH_ATTACK_PATTERNS = '[Stix] Fetch Attack Patterns';
 export const SET_ATTACK_PATTERNS = '[Stix] Set Attack Patterns';
+export const SET_INTRUSION_SETS = '[Stix] Set Intrusion Sets';
+export const SET_LOADING_COMPLETE = '[Stix] Set Loading Complete';
 export const FETCH_STIX = '[Stix] Fetch Stix';
 export const CLEAR_STIX = '[Stix] Clear Stix';
-
-export class FetchIdentities implements Action {
-    public readonly type = FETCH_IDENTITIES;
-}
 
 export class SetIdentities implements Action {
     public readonly type = SET_IDENTITIES;
 
     constructor(public payload: Identity[]) {}
-}
-
-/**
- * Used to retrieve all the known markings for this system, limited by the user's accesses.
- */
-export class FetchMarkingDefinitions implements Action {
-    public readonly type = FETCH_MARKING_DEFINITIONS;
 }
 
 /**
@@ -38,13 +23,21 @@ export class SetMarkingDefinitions implements Action {
     constructor(public payload: MarkingDefinition[]) { }
 }
 
-export class FetchAttackPatterns implements Action {
-    public readonly type = FETCH_ATTACK_PATTERNS;
-}
-
 export class SetAttackPatterns implements Action {
     public readonly type = SET_ATTACK_PATTERNS;
-    constructor(public payload: Dictionary<TacticChain>) { }
+    constructor(public payload: AttackPattern[]) { }
+}
+
+export class SetIntrusionSets implements Action {
+    public readonly type = SET_INTRUSION_SETS;
+
+    constructor(public payload: IntrusionSet[]) { }
+}
+
+export class SetLoadingComplete implements Action {
+    public readonly type = SET_LOADING_COMPLETE;
+
+    constructor(public payload: boolean) { }
 }
 
 export class FetchStix implements Action {
@@ -56,11 +49,10 @@ export class ClearStix implements Action {
 }
 
 export type StixActions = 
-    FetchIdentities |
     SetIdentities |
-    FetchMarkingDefinitions |
     SetMarkingDefinitions |
-    FetchAttackPatterns |
     SetAttackPatterns |
+    SetIntrusionSets |
+    SetLoadingComplete |
     FetchStix |
     ClearStix;

@@ -3,7 +3,7 @@ import { tap, switchMap, map, mergeMap, withLatestFrom, pluck, filter, catchErro
 import { forkJoin as observableForkJoin, of as observableOf, throwError } from 'rxjs';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { Malware, IntrusionSet, Report } from 'stix';
+import { Malware, Report } from 'stix';
 import { ThreatBoard, Article } from 'stix/unfetter/index';
 
 import { ThreatActionTypes } from './threat.actions';
@@ -24,8 +24,12 @@ export class ThreatEffects {
     public getBaseData = this.actions$
         .pipe(
             ofType(ThreatActionTypes.FetchBaseData),
-            switchMap(() => {                
-                const options: StixApiOptions = {
+            switchMap(() => {
+                const boardOptions: StixApiOptions = {
+                    metaproperties: true
+                };
+
+                const reportOptions: StixApiOptions = {
                     project: {
                         'stix.id': 1,
                         'stix.name': 1,
@@ -41,22 +45,16 @@ export class ThreatEffects {
                     metaproperties: true
                 };
 
-                const boardOptions: StixApiOptions = {
-                    metaproperties: true
-                };
-
                 return observableForkJoin(
                     this.genericApi.getStix<ThreatBoard[]>(StixUrls.X_UNFETTER_THREAT_BOARD, null, boardOptions),
                     this.genericApi.getStix<Malware[]>(StixUrls.MALWARE),
-                    this.genericApi.getStix<IntrusionSet[]>(StixUrls.INTRUSION_SET),
-                    this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, options)
+                    this.genericApi.getStix<Report[]>(StixUrls.REPORT, null, reportOptions),
                 );
             }),
-            mergeMap(([threatBoards, malware, intrusionSets, reports]) => {
+            mergeMap(([threatBoards, malware, reports]) => {
                 return [
                     new threatActions.SetBoardList(threatBoards),
                     new threatActions.SetMalware(malware),
-                    new threatActions.SetIntrusionSets(intrusionSets),
                     new threatActions.SetFeedReports(reports),
                     new threatActions.SetDashboardLoadingComplete(true)
                 ];

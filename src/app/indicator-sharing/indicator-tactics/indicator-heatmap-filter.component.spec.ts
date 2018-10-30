@@ -26,6 +26,8 @@ import { mockAttackPatterns } from '../../testing/mock-store';
 import { Dictionary } from '../../models/json/dictionary';
 import { TacticChain } from '../../global/components/tactics-pane/tactics.model';
 import { ResizeDirective } from '../../global/directives/resize.directive';
+import { mockTacticsConfig } from '../../global/components/tactics-pane/tactics.model.test';
+import { AddConfig } from '../../root-store/config/config.actions';
 
 describe('IndicatorHeatMapFilterComponent', () => {
 
@@ -178,9 +180,9 @@ describe('IndicatorHeatMapFilterComponent', () => {
         heatmap.nativeElement.style.height = '500px';
         component = fixture.componentInstance;
         let store = component.store;
+        store.dispatch(new AddConfig(mockTacticsConfig));
         store.dispatch(new userActions.LoginUser(testUser));
-        store.dispatch(new stixActions.SetAttackPatterns(tactics));
-        store.dispatch(new indicatorSharingActions.SetAttackPatterns(mockAttackPatternData));
+        store.dispatch(new stixActions.SetAttackPatterns(mockAttackPatternData as any));
         fixture.detectChanges();
     });
 
