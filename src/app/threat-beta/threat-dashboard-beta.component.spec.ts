@@ -7,7 +7,7 @@ import { GlobalModule } from '../global/global.module';
 import mockThreatReducer from './testing/mock-reducer';
 import { ThreatDashboardBetaComponent } from './threat-dashboard-beta.component';
 
-xdescribe('ThreatDashboardBetaComponent', () => {
+describe('ThreatDashboardBetaComponent', () => {
   let component: ThreatDashboardBetaComponent;
   let fixture: ComponentFixture<ThreatDashboardBetaComponent>;
 
