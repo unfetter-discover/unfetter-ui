@@ -18,6 +18,7 @@ import { ThreatDashboardBetaService } from '../threat-beta.service';
 import MockThreatDashboardBetaService from '../testing/mock-threat.service';
 import { GlobalModule } from '../../global/global.module';
 import { threatReducer } from '../store/threat.reducers';
+import { DisplayCommentComponent } from '../display-comment/display-comment.component';
 
 describe('FeedComponent', () => {
 
@@ -43,6 +44,7 @@ describe('FeedComponent', () => {
                     ActivityListComponent,
                     CommentInputComponent,
                     ContributorListComponent,
+                    DisplayCommentComponent,
                     ThreatHeaderComponent,
                     SideBoardComponent,
                 ],

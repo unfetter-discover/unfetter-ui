@@ -28,9 +28,7 @@
                 <ng-container *ngTemplateOutlet="articleTemplate;context:{article:item}"></ng-container>
             </ng-container>
             <ng-container *ngIf="item.comment">
-                <mat-card class="uf-mat-card">
-                    <ng-container *ngTemplateOutlet="commentTemplate;context:{item:item,parent:null}"></ng-container>
-                </mat-card>
+                <display-comment [comment]="item" [parent]=null [board]=threatBoard (newComment)="addAComment($event)"></display-comment>
             </ng-container>
         </ng-container>
 
@@ -40,64 +38,6 @@
 
 <ng-template #loadingBlock>
     <loading-spinner height="250px"></loading-spinner>
-</ng-template>
-
-<ng-template #commentTemplate let-item="item" let-parent="parent">
-
-    <div class="flex">
-        <div mat-card-avatar class="activity-avatar" [style.background-image]="getActivityAvatar(item)"></div>
-        <div class="flex1 activity-content">
-            <mat-card-header>
-                <mat-card-title>{{ getUserName(item) }}</mat-card-title>
-                <mat-card-subtitle> &bull; {{ item.submitted | timeAgo }}</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-                <markdown [data]="item.comment.content"></markdown>
-            </mat-card-content>
-        </div>
-    </div>
-
-    <mat-card-actions>
-        <button mat-button class="like-button" [style.color]="hasLikedActivity(item) ? 'blue' : 'inherit'"
-                (click)="clickActivityLike(item)">
-            <i class="material-icons">thumb_up</i>
-            <span [style.margin]="'0 6px'">Like</span>
-            <span *ngIf="hasActivityLikes(item)">({{ item.comment.likes.length }})</span>
-        </button>
-        <button mat-button *ngIf="commentTarget !== item" class="comment-button" (click)="commentTarget = item">
-            <i class="material-icons">chat_bubble</i> Reply
-        </button>
-    </mat-card-actions>
-
-    <mat-card-footer [style.padding]="'0 24px 24px 64px'">
-        <hr *ngIf="!parent && ((item.comment.replies && item.comment.replies.length) || (commentTarget === item))">
-        <comment-input *ngIf="commentTarget === item" (cancel)="commentTarget = false"
-                (submit)="submitActivityComment($event)"></comment-input>
-        <div *ngIf="hasActivityComments(item)">
-            <div *ngFor="let reply of item.comment.replies | sortByField: 'submitted'" class="flex">
-                <div mat-card-avatar class="activity-avatar"
-                        [style.background-image]="getActivityAvatar(reply)"></div>
-                <div class="flex1 activity-content">
-                    <mat-card-header>
-                        <mat-card-title>{{ getUserName(reply) }}</mat-card-title>
-                        <mat-card-subtitle> &bull; {{ reply.submitted | timeAgo }}</mat-card-subtitle>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <markdown [data]="reply.comment.content"></markdown>
-                        <button mat-button class="like-button"
-                                [style.margin-left]="'-16px'" [style.line-height]="'20px'"
-                                [style.color]="hasLikedActivity(reply) ? 'blue' : 'inherit'"
-                                (click)="clickActivityLike(reply)">
-                            <i class="material-icons">thumb_up</i>
-                            <span [style.margin]="'0 6px'">Like</span>
-                            <span *ngIf="hasActivityLikes(reply)">({{ reply.comment.likes.length }})</span>
-                        </button>
-                    </mat-card-content>
-                </div>
-            </div>
-        </div>
-    </mat-card-footer>
-
 </ng-template>
 
 <ng-template #articleTemplate let-article="article">
@@ -139,7 +79,7 @@
             <div label="Comments" *ngIf="hasActivityComments(article)">
                 <hr/>
                 <ng-container *ngFor="let comment of article.metaProperties.comments | sortByField: 'submitted'">
-                    <ng-container *ngTemplateOutlet="commentTemplate;context:{item:comment,parent:article}"></ng-container>
+                    <display-comment [comment]="comment" [parent]=article [board]=article (newComment)="addAComment($event)"></display-comment>
                 </ng-container>
             </div>
         </mat-card-footer>
