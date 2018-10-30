@@ -4,7 +4,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 import { GlobalModule } from '../global/global.module';
-import { threatReducer } from './store/threat.reducers';
+import mockThreatReducer from './testing/mock-reducer';
 import { ThreatDashboardBetaComponent } from './threat-dashboard-beta.component';
 
 xdescribe('ThreatDashboardBetaComponent', () => {
@@ -17,7 +17,7 @@ xdescribe('ThreatDashboardBetaComponent', () => {
       imports: [GlobalModule,
         RouterTestingModule,
         NoopAnimationsModule,
-        StoreModule.forRoot(threatReducer),
+        StoreModule.forRoot(mockThreatReducer),
       ],
       schemas: [NO_ERRORS_SCHEMA],
     })
