@@ -720,7 +720,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   public onMarkingChange(marking) {
     this.markingsChips['setMarkings'](this.currentBaseline);
-    this.markingsChips['changeDetection'].markForCheck();
   }
 
   /*

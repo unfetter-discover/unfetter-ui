@@ -1345,7 +1345,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   public onMarkingChange(marking) {
     this.markingsChips['setMarkings'](this.ext);
-    this.markingsChips['changeDetection'].markForCheck();
   }
 
   /**

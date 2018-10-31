@@ -9,7 +9,7 @@ import { MarkingDefinition } from 'stix';
     selector: 'markings-chips',
     templateUrl: './markings-chips.component.html',
     styleUrls: ['./markings-chips.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MarkingsChipsComponent implements OnInit, OnChanges {
 
@@ -24,7 +24,8 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
     private tlpOrder = ['white', 'green', 'amber', 'red'];
 
     constructor(
-        private store: Store<fromRoot.AppState>
+        private store: Store<fromRoot.AppState>,
+        private chgDetectorRef: ChangeDetectorRef
     ) {
     }
 
@@ -116,6 +117,8 @@ export class MarkingsChipsComponent implements OnInit, OnChanges {
             }
         }
         this._markings = markings;
+
+        this.chgDetectorRef.markForCheck();
     }
 
     // TODO update MarkingDefinition in stix package
