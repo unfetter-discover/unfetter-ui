@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { forkJoin } from 'rxjs';
 import { pluck, take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
@@ -263,6 +262,10 @@ export class ActivityListComponent implements OnInit {
         this.commentTarget = false;
     }
 
+    public addAComment(comment: any) {
+        this._activity[comment.id] = comment;
+    }
+
     private submitThreatBoardComment(comment: any) {
         if (this.threatBoard) {
             if (!this.threatBoard.metaProperties.comments) {
@@ -273,7 +276,7 @@ export class ActivityListComponent implements OnInit {
                 .subscribe(
                     (response) => {
                         console['debug'](`(${new Date().toISOString()}) board updated`);
-                        this._activity[comment.id] = comment;
+                        this.addAComment(comment);
                     },
                     (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
                 );

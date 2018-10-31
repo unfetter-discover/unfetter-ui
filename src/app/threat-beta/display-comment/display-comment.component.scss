@@ -1,0 +1,61 @@
+.activity-avatar {
+    margin-right: 8px;
+    background-size: cover;
+}
+
+hr {
+    margin: 8px 0;
+}
+
+mat-card {
+    margin-bottom: 16px;
+}
+
+mat-card-footer {
+    padding: 0 24px 24px 64px;
+}
+
+mat-card-footer .activity-avatar {
+    width: 30px;
+    height: 30px;
+    margin-left: 6px;
+    margin-right: 12px;
+    background-size: cover;
+}
+
+.comment-button, .like-button {
+    font-size: 14px;
+}
+
+:host ::ng-deep #display-comment {
+    mat-card-header {
+        margin-bottom: 0;
+    }
+
+    mat-card-title {
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: .1px;
+    }
+
+    mat-card-subtitle {
+        margin-bottom: 4px;
+        font-size: 14px;
+    }
+
+    mat-card-content {
+        margin-bottom: 0;
+        font-size: 16px;
+    }
+
+    mat-card-actions {
+        margin: 0 0 0 48px;
+        padding: 0;
+        text-align: left;
+    }
+
+    mat-card-footer mat-card-content {
+        font-size: 14px;
+    }
+}
