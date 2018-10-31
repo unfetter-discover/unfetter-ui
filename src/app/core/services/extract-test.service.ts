@@ -7,7 +7,15 @@ import { ExtractTextSupportedFileTypes } from '../../global/enums/extract-text-f
 import { Constance } from '../../utils/constance';
 import { RxjsHelpers } from '../../global/static/rxjs-helpers';
 
-// TODO interfaces
+export interface TextExtraction {
+    extractedText: String;
+    contentType?: String;
+    ext?: String;
+}
+
+export interface TextExtractionFromFile extends TextExtraction {
+    fileName: String;
+}
 
 @Injectable()
 export class ExtractTextService {
@@ -15,7 +23,7 @@ export class ExtractTextService {
         private genericApi: GenericApi
     ) { }
 
-    public extractTextFromUrl(urlToExtractFrom: string, fileType: ExtractTextSupportedFileTypes = ExtractTextSupportedFileTypes.PDF): Observable<any> {
+    public extractTextFromUrl(urlToExtractFrom: string, fileType: ExtractTextSupportedFileTypes = ExtractTextSupportedFileTypes.PDF): Observable<TextExtraction> {
         const url = `${Constance.UPLOAD_URL}/extract-text-from-url/${fileType}`;
         const data = {
             data: {
@@ -27,10 +35,10 @@ export class ExtractTextService {
         return this.genericApi.post(url, data)
             .pipe(
                 RxjsHelpers.unwrapJsonApi()
-            );
+            ) as any;
     }
 
-    public extractTextFromFile(file: File, fileType?: ExtractTextSupportedFileTypes, progressCallback?: (number) => void): Observable<any> {
+    public extractTextFromFile(file: File, fileType?: ExtractTextSupportedFileTypes, progressCallback?: (number) => void): Observable<TextExtractionFromFile> {
         if (!fileType) {
             fileType = ExtractTextSupportedFileTypes.PDF;
         } 

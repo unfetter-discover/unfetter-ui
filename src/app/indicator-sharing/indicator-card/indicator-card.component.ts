@@ -31,7 +31,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input() public indicator: any;
     @Input() public attackPatterns: any;
     @Input() public intrusionSets: any;
-    @Input() public creator: string;
+    @Input() public creator: any;
     @Input() public sensors: any;
     @Input() public searchParameters: Observable<SearchParameters>;
     @Input() public collapseAllCardsSubject: BehaviorSubject<boolean>;
