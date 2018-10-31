@@ -17,6 +17,7 @@ import { StixRelationshipTypes } from '../../global/enums/stix-relationship-type
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { downloadBundle } from '../../global/static/stix-bundle';
 import { SearchParameters } from '../models/search-parameters';
+import { AngularHelper } from '../../global/static/angular-helper';
 
 type mainWell = 'stats' | 'attackPatternsUsed' | 'none';
 
@@ -292,4 +293,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             );
     }
 
+    public trackByFn(index: number, item: any): number {
+        return AngularHelper.genericTrackBy(index, item);
+    }
 }
