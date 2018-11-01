@@ -83,7 +83,7 @@
                     <div class="row" infiniteScroll (atBottom)="displayShowMoreButton() ? showMoreIndicators() : ''">
                         <div id="indicatorListWrapper" class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
 
-                            <div *ngFor="let indicator of displayedIndicators" [ngClass]="{ 'mb-15': !collapseAllCards, 'mb-5': collapseAllCards }">
+                            <div *ngFor="let indicator of displayedIndicators; trackBy: trackByFn" [ngClass]="{ 'mb-15': !collapseAllCards, 'mb-5': collapseAllCards }">
                                 <indicator-card [indicator]="indicator" 
                                     [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)"
                                     [intrusionSets]="getIntrusionSetsByIndicatorId(indicator.id)"
@@ -93,8 +93,7 @@
                                     [collapseAllCardsSubject]="collapseAllCardsSubject"
                                     [userToken]="userToken$ | async"
                                     (stateChange)="updateIndicator($event)" 
-                                    (indicatorDeleted)="deleteIndicator($event)"
-                                    (indicatorEdit)="editIndicator($event)"></indicator-card>
+                                    (indicatorDeleted)="deleteIndicator($event)"></indicator-card>
                             </div>
 
                             <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">
