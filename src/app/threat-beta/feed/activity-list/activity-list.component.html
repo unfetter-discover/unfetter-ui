@@ -54,7 +54,7 @@
                     </mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>
-                    <markdown [data]="article.content"></markdown>
+                    <markdown-mentions [markDown]="article.content"></markdown-mentions>
                     <img *ngIf="article.image" mat-card-image src="{{ getActivityImage(article.image) }}">
                 </mat-card-content>
             </div>

@@ -29,17 +29,18 @@ export class MarkdownMentionsComponent implements OnInit {
   @Input()
   public goToProfileOnClick = true;
 
-  @Input()
-  public set markDown(md: string) {
-    this.markDown$.next(md);
-  }
-  public get markDown() { return this._markDown }
-
   /**
    * @description Used to pass in a Form Control's `valueChanges`
    */
   @Input()
   public markDown$: Subject<string> = new Subject();
+
+  @Input()
+  public set markDown(md: string) {
+    this._markDown = md;
+    requestAnimationFrame(() => this.markDown$.next(md));
+  }
+  public get markDown() { return this._markDown }  
 
   public rendered$: Observable<string>;
   private _markDown: string; 
@@ -79,8 +80,7 @@ export class MarkdownMentionsComponent implements OnInit {
           } else {
             return '';
           }          
-        }),
-        tap((md) => this._markDown = md),
+        })
       );
   }
 
