@@ -1,6 +1,6 @@
 
 import { finalize, debounceTime, distinctUntilChanged, pluck, map, filter, withLatestFrom, take } from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -22,7 +22,8 @@ import { getPreferredKillchainAttackPatterns } from '../../root-store/stix/stix.
 @Component({
   selector: 'indicator-sharing-filters',
   templateUrl: './indicator-sharing-filters.component.html',
-  styleUrls: ['./indicator-sharing-filters.component.scss']
+  styleUrls: ['./indicator-sharing-filters.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IndicatorSharingFiltersComponent implements OnInit {
 

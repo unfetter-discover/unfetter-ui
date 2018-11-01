@@ -83,7 +83,7 @@ export class IndicatorTacticsComponent implements OnInit {
     ngOnInit() { 
         this.targets$ = combineLatest(this.indicators, this.mappings)
         .pipe(
-            debounceTime(5),
+            debounceTime(200),
             map(([indicators, mappings]) => {
                 const targets: Dictionary<Tactic> = {};
                 indicators.forEach(indicator => {
