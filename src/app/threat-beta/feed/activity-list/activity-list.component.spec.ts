@@ -26,6 +26,9 @@ import * as boardActions from '../../store/threat.actions';
 import { threatReducer } from '../../store/threat.reducers';
 import { StixCoreEnum } from 'stix';
 import { DisplayCommentComponent } from '../../display-comment/display-comment.component';
+import { MarkdownMentionsComponent } from '../../../global/components/markdown-mentions/markdown-mentions.component';
+import { SimplemdeMentionsComponent } from '../../../global/components/simplemde-mentions/simplemde-mentions.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ActivityListComponent', () => {
 
@@ -126,12 +129,15 @@ describe('ActivityListComponent', () => {
                     MarkdownModule.forRoot(),
                     SimplemdeModule,
                     StoreModule.forRoot(reducers),
+                    RouterTestingModule,
                 ],
                 declarations: [
                     ActivityListComponent,
                     CommentInputComponent,
                     DisplayCommentComponent,
                     LoadingSpinnerComponent,
+                    MarkdownMentionsComponent,
+                    SimplemdeMentionsComponent,
                     FieldSortPipe,
                     TimeAgoPipe,
                 ],

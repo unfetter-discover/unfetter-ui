@@ -53,7 +53,10 @@ describe('MarkdownMentionsComponent', () => {
     const expected = `<a data-link="${mockUsers[0]._id}">@${mockUsers[0].userName}</a>`;
     fixture.detectChanges();
     tick(50);
-    expect(component['_markDown']).toBe(expected);
+    component.rendered$.subscribe((rendered) => {
+      expect(rendered).toBe(expected);
+      done();
+    });
   }));
 
   it('should NOT render mention of users NOT in user list', fakeAsync((done) => {
@@ -61,6 +64,9 @@ describe('MarkdownMentionsComponent', () => {
     const expected = '@fakeuser';
     fixture.detectChanges();
     tick(50);
-    expect(component['_markDown']).toBe(expected);
+    component.rendered$.subscribe((rendered) => {
+      expect(rendered).toBe(expected);
+      done();
+    });
   }));
 });
