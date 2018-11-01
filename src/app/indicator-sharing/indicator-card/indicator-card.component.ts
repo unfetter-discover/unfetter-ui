@@ -31,7 +31,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input() public indicator: any;
     @Input() public attackPatterns: any;
     @Input() public intrusionSets: any;
-    @Input() public creator: string;
+    @Input() public creator: any;
     @Input() public sensors: any;
     @Input() public searchParameters: Observable<SearchParameters>;
     @Input() public collapseAllCardsSubject: BehaviorSubject<boolean>;
@@ -44,7 +44,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
     @Output() public indicatorDeleted: EventEmitter<any> = new EventEmitter();
-    @Output() public indicatorEdit: EventEmitter<any> = new EventEmitter();
 
     public user;
     public showCommentTextArea: boolean = false;
@@ -271,19 +270,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                     }
                 }
             );
-    }
-
-    public editIndicator() {
-        const indicatorToEdit: any = {
-            ...this.indicator
-        };
-        if (this.attackPatterns && this.attackPatterns.length) {
-            if (!indicatorToEdit.metaProperties) {
-                indicatorToEdit.metaProperties = {};
-            }
-            indicatorToEdit.metaProperties.relationships = this.attackPatterns.map((ap) => ap.id);
-        }
-        this.indicatorEdit.emit(indicatorToEdit)
     }
 
     public deleteIndicator() {
