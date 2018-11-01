@@ -1,4 +1,4 @@
-import { Component, forwardRef, ViewChild, ElementRef, AfterViewInit, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, forwardRef, ViewChild, ElementRef, AfterViewInit, OnInit, HostListener, ChangeDetectorRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
 import { of as observableOf, BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { take, switchMap, combineAll, map, pluck, withLatestFrom, filter } from 'rxjs/operators';
@@ -47,6 +47,12 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
   @ViewChild('userMentions') public userMentions: ElementRef;
   @ViewChild('mde') public mde: Simplemde | any;
   public formDirty = false;
+
+  /**
+   * @description This used to add to or override options in mdeOptions
+   */
+  @Input()
+  public options: SimpleMDE.Options = {};
   
   public mdeOptions: SimpleMDE.Options = {
     ...SimpleMDEConfig.basicConfig,
@@ -104,6 +110,11 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
   }
 
   public ngOnInit() {
+    this.mdeOptions = {
+      ...this.mdeOptions,
+      ...this.options
+    };
+
     this.user$ = this.store.select('users').pipe(pluck('userList'));
     
     this.displayedUsers$ = combineLatest(this.user$, this.mentionTerm$)

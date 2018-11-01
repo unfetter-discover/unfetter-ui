@@ -60,21 +60,25 @@ export class MarkdownMentionsComponent implements OnInit {
       .pipe(
         debounceTime(30),
         map(([md, users]) => {
-          return md.replace(
-            /(^@\w+)|(\W)(@\w+)/g,
-            (match, g1, g2, g3) => {
-              const user = users.find((_user) => _user.userName === (g1 || g3).substring(1));
-              if (user) {
-                if (g1) {
-                  return `<a data-link="${user._id}">${g1}</a>`;
+          if (md) {
+            return md.replace(
+              /(^@\w+)|(\W)(@\w+)/g,
+              (match, g1, g2, g3) => {
+                const user = users.find((_user) => _user.userName === (g1 || g3).substring(1));
+                if (user) {
+                  if (g1) {
+                    return `<a data-link="${user._id}">${g1}</a>`;
+                  } else {
+                    return `${g2}<a data-link="${user._id}">${g3}</a>`;
+                  }
                 } else {
-                  return `${g2}<a data-link="${user._id}">${g3}</a>`;
+                  return match;
                 }
-              } else {
-                return match;
               }
-            }
-          );
+            );
+          } else {
+            return '';
+          }          
         }),
         tap((md) => this._markDown = md),
       );
