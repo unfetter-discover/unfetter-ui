@@ -19,8 +19,10 @@
                 <input matInput class="form-control" required placeholder="Capability Group Name" value="addCategory.name" [(ngModel)]="addCategory.name">
               </mat-form-field>
             </div>
-            <button type="submit"  class="mat-primary" mat-raised-button [disabled]="!addCategory.name" (click)="addNewCategory(addCategory)"><i class="material-icons">save</i> SAVE {{ addCategory.name }}</button>
-            <button type="submit"  class="mat-primary" mat-raised-button (click)="cancelAddNewCategory()">CANCEL</button>
+            <mat-card-actions class="text-right">
+              <button type="submit"  class="mat-primary" mat-raised-button [disabled]="!addCategory.name" (click)="addNewCategory(addCategory)"><i class="bmargin material-icons">save</i> SAVE {{ addCategory.name }}</button>
+              <button type="submit"  class="mat-primary" mat-raised-button (click)="cancelAddNewCategory()">CANCEL</button>
+            </mat-card-actions>
           </div>
         </div>
       </div>
