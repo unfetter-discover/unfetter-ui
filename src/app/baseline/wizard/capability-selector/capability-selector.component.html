@@ -19,8 +19,10 @@
                 <input matInput class="form-control" required placeholder="Capability Name" value="addCapability.name" [(ngModel)]="addCapability.name">
               </mat-form-field>
             </div>
-            <button type="submit"  class="mat-primary" mat-raised-button [disabled]="!addCapability.name" (click)="addNewCapability(addCapability)"><i class="material-icons">save</i> SAVE {{ addCapability.name }}</button>
-            <button type="submit"  class="mat-primary" mat-raised-button (click)="cancelAddNewCapability()">CANCEL</button>
+            <mat-card-actions class="text-right">
+              <button type="submit" mat-raised-button color="primary" [disabled]="!addCapability.name" (click)="addNewCapability(addCapability)"><i class="bmargin material-icons">save</i> SAVE {{ addCapability.name }}</button>
+              <button type="submit" mat-raised-button color="primary" (click)="cancelAddNewCapability()">CANCEL</button>
+            </mat-card-actions>
           </div>
         </div>
       </div>
