@@ -12,6 +12,11 @@ simplemde {
   }
 }
 
+.mdeComment .CodeMirror,
+.mdeComment .CodeMirror-scroll {
+  min-height: 100px;
+}
+
 .mdeError, .cmError {
     .editor-toolbar, .toolbar {
         border-left: 1px solid $warn-color;
