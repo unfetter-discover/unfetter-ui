@@ -29,17 +29,18 @@ export class MarkdownMentionsComponent implements OnInit {
   @Input()
   public goToProfileOnClick = true;
 
-  @Input()
-  public set markDown(md: string) {
-    this.markDown$.next(md);
-  }
-  public get markDown() { return this._markDown }
-
   /**
    * @description Used to pass in a Form Control's `valueChanges`
    */
   @Input()
   public markDown$: Subject<string> = new Subject();
+
+  @Input()
+  public set markDown(md: string) {
+    this._markDown = md;
+    requestAnimationFrame(() => this.markDown$.next(md));
+  }
+  public get markDown() { return this._markDown }  
 
   public rendered$: Observable<string>;
   private _markDown: string; 
@@ -60,23 +61,26 @@ export class MarkdownMentionsComponent implements OnInit {
       .pipe(
         debounceTime(30),
         map(([md, users]) => {
-          return md.replace(
-            /(^@\w+)|(\W)(@\w+)/g,
-            (match, g1, g2, g3) => {
-              const user = users.find((_user) => _user.userName === (g1 || g3).substring(1));
-              if (user) {
-                if (g1) {
-                  return `<a data-link="${user._id}">${g1}</a>`;
+          if (md) {
+            return md.replace(
+              /(^@\w+)|(\W)(@\w+)/g,
+              (match, g1, g2, g3) => {
+                const user = users.find((_user) => _user.userName === (g1 || g3).substring(1));
+                if (user) {
+                  if (g1) {
+                    return `<a data-link="${user._id}">${g1}</a>`;
+                  } else {
+                    return `${g2}<a data-link="${user._id}">${g3}</a>`;
+                  }
                 } else {
-                  return `${g2}<a data-link="${user._id}">${g3}</a>`;
+                  return match;
                 }
-              } else {
-                return match;
               }
-            }
-          );
-        }),
-        tap((md) => this._markDown = md),
+            );
+          } else {
+            return '';
+          }          
+        })
       );
   }
 

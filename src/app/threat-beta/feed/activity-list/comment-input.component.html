@@ -1,6 +1,7 @@
-<div class="mt-20 overFlowHidden">
+<!-- NOTE the `overflowHidden` class was removed to allow the mentions window to display, this may cause issues -->
+<div class="mt-20">
     <div class="mb-6">
-        <simplemde [(ngModel)]="text" [options]="{ autofocus: true }"></simplemde>
+        <simplemde-mentions ngDefaultControl [(ngModel)]="text" [options]="{ autofocus: true }" class="mdeComment"></simplemde-mentions>
     </div>
     <div class="text-right">
         <button mat-button (click)="onCancel()">CANCEL</button>

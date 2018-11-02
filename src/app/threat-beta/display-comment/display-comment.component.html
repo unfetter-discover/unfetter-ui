@@ -5,10 +5,10 @@
         <div class="flex1 activity-content">
             <mat-card-header>
                 <mat-card-title>{{ getUserName(comment) }}</mat-card-title>
-                <mat-card-subtitle> &bull; {{ comment.submitted | timeAgo }}</mat-card-subtitle>
+                <mat-card-subtitle>{{ comment.submitted | timeAgo }}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
-                <markdown [data]="comment.comment.content"></markdown>
+                <markdown-mentions [markDown]="comment.comment.content"></markdown-mentions>
             </mat-card-content>
         </div>
     </div>
@@ -37,10 +37,10 @@
                 <div class="flex1 activity-content">
                     <mat-card-header>
                         <mat-card-title>{{ getUserName(reply) }}</mat-card-title>
-                        <mat-card-subtitle> &bull; {{ reply.submitted | timeAgo }}</mat-card-subtitle>
+                        <mat-card-subtitle>{{ reply.submitted | timeAgo }}</mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-content>
-                        <markdown [data]="reply.comment.content"></markdown>
+                        <markdown-mentions [markDown]="reply.comment.content"></markdown-mentions>
                         <button mat-button class="like-button"
                                 [style.margin-left]="'-16px'" [style.line-height]="'20px'"
                                 [style.color]="hasLiked(reply) ? 'blue' : 'inherit'"
