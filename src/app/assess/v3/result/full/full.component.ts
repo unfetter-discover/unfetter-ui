@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, forkJoin } from 'rxjs';
-import { distinctUntilChanged, filter, pluck, take, tap, debounceTime } from 'rxjs/operators';
+import { distinctUntilChanged, filter, pluck, take, tap, debounceTime, map, mergeMap } from 'rxjs/operators';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentEvalTypeEnum } from 'stix/assess/v3/assessment-eval-type.enum';
@@ -124,8 +124,19 @@ export class FullComponent implements OnInit, OnDestroy {
           const assessmentType = (assessment !== undefined && assessment.determineAssessmentType) ?
               assessment.determineAssessmentType() : 'Unknown';
           this.assessmentName = `${assessment.name} - ${assessmentType}`;
+          console.log('got assessment', assessment, assessmentType, this.assessmentName);
           this.requestGroupSectionDataLoad(assessment);
         }
+      );
+    this.assessmentName$ = this.assessment$
+      .pipe(
+        filter(assessment => !!assessment.id),
+        map((assessment) => {
+            const assessmentType = (assessment !== undefined && assessment.determineAssessmentType) ?
+                assessment.determineAssessmentType() : 'Unknown';
+            this.assessmentName = `${assessment.name} - ${assessmentType}`;
+            return this.assessmentName;
+        }),
       );
 
     this.assessmentGroup$ = this.store
@@ -154,45 +165,47 @@ export class FullComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
       );
     this.unassessedPhases$ = forkJoin(this.assessment$, this.assessmentGroup$, tacticsChain$)
-      .mergeMap((results: [Assessment, FullAssessmentGroup, Dictionary<TacticChain>]) => {
-        if (!results || (results.length !== 3)) {
-          return [[]];
-        }
-
-        const assessment = results[0];
-        const group = results[1];
-        const tacticsChains = results[2];
-
-        if (group.finishedLoadingGroupData === false) {
+      .pipe(
+        mergeMap((results: [Assessment, FullAssessmentGroup, Dictionary<TacticChain>]) => {
+          if (!results || (results.length !== 3)) {
             return [[]];
+          }
+  
+          const assessment = results[0];
+          const group = results[1];
+          const tacticsChains = results[2];
+  
+          if (group.finishedLoadingGroupData === false) {
+              return [[]];
+          }
+  
+          if (assessment === undefined || tacticsChains === undefined) {
+              return [group.unassessedPhases];
+          }
+  
+          const riskByAttackPattern = group.riskByAttackPattern;
+          const assessedPhases = riskByAttackPattern.phases.map((phase) => phase._id);
+          const assessedPhaseIdSet = new Set<string>(assessedPhases);
+          const frameworkKeys = Object.keys(tacticsChains);
+          const frameworksMatched = frameworkKeys.filter((key) => {
+              const hasId = tacticsChains[key].phases.some((el) => assessedPhaseIdSet.has(el.id));
+              return hasId;
+          });
+  
+          if (!frameworksMatched || frameworksMatched.length < 1) {
+              console.log(`could not determine the correct framework for the unassessed phases. attempting to move on...`);
+              return [group.unassessedPhases];
+          }
+  
+          const curFrameworkKey = frameworksMatched[0];
+          const curFrameworkPhases = tacticsChains[curFrameworkKey].phases;
+          const curFrameworkUnassessedPhases = curFrameworkPhases
+              .filter((phase) => assessedPhases.indexOf(phase.id) < 0)
+              .map((phase) => phase.id);
+          return [curFrameworkUnassessedPhases];
         }
-
-        if (assessment === undefined || tacticsChains === undefined) {
-            return [group.unassessedPhases];
-        }
-
-        const riskByAttackPattern = group.riskByAttackPattern;
-        const assessedPhases = riskByAttackPattern.phases.map((phase) => phase._id);
-        const assessedPhaseIdSet = new Set<string>(assessedPhases);
-        const frameworkKeys = Object.keys(tacticsChains);
-        const frameworksMatched = frameworkKeys.filter((key) => {
-            const hasId = tacticsChains[key].phases.some((el) => assessedPhaseIdSet.has(el.id));
-            return hasId;
-        });
-
-        if (!frameworksMatched || frameworksMatched.length < 1) {
-            console.log(`could not determine the correct framework for the unassessed phases. attempting to move on...`);
-            return [group.unassessedPhases];
-        }
-
-        const curFrameworkKey = frameworksMatched[0];
-        const curFrameworkPhases = tacticsChains[curFrameworkKey].phases;
-        const curFrameworkUnassessedPhases = curFrameworkPhases
-            .filter((phase) => assessedPhases.indexOf(phase.id) < 0)
-            .map((phase) => phase.id);
-        return [curFrameworkUnassessedPhases];
-      }
-    );
+      )
+      );
 
     this.finishedLoading$ = this.store
       .select(getAllFinishedLoadingOrFailure)
