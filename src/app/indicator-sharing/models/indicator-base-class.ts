@@ -10,6 +10,7 @@ import { SortHelper } from '../../global/static/sort-helper';
 export abstract class IndicatorBase {
     public errorMessage: string = null;
     public indicatorToAttackPatternMap = {};
+    public indicatorToAttackPatternMap$;
     public intrusionSetToAttackPatternMap = {};
     public identities = [];
     public indicatorToSensorMap = {};
@@ -54,6 +55,8 @@ export abstract class IndicatorBase {
                     }
                 }
             );
+
+        this.indicatorToAttackPatternMap$ = this.store.select('indicatorSharing').pipe(pluck('indicatorToApMap'));
 
         const getIndicatorToAttackPatternMap$ = this.store.select('indicatorSharing').pipe(
             pluck('indicatorToApMap'),

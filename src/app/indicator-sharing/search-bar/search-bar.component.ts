@@ -1,6 +1,6 @@
 
 import { filter, pluck, debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
@@ -10,7 +10,8 @@ import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 @Component({
   selector: 'search-bar',
   templateUrl: './search-bar.component.html',
-  styleUrls: ['./search-bar.component.scss']
+  styleUrls: ['./search-bar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchBarComponent implements OnInit {
 

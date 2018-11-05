@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { PatternHandlerPatternObject } from '../../../global/models/pattern-handlers';
@@ -6,7 +6,8 @@ import { PatternHandlerPatternObject } from '../../../global/models/pattern-hand
 @Component({
   selector: 'observed-data-filter',
   templateUrl: './observed-data-filter.component.html',
-  styleUrls: ['./observed-data-filter.component.scss']
+  styleUrls: ['./observed-data-filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ObservedDataFilterComponent implements OnInit {
 
