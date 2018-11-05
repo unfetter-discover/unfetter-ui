@@ -123,7 +123,6 @@ export class FullComponent implements OnInit, OnDestroy {
           const assessmentType = (assessment !== undefined && assessment.determineAssessmentType) ?
               assessment.determineAssessmentType() : 'Unknown';
           this.assessmentName = `${assessment.name} - ${assessmentType}`;
-          console.log('got assessment', assessment, assessmentType, this.assessmentName);
           this.requestGroupSectionDataLoad(assessment);
         }
       );
@@ -277,7 +276,7 @@ export class FullComponent implements OnInit, OnDestroy {
       routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.rollupId]);
     }
 
-    routePromise.catch((e) => console.log(e));
+    routePromise.catch((e) => (e));
     return routePromise;
   }
 
