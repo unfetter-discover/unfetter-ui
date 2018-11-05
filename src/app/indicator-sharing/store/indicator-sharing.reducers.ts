@@ -136,13 +136,13 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                 indicatorsCopy.splice(deleteIndex, 1);
             }
 
-            const filteredIndicatorsCopy = [...state.indicators];
+            const filteredIndicatorsCopy = [...state.filteredIndicators];
             const filteredDeleteIndex = filteredIndicatorsCopy.findIndex((indicator) => indicator.id === action.payload);
             if (filteredDeleteIndex > -1) {
                 filteredIndicatorsCopy.splice(filteredDeleteIndex, 1);
             }
 
-            const displayedIndicatorsCopy = [...state.indicators];
+            const displayedIndicatorsCopy = [...state.displayedIndicators];
             const displayedDeleteIndex = displayedIndicatorsCopy.findIndex((indicator) => indicator.id === action.payload);
             if (displayedDeleteIndex > -1) {
                 displayedIndicatorsCopy.splice(displayedDeleteIndex, 1);
