@@ -29,7 +29,7 @@ export class ThreatDashboardBetaComponent implements OnInit {
 
   private location: Location;
 
-  readonly baseAssessUrl = '/threat-beta/';
+  readonly baseThreatBetaUrl = '/threat-beta/';
   readonly boardFeedRoute = 'feed';
   readonly boardRoute = 'board';
   readonly articleRoute = 'article';
@@ -39,9 +39,9 @@ export class ThreatDashboardBetaComponent implements OnInit {
   masterListOptions = {
     dataSource: null,
     columns: new MasterListDialogTableHeaders('modified', 'Modified'),
-    displayRoute: this.baseAssessUrl + '/result/summary',
-    modifyRoute: this.baseAssessUrl + '/wizard/edit',
-    createRoute: this.baseAssessUrl + '/create',
+    displayRoute: this.baseThreatBetaUrl + '/result/summary',
+    modifyRoute: this.baseThreatBetaUrl + '/wizard/edit',
+    createRoute: this.baseThreatBetaUrl + '/create',
   };
 
   constructor(private router: Router, private store: Store<ThreatFeatureState>) { // private location: Location) {
@@ -54,8 +54,14 @@ export class ThreatDashboardBetaComponent implements OnInit {
 
   public boardView(boardId): Promise<boolean> {
     let routePromise: Promise<boolean>;
-    routePromise = this.router.navigate([this.baseAssessUrl, boardId, this.boardFeedRoute]);
+    routePromise = this.router.navigate([this.baseThreatBetaUrl, boardId, this.boardFeedRoute]);
     routePromise.catch((e) => console.log(e));
+    return routePromise;
+  }
+
+  public editBoard(boardId): Promise<boolean> {
+    let routePromise: Promise<boolean>;
+    routePromise = this.router.navigate([this.baseThreatBetaUrl, 'edit', boardId]);
     return routePromise;
   }
 

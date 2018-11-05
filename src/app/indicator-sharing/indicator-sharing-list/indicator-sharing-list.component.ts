@@ -32,6 +32,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
     public displayedIndicators: any[];
     public filteredIndicators: any[];
+    public filteredIndicators$;
     public DEFAULT_LENGTH: number = Constance.INDICATOR_SHARING.DEFAULT_LIST_LENGTH;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
@@ -71,6 +72,8 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
     public ngOnInit() {
         this.initBaseData();
+
+        this.filteredIndicators$ = this.store.select('indicatorSharing').pipe(pluck('filteredIndicators'));
 
         const filteredIndicatorSub$ = this.store.select('indicatorSharing').pipe(
             pluck('filteredIndicators'),

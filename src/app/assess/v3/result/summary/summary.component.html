@@ -1,5 +1,5 @@
 <ng-container *ngIf="(finishedLoadingAll$|async) === true; else loadingBlock">
-<div id="newAssessmentsSummary" *ngIf="(summary$|async) && (failedToLoad$|async) === false; else failedToLoadBlock" class="fadeIn">
+<div id="newAssessmentsSummary" *ngIf="(failedToLoad$|async) === false; else failedToLoadBlock" class="fadeIn">
   <mat-sidenav-container>
     <mat-sidenav class="side-panel" mode="side" opened="true">
       <unfetter-side-panel class="side-panel" [item]="{ name: assessmentName$ | async }" collapsible="false" width="320">
@@ -13,12 +13,12 @@
           (edit)="onEdit($event)" (delete)="onDelete($event)"></master-list-dialog-trigger>
 
         <markings-chips [model]="summary"></markings-chips>
-        <sidepanel-list-item [label]="(summary$ | async)?.name" [items]="([summary$|async])" expandable="true">
-          <mat-list-item *ngFor="let summ of ([summary$|async]); trackBy:trackByFn" class="list-divider" [@slideInOutAnimation]>
+        <sidepanel-list-item [label]="(summary?.name)" [items]="([summary])" expandable="true">
+          <mat-list-item class="list-divider" [@slideInOutAnimation]>
             <h4 mat-line>
-              {{summ?.name}}
+              {{summary?.name}}
             </h4>
-            <div mat-line class="mat-caption"> {{summ?.assessment_objects[0]?.stix?.type}} </div>
+            <div mat-line class="mat-caption"> {{summary?.assessment_objects[0]?.stix?.type}} </div>
           </mat-list-item>
         </sidepanel-list-item>
 

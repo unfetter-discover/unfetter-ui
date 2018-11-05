@@ -5,51 +5,58 @@
         <div class="flex flex-cols side-nav-top">
         </div>
         <mat-tab-group>
-            <mat-tab label="MY BOARDS">
-              <div class="side-nav-item header-text" *ngFor="let board of boards$ | async">
-                <div>
+          <mat-tab label="MY BOARDS">
+            <div class="side-nav-item header-text" *ngFor="let board of boards$ | async">
+              <div class="pointer" (click)="boardView(board.id)"> 
                 {{board.name}}
-                </div>
-                <div class="flex1"></div>
-                <button mat-icon-button [matMenuTriggerFor]="menu" class="align mat-24">
-                  <mat-icon>more_vert</mat-icon>
+              </div>
+              <div class="flex1"></div>
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="align mat-24">
+                <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="boardView(board.id)" *ngIf="!canCrud"> <!-- TODO reverse & fix "canCrud" check -->
-                    <mat-icon>details</mat-icon>
-                    <span>View</span>
-                  </button>
-                  <button mat-menu-item (click)="editBoard(board.id)" *ngIf="!canCrud">
-                    <mat-icon>edit</mat-icon>
-                    <span>Edit</span>
-                  </button>
-                  <button mat-menu-item (click)="deleteBoard(board.id)" *ngIf="!canCrud">
-                      <mat-icon>delete</mat-icon>
-                      <span>Delete</span>
-                  </button>
+                <button mat-menu-item (click)="boardView(board.id)">
+                  <!-- TODO reverse & fix "canCrud" check -->
+                  <mat-icon>details</mat-icon>
+                  <span>View</span>
+                </button>
+                <button mat-menu-item (click)="editBoard(board.id)" *ngIf="!canCrud">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                <button mat-menu-item (click)="deleteBoard(board.id)" *ngIf="!canCrud">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
               </mat-menu>
-              </div>
-            </mat-tab>
-            <mat-tab label="FOLLOWING">
-              <div class="side-nav-item header-text" *ngFor="let board of boards$ | async"> <!-- TODO use different list of boards -->
-                <div>
+            </div>
+          </mat-tab>
+          <mat-tab label="FOLLOWING">
+            <div class="side-nav-item header-text" *ngFor="let board of boards$ | async">
+              <!-- TODO use different list of boards -->
+              <div>
                 {{board.name}}
-                </div>
-                <div class="flex1"></div>
-                <button mat-icon-button [matMenuTriggerFor]="menu" class="align mat-24">
-                  <mat-icon>more_vert</mat-icon>
+              </div>
+              <div class="flex1"></div>
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="align mat-24">
+                <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="boardClicked(board.id)" *ngIf="!canCrud">
-                    <mat-icon>details</mat-icon>
-                    <span>View</span>
-                  </button>
+                <button mat-menu-item (click)="boardClicked(board.id)" *ngIf="!canCrud">
+                  <mat-icon>details</mat-icon>
+                  <span>View</span>
+                </button>
               </mat-menu>
-              </div>
-            </mat-tab>
-          </mat-tab-group>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
       </mat-sidenav>
       <mat-sidenav-content class="sidenavContentPolyfill320">
+        <div class="flex flexRow">
+          <div class="flex">
+            <uf-info-bar isWarningMsg="true" message="This dashboard for Beta testing. Some functionality incomplete!"></uf-info-bar>
+          </div>
+        </div>
         <div class="main-panel">
           <global-feed></global-feed>
         </div>

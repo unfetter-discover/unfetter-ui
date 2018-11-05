@@ -1,5 +1,8 @@
-<tactics-pane id="indicator-tactics" [targets]="targets"
-        [theme]="'theme-bg-primary theme-color-primary'"
-        [heatmapOptions]="heatmapOptions"
-        [treemapOptions]="treemapOptions"
-        [carouselOptions]="carouselOptions"></tactics-pane>
+<div *ngIf="targets$ | async as targets" id="indicatorTacticsComponent" class="overFlowHidden">
+        <tactics-pane id="indicator-tactics" 
+                [targets]="targets" 
+                [theme]="'theme-bg-primary theme-color-primary'"
+                [heatmapOptions]="heatmapOptions" 
+                [treemapOptions]="treemapOptions" 
+                [carouselOptions]="carouselOptions"></tactics-pane>
+</div>

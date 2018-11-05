@@ -73,9 +73,8 @@
                             <div class="pl-24 pr-24" *ngIf="activeMainWell === 'stats'">
                                 <indicator-sharing-summary-statistics></indicator-sharing-summary-statistics>
                             </div>
-                            <div class="pl-24 pr-24" *ngIf="activeMainWell === 'attackPatternsUsed'">
-                                <indicator-tactics [indicators]="filteredIndicators"
-                                        [mappings]="indicatorToAttackPatternMap"></indicator-tactics>
+                            <div class="pl-24 pr-24" *ngIf="activeMainWell === 'attackPatternsUsed' && filteredIndicators$ && indicatorToAttackPatternMap$">
+                                <indicator-tactics [indicators]="filteredIndicators$" [mappings]="indicatorToAttackPatternMap$"></indicator-tactics>
                             </div>
                         </div>
                     </div>
