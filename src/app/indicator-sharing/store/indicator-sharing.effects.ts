@@ -194,7 +194,6 @@ export class IndicatorSharingEffects {
     public fetchIndicators = this.actions$
         .ofType(indicatorSharingActions.FETCH_INDICATORS)
         .pipe(
-            skip(1), // To prevent first fetch
             withLatestFrom(this.store.select('indicatorSharing')),
             switchMap(([_, indicatorSharingState]: [any, fromIndicators.IndicatorSharingState]) => {
                 const { searchParameters, sortBy, intrusionSetsByAttackpattern } = indicatorSharingState;

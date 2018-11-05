@@ -1,6 +1,6 @@
 
 import { distinctUntilChanged, pluck, map, withLatestFrom, filter, tap } from 'rxjs/operators';
-import { Component, OnInit, Input } from '@angular/core'; 
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core'; 
 import { Store } from '@ngrx/store';
 
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
@@ -14,7 +14,8 @@ import { getPreferredKillchainAttackPatterns } from '../../root-store/stix/stix.
   selector: 'add-attack-pattern',
   templateUrl: './add-attack-pattern.component.html',
   styleUrls: ['./add-attack-pattern.component.scss'],
-  animations: [heightCollapse]
+  animations: [heightCollapse],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddAttackPatternComponent implements OnInit {
   @Input() public indicator: any;
@@ -30,24 +31,6 @@ export class AddAttackPatternComponent implements OnInit {
 
   ngOnInit() {
     this.displayedAttackPatterns$ = this.store.select(getPreferredKillchainAttackPatterns);
-    // this.displayedAttackPatterns$ = this.store.select('indicatorSharing')
-    // .pipe(
-    //   pluck('attackPatterns'),
-    //   withLatestFrom(this.store.select(getPreferredKillchain)),
-    //   map(([attackPatterns, preferredKillchain]: [any[], string]) => {
-    //     return attackPatterns
-    //       .filter((attackPattern) => {            
-    //         return attackPattern.kill_chain_phases 
-    //           && attackPattern.kill_chain_phases.length
-    //           && attackPattern.kill_chain_phases
-    //               .map((kcp) => kcp.kill_chain_name)
-    //               .includes(preferredKillchain)
-    //           && !this.existingAttackPatterns
-    //               .find((existingAttackPattern: any) => existingAttackPattern.id === attackPattern.id);
-    //       });
-    //   }),
-    //   RxjsHelpers.sortByField('name', 'ASCENDING')
-    // );
 
     const getFilteredAp$ = this.store.select('indicatorSharing').pipe(
       pluck('searchParameters'),

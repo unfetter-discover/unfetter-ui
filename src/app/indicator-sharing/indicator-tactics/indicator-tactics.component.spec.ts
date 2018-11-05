@@ -1,6 +1,7 @@
 import { TestBed, ComponentFixture, async, } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, Store } from '@ngrx/store';
+import { of as observableOf } from 'rxjs';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -100,14 +101,12 @@ describe('IndicatorTacticsComponent', () => {
     });
 
     it('should handle input data', () => {
-        component.indicators = [0, 1, 2, 3].map(i => ({id: `A${i}`}));
-        component.mappings = [0, 1].reduce((maps, i) => {
+        component.indicators = observableOf([0, 1, 2, 3].map(i => ({id: `A${i}`}))) as any;
+        component.mappings = observableOf([0, 1].reduce((maps, i) => {
             maps[`A${i}`] = [mockAttackPatternData[i], mockAttackPatternData[i + 1]];
             return maps;
-        }, {});
-        component.mappings['A2'] = [mockAttackPatternData[2]];
+        }, {})) as any;
         component.targets = mockTargets;
-        component.ngOnChanges();
         fixture.detectChanges();
         expect(component).toBeTruthy();
     });
