@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { pluck, distinctUntilChanged, finalize, filter } from 'rxjs/operators';
 
@@ -9,7 +9,8 @@ import * as indicatorSharingActions from '../store/indicator-sharing.actions';
 @Component({
   selector: 'indicator-sharing-sort',
   templateUrl: './indicator-sharing-sort.component.html',
-  styleUrls: ['./indicator-sharing-sort.component.scss']
+  styleUrls: ['./indicator-sharing-sort.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IndicatorSharingSortComponent implements OnInit {
 
