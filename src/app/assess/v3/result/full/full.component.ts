@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, pluck, take, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, pluck, take, tap, debounceTime } from 'rxjs/operators';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
 import { AssessmentEvalTypeEnum } from 'stix/assess/v3/assessment-eval-type.enum';
@@ -97,7 +97,6 @@ export class FullComponent implements OnInit, OnDestroy {
         this.changeDetectorRef.detectChanges();
       },
         (err) => console.log(err));
-
     this.listenForDataChanges();
     this.subscriptions.push(idParamSub$);
   }
@@ -107,11 +106,20 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public listenForDataChanges(): void {
+    console.log('listening');
     this.assessment$ = this.store
       .select(getFullAssessment)
       .pipe(
-        distinctUntilChanged(),
-        tap((assessment) => this.requestGroupSectionDataLoad(assessment))
+        distinctUntilChanged((a: Assessment, b: Assessment) => {
+          console.log('ANYTHING');
+          console.log(a.created + '<--a b-->' + b.created);
+          console.log(JSON.stringify(a) === JSON.stringify(b));
+          return JSON.stringify(a) === JSON.stringify(b);
+        }),
+        tap((assessment) => {
+          console.log('requestingGroupSectionDataLoad');
+          return this.requestGroupSectionDataLoad(assessment);
+        })
       );
 
     this.finishedLoading$ = this.store
@@ -187,6 +195,7 @@ export class FullComponent implements OnInit, OnDestroy {
     if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
       isCapability = true;
     }
+    console.log('GETTING GROUP DATA NOW');
     this.store.dispatch(new LoadGroupData({ id, isCapability }));
   }
 
@@ -312,6 +321,7 @@ export class FullComponent implements OnInit, OnDestroy {
     // this.assessmentTypes = undefined;
     // this.attackPatternId = undefined;
     this.store.dispatch(new CleanAssessmentResultData());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
     return this.router.navigate([this.masterListOptions.displayRoute, assessment.rollupId, assessment.id]);
   }
 
