@@ -100,7 +100,6 @@ export class FullComponent implements OnInit, OnDestroy {
       },
         (err) => console.log(err));
     this.listenForDataChanges();
-    this.subscriptions.push(idParamSub$);
   }
 
   /**
