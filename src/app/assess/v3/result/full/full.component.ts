@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, forkJoin } from 'rxjs';
 import { distinctUntilChanged, filter, pluck, take, tap, debounceTime } from 'rxjs/operators';
 import { RiskByAttack } from 'stix/assess/v2/risk-by-attack';
 import { Assessment } from 'stix/assess/v3/assessment';
@@ -21,9 +21,11 @@ import { AssessState } from '../../store/assess.reducers';
 import { getSortedCategories } from '../../store/assess.selectors';
 import { CleanAssessmentResultData, LoadAssessmentById, LoadGroupData } from '../store/full-result.actions';
 import { FullAssessmentResultState } from '../store/full-result.reducers';
-import { getAllFinishedLoading, getFailedToLoadAssessment, getFullAssessment, getFullAssessmentName, getGroupState, getUnassessedPhasesForCurrentFramework, getAllFinishedLoadingOrFailure } from '../store/full-result.selectors';
+import { getAllFinishedLoading, getFailedToLoadAssessment, getFullAssessment, getFullAssessmentName, getGroupState, getUnassessedPhasesForCurrentFramework, getAllFinishedLoadingOrFailure, getTacticsChains } from '../store/full-result.selectors';
 import { SummaryDataSource } from '../summary/summary.datasource';
 import { FullAssessmentGroup } from './group/models/full-assessment-group';
+import { TacticChain } from '../../../../global/components/tactics-pane/tactics.model';
+import { Dictionary } from 'stix/common/dictionary';
 
 @Component({
   selector: 'unf-assess-full',
@@ -106,32 +108,31 @@ export class FullComponent implements OnInit, OnDestroy {
    * @return {void}
    */
   public listenForDataChanges(): void {
-    console.log('listening');
     this.assessment$ = this.store
       .select(getFullAssessment)
       .pipe(
         distinctUntilChanged((a: Assessment, b: Assessment) => {
           return JSON.stringify(a) === JSON.stringify(b);
         }),
-        tap((assessment) => this.requestGroupSectionDataLoad(assessment))
       );
-
-    this.finishedLoading$ = this.store
-      .select(getAllFinishedLoadingOrFailure)
-      .pipe(distinctUntilChanged());
-
-    this.failedToLoad$ = this.store
-      .select(getFailedToLoadAssessment)
-      .pipe(distinctUntilChanged());
+    this.assessment$
+      .pipe(
+        filter(assessment => !!assessment.id)
+      )
+      .subscribe(
+        (assessment) => {
+          const assessmentType = (assessment !== undefined && assessment.determineAssessmentType) ?
+              assessment.determineAssessmentType() : 'Unknown';
+          this.assessmentName = `${assessment.name} - ${assessmentType}`;
+          this.requestGroupSectionDataLoad(assessment);
+        }
+      );
 
     this.assessmentGroup$ = this.store
       .select(getGroupState)
       .pipe(distinctUntilChanged());
-
-    const sub$ = this.store
-      .select(getGroupState)
+    const sub$ = this.assessmentGroup$
       .pipe(
-        distinctUntilChanged(),
         filter((group: any) => group.finishedLoadingGroupData === true)
       )
       .subscribe(
@@ -148,15 +149,57 @@ export class FullComponent implements OnInit, OnDestroy {
         },
         (err) => console.log(err));
 
-    this.assessmentName$ = this.store
-      .select(getFullAssessmentName)
+    const tacticsChain$ = this.store.select(getTacticsChains)
       .pipe(
         distinctUntilChanged(),
-        tap((name) => this.assessmentName = name)
       );
+    this.unassessedPhases$ = forkJoin(this.assessment$, this.assessmentGroup$, tacticsChain$)
+      .mergeMap((results: [Assessment, FullAssessmentGroup, Dictionary<TacticChain>]) => {
+        if (!results || (results.length !== 3)) {
+          return [[]];
+        }
 
-    this.unassessedPhases$ = this.store
-      .select(getUnassessedPhasesForCurrentFramework)
+        const assessment = results[0];
+        const group = results[1];
+        const tacticsChains = results[2];
+
+        if (group.finishedLoadingGroupData === false) {
+            return [[]];
+        }
+
+        if (assessment === undefined || tacticsChains === undefined) {
+            return [group.unassessedPhases];
+        }
+
+        const riskByAttackPattern = group.riskByAttackPattern;
+        const assessedPhases = riskByAttackPattern.phases.map((phase) => phase._id);
+        const assessedPhaseIdSet = new Set<string>(assessedPhases);
+        const frameworkKeys = Object.keys(tacticsChains);
+        const frameworksMatched = frameworkKeys.filter((key) => {
+            const hasId = tacticsChains[key].phases.some((el) => assessedPhaseIdSet.has(el.id));
+            return hasId;
+        });
+
+        if (!frameworksMatched || frameworksMatched.length < 1) {
+            console.log(`could not determine the correct framework for the unassessed phases. attempting to move on...`);
+            return [group.unassessedPhases];
+        }
+
+        const curFrameworkKey = frameworksMatched[0];
+        const curFrameworkPhases = tacticsChains[curFrameworkKey].phases;
+        const curFrameworkUnassessedPhases = curFrameworkPhases
+            .filter((phase) => assessedPhases.indexOf(phase.id) < 0)
+            .map((phase) => phase.id);
+        return [curFrameworkUnassessedPhases];
+      }
+    );
+
+    this.finishedLoading$ = this.store
+      .select(getAllFinishedLoadingOrFailure)
+      .pipe(distinctUntilChanged());
+
+    this.failedToLoad$ = this.store
+      .select(getFailedToLoadAssessment)
       .pipe(distinctUntilChanged());
 
     this.categoryLookup$ = this.assessStore.select(getSortedCategories);
