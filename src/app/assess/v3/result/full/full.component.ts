@@ -111,15 +111,9 @@ export class FullComponent implements OnInit, OnDestroy {
       .select(getFullAssessment)
       .pipe(
         distinctUntilChanged((a: Assessment, b: Assessment) => {
-          console.log('ANYTHING');
-          console.log(a.created + '<--a b-->' + b.created);
-          console.log(JSON.stringify(a) === JSON.stringify(b));
           return JSON.stringify(a) === JSON.stringify(b);
         }),
-        tap((assessment) => {
-          console.log('requestingGroupSectionDataLoad');
-          return this.requestGroupSectionDataLoad(assessment);
-        })
+        tap((assessment) => this.requestGroupSectionDataLoad(assessment))
       );
 
     this.finishedLoading$ = this.store
@@ -195,7 +189,6 @@ export class FullComponent implements OnInit, OnDestroy {
     if (assessmentType === AssessmentEvalTypeEnum.CAPABILITIES) {
       isCapability = true;
     }
-    console.log('GETTING GROUP DATA NOW');
     this.store.dispatch(new LoadGroupData({ id, isCapability }));
   }
 
