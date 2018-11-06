@@ -23,7 +23,7 @@ import { threatReducer } from '../store/threat.reducers';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { CreatedByRefComponent } from '../../global/components/created-by-ref/created-by-ref.component';
 
-fdescribe('CreateComponent', () => {
+describe('CreateComponent', () => {
 
     let fixture: ComponentFixture<CreateComponent>;
     let component: CreateComponent;
