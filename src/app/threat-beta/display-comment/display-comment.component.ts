@@ -58,6 +58,10 @@ export class DisplayCommentComponent implements OnInit {
     return this.citations.getAvatar(comment);
   }
 
+  public hasAvatar(comment: any) {
+    return '' !== this.citations.getAvatar(comment);
+  }
+
   public hasLikes(comment: any) {
     return (this.getLikes(comment) || []).length > 0;
   }

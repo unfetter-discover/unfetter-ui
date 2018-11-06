@@ -1,7 +1,7 @@
 <mat-card class="uf-mat-card" id="display-comment">
 
     <div class="flex">
-        <div mat-card-avatar class="activity-avatar" [style.background-image]="getCommentAvatar(comment)"></div>
+        <div mat-card-avatar *ngIf="hasAvatar(comment)" class="activity-avatar" [style.background-image]="getCommentAvatar(comment)"></div>
         <div class="flex1 activity-content">
             <mat-card-header>
                 <mat-card-title>{{ getUserName(comment) }}</mat-card-title>
@@ -32,7 +32,7 @@
                 (submit)="submitComment($event)"></comment-input>
         <div *ngIf="hasComments(comment)">
             <div *ngFor="let reply of comment.comment.replies | sortByField: 'submitted'" class="flex">
-                <div mat-card-avatar class="activity-avatar"
+                <div mat-card-avatar *ngIf="hasAvatar(reply)" class="activity-avatar"
                         [style.background-image]="getCommentAvatar(reply)"></div>
                 <div class="flex1 activity-content">
                     <mat-card-header>
