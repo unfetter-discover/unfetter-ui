@@ -24,7 +24,7 @@
 }
 
 mat-sidenav-content {
-    width: 100%;
+    width: calc(100% - 380px);
 }
 
 #feed-content {

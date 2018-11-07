@@ -87,8 +87,7 @@ export class FeedCarouselComponent {
         } else {
             let perPage = 1;
             const itemWidth = this.itemWidth + this.itemSpacing;
-            const itemsWidth = this.itemView.nativeElement.offsetWidth +
-                    (Number.parseInt(this.itemView.nativeElement.style['margin-left'] || 0, 10));
+            const itemsWidth = this.itemView.nativeElement.offsetWidth;
             perPage = Math.floor(itemsWidth / itemWidth);
             if (itemsWidth - perPage * itemWidth < this.itemSpacing) {
                 perPage++;
