@@ -3,8 +3,8 @@
     <div id="feed-item-label">
         <h4>{{ label }}</h4>
         <div class="carousel-pager" *ngIf="pages > 1">
-            <button mat-icon-button class="pager-bullet" *ngFor="let pg of pages | times">
-                <mat-icon [ngClass]="{'active-page-bullet' : (page === pg)}" (click)="scrollToPage(pg)">lens</mat-icon>
+            <button mat-icon-button class="pager-bullet" *ngFor="let pg of pages | times" (click)="scrollToPage(pg)">
+                <mat-icon [ngClass]="{'active-page-bullet' : (page === pg)}">lens</mat-icon>
             </button>
         </div>
     </div>
@@ -22,7 +22,7 @@
             </button>
         </div>
 
-        <div #view class="item-list" [style.margin-left]="offset + 'px'">
+        <div #view class="item-list" [style.margin]="'-11px 0 0 ' + offset + 'px'">
             <ng-content select="[carousel-items]"></ng-content>
         </div>
 

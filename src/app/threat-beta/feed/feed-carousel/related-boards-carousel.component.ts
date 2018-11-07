@@ -67,7 +67,7 @@ export class RelatedBoardsCarouselComponent implements OnChanges {
     public getBoardBackground(board: any) {
         const colors = [
             ['indianred', 'firebrick'],
-            ['rebeccapurple', 'indigo'],
+            ['purple', 'indigo'],
             ['olivedrab', 'olive'],
             ['slateblue', 'darkslateblue'],
             ['cadetblue', 'darkslategray'],
