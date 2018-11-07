@@ -52,7 +52,9 @@ export const getAttachedReports = createSelector(
 
 export const getThreatBoardReports = createSelector(
     selectThreatState,
-    (state) => [...state.attachedReports, ...state.potentialReports]
+    // TODO HACKed version to limit spamming the URL length limit
+    // (state) => [...state.attachedReports, ...state.potentialReports] // <-- original
+    (state) => [...state.attachedReports, ...state.potentialReports].slice(0, 20)
 );
 
 export const getSelectedReportId = createSelector(
