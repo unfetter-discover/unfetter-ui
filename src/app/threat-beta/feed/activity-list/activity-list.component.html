@@ -28,7 +28,7 @@
                 <ng-container *ngTemplateOutlet="articleTemplate;context:{article:item}"></ng-container>
             </ng-container>
             <ng-container *ngIf="item.comment">
-                <display-comment [comment]="item" [parent]=null [board]=threatBoard (newComment)="addAComment($event)"></display-comment>
+                <display-comment [comment]="item" [parent]=null [board_article]=threatBoard (newComment)="addAComment($event)"></display-comment>
             </ng-container>
         </ng-container>
 
@@ -79,7 +79,7 @@
             <div label="Comments" *ngIf="hasActivityComments(article)">
                 <hr/>
                 <ng-container *ngFor="let comment of article.metaProperties.comments | sortByField: 'submitted'">
-                    <display-comment [comment]="comment" [parent]=article [board]=article (newComment)="addAComment($event)"></display-comment>
+                    <display-comment [comment]="comment" [parent]=article [board_article]=article (newComment)="addAComment($event)"></display-comment>
                 </ng-container>
             </div>
         </mat-card-footer>

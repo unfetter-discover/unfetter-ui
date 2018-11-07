@@ -142,7 +142,7 @@ const mockThreatBoard = new ThreatBoard({
   beforeEach(() => {
     fixture = TestBed.createComponent(DisplayCommentComponent);
     component = fixture.componentInstance;
-    component.board = mockThreatBoard;
+    component.board_article = mockThreatBoard;
     component.comment = mockThreatBoard.metaProperties.comments[0];
     appStore = TestBed.get(Store);
     appStore.addReducer('threat', threatReducer);
