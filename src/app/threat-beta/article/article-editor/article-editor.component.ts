@@ -207,7 +207,7 @@ export class ArticleEditorComponent implements OnInit {
     });
   }
 
-  private async createNewArticle(tempArticle: Article): Promise<boolean> {
+  private createNewArticle(tempArticle: Article): Promise<boolean> {
     return new Promise((resolve: (boolean) => void, reject: (boolean) => void) => {
       const addArticle$ = this.store.select(getSelectedBoard)
         .pipe(
@@ -249,7 +249,7 @@ export class ArticleEditorComponent implements OnInit {
     });    
   }
 
-  private async editArticle(tempArticle: Article): Promise<boolean> {
+  private editArticle(tempArticle: Article): Promise<boolean> {
     return new Promise((resolve: (boolean) => void, reject: (boolean) => void) => {
       tempArticle.id = this.articleToEdit.id;
       const editArticle$ = this.threatService.editArticle(tempArticle)
