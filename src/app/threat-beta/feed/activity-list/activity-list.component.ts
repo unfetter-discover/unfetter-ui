@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { pluck, take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
@@ -66,6 +67,7 @@ export class ActivityListComponent implements OnInit {
         private boardStore: Store<ThreatFeatureState>,
         private appStore: Store<AppState>,
         private citations: UserCitationService,
+        private router: Router,
         private sanitizer: DomSanitizer,
     ) {
     }
@@ -302,6 +304,15 @@ export class ActivityListComponent implements OnInit {
                 (response) => console['debug'](`(${new Date().toISOString()}) article updated`),
                 (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)
             );
+    }
+
+    /**
+     * The user has selected to edit a specific article.
+     */
+    public editArticle(article: string) {
+        if (article) {
+            this.router.navigate([`/threat_beta/article/edit`, this.threatBoard.id, article]);
+        }
     }
 
     /**
