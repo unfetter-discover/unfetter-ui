@@ -14,7 +14,7 @@ export class RecentReportsComponent implements OnInit {
 
 
     /**
-     * The loaded list of vetted and potential reports.
+     * The loaded list of latest 20 reports.
      */
     private _reports: any[] = [];
 
