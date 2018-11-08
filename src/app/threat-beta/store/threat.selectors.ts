@@ -47,7 +47,7 @@ export const getBoundaryObjects = createSelector(
 
 export const getAttachedReports = createSelector(
     selectThreatState,
-    (state) => state.attachedReports
+    (state) => [...state.attachedReports].slice(0, 20)
 );
 
 export const getThreatBoardReports = createSelector(
