@@ -52,6 +52,9 @@
                     <mat-card-subtitle>
                         {{ getUserName(article) }} &bull; Last edited {{ article.modified | timeAgo }}
                     </mat-card-subtitle>
+                    <a class="article-edit-button" [routerLink]="['../article/edit', article.id]">
+                        <i class="material-icons">edit</i>
+                    </a>
                 </mat-card-header>
                 <mat-card-content>
                     <markdown-mentions [markDown]="article.content"></markdown-mentions>
