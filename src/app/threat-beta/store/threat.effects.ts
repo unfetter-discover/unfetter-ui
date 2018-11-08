@@ -82,7 +82,7 @@ export class ThreatEffects {
                                     const options: StixApiOptions = {
                                         filter: {
                                             _id: {
-                                                $in: board.reports
+                                                $in: [...board.reports].slice(0, 20)
                                             }
                                         },
                                         sort: {
@@ -101,7 +101,7 @@ export class ThreatEffects {
                                     const options: StixApiOptions = {
                                         filter: {
                                             _id: {
-                                                $in: board.metaProperties.potentials
+                                                $in: [...board.metaProperties.potentials].slice(0, 20)
                                             }
                                         },
                                         sort: {
