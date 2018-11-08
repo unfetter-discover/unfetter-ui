@@ -1,13 +1,10 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { pluck, take } from 'rxjs/operators';
+import { generateUUID } from '../../global/static/generate-uuid';
 import { AppState } from '../../root-store/app.reducers';
 import { UserCitationService } from '../feed/user-citations.service';
-import { ThreatBoard } from 'stix/unfetter/index';
 import { ThreatDashboardBetaService } from '../threat-beta.service';
-import { generateUUID } from '../../global/static/generate-uuid';
-import { Themes } from '../../global/enums/themes.enum';
-import { SafeString } from 'handlebars';
 
 @Component({
   selector: 'display-comment',
