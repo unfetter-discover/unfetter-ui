@@ -229,11 +229,15 @@ export class ActivityListComponent implements OnInit {
 
     public submitActivityComment(comment: string) {
         const date = new Date();
+        let safe_avatar_url = '';
+        if (this.user && this.user.auth && this.user.auth.avatar_url) {
+          safe_avatar_url = this.user.auth.avatar_url;
+        }
         const newComment = {
             id: `x-unfetter-comment--${generateUUID()}`,
             user: {
                 id: this.user.identity.id,
-                avatar_url: this.user.auth.avatar_url,
+                avatar_url: safe_avatar_url,
             },
             submitted: date,
             comment: {
