@@ -95,7 +95,7 @@ export class FeedCarouselComponent {
             this._itemsPerPage = Math.max(perPage, 1);
             this._pages = Math.ceil(this.itemCount / this._itemsPerPage);
             if (this._page >= this._pages) {
-                this._page = this._pages - 1;
+                this._page = Math.max(0, this._pages - 1);
             }
         }
     }
