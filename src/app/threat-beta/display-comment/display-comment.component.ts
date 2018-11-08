@@ -6,6 +6,8 @@ import { UserCitationService } from '../feed/user-citations.service';
 import { ThreatBoard } from 'stix/unfetter/index';
 import { ThreatDashboardBetaService } from '../threat-beta.service';
 import { generateUUID } from '../../global/static/generate-uuid';
+import { Themes } from '../../global/enums/themes.enum';
+import { SafeString } from 'handlebars';
 
 @Component({
   selector: 'display-comment',
@@ -85,11 +87,15 @@ export class DisplayCommentComponent implements OnInit {
 
   public submitComment(comment: string) {
     const date = new Date();
+    let safe_avatar_url = '';
+    if (this.user && this.user.auth && this.user.auth.avatar_url) {
+      safe_avatar_url = this.user.auth.avatar_url;
+    }
     const newComment = {
       id: `x-unfetter-comment--${generateUUID()}`,
       user: {
         id: this.user.identity.id,
-        avatar_url: this.user.auth.avatar_url,
+        avatar_url: safe_avatar_url,
       },
       submitted: date,
       comment: {
