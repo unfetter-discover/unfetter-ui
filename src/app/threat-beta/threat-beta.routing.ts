@@ -6,6 +6,7 @@ import { ArticleComponent } from './article/article.component';
 import { FeedComponent } from './board-feed/feed.component';
 import { MasterLayoutComponent } from './master-layout/master-layout.component';
 import { BoardLayoutComponent } from './board-layout/board-layout.component';
+import { ReportFormComponent } from './report-form/report-form.component';
 
 const routes: Routes = [  
   { 
@@ -18,12 +19,18 @@ const routes: Routes = [
       {
         path: 'edit/:id', component: CreateComponent
       }, 
+      { 
+        path: 'report/new', component: ReportFormComponent 
+      },
+      { 
+        path: 'report/edit/:reportId', component: ReportFormComponent 
+      },
       {
         path: ':boardId',
         component: BoardLayoutComponent,
         children: [
           { path: 'article/new', component: ArticleComponent },
-          { path: 'article/edit/:articleId', component: ArticleComponent },
+          { path: 'article/edit/:articleId', component: ArticleComponent },          
           { path: 'board', component: BoardComponent },
           { path: 'feed', component: FeedComponent },
         ]

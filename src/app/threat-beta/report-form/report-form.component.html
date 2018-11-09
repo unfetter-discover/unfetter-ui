@@ -1,0 +1,48 @@
+<div id="reportFormComponent">
+  <div class="container" *ngIf="!loading; else loadingBlock">
+    <form [formGroup]="form" novalidate>
+      <br>
+      <p class="lead mb-6" style="padding-left: 21px;">
+        <span *ngIf="!editMode">Add</span>
+        <span *ngIf="editMode">Edit</span>
+        <span> Report</span>
+      </p>
+      <div class="row">
+        <div class="col-xs-12">
+
+          <div class="flex mb-6" id="formHeader">
+            <button mat-icon-button class="mat-24 edit-close-button" style="margin-left: -18px;" (click)="location.back()"
+              type="button">
+              <mat-icon>close</mat-icon>
+            </button>
+            <span class="flex1">
+              <mat-form-field class="full-width">
+                <input matInput required placeholder="Report Name" formControlName="name">
+                <mat-error *ngIf="form.get('name').hasError('required')">
+                  Report name is <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+            </span>
+            <span>&nbsp;&nbsp;</span>
+            <span formGroupName="metaProperties">
+              <mat-checkbox color="primary" formControlName="published">Publish To All Unfetter Users</mat-checkbox>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <mat-horizontal-stepper>
+        <mat-step label="DETAILS">
+          <created-by-ref class="full-width"></created-by-ref>
+        </mat-step>
+        <mat-step label="UPLOAD REPORT">
+        </mat-step>
+      </mat-horizontal-stepper>
+
+    </form>
+  </div>
+
+  <ng-template #loadingBlock>
+    <loading-spinner></loading-spinner>
+  </ng-template>
+</div>

@@ -20,7 +20,8 @@ export interface ThreatState {
     selectedBoardId: string,
     selectedReportId: string,
     dashboardLoadingComplete: boolean,
-    threatboardLoadingComplete: boolean
+    threatboardLoadingComplete: boolean,
+    showAddReportFab: boolean
 }
 
 export const initialState: ThreatState = {
@@ -33,7 +34,8 @@ export const initialState: ThreatState = {
     selectedBoardId: null,
     selectedReportId: null,
     dashboardLoadingComplete: false,
-    threatboardLoadingComplete: false
+    threatboardLoadingComplete: false,
+    showAddReportFab: true
 }
 
 export function threatReducer(state = initialState, action: threatActions): ThreatState {    
@@ -190,6 +192,11 @@ export function threatReducer(state = initialState, action: threatActions): Thre
                 return state;
             }
         }
+        case ThreatActionTypes.SetShowAddReportFab:
+            return {
+                ...state,
+                showAddReportFab: action.payload
+            };
         case ThreatActionTypes.ClearData:
             return initialState;
         default:

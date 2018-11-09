@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { ArticleForm } from '../../global/form-models/article';
 import { AppState } from '../../root-store/app.reducers';
 import * as utilityActions from '../../root-store/utility/utility.actions';
+import * as threatActions from '../store/threat.actions';
 
 @Component({
   selector: 'article',
@@ -20,11 +21,13 @@ export class ArticleComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.store.dispatch(new threatActions.SetShowAddReportFab(false));    
     this.store.dispatch(new utilityActions.HideFooter());
     this.resetForm();
   }
   
   ngOnDestroy() {
+    this.store.dispatch(new threatActions.SetShowAddReportFab(true));
     this.store.dispatch(new utilityActions.ShowFooter());
   }
 

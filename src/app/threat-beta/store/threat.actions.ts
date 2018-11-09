@@ -25,6 +25,7 @@ export enum ThreatActionTypes {
     AddBoard = '[Threat] Add Board',
     UpdateBoard = '[Threat] Update Board',
     DeleteBoard = '[Threat] Delete Board',
+    SetShowAddReportFab = '[Threat] Set Show Add Report Fab',
 
     ClearData = '[Threat] Clear Data'
 }
@@ -137,6 +138,12 @@ export class DeleteBoard implements Action {
     constructor(public payload: string) { }
 }
 
+export class SetShowAddReportFab implements Action {
+    public readonly type = ThreatActionTypes.SetShowAddReportFab;
+
+    constructor(public payload: boolean) { }
+}
+
 export class ClearData implements Action {
     public readonly type = ThreatActionTypes.ClearData;
 
@@ -162,4 +169,5 @@ export type threatActions =
     | AddBoard
     | UpdateBoard
     | DeleteBoard
+    | SetShowAddReportFab
     | ClearData;
