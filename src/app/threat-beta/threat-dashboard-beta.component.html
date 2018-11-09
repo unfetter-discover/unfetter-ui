@@ -1,5 +1,8 @@
 <ng-container *ngIf="(finishedLoadingAll$|async) === true; else loadingBlock">
   <div #layout class="layout" *ngIf="(failedToLoad|async) === false; else failedToLoadBlock">
+    <a mat-fab color="primary" class="bottomRightFab plainLink" routerLink="/threat-beta/create">
+      <i class="material-icons mat-24">add</i>
+    </a>
     <mat-sidenav-container>
       <mat-sidenav class="side-panel mat-elevation-z8" mode="side" opened="true">
         <div class="flex flex-cols side-nav-top">
@@ -51,10 +54,10 @@
           </mat-tab>
         </mat-tab-group>
       </mat-sidenav>
-      <mat-sidenav-content class="sidenavContentPolyfill320">
+      <mat-sidenav-content class="sidenavContentPolyfill320 sidenavContentPolyfill384-right">        
         <div class="flex flexRow">
           <div class="flex">
-            <uf-info-bar isWarningMsg="true" message="This dashboard for Beta testing. Some functionality incomplete!"></uf-info-bar>
+            <uf-info-bar isWarningMsg="true" message="This dashboard for Beta testing. Some functionality incomplete!" applyHeightOnOpen="true"></uf-info-bar>
           </div>
         </div>
         <div class="main-panel">

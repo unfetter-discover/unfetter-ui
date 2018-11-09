@@ -96,6 +96,9 @@ export class IntrusionSetDashboardComponent implements OnInit {
                             const ap = this.attackPatterns[rel.attributes.target_ref];
                             const is = intrusions[rel.attributes.source_ref];
                             if (ap && is) {
+                                if (!Array.isArray(ap.analytics)) {
+                                    ap.analytics = [];
+                                }
                                 ap.analytics.push(is);
                                 ap.analytics.sort();
                             }

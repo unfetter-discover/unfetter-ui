@@ -3,12 +3,12 @@
     <ng-container carousel-items>
 
         <div *ngFor="let report of reports; index as idx" id="{{ report.id }}"
-                class="feed-item board-report" [style.background-image]="getReportBackground(report)"
+                class="feed-item board-report" [style.background]="getReportBackground(report)"
                 matBadgeHidden="{{ report.vetted }}" matBadge="'!'" matBadgeColor="accent"
                 matBadgePosition="before" matBadgeSize="small"
                 (mouseenter)="hoverIndex = idx" (mouseleave)="hoverIndex = -1">
 
-            <div class="report-image" [style.background-image]="getReportBackgroundImage(report)">
+            <div class="report-image" [style.background]="getReportBackgroundImage(report)">
                 <div class='report-fabs' *ngIf="hoverIndex === idx">
                     <div class="fab-row">
                         <button mat-mini-fab [disabled]="report.vetted" title="Approve Report"

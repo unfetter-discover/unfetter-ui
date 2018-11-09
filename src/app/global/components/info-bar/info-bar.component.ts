@@ -15,6 +15,7 @@ export class InfoBarComponent implements OnInit {
   @Input() public message = '';
   @Input() public shouldCenter = false;
   @Input() public shouldShow = true;
+  @Input() public applyHeightOnOpen = false;
 
   constructor(
     protected router: Router,

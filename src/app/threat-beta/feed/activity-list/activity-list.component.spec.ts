@@ -1,34 +1,29 @@
-import { TestBed, ComponentFixture, async } from '@angular/core/testing';
-import { StoreModule, Store } from '@ngrx/store';
-
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import {
-    MatCardModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-} from '@angular/material';
-import { MarkdownModule, MarkdownService } from 'ngx-markdown';
+import { MatCardModule, MatIconModule, MatInputModule, MatProgressSpinnerModule, MatRadioModule } from '@angular/material';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Store, StoreModule } from '@ngrx/store';
 import { SimplemdeModule } from 'ng2-simplemde';
-
+import { MarkdownModule, MarkdownService } from 'ngx-markdown';
+import { StixCoreEnum } from 'stix';
 import { Article, ThreatBoard } from 'stix/unfetter/index';
-
-import { ActivityListComponent } from './activity-list.component';
-import { CommentInputComponent } from './comment-input.component';
-import { ThreatDashboardBetaService } from '../../threat-beta.service';
-import MockThreatDashboardBetaService from '../../testing/mock-threat.service';
 import { LoadingSpinnerComponent } from '../../../global/components/loading-spinner/loading-spinner.component';
+import { MarkdownMentionsComponent } from '../../../global/components/markdown-mentions/markdown-mentions.component';
+import { SimplemdeMentionsComponent } from '../../../global/components/simplemde-mentions/simplemde-mentions.component';
 import { FieldSortPipe } from '../../../global/pipes/field-sort.pipe';
 import { TimeAgoPipe } from '../../../global/pipes/time-ago.pipe';
 import { AppState, reducers } from '../../../root-store/app.reducers';
 import * as userActions from '../../../root-store/users/user.actions';
+import { DisplayCommentComponent } from '../../display-comment/display-comment.component';
 import * as boardActions from '../../store/threat.actions';
 import { threatReducer } from '../../store/threat.reducers';
-import { StixCoreEnum } from 'stix';
-import { DisplayCommentComponent } from '../../display-comment/display-comment.component';
-import { MarkdownMentionsComponent } from '../../../global/components/markdown-mentions/markdown-mentions.component';
-import { SimplemdeMentionsComponent } from '../../../global/components/simplemde-mentions/simplemde-mentions.component';
-import { RouterTestingModule } from '@angular/router/testing';
+import MockThreatDashboardBetaService from '../../testing/mock-threat.service';
+import { ThreatDashboardBetaService } from '../../threat-beta.service';
+import { ActivityListComponent } from './activity-list.component';
+import { CommentInputComponent } from './comment-input.component';
+
+
+
 
 describe('ActivityListComponent', () => {
 
@@ -124,6 +119,7 @@ describe('ActivityListComponent', () => {
                     FormsModule,
                     MatCardModule,
                     MatRadioModule,
+                    MatIconModule,
                     MatInputModule,
                     MatProgressSpinnerModule,
                     MarkdownModule.forRoot(),

@@ -87,8 +87,7 @@ export class FeedCarouselComponent {
         } else {
             let perPage = 1;
             const itemWidth = this.itemWidth + this.itemSpacing;
-            const itemsWidth = this.itemView.nativeElement.offsetWidth +
-                    (Number.parseInt(this.itemView.nativeElement.style['margin-left'] || 0, 10));
+            const itemsWidth = this.itemView.nativeElement.offsetWidth;
             perPage = Math.floor(itemsWidth / itemWidth);
             if (itemsWidth - perPage * itemWidth < this.itemSpacing) {
                 perPage++;
@@ -96,7 +95,7 @@ export class FeedCarouselComponent {
             this._itemsPerPage = Math.max(perPage, 1);
             this._pages = Math.ceil(this.itemCount / this._itemsPerPage);
             if (this._page >= this._pages) {
-                this._page = this._pages - 1;
+                this._page = Math.max(0, this._pages - 1);
             }
         }
     }

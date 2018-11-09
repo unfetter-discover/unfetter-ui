@@ -21,6 +21,7 @@ import { ThreatDashboardBetaService } from '../threat-beta.service';
 import MockThreatDashboardBetaService from '../testing/mock-threat.service';
 import { threatReducer } from '../store/threat.reducers';
 import { GenericApi } from '../../core/services/genericapi.service';
+import { CreatedByRefComponent } from '../../global/components/created-by-ref/created-by-ref.component';
 
 describe('CreateComponent', () => {
 
@@ -48,6 +49,7 @@ describe('CreateComponent', () => {
                 ],
                 declarations: [
                     CreateComponent,
+                    CreatedByRefComponent,
                     LoadingSpinnerComponent,
                 ],
                 providers: [

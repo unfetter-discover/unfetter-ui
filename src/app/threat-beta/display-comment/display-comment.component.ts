@@ -1,11 +1,10 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { pluck, take } from 'rxjs/operators';
+import { generateUUID } from '../../global/static/generate-uuid';
 import { AppState } from '../../root-store/app.reducers';
 import { UserCitationService } from '../feed/user-citations.service';
-import { ThreatBoard } from 'stix/unfetter/index';
 import { ThreatDashboardBetaService } from '../threat-beta.service';
-import { generateUUID } from '../../global/static/generate-uuid';
 
 @Component({
   selector: 'display-comment',
@@ -19,9 +18,9 @@ export class DisplayCommentComponent implements OnInit {
   @Output() newComment = new EventEmitter<any>(); // TODO Comment interface
 
   /**
-   * The threatboard the comment belongs to. We only use this when persisting likes & comments added to the threatboard itself.
+   * The threatboard or article the comment belongs to. We only use this when persisting likes & comments added to the threatboard itself.
    */
-  @Input() board: ThreatBoard;
+  @Input() board_article: any;
 
   /**
     * The current user. Needed for when they add a comment or reply.
@@ -58,6 +57,10 @@ export class DisplayCommentComponent implements OnInit {
     return this.citations.getAvatar(comment);
   }
 
+  public hasAvatar(comment: any) {
+    return '' !== this.citations.getAvatar(comment);
+  }
+
   public hasLikes(comment: any) {
     return (this.getLikes(comment) || []).length > 0;
   }
@@ -81,11 +84,15 @@ export class DisplayCommentComponent implements OnInit {
 
   public submitComment(comment: string) {
     const date = new Date();
+    let safe_avatar_url = '';
+    if (this.user && this.user.auth && this.user.auth.avatar_url) {
+      safe_avatar_url = this.user.auth.avatar_url;
+    }
     const newComment = {
       id: `x-unfetter-comment--${generateUUID()}`,
       user: {
         id: this.user.identity.id,
-        avatar_url: this.user.auth.avatar_url,
+        avatar_url: safe_avatar_url,
       },
       submitted: date,
       comment: {
@@ -102,21 +109,44 @@ export class DisplayCommentComponent implements OnInit {
   }
 
   private submitThreatBoardComment(comment: any) {
-    if (this.board) {
-      if (!this.board.metaProperties.comments) {
-        this.board.metaProperties.comments = [];
+    let isReply = false;
+    if (this.board_article) {
+      if (this.commentTarget === this.comment) {
+        if (!this.commentTarget.comment.replies) {
+          this.commentTarget.comment.replies = [];
+        }
+        isReply = true;
+        this.commentTarget.comment.replies.push(comment);
+      } else {
+        if (!this.board_article.metaProperties.comments) {
+          this.board_article.metaProperties.comments = [];
+        }
+        this.board_article.metaProperties.comments.push(comment);
       }
-      this.board.metaProperties.comments.push(comment);
-      this.threatboardService.updateBoard(this.board)
-        .subscribe(
-          (response) => {
-            console['debug'](`(${new Date().toISOString()}) board updated`);
-            this.newComment.emit(comment);
-          },
-          (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
-        );
+      if (this.board_article.type !== 'x-unfetter-article') {
+        this.threatboardService.updateBoard(this.board_article)
+          .subscribe(
+            (response) => {
+              console['debug'](`(${new Date().toISOString()}) board updated`);
+              if (!isReply) {
+                console.log('Not a reply add to the list.');
+                this.newComment.emit(comment);
+              }
+            },
+            (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
+          );
+      } else {
+        this.threatboardService.editArticle(this.board_article)
+          .subscribe(
+            (response) => console['debug'](`(${new Date().toISOString()}) article updated`),
+            (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)
+          );
+      }
+    } else { // TODO figure out what object it's part of{
+      console.error('Unimplemented');
     }
   }
+
 
   public hasComments(comment: any) {
     if (!comment) {
@@ -135,13 +165,20 @@ export class DisplayCommentComponent implements OnInit {
       } else {
         likes.splice(liked, 1);
       }
-      if (this.board) {
-        console.log(this.board.metaProperties);
-        this.threatboardService.updateBoard(this.board)
+      if (this.board_article) {
+        if (this.board_article.type !== 'x-unfetter-article') {
+        this.threatboardService.updateBoard(this.board_article)
           .subscribe(
             (response) => console['debug'](`(${new Date().toISOString()}) board likes updated`),
             (err) => console.log(`(${new Date().toISOString()}) error updating board likes`, err),
           );
+        } else {
+          this.threatboardService.editArticle(this.board_article)
+          .subscribe(
+            (response) => console['debug'](`(${new Date().toISOString()}) article updated`),
+            (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)
+          );
+        }
       } else {
         // TODO look through boards for which to update.
         console.log('no board');

@@ -283,8 +283,7 @@ export class CreateComponent implements OnInit {
             id: this.threatboard.id || null,
             created: this.threatboard.created || new Date(),
             modified: new Date().toISOString(),
-            created_by_ref: this.threatboard.created_by_ref ||
-                    (this.user && this.user.identity ? this.user.identity.id : null) || null,
+            created_by_ref: this.threatboard.created_by_ref || null,
             boundaries: {
                 ...this.threatboard.boundaries,
                 malware: this.mapBoundaries(this.threatboard.boundaries.malware),

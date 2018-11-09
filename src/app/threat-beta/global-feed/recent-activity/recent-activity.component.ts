@@ -15,6 +15,7 @@ export class RecentActivityComponent implements OnInit {
    * comments made on reports that are a part of the threatboard.
    */
   private _activity = {};
+  private _boards = {};
 
   constructor(private boardStore: Store<ThreatFeatureState>) { }
 
@@ -28,7 +29,10 @@ export class RecentActivityComponent implements OnInit {
         (boards: any[]) => {
           boards.forEach(board => {
             if (board && board.metaProperties && board.metaProperties.comments) {
-              board.metaProperties.comments.forEach(comment => this._activity[comment.id] = comment);
+              board.metaProperties.comments.forEach(comment => {
+                this._boards[comment.id] = board;
+                this._activity[comment.id] = comment; 
+              });
             }
           });
         },
@@ -42,6 +46,7 @@ export class RecentActivityComponent implements OnInit {
   }
 
   public get activity() { return Object.values(this._activity); } // TODO .sort(this.activitySorts[this.activeSort].sorter); }
+  public get boards() { return this._boards; } // TODO Refactor this
 
   public addAComment(comment: any) {
     this._activity[comment.id] = comment;
