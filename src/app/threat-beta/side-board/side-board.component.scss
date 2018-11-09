@@ -1,0 +1,37 @@
+$contributor-img-size: 48px;
+
+.report-list-item {
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.selectedReportArrow {
+    visibility: hidden;
+}
+
+.selectedReport {
+    background-color: #f5f5f5;
+    
+    .selectedReportArrow {
+        visibility: visible;
+    }
+}
+
+#contributorList {
+    transform: translateY(-#{($contributor-img-size / 2) + 18px});
+    position: relative;
+    margin-left: 24px;    
+}
+
+.contributorListItem {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid #e0e0e0;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.contributorImg {
+    height: $contributor-img-size;
+    width: $contributor-img-size;
+}

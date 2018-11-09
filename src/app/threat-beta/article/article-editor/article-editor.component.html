@@ -1,0 +1,59 @@
+<div id="articleEditorComponent">
+  <form [formGroup]="form" (ngSubmit)="submitArticle()">
+    <mat-card class="uf-mat-card card">
+      <mat-card-content class="cardContent">
+        <br>
+        <div id="nameWrapper" class="flex">
+          <button mat-icon-button class="mat-24 edit-close-button" style="margin-left: -18px;" (click)="location.back()" type="button">
+            <mat-icon>close</mat-icon>
+          </button>
+          <mat-form-field class="full-width flex1">
+            <input type="text" matInput placeholder="Article Name" required formControlName="name">
+            <mat-error *ngIf="form.get('name').hasError('required')">
+              Analytic name is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <br>
+
+        <div class="mb-6">          
+          <h4 [class.textWarn]="form.get('content').dirty && form.get('content').hasError('required')">Content<sup>*</sup></h4>
+          <simplemde-mentions formControlName="content" [class.mdeError]="form.get('content').dirty && form.get('content').hasError('required')" ngDefaultControl></simplemde-mentions>
+          <mat-error [class.showUfMatError]="form.get('content').dirty && form.get('content').hasError('required')" class="ufMatError">
+            Content is <strong>required</strong>
+          </mat-error>
+        </div>
+
+        <div *ngIf="sourceNames$ | async as sourceNames" class="mb-6">
+          <h4 *ngIf="sourceNames.length">Sources</h4>
+          <mat-chip-list>
+            <mat-chip *ngFor="let source of sourceNames; let i = index" class="cursor-pointer chipListChip" removable="true">
+              <span>{{ source }}</span>
+              <span class="flex1">&nbsp;</span>
+              <mat-icon class="material-icons" matChipRemove (click)="removeSource(i)">cancel</mat-icon>
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+
+        <div *ngIf="!(blockAttachments$ | async)" class="mb-6">
+          <h4>Attachments</h4>
+          <file-list [existingFiles]="articleToEdit && articleToEdit.metaProperties && articleToEdit.metaProperties.attachments" (filesChange)="files = $event"></file-list>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+    <div class="articleControlWrapper">
+      <div *ngIf="uploadProgress > 0">
+        <mat-progress-bar mode="determinate" [value]="uploadProgress" *ngIf="uploadProgress < 100"></mat-progress-bar>
+        <mat-progress-bar mode="indeterminate" *ngIf="uploadProgress === 100"></mat-progress-bar>
+      </div>
+      <div class="max-card-width text-right">
+        <button type="button" mat-button (click)="location.back()">CLOSE</button>
+        <span>&nbsp;</span>
+        <button type="button" mat-button color="primary">DELETE</button>
+        <span>&nbsp;</span>
+        <button type="submit" mat-raised-button color="primary" [disabled]="form.status !== 'VALID'">SAVE</button>
+      </div>
+    </div>
+  </form>
+</div>

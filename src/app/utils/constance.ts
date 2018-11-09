@@ -66,6 +66,7 @@ export const Constance = {
   SIGHTING_ICON: 'assets/icon/stix-icons/2018/sighting.svg',
 
   THREAT_DASHBOARD_NAVIGATE_URL: 'threat-dashboard/navigate',
+  THREAT_BETA_DASHBOARD_URL: 'threat-beta',
   LATEST_THREAT_REPORTS_URL: `api/latest/threat-reports`,
 
   MALWARE_URL: StixUrls.MALWARE as string,
@@ -84,8 +85,17 @@ export const Constance = {
 
   X_UNFETTER_SENSOR_URL: 'api/x-unfetter-sensors',
   X_UNFETTER_SENSOR_TYPE: 'x-unfetter-sensor',
-  // TODO change icon
   X_UNFETTER_SENSOR_ICON: 'assets/icon/stix-icons/2018/sensor.svg',
+
+  X_UNFETTER_THREAT_BOARD_URL: 'api/x-unfetter-threat-boards',
+  X_UNFETTER_THREAT_BOARD_TYPE: 'x-unfetter-threat-board',
+  // TODO change icon
+  X_UNFETTER_THREAT_BOARD_ICON: 'assets/icon/stix-icons/2018/report.svg',
+
+  X_UNFETTER_ARTICLE_URL: 'api/x-unfetter-articles',
+  X_UNFETTER_ARTICLE_TYPE: 'x-unfetter-article',
+  // TODO change icon
+  X_UNFETTER_ARTICLE_ICON: 'assets/icon/stix-icons/2018/report.svg',
 
   X_UNFETTER_ASSESSMENT_NAVIGATE_URL: 'assess/navigate',
   X_UNFETTER_ASSESSMENT_URL: 'api/x-unfetter-assessments',
@@ -131,6 +141,7 @@ export const Constance = {
   LOGO_IMG_ASSESSMENTS: 'assets/icon/dashboard-logos/icon-Assessments.png',
   LOGO_IMG_ASSESSMENTS_BETA: 'assets/icon/dashboard-logos/icon-Assessments_beta.png',
   LOGO_IMG_THREAT_DASHBOARD: 'assets/icon/dashboard-logos/icon-Threat_Dashboard.png',
+  LOGO_IMG_THREAT_BETA_DASHBOARD: 'assets/icon/dashboard-logos/icon-Threat_Dashboard_beta.png',
   LOGO_IMG_BASELINES: 'assets/icon/dashboard-logos/icon-Baselines.png',
   LOGO_IMG_EVENTS_DASHBOARD: 'assets/icon/dashboard-logos/icon-event_sightings_beta.png',
   LOGO_IMG_API_EXPLORER: 'assets/icon/dashboard-logos/icon-api.png',

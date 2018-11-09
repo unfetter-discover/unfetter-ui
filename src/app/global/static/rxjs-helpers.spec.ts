@@ -50,7 +50,7 @@ describe('RxjsHelpers class', () => {
                 _id: '4567',
                 mockData: [4, 5]
             }
-        ]
+        ];
 
         it('should transform relationship array to object', (done) => {
             observableOf(relArr)
@@ -72,6 +72,46 @@ describe('RxjsHelpers class', () => {
                 .subscribe((relObj) => {
                     expect(relObj['1234']).toBe(undefined);
                     expect(relObj['4567']).toBe(undefined);
+                    done();
+                });
+        });
+    });
+
+    describe('relationshipArrayToObject function', () => {
+        const data = [
+            [
+                {
+                    source_ref: 'abc',
+                    target_ref: '1234'
+                },
+                {
+                    source_ref: 'def',
+                    target_ref: '1234',
+                }
+            ],
+            [
+                {
+                    id: 'abc',
+                    name: 'bob'
+                },
+                {
+                    id: 'def',
+                    name: 'jim'
+                }
+            ]
+        ];
+
+        it('should transform relationship array to object', (done) => {
+            const expected = {
+                '1234': data[1]
+            };
+            observableOf(data)
+                .pipe(
+                    RxjsHelpers.stixRelationshipArrayToObject()
+                )
+                .subscribe((relObj) => {
+                    expect(relObj['1234'].length).toBe(2);
+                    expect(relObj).toEqual(expected);
                     done();
                 });
         });

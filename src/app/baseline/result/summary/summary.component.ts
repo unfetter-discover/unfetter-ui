@@ -103,8 +103,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
    *  initialize this component, fetching data from backend
    */
   public ngOnInit(): void {
-    const idParamSub1$ = this.store
-      .select(getAttackPatternCount)
+    const idParamSub1$ = this.userStore.select(getAttackPatternCount)
       .pipe(
         distinctUntilChanged())
       .subscribe((count) => this.attackPatternCount = count);
@@ -253,17 +252,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
     const sub3$ = this.store
       .select('baselineSummary').pipe(
-      pluck('finishedLoadingSummaryAggregationData'),
-      distinctUntilChanged())
-      .subscribe((done: boolean) => {
-        // this.finishedLoadingSAD = done;
-        // if (done) {
-        //   this.transformSAD();
-        // }
-      }, (err) => console.log(err));
-
-    const sub4$ = this.store
-      .select('baselineSummary').pipe(
       pluck('baseline'),
       distinctUntilChanged())
       .subscribe((baseline: AssessmentSet) => {
@@ -273,7 +261,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
         }
       }, (err) => console.log(err));
 
-    this.subscriptions.push(sub1$, sub2$, sub3$, sub4$);
+    this.subscriptions.push(sub1$, sub2$, sub3$);
   }
 
 

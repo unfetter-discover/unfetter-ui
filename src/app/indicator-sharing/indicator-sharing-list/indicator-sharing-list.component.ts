@@ -17,6 +17,7 @@ import { StixRelationshipTypes } from '../../global/enums/stix-relationship-type
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { downloadBundle } from '../../global/static/stix-bundle';
 import { SearchParameters } from '../models/search-parameters';
+import { AngularHelper } from '../../global/static/angular-helper';
 
 type mainWell = 'stats' | 'attackPatternsUsed' | 'none';
 
@@ -31,6 +32,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
     public displayedIndicators: any[];
     public filteredIndicators: any[];
+    public filteredIndicators$;
     public DEFAULT_LENGTH: number = Constance.INDICATOR_SHARING.DEFAULT_LIST_LENGTH;
     public filterOpen: boolean = false;
     public filterOpened: boolean = false;
@@ -70,6 +72,8 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
 
     public ngOnInit() {
         this.initBaseData();
+
+        this.filteredIndicators$ = this.store.select('indicatorSharing').pipe(pluck('filteredIndicators'));
 
         const filteredIndicatorSub$ = this.store.select('indicatorSharing').pipe(
             pluck('filteredIndicators'),
@@ -292,4 +296,7 @@ export class IndicatorSharingListComponent extends IndicatorBase implements OnIn
             );
     }
 
+    public trackByFn(index: number, item: any): number {
+        return AngularHelper.genericTrackBy(index, item);
+    }
 }

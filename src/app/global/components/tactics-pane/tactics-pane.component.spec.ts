@@ -32,10 +32,11 @@ import { MarkdownEditorComponent } from '../markdown-editor/markdown-editor.comp
 import { CapitalizePipe } from '../../pipes/capitalize.pipe';
 import { AuthService } from '../../../core/services/auth.service';
 import { GenericApi } from '../../../core/services/genericapi.service';
-import { mockUser, mockTactics, mockTargets } from './tactics.model.test';
+import { mockUser, mockTactics, mockTargets, mockAttackPatterns, mockTacticsConfig } from './tactics.model.test';
 import * as stixActions from '../../../root-store/stix/stix.actions';
 import * as userActions from '../../../root-store/users/user.actions';
 import { reducers, AppState } from '../../../root-store/app.reducers';
+import { AddConfig } from '../../../root-store/config/config.actions';
 
 describe('TacticsPaneComponent', () => {
 
@@ -88,8 +89,9 @@ describe('TacticsPaneComponent', () => {
         fixture = TestBed.createComponent(TacticsPaneComponent);
         component = fixture.componentInstance;
         store = component['store'];
+        store.dispatch(new AddConfig(mockTacticsConfig));
         store.dispatch(new userActions.LoginUser(mockUser));
-        store.dispatch(new stixActions.SetAttackPatterns(mockTactics));
+        store.dispatch(new stixActions.SetAttackPatterns(mockAttackPatterns as any));
         fixture.detectChanges();
     });
 

@@ -1,0 +1,92 @@
+<div id="activities-list">
+
+    <div id="activities-nav-bar" class="flex">
+        <h4>Activity</h4>
+        <div class="flex1 activity-sort-options">
+            Sort by:
+            <mat-radio-group [(ngModel)]="activeSort">
+                <mat-radio-button *ngFor="let sort of sorts" value="{{ sort }}"
+                        [disabled]="!activitySorts[sort].enabled">{{ sort }}</mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+
+    <div id="activity-feed" *ngIf="loaded; else loadingBlock">
+
+        <mat-card>
+            <mat-card-content>
+                <button mat-button *ngIf="commentTarget !== true" (click)="commentTarget = true">
+                    <i class="material-icons comment-button">chat_bubble</i> Add a comment
+                </button>
+                <comment-input *ngIf="commentTarget === true" (cancel)="commentTarget = false"
+                        (submit)="submitActivityComment($event)"></comment-input>
+            </mat-card-content>
+        </mat-card>
+
+        <ng-container *ngFor="let item of activity">
+            <ng-container *ngIf="item.type === 'x-unfetter-article'">
+                <ng-container *ngTemplateOutlet="articleTemplate;context:{article:item}"></ng-container>
+            </ng-container>
+            <ng-container *ngIf="item.comment">
+                <display-comment [comment]="item" [parent]=null [board_article]=threatBoard (newComment)="addAComment($event)"></display-comment>
+            </ng-container>
+        </ng-container>
+
+    </div>
+
+</div>
+
+<ng-template #loadingBlock>
+    <loading-spinner height="250px"></loading-spinner>
+</ng-template>
+
+<ng-template #articleTemplate let-article="article">
+
+    <mat-card class="uf-mat-card">
+
+        <div class="flex">
+            <div mat-card-avatar class="activity-avatar" [style.background-image]="getActivityAvatar(article)"></div>
+            <div class="flex1 activity-content">
+                <mat-card-header>
+                    <mat-card-title>{{ article.name }}</mat-card-title>
+                    <mat-card-subtitle>
+                        {{ getUserName(article) }} &bull; Last edited {{ article.modified | timeAgo }}
+                    </mat-card-subtitle>
+                    <a class="article-edit-button" [routerLink]="['../article/edit', article.id]">
+                        <i class="material-icons">edit</i>
+                    </a>
+                </mat-card-header>
+                <mat-card-content>
+                    <markdown-mentions [markDown]="article.content"></markdown-mentions>
+                    <img *ngIf="article.image" mat-card-image src="{{ getActivityImage(article.image) }}">
+                </mat-card-content>
+            </div>
+        </div>
+
+        <mat-card-actions>
+            <button mat-button class="like-button" [style.color]="hasLikedActivity(article) ? 'blue' : 'inherit'"
+                    (click)="clickActivityLike(article)">
+                <i class="material-icons">thumb_up</i>
+                <span [style.margin]="'0 6px'">Like</span>
+                <span *ngIf="hasActivityLikes(article)">({{ article.metaProperties.likes.length }})</span>
+            </button>
+            <button mat-button *ngIf="commentTarget !== article" class="comment-button"
+                    (click)="commentTarget = article">
+                <i class="material-icons">chat_bubble</i> Add a comment
+            </button>
+        </mat-card-actions>
+
+        <mat-card-footer [style.padding]="'0 24px 24px 64px'">
+            <comment-input *ngIf="commentTarget === article" (cancel)="commentTarget = false"
+                    (submit)="submitActivityComment($event)"></comment-input>
+            <div label="Comments" *ngIf="hasActivityComments(article)">
+                <hr/>
+                <ng-container *ngFor="let comment of article.metaProperties.comments | sortByField: 'submitted'">
+                    <display-comment [comment]="comment" [parent]=article [board_article]=article (newComment)="addAComment($event)"></display-comment>
+                </ng-container>
+            </div>
+        </mat-card-footer>
+
+    </mat-card>
+
+</ng-template>

@@ -14,10 +14,11 @@ import { TreemapComponent } from '../../treemap/treemap.component';
 import { TreemapOptions } from '../../treemap/treemap.data';
 import { ResizeDirective } from '../../../directives/resize.directive';
 import { GenericApi } from '../../../../core/services/genericapi.service';
-import { mockUser, mockTactics, mockAttackPatterns, mockTargets } from '../tactics.model.test';
+import { mockUser, mockTactics, mockAttackPatterns, mockTargets, mockTacticsConfig } from '../tactics.model.test';
 import * as stixActions from '../../../../root-store/stix/stix.actions';
 import * as userActions from '../../../../root-store/users/user.actions';
 import { reducers, AppState } from '../../../../root-store/app.reducers';
+import { AddConfig } from '../../../../root-store/config/config.actions';
 
 describe('TacticsTreemapComponent', () => {
 
@@ -63,8 +64,9 @@ describe('TacticsTreemapComponent', () => {
             ['Loading...', 'Attack Patterns', 1],
         ];
         store = component['store'];
+        store.dispatch(new AddConfig(mockTacticsConfig));
         store.dispatch(new userActions.LoginUser(mockUser));
-        store.dispatch(new stixActions.SetAttackPatterns(mockTactics));
+        store.dispatch(new stixActions.SetAttackPatterns(mockAttackPatterns as any));
     });
     
     it('should create', async(() => {

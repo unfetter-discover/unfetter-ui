@@ -26,6 +26,11 @@ export class HeaderNavigationComponent {
       icon: Constance.LOGO_IMG_THREAT_DASHBOARD
     },
     {
+      url: Constance.THREAT_BETA_DASHBOARD_URL,
+      title: 'Threat Dashboard BETA',
+      icon: Constance.LOGO_IMG_THREAT_BETA_DASHBOARD
+    },    
+    {
       url: 'indicator-sharing/list',
       title: 'Analytic Exchange',
       icon: Constance.LOGO_IMG_ANALYTIC_HUB

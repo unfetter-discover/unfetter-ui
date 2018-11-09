@@ -1,0 +1,41 @@
+@import '../../../styles/_variables.scss';
+@import '../_threat-beta.common.scss';
+
+#search-bar {
+    .search-input {
+        width: 100%;
+        margin-bottom: 5px;
+        background: white;
+
+        mat-icon {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+    }
+
+}
+
+:host ::ng-deep #search-bar .mat-form-field-wrapper {
+    padding-bottom: 0;
+
+    .mat-form-field-underline {
+        display: none;
+    }
+}
+
+#feed-content {
+    padding: 15px;
+}
+
+#trends-trench {
+    display: flex;
+    flex-direction: column;
+    width: $rightSidenavWidth;
+    margin-left: 10px;
+    padding: 15px;
+    background: white;
+
+    contributor-list {
+        flex: 1;
+    }
+}

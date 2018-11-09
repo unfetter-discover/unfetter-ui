@@ -41,10 +41,10 @@ describe('SummaryCalculationService', () => {
   }));
 
   it('should set average risk per assessed object', inject([SummaryCalculationService], (service: SummaryCalculationService) => {
-    service.setAverageRiskPerAssessedObject([AssessmentObjectMockFactory.mockWithRisk(3)]);
-    expect(service.numericRisk).toEqual(3);
-    service.setAverageRiskPerAssessedObject([AssessmentObjectMockFactory.mockWithRisk(3), AssessmentObjectMockFactory.mockWithRisk(0)]);
-    expect(service.numericRisk).toEqual(1.5);
+    service.setAverageRiskPerAssessedObject([AssessmentObjectMockFactory.mockWithRisk(.3)]);
+    expect(service.numericRisk).toEqual(.3);
+    service.setAverageRiskPerAssessedObject([AssessmentObjectMockFactory.mockWithRisk(.3), AssessmentObjectMockFactory.mockWithRisk(0)]);
+    expect(service.numericRisk).toEqual(.15);
   }));
 
   it('should calculate default weakness', inject([SummaryCalculationService], (service: SummaryCalculationService) => {

@@ -1,0 +1,99 @@
+<ng-container *ngIf="(finishedLoadingAll$|async) === true; else loadingBlock">
+  <div #layout class="layout" *ngIf="(failedToLoad|async) === false; else failedToLoadBlock">
+    <a mat-fab color="primary" class="bottomRightFab plainLink" routerLink="/threat-beta/create">
+      <i class="material-icons mat-24">add</i>
+    </a>
+    <mat-sidenav-container>
+      <mat-sidenav class="side-panel mat-elevation-z8" mode="side" opened="true">
+        <div class="flex flex-cols side-nav-top">
+        </div>
+        <mat-tab-group>
+          <mat-tab label="MY BOARDS">
+            <div class="side-nav-item header-text" *ngFor="let board of boards$ | async">
+              <div class="pointer" (click)="boardView(board.id)"> 
+                {{board.name}}
+              </div>
+              <div class="flex1"></div>
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="align mat-24">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="boardView(board.id)">
+                  <!-- TODO reverse & fix "canCrud" check -->
+                  <mat-icon>details</mat-icon>
+                  <span>View</span>
+                </button>
+                <button mat-menu-item (click)="editBoard(board.id)" *ngIf="!canCrud">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                <button mat-menu-item (click)="deleteBoard(board.id)" *ngIf="!canCrud">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
+            </div>
+          </mat-tab>
+          <mat-tab label="FOLLOWING">
+            <div class="side-nav-item header-text" *ngFor="let board of boards$ | async">
+              <!-- TODO use different list of boards -->
+              <div>
+                {{board.name}}
+              </div>
+              <div class="flex1"></div>
+              <button mat-icon-button [matMenuTriggerFor]="menu" class="align mat-24">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="boardClicked(board.id)" *ngIf="!canCrud">
+                  <mat-icon>details</mat-icon>
+                  <span>View</span>
+                </button>
+              </mat-menu>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-sidenav>
+      <mat-sidenav-content class="sidenavContentPolyfill320 sidenavContentPolyfill384-right">        
+        <div class="flex flexRow">
+          <div class="flex">
+            <uf-info-bar isWarningMsg="true" message="This dashboard for Beta testing. Some functionality incomplete!" applyHeightOnOpen="true"></uf-info-bar>
+          </div>
+        </div>
+        <div class="main-panel">
+          <global-feed></global-feed>
+        </div>
+      </mat-sidenav-content>
+      <mat-sidenav opened mode="side" position="end" class="right-side-panel mat-elevation-z8">
+        <div id="recentTitle" class="flexItemsCenter">
+          <div class="side-panel-header">
+            <div class="height-100-percent">
+              <div class="flexRow">
+                <div class="flexColumn">
+                  <h5 class="inlineBlock title">RELATED</h5>
+                  <div></div>
+                </div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <related></related> -->
+      </mat-sidenav>
+    </mat-sidenav-container>
+  </div>
+</ng-container>
+
+<ng-template #loadingBlock>
+  <loading-spinner></loading-spinner>
+</ng-template>
+
+<ng-template #failedToLoadBlock>
+  <div class="container fadeIn">
+    <div class="row mt-15">
+      <div class="col-xs-10 col-xs-offset-1">
+        <error-card errorTitle="Threat Dashboard" errorBody="Failed to load. Check the network and URL."></error-card>
+      </div>
+    </div>
+  </div>
+</ng-template>

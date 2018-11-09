@@ -1,0 +1,28 @@
+@import '../../../styles/_variables.scss';
+@import '../threat-beta.common';
+
+#card1Wrapper,
+#card2Wrapper {
+    padding: 24px;
+    width: 50%;
+    max-width: $card-max-content-width !important;
+}
+
+#card2Wrapper {
+  padding-left: 0;
+}
+
+@media screen and (max-width: 1100px) {
+    .main-panel {
+        flex-direction: column;
+    }
+
+    #card1Wrapper,
+    #card2Wrapper {
+        width: 100%;
+    }
+
+    #card2Wrapper {
+        padding-left: 24px;
+    }
+}

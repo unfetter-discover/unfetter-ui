@@ -127,7 +127,11 @@ $min-card-fullwidth: ($min-card-width * 2 + $padding-between-cards + $padding-be
     min-height: 10px;
 
     .mat-cell {
-      font-size: 11px;
+      font-size: 11px
+    }
+
+    .mat-column-risk {
+      min-width: 40px;
     }
   }
 }

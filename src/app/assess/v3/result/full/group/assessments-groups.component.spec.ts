@@ -153,13 +153,13 @@ describe('AssessGroupComponent', () => {
     phase.assessedObjects = AssessmentObjectMockFactory
       .mockMany(5)
       .map((ao) => {
-        ao.risk = 50;
+        ao.risk = .50;
         return ao;
       });
-    phase.assessedObjects[4].risk = 25;
+    phase.assessedObjects[4].risk = .25;
     const risk = component.getRiskByPhase(phaseId);
     expect(risk).toBeDefined();
-    expect(risk).toEqual(45);
+    expect(risk).toEqual(.45);
   });
 
   it('should return risk by phase, edge case', () => {

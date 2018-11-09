@@ -13,6 +13,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { usersReducer } from '../../root-store/users/users.reducers';
+import { reducers } from '../../root-store/app.reducers';
 
 describe('IndicatorSharingFiltersComponent', () => {
     let overlayContainerElement: HTMLElement;
@@ -21,8 +22,7 @@ describe('IndicatorSharingFiltersComponent', () => {
     let store;
 
     let mockReducer: ActionReducerMap<any> = {
-        users: usersReducer,
-        config: configReducer,
+        ...reducers,
         indicatorSharing: indicatorSharingReducer
     };
 

@@ -11,6 +11,7 @@ export const CLEAN_BASELINE_WIZARD_DATA = '[Baseline] CLEAN_BASELINE_WIZARD_DATA
 export const FETCH_BASELINE = '[Baseline] FETCH_BASELINE';
 export const FETCH_CAPABILITY_GROUPS = '[Baseline] FETCH_CAPABILITY_GROUPS';
 export const SET_CAPABILITY_GROUPS = '[Baseline] SET_CAPABILITY_GROUPS';
+export const SET_INITIAL_BASELINE_GROUPS = '[Baseline] SET_INITIAL_BASELINE_GROUPS'
 export const SET_BASELINE_GROUPS = '[Baseline] SET_BASELINE_GROUPS';
 export const SET_CURRENT_BASELINE_GROUP = '[Baseline] SET_CURRENT_BASELINE_GROUP';
 export const FETCH_CAPABILITIES = '[Baseline] FETCH_CAPABILITIES';
@@ -23,6 +24,7 @@ export const REMOVE_OBJECT_ASSESSMENTS_FROM_BASELINE = '[Baseline] REMOVE_OBJECT
 export const SET_CURRENT_BASELINE_CAPABILITY = '[Baseline] SET_CURRENT_BASELINE_CAPABILITY';
 export const SET_BASELINE = '[Baseline] SET_BASELINE';
 export const ADD_CAPABILITY_GROUP = '[Baseline] ADD_CAPABILITY_GROUP';
+export const ADD_CAPABILITY = '[Baseline] ADD_CAPABILITY';
 export const REMOVE_CAPABILITY_GROUP_FROM_BASELINE = '[Baseline] REMOVE_CAPABILITY_GROUP_FROM_BASELINE'
 export const SAVE_OBJECT_ASSESSMENTS = '[Baseline] SAVE_OBJECT_ASSESSMENTS';
 export const FAILED_TO_LOAD = '[Baseline] FAILED_TO_LOAD';
@@ -135,6 +137,12 @@ export class RemoveCapabilityGroupFromBaseline implements Action {
     constructor(public payload: Category) { }
 }
 
+export class SetInitialBaselineGroups implements Action {
+    public readonly type = SET_INITIAL_BASELINE_GROUPS;
+
+    constructor(public payload: Category[]) { }
+}
+
 export class SetBaselineGroups implements Action {
     public readonly type = SET_BASELINE_GROUPS;
 
@@ -157,6 +165,12 @@ export class SetCapabilities implements Action {
     public readonly type = SET_CAPABILITIES;
 
     constructor(public payload: Capability[]) { }
+}
+
+export class AddCapability implements Action {
+    public readonly type = ADD_CAPABILITY;
+
+    constructor(public payload: Capability) { }
 }
 
 export class SetBaselineCapabilities implements Action {
@@ -274,6 +288,7 @@ export type BaselineActions =
     ReplaceCapabilityInBaseline |
     RemoveCapabilitiesFromBaseline |
     RemoveObjectAssessmentsFromBaseline |
+    SetInitialBaselineGroups |
     SetBaselineGroups |
     SetCapabilities |
     SetBaselineCapabilities |

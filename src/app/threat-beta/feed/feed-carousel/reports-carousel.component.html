@@ -1,0 +1,46 @@
+<feed-carousel #carousel [itemCount]="reports.length" [loaded]="loaded" [label]="'Reports'">
+
+    <ng-container carousel-items>
+
+        <div *ngFor="let report of reports; index as idx" id="{{ report.id }}"
+                class="feed-item board-report" [style.background]="getReportBackground(report)"
+                matBadgeHidden="{{ report.vetted }}" matBadge="'!'" matBadgeColor="accent"
+                matBadgePosition="before" matBadgeSize="small"
+                (mouseenter)="hoverIndex = idx" (mouseleave)="hoverIndex = -1">
+
+            <div class="report-image" [style.background]="getReportBackgroundImage(report)">
+                <div class='report-fabs' *ngIf="hoverIndex === idx">
+                    <div class="fab-row">
+                        <button mat-mini-fab [disabled]="report.vetted" title="Approve Report"
+                                (click)="approveReport(report.id)">
+                            <mat-icon class="mat-24" aria-label="approve report">done</mat-icon>
+                        </button>
+                    </div>
+                    <div class="fab-row">
+                        <button mat-mini-fab [style.margin-right]="'24px'" title="Report Quick View"
+                                (click)="viewReport(report.id)">
+                            <mat-icon class="mat-24" aria-label="report quick view">launch</mat-icon>
+                        </button>
+                        <button mat-mini-fab [style.margin-left]="'24px'" disabled title="Share Report"
+                                (click)="shareReport(report.id)">
+                            <mat-icon class="mat-24" aria-label="share report">share</mat-icon>
+                        </button>
+                    </div>
+                    <div class="fab-row">
+                        <button mat-mini-fab title="Reject Report" title="Reject Report"
+                                (click)="rejectReport(report.id)">
+                            <mat-icon class="mat-24" aria-label="reject report">delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div carousel-item class="report-info">
+                <div class='report-title'>{{ report.name }}</div>
+            </div>
+
+        </div>
+
+    </ng-container>
+
+</feed-carousel>

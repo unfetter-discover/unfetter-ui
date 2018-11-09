@@ -1,6 +1,7 @@
 import { forkJoin as observableForkJoin, of as observableOf,  Observable, throwError  } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
+import { Relationship } from 'stix';
 
 import { GenericApi } from '../core/services/genericapi.service';
 import { Constance } from '../utils/constance';
@@ -10,6 +11,8 @@ import { RxjsHelpers } from '../global/static/rxjs-helpers';
 import { IndicatorSharingSummaryStatistics } from './models/summary-statistics';
 import { SearchParameters } from './models/search-parameters';
 import { SortTypes } from './models/sort-types.enum';
+import { StixUrls } from '../global/enums/stix-urls.enum';
+import { StixApiOptions } from '../global/models/stix-api-options';
 
 @Injectable()
 export class IndicatorSharingService {
@@ -43,25 +46,6 @@ export class IndicatorSharingService {
         return this.genericApi.patch(`${this.baseUrl}/${indicator.id}`, { data: { _id: indicator.id, type: 'indicator', attributes: indicator } });
     }
 
-    public getAttackPatternsByIndicator(): Observable<any> {
-        return this.genericApi.get(`${this.baseUrl}/attack-patterns-by-indicator`);
-    }
-
-    public getAttackPatterns(): Observable<any> {
-        const projectObj = {
-            'stix.name': 1,
-            'stix.description': 1,
-            'stix.kill_chain_phases': 1,
-            'extendedProperties.x_mitre_data_sources': 1,
-            'extendedProperties.x_mitre_platforms': 1,
-            'stix.id': 1,
-        };
-        const sortObj = { 
-            'stix.name': 1 
-        };
-        return this.genericApi.get(`${this.attackPatternsUrl}?project=${JSON.stringify(projectObj)}&sort=${JSON.stringify(sortObj)}`);
-    }
-
     public addComment(comment, id) {
         const url = `${this.multiplesUrl}/${id}/comment`;
         return this.genericApi.patch(url, {data: { attributes: {'comment': comment}}});
@@ -85,11 +69,7 @@ export class IndicatorSharingService {
     public addLabel(label, id) {
         const url = `${this.multiplesUrl}/${id}/label`;
         return this.genericApi.patch(url, { data: { attributes: { 'label': label } } });
-    }
-
-    public getIdentities() {
-        return this.genericApi.get(this.identitiesUrl);
-    }    
+    }  
 
     public getUserProfileById(userId): Observable<any> {
         if (this.runMode !== undefined && this.runMode === 'DEMO') {
@@ -204,22 +184,39 @@ export class IndicatorSharingService {
         return this.genericApi.get(`${this.multiplesUrl}/${id}/publish`);
     }
 
-    /**
-     * @return {Observable} various STIX types
-     * @description Gives an object with an attack pattern IDs as the properties that point to a list of intrusion sets
-     */
-    public getInstrusionSetsByAttackPattern(): Observable<any> {
-        return this.genericApi.get(`${this.attackPatternsUrl}/intrusion-sets-by-attack-pattern`);
+    public getAttackPatternToIntrusionSetRelationships(): Observable<Relationship[]> {
+        const options: StixApiOptions = {
+            filter: {
+                'stix.source_ref': {
+                    $regex: '^intrusion-set--'
+                },
+                'stix.target_ref': {
+                    $regex: '^attack-pattern--'
+                }
+            },
+            project: {
+                'stix.source_ref': 1,
+                'stix.target_ref': 1
+            }
+        };
+        return this.genericApi.getStix<Relationship[]>(StixUrls.RELATIONSHIP, null, options);
     }
 
-    public getIntrusionSets(): Observable<any> {
-        const projectObj = {
-            'stix.name': 1,
-            'stix.id': 1
-        }
-        const sortObj = {
-            'stix.name': 1
+    public getIndicatorToAttackPatternRelationships(): Observable<Relationship[]> {
+        const options: StixApiOptions = {
+            filter: {
+                'stix.source_ref': {
+                    $regex: '^indicator--'
+                },
+                'stix.target_ref': {
+                    $regex: '^attack-pattern--'
+                }
+            },
+            project: {
+                'stix.source_ref': 1,
+                'stix.target_ref': 1
+            }
         };
-        return this.genericApi.get(`${this.intrusionSetsUrl}?project=${encodeURI(JSON.stringify(projectObj))}&sort=${encodeURI(JSON.stringify(sortObj))}`);
+        return this.genericApi.getStix<Relationship[]>(StixUrls.RELATIONSHIP, null, options);
     }
 }

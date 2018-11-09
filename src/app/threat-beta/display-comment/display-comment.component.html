@@ -1,0 +1,63 @@
+<mat-card class="uf-mat-card" id="display-comment">
+
+  <div class="flex">
+    <div mat-card-avatar *ngIf="hasAvatar(comment)" class="activity-avatar" [style.background-image]="getCommentAvatar(comment)"></div>
+    <div mat-card-avatar *ngIf="!hasAvatar(comment)" class="activity-avatar">
+      <button mat-icon-button>
+        <mat-icon class="mat-24">account_circle</mat-icon>
+      </button>
+    </div>
+    <div class="flex1 activity-content">
+      <mat-card-header>
+        <mat-card-title>{{ getUserName(comment) }}</mat-card-title>
+        <mat-card-subtitle>{{ comment.submitted | timeAgo }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <markdown-mentions [markDown]="comment.comment.content"></markdown-mentions>
+      </mat-card-content>
+    </div>
+  </div>
+
+  <mat-card-actions>
+    <button mat-button class="like-button" [style.color]="hasLiked(comment) ? 'blue' : 'inherit'" (click)="clickLike(comment)">
+      <i class="material-icons">thumb_up</i>
+      <span [style.margin]="'0 6px'">Like</span>
+      <span *ngIf="hasLikes(comment)">({{ comment.comment.likes.length }})</span>
+    </button>
+    <button mat-button *ngIf="commentTarget !== comment" class="comment-button" (click)="commentTarget = comment">
+      <i class="material-icons">chat_bubble</i> Reply
+    </button>
+  </mat-card-actions>
+
+  <mat-card-footer>
+    <hr *ngIf="!parent && ((comment.comment.replies && comment.comment.replies.length) || (commentTarget === comment))">
+    <!-- TODO Promote comment-input? -->
+    <comment-input *ngIf="commentTarget === comment" (cancel)="commentTarget = false" (submit)="submitComment($event)"></comment-input>
+    <div *ngIf="hasComments(comment)">
+      <div *ngFor="let reply of comment.comment.replies | sortByField: 'submitted'" class="flex">
+        <div mat-card-avatar *ngIf="hasAvatar(comment)" class="activity-avatar" [style.background-image]="getCommentAvatar(comment)"></div>
+        <div mat-card-avatar *ngIf="!hasAvatar(comment)" class="activity-avatar">
+          <button mat-icon-button>
+            <mat-icon class="mat-24">account_circle</mat-icon>
+          </button>
+        </div>
+        <div class="flex1 activity-content">
+          <mat-card-header>
+            <mat-card-title>{{ getUserName(reply) }}</mat-card-title>
+            <mat-card-subtitle>{{ reply.submitted | timeAgo }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <markdown-mentions [markDown]="reply.comment.content"></markdown-mentions>
+            <button mat-button class="like-button" [style.margin-left]="'-16px'" [style.line-height]="'20px'"
+              [style.color]="hasLiked(reply) ? 'blue' : 'inherit'" (click)="clickLike(reply)">
+              <i class="material-icons">thumb_up</i>
+              <span [style.margin]="'0 6px'">Like</span>
+              <span *ngIf="hasLikes(reply)">({{ reply.comment.likes.length }})</span>
+            </button>
+          </mat-card-content>
+        </div>
+      </div>
+    </div>
+  </mat-card-footer>
+
+</mat-card>

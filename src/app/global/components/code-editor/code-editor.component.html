@@ -1,0 +1,36 @@
+<div class="codeEditorComponent uf-codeMirror" [class.readOnly]="readOnly">
+
+  <div class="readOnlyControls" *ngIf="readOnly">
+    <button mat-icon-button ngxClipboard [cbContent]="value" (cbOnError)="handleCopy($event, tooltip)" (cbOnSuccess)="handleCopy($event, tooltip)">
+      <mat-icon>content_copy</mat-icon>
+      <div #tooltip="matTooltip" matTooltip="{{ copyText }}" class="inlineBlock"></div>
+    </button>
+  </div>
+
+  <div class="toolbar" *ngIf="!readOnly">
+    <div class="toolbar-inner">
+
+      <label>Syntax:&nbsp;&nbsp;</label>
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedLang">
+          <mat-option *ngFor="let lang of langs" [value]="lang">{{ lang }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <i class="separator">|</i>
+      <a title="Dark Mode" tabindex="-1" class="control-icon" 
+        [class.active]="theme === 'material'" 
+        (click)="theme !== 'material' ? theme= 'material' : theme = 'idea'">
+        <i class="material-icons">brightness_2</i>
+      </a>
+
+      <a title="Wrap Text" tabindex="-1" class="control-icon" [class.active]="lineWrapping" (click)="lineWrapping = !lineWrapping">
+        <i class="material-icons">wrap_text</i>
+      </a>
+
+    </div>
+  </div>
+
+  <div #cm></div>
+
+</div>

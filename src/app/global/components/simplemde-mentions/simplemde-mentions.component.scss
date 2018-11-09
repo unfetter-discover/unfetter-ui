@@ -1,0 +1,28 @@
+@import '../../../../styles/modules/mixins';
+
+#userMentions {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 750;
+  background: #fff;
+  display: none;
+}
+
+.mention {
+  padding: 5px 10px;
+  width: 215px;
+}
+
+.mention:not(:last-child) {
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.userAvatar {
+    border-radius: 15%;
+    height: 17px;
+}
+
+.simpleMdeMentions {
+  position: relative;
+}

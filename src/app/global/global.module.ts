@@ -24,9 +24,13 @@ import {
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
+    MatRadioModule,
+    MatBadgeModule,
 } from '@angular/material';
+import {OverlayModule} from '@angular/cdk/overlay';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { SimplemdeModule, SIMPLEMDE_CONFIG } from 'ng2-simplemde';
+import { ClipboardModule } from 'ngx-clipboard';
 
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
@@ -64,6 +68,8 @@ import { SidepanelComponent } from './components/sidepanel/sidepanel.component';
 import { SidepanelListItemComponent } from './components/sidepanel/sidepanel-list-item.component';
 import { SidepanelMiniItemComponent } from './components/sidepanel/sidepanel-mini-item.component';
 import { SidepanelOptionItemComponent } from './components/sidepanel/sidepanel-option-item.component';
+import { SidepanelNavControlComponent } from './components/sidepanel/sidepanel-nav-control.component';
+import { SidepanelCustomContentComponent } from './components/sidepanel/sidepanel-custom-content.component';
 import { SpeedDialComponent } from './components/speed-dial/speed-dial.component';
 import { StixTableComponent } from './components/stix-table/stix-table.component';
 import { TacticsCarouselComponent } from './components/tactics-pane/tactics-carousel/tactics-carousel.component';
@@ -89,11 +95,18 @@ import { SophisticationPipe } from './pipes/sophistication.pipe';
 import { TimeAgoPipe } from './pipes/time-ago.pipe';
 import { AuthService } from '../core/services/auth.service';
 import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
+import { TimesPipe } from './pipes/times.pipe';
 import { UnfetterCarouselComponent, PrimedDirective } from './components/tactics-pane/tactics-carousel/unf-carousel.component';
 import { ScrollTrapDirective } from './directives/scroll-trap.directive';
+import { SimplemdeMentionsComponent } from './components/simplemde-mentions/simplemde-mentions.component';
+import { SimpleMDEConfig } from './static/simplemde-config';
+import { MarkdownMentionsComponent } from './components/markdown-mentions/markdown-mentions.component';
+import { TextHighlightComponent } from './components/text-highlight/text-highlight.component';
+import { CodeEditorComponent } from './components/code-editor/code-editor.component';
 
 const matModules = [
     MatAutocompleteModule,
+    MatBadgeModule,
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
@@ -107,12 +120,13 @@ const matModules = [
     MatMenuModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatRadioModule,
     MatSelectModule,
     MatSidenavModule,
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule,
+    MatTooltipModule,    
 ];
 
 const unfetterComponents = [
@@ -152,6 +166,8 @@ const unfetterComponents = [
     SidepanelListItemComponent,
     SidepanelMiniItemComponent,
     SidepanelOptionItemComponent,
+    SidepanelNavControlComponent,
+    SidepanelCustomContentComponent,
     SophisticationPipe,
     SpeedDialComponent,
     StixTableComponent,
@@ -163,6 +179,7 @@ const unfetterComponents = [
     TacticsTreemapComponent,
     TacticsPaneComponent,
     TimeAgoPipe,
+    TimesPipe,
     TreemapComponent,
     MarkdownEditorComponent,
     SelectionListComponent,
@@ -172,6 +189,11 @@ const unfetterComponents = [
     ExternalReferencesListComponent,
     ImplementationsListComponent,
     AddLabelAltComponent,
+    SimplemdeMentionsComponent,
+    MarkdownMentionsComponent,
+    ScrollTrapDirective,
+    TextHighlightComponent,
+    CodeEditorComponent,
 ];
 
 @NgModule({
@@ -180,6 +202,8 @@ const unfetterComponents = [
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
+        ClipboardModule,
+        OverlayModule,
         MarkdownModule.forRoot({
             markedOptions: {
                 provide: MarkedOptions,
@@ -196,22 +220,18 @@ const unfetterComponents = [
         }),
         SimplemdeModule.forRoot({
             provide: SIMPLEMDE_CONFIG,
-            useValue: {
-                spellChecker: false,
-                autoDownloadFontAwesome: false,
-                status: false
-            }
+            useValue: SimpleMDEConfig.basicConfig
         }),
         ...matModules
     ],
     declarations: [
         ...unfetterComponents,
-        ScrollTrapDirective,        
     ],
     exports: [
         ...unfetterComponents,
         ...matModules,
         SimplemdeModule,
+        MarkdownModule,
     ],
     providers: [
         AuthService,

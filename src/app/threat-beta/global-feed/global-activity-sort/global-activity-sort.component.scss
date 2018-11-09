@@ -1,0 +1,36 @@
+#globalActivitySortComponent {
+    padding-bottom: 7px;
+}
+
+label {
+    color:unset !important;
+    font-weight: 500;
+}
+
+.mat-radio-button {
+    margin-right: 15px;
+    
+    label {
+        color: black;
+        font-weight: 500;
+    }
+
+    .mat-radio-label {
+        color: black;
+        font-weight: 500;
+    }
+}
+
+.mat-radio-label {
+    color: black !important;
+    font-weight: 500;
+}
+
+div.mat-radio-label-content {
+    color: black !important;
+    font-weight: 500;
+}
+
+#sortByLabel {
+    margin-right: 5px;
+}

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Assessment } from 'stix/assess/v3/assessment';
+import { SummaryCalculationService } from '../summary/summary-calculation.service';
 
 @Component({
   selector: 'result-header',
@@ -23,9 +24,12 @@ export class ResultHeaderComponent implements OnInit {
   protected readonly TOTAL_INDICATORS = 45;
   protected readonly TOTAL_SENSORS = 7;
 
-  protected editUrl: string;
+  infoBarMsg: string;
+  public editUrl: string;
 
-  constructor() { }
+  constructor(
+    public calculationService: SummaryCalculationService
+  ) { }
 
   /**
    * @description on init
@@ -38,10 +42,10 @@ export class ResultHeaderComponent implements OnInit {
     this.resultsLink = `${resultBase}/full/${this.rollupId}/${this.assessmentId}`;
     const editBase = `${base}/wizard/edit/`;
     this.editUrl = `${editBase}/${this.rollupId}`;
-    // TODO: initialize the correct total questions, by calling the server, may need a count endpoint
-    this.percentCompleted = this.calcPercentCompleted(this.assessment);
-    this.percentCompletedMsg = ``; // `Assessments BETA, some features do not work!`
-    // TODO: this.percentCompletedMsg += ` ${this.percentCompleted}% of your assessment is complete.`;
+    this.percentCompleted = this.calculationService.percentComplete;
+    if (this.percentCompleted < 100) {
+      this.infoBarMsg = `${this.percentCompleted.toFixed(2)}% of your assessment is complete.`;
+    }
   }
 
   /**

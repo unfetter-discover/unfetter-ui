@@ -234,6 +234,10 @@ export class GenericApi {
         const req = new HttpRequest('POST', `${Constance.UPLOAD_URL}/files`, formData, {
             reportProgress: true
         }); 
+        return this.uploadFile<GridFSFile[]>(req, progressCallback);
+    }
+
+    public uploadFile<T = any>(req: HttpRequest<FormData>, progressCallback?: (number) => void): Observable<T> {
         return this.http.request(req)
             .pipe(
                 tap((event) => {

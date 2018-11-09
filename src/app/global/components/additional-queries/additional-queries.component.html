@@ -1,8 +1,4 @@
 <div class="additionalQueriesComponent" *ngIf="localForm">
-  <!-- <div class="uf-collapsible-control mb-10" (click)="showForm = !showForm">
-    <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showForm}">chevron_right</i>
-    <span class="h5">&nbsp;Add Implementations</span>
-  </div> -->
   <div class="uf-well-accent">
     <form [formGroup]="localForm" novalidate (ngSubmit)="addToParent()" *ngIf="formResetComplete">
 
@@ -13,12 +9,11 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-form-field class="full-width mb-6">
-        <textarea matInput required placeholder="Query" formControlName="query" (keyup)="queryChange(localForm.get('query'))"></textarea>
-        <mat-error *ngIf="localForm.get('query').hasError('required')">
-          Query is <strong>required</strong>
-        </mat-error>
-      </mat-form-field>
+      <h5 [class.textWarn]="localForm.get('query').dirty && localForm.get('query').hasError('required')">Query<sup>*</sup></h5>
+      <code-editor formControlName="query" [syntaxCtrl]="localForm.get('syntax')" [class.cmError]="localForm.get('query').dirty && localForm.get('query').hasError('required')"></code-editor>
+      <mat-error [class.showUfMatError]="localForm.get('query').dirty && localForm.get('query').hasError('required')" class="ufMatError">
+        Query is <strong>required</strong>
+      </mat-error>
       
       <pii-check-message [formCtrl]="localForm.get('query')"></pii-check-message>
 

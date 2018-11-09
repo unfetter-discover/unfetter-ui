@@ -1,0 +1,3 @@
+<div (click)="onClick($event)" *ngIf="rendered$ | async as rendered">
+  <markdown [data]="rendered"></markdown>
+</div>

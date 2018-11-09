@@ -14,7 +14,16 @@ describe('usersReducer', () => {
             approved: false,
             locked: false,
             role: 'STANDARD_USER',
-            avatar_url: '1234.com/img1'
+            avatar_url: '1234.com/img1',
+            userList: [
+                {
+                    _id: '5678',
+                    userName: 'bob',
+                    firstName: 'jim',
+                    lastName: 'bob',
+                    avatar_url: '5678.com/img1',
+                }
+            ]
         };
     });
 
@@ -43,7 +52,8 @@ describe('usersReducer', () => {
                 }
             },
             authenticated: true,
-            avatar_url: mockState.avatar_url
+            avatar_url: mockState.avatar_url,
+            userList: []
         };
         expect(usersReducer(undefined, new userActions.LoginUser(payload))).toEqual(expected);
     });
@@ -75,5 +85,29 @@ describe('usersReducer', () => {
             token: payload
         };
         expect(usersReducer(mockState, new userActions.SetToken(payload))).toEqual(expected);
+    });
+
+    it('should set user list', () => {
+        const payload = [
+            {
+                _id: '098',
+                userName: 'bob2',
+                firstName: 'jim2',
+                lastName: 'bob2',
+                avatar_url: '098.com/img1',
+            },
+            {
+                _id: '765',
+                userName: 'bob3',
+                firstName: 'jim3',
+                lastName: 'bob3',
+                avatar_url: '765.com/img1',
+            }
+        ];
+        const expected = {
+            ...mockState,
+            userList: payload
+        };
+        expect(usersReducer(mockState, new userActions.SetUserList(payload))).toEqual(expected);
     });
 });

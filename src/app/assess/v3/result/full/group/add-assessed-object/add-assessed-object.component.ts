@@ -485,9 +485,9 @@ export class AddAssessedObjectComponent implements OnInit, OnDestroy {
             assessmentRisk: new FormControl('', [Validators.required]),
             category: new FormControl('', [Validators.required]),
             // attackPattern: new FormControl(this.currentAttackPattern, [Validators.required]),
-            protectWeight: new FormControl('', [Validators.required]),
-            detectWeight: new FormControl('', [Validators.required]),
-            respondWeight: new FormControl('', [Validators.required])
+            protectWeight: new FormControl(''),
+            detectWeight: new FormControl(''),
+            respondWeight: new FormControl('')
         });
 
         return group;

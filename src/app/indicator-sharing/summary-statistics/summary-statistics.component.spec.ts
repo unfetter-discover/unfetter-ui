@@ -5,10 +5,26 @@ import { of as observableOf, Observable } from 'rxjs';
 import { SummaryStatisticsComponent } from './summary-statistics.component';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { CapitalizePipe } from '../../global/pipes/capitalize.pipe';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from '../../root-store/app.reducers';
+import { SetIdentities } from '../../root-store/stix/stix.actions';
 
 describe('SummaryStatisticsComponent', () => {
   let component: SummaryStatisticsComponent;
   let fixture: ComponentFixture<SummaryStatisticsComponent>;
+
+  const mockIdentities = [
+    {
+      id: 'identity--1234',
+      name: 'testorg1',
+      identity_class: 'organization'
+    },
+    {
+      id: 'identity--5678',
+      name: 'testorg2',
+      identity_class: 'organization'
+    }
+  ];
 
   const indicatorSharingServiceMock = {
     getSummaryStatistics: () => {
@@ -28,28 +44,6 @@ describe('SummaryStatisticsComponent', () => {
           comments: 3.0
         }
       ]);
-    },
-    getIdentities: () => {
-      return observableOf([
-        {
-          id: 'identity--1234',
-          type: 'identity',
-          attributes: {
-            id: 'identity--1234',
-            name: 'testorg1',
-            identity_class: 'organization'
-          }          
-        },
-        {
-          id: 'identity--5678',
-          type: 'identity',
-          attributes: {
-            id: 'identity--5678',
-            name: 'testorg2',
-            identity_class: 'organization'
-          }
-        }
-      ]);
     }
   };
 
@@ -58,6 +52,9 @@ describe('SummaryStatisticsComponent', () => {
       declarations: [ 
         SummaryStatisticsComponent,
         CapitalizePipe
+      ],
+      imports: [
+        StoreModule.forRoot(reducers)
       ],
       providers: [
         {
@@ -73,6 +70,8 @@ describe('SummaryStatisticsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SummaryStatisticsComponent);
     component = fixture.componentInstance;
+    const store = component.store;
+    store.dispatch(new SetIdentities(mockIdentities as any));
     fixture.detectChanges();
   });
 

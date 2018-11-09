@@ -20,6 +20,7 @@ import { TacticsControlService } from './tactics-control.service';
 import { TacticsTooltipService, TooltipEvent } from './tactics-tooltip/tactics-tooltip.service';
 import { Dictionary } from '../../../models/json/dictionary';
 import { AppState } from '../../../root-store/app.reducers';
+import { getVisualizationData } from '../../../root-store/stix/stix.selectors';
 
 /**
  * Abstract base class for the type of views displayed in the tactics pane.
@@ -178,8 +179,7 @@ export abstract class TacticsView<Component, Options> implements OnInit, AfterVi
         if (this.chains === null) {
             console['debug'](`(${new Date().toISOString()}) ${this.constructor.name} querying tactics store`);
             this.chain$ = this.store
-                .select('stix').pipe(
-                pluck('visualizationData'),
+                .select(getVisualizationData).pipe(
                 filter(t => t !== null),
                 distinctUntilChanged())
                 .subscribe(

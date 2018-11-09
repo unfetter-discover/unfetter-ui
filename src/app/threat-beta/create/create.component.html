@@ -1,0 +1,159 @@
+<div class="container" id="threatReportEditor" *ngIf="!loading; else loadingBlock">
+
+    <div class="row">
+
+        <div class="col-xs-12 col-sm-12 mt-10 flex">
+
+            <button mat-icon-button class="mat-24 edit-close-button" matTooltip="Cancel" aria-label="Cancel"
+                    (click)="onCancel($event)">
+                <mat-icon>close</mat-icon>
+            </button>
+
+            <div class="flex1">
+
+                <div>
+                    <mat-form-field class="edit-title">
+                        <input matInput #filter [(ngModel)]="threatboard.name" color="primary" required
+                                placeholder="ThreatBoard Name" matTooltip="Enter the work product's name"
+                                aria-label="enter threatboard name" autocomplete="off">
+                    </mat-form-field>
+                    <div class="edit-title-buttons">
+                        <button mat-button class="edit-cancel-button" matTooltip="Cancel" aria-label="Cancel"
+                                (click)="onCancel($event)">CANCEL</button>
+                        <button mat-raised-button class="edit-save-button" [disabled]="isValid() === false"
+                                color="primary" matTooltip="Save Changes" aria-label="Save Changes"
+                                (click)="onSave($event)">SAVE</button>
+                    </div>
+                </div>
+
+                <div>
+                    <created-by-ref [model]="threatboard"></created-by-ref>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6 mt-18 mat-h2"> Boundaries </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 boundaries-fieldsets dates-fieldset">
+                        <div class="boundaries-column">
+                            <mat-form-field floatPlaceholder="always">
+                                <input #startDateInput matInput [(ngModel)]="threatboard.boundaries.start_date"
+                                        [max]="maxStartDate" [matDatepicker]="startDatePicker" color="primary"
+                                        required placeholder="Date From" floatPlaceholder="always"
+                                        matTooltip="Enter the date the threat situation began"
+                                        aria-label="Enter the date the threat situation began (m/d/y format)"
+                                        (dateChange)="startDateChanged(startDateInput.value)" autocomplete="off" />
+                                <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker #startDatePicker></mat-datepicker>
+                            </mat-form-field>
+                            <small *ngIf="dateError.startDate.isError"
+                                    class="error">{{ dateError.errorMessage }}</small>
+                        </div>
+                        <div class="boundaries-column">
+                            <mat-form-field floatPlaceholder="always">
+                                <input #endDateInput matInput [(ngModel)]="threatboard.boundaries.end_date"
+                                        [min]="minEndDate" [matDatepicker]="endDatePicker" color="primary"
+                                        placeholder="Date To" floatPlaceholder="always"
+                                        matTooltip="Enter the date the threat situation ended"
+                                        aria-label="Enter the date the threat situation ended (m/d/y format)"
+                                        (dateChange)="endDateChanged(endDateInput.value)" autocomplete="off" />
+                                <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                                <mat-datepicker #endDatePicker></mat-datepicker>
+                            </mat-form-field>
+                            <small *ngIf="dateError.endDate.isError"
+                                    class="error">{{ dateError.errorMessage }}</small>
+                            <small *ngIf="dateError.endDate.isSameOrBefore"
+                                    class="error">{{ dateError.endDate.isSameOrBeforeMessage }}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-xs-12 col-sm-12 boundaries-fieldsets">
+
+                        <div class="boundaries-column targets-fieldset">
+                            <mat-form-field floatPlaceholder="always">
+                                <input matInput #targetInput [(ngModel)]="target"
+                                        class="targets-input" color="primary" placeholder="Targets"
+                                        floatPlaceholder="always" spellcheck="false" autocomplete="off"
+                                        matTooltip="Enter the name of a target of interest to the board"
+                                        aria-label="Enter the name of a target of interest to the board"
+                                        (keyup.enter)="addChip(targetInput.value, 'targets')"
+                                        (blur)="addChip(targetInput.value, 'targets')">
+                            </mat-form-field>
+                            <mat-chip-list class="mat-chip-list-stacked" selectable="true">
+                                <mat-chip *ngFor="let target of threatboard.boundaries.targets" removable="true">
+                                    <div class="flex">
+                                        <span class="flex1 flexNowrap">{{ target }}</span>
+                                        <mat-icon matChipRemove
+                                                aria-label="Click here to remove this target from the board"
+                                                (click)="removeChip(target, 'targets')">cancel</mat-icon>
+                                    </div>
+                                </mat-chip>
+                            </mat-chip-list>
+                        </div>
+
+                        <div class="boundaries-column malware-fieldset">
+                            <mat-form-field floatPlaceholder="always">
+                                <mat-select #malwareSelected color="primary" placeholder="Malware"
+                                        matTooltip="Select all the malware of interest to the board"
+                                        aria-label="Select all the malware of interest to the board"
+                                        (selectionChange)="addChip($event.source.selected.value, 'malware')">
+                                    <mat-option *ngFor="let malware of malwares" [value]="malware">
+                                        {{ malware.displayValue }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-chip-list class="mat-chip-list-stacked" selectable="true">
+                                <mat-chip *ngFor="let malware of threatboard.boundaries.malware" removable="true">
+                                    <div class="flex">
+                                        <span class="flex1 flexNowrap">{{ malware.displayValue }}</span>
+                                        <mat-icon matChipRemove
+                                                aria-label="Click here to remove this malware from the board"
+                                                (click)="removeChip(malware, 'malware')">cancel</mat-icon>
+                                    </div>
+                                </mat-chip>
+                            </mat-chip-list>
+                        </div>
+                
+                        <div class="boundaries-column intrusions-fieldset">
+                            <mat-form-field floatPlaceholder="always">
+                                <mat-select color="primary" placeholder="Intrusion Set"
+                                        matTooltip="Select the intrusion sets of interest to the board"
+                                        aria-label="Select the intrusion sets of interest to the board"
+                                        (selectionChange)="addChip($event.source.selected.value, 'intrusion_sets')">
+                                    <mat-option *ngFor="let intrusion of intrusions" [value]="intrusion">
+                                        {{ intrusion.displayValue }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-chip-list class="mat-chip-list-stacked" selectable="true">
+                                <mat-chip *ngFor="let intrusion of threatboard.boundaries.intrusion_sets"
+                                        removable="true" selectable="true">
+                                    <div class="flex">
+                                        <span class="flex1 flexNowrap">{{ intrusion.displayValue }}</span>
+                                        <mat-icon matChipRemove
+                                                aria-label="Click here to remove this intrusion set from the board"
+                                                (click)="removeChip(intrusion, 'intrusion_sets')">cancel</mat-icon>
+                                    </div>
+                                </mat-chip>
+                            </mat-chip-list>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<ng-template #loadingBlock>
+    <loading-spinner></loading-spinner>
+</ng-template>

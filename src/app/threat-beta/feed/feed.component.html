@@ -1,0 +1,34 @@
+<div id="search-bar" class="">
+    <mat-form-field class="search-input mat-elevation-z3">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput type="text" placeholder="Search this board">
+    </mat-form-field>
+</div>
+
+<mat-sidenav-container class="flex zIndexAuto">
+        
+    <mat-sidenav-content class="min-tab-height zIndexAuto sidenavContentPolyfill384-right">
+
+        <div id="feed-content" class="flex1">
+
+            <reports-carousel [threatBoard]="threatBoard"></reports-carousel>
+
+            <related-boards [threatBoard]="threatBoard"></related-boards>
+
+            <activity-list [threatBoard]="threatBoard"></activity-list>
+
+        </div>
+
+    </mat-sidenav-content>
+
+    <mat-sidenav id="trends-trench" class="mat-elevation-z8" opened mode="side" position="end">
+
+        <contributor-list [threatBoard]="threatBoard"></contributor-list>
+
+        <div id="last-polled" *ngIf="threatboardLoaded">
+            <i>Board was updated on {{ boardUpdateTime }}</i>
+        </div>
+
+    </mat-sidenav>
+
+</mat-sidenav-container>

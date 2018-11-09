@@ -1,0 +1,13 @@
+<div id="articleReportPaneWrapper" *ngIf="report$ | async as report">
+  <text-highlight (fabClicked)="quoteText($event, report.id, report.name)">
+    <mat-card class="uf-mat-card reportWrapper">
+      <mat-card-header>
+        <mat-card-title>{{ report.name }}</mat-card-title>
+        <mat-card-subtitle>{{ report.created | date:'medium' }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div [innerHTML]="report.description" id="reportContent"></div>
+      </mat-card-content>
+    </mat-card>
+  </text-highlight>
+</div>

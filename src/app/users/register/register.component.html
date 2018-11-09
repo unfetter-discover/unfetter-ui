@@ -34,9 +34,9 @@
 
                 <mat-card-content>
                     <br class="mt-10">
-                    <form [formGroup]="form" novalidate (ngSubmit)="registerSubmit()">
+                    <form [formGroup]="form" (keydown.enter)="enterPressed($event)" (ngSubmit)="registerSubmit()">
 
-                        <mat-vertical-stepper [linear]="true">
+                        <mat-vertical-stepper [linear]="true" #stepper>
 
                             <mat-step label="User Information" [stepControl]="form.get('unfetterInformation')">
                                 <div id="unfetterInformationForm" formGroupName="unfetterInformation">
@@ -158,7 +158,7 @@
                         </mat-vertical-stepper>                       
 
                         <p class="text-right mt-10">
-                            <button mat-button routerLink="/">Cancel</button>
+                            <button mat-button type="button" name="cancelBtn" (click)="logOut()">Cancel</button>
                             <button mat-raised-button color="accent" [disabled]="form.status === 'INVALID' || registrationSubmitted" type="submit">Register</button>
                         </p>
 

@@ -1,0 +1,44 @@
+@import '_threat-beta.common.scss';
+
+.main-panel {
+  min-height: $page-height;
+}
+
+.side-nav-top {
+  height: calc(145px - #{$navbar-height}px);
+  background-color: $threat-dashboard-primary-light;
+}
+
+.side-nav-item {
+  height: 48px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 16px;
+  padding-right: 0px;
+  border-bottom-color: #d8d8d8;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  display: flex;
+}
+
+.align {
+  margin-top: -11px;
+}
+
+:host ::ng-deep .mat-tab-labels {
+  background-color: $threat-dashboard-primary-light;
+
+  .mat-tab-label-content {
+    color: $threat-dashboard-primary-text;
+    font-weight: 100;
+    letter-spacing: .75px;
+  }
+}
+
+.right-side-panel {
+  width: $rightSidenavWidth;
+}
+
+.pointer {
+  cursor: pointer;
+}

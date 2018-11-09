@@ -1,0 +1,11 @@
+@import '../../threat-beta.common';
+@import '../../../../styles/variables';
+
+.reportWrapper {
+  height: calc(100vh - #{$navbar-height}px - 128px - 48px);
+  overflow-y: auto;
+}
+
+#reportContent ::ng-deep * {
+  max-width: 100%;
+}

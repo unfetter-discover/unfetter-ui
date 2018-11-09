@@ -28,6 +28,7 @@ import { AddAssessedObjectComponent } from './add-assessed-object/add-assessed-o
 import { DisplayedAssessmentObject } from './models/displayed-assessment-object';
 import { FullAssessmentGroup } from './models/full-assessment-group';
 import { AssessmentGroup } from 'stix/assess/v3/baseline/assessment-group';
+import { getVisualizationData } from '../../../../../root-store/stix/stix.selectors';
 
 @Component({
   selector: 'unf-assess-group',
@@ -210,6 +211,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     // match the assessed ids with assessed objects to populate the grouping section cards
     const displayedAssessedObjects = assessedObjects
       .filter((assessedObj) => stixIdSet.has(assessedObj.stix.id))
+      .filter((assessedObj) => assessedObj.risk >= 0 && assessedObj.risk <= 100)
       .map((assessedObj) => {
         const retObj = Object.assign(new DisplayedAssessmentObject(), assessedObj);
         retObj.risk = this.getRisk(assessedObj.stix.id);
@@ -370,6 +372,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       .assessedByAttackPattern
       .filter((ap) => ap._id === attackPatternId)
       .filter((ap) => ap && !Number.isNaN(ap.risk))
+      .filter((ap) => ap.risk >= 0 && ap.risk <= 1)
       .map((ap) => ap.risk)[0];
     return (risk !== undefined && !Number.isNaN(risk) ? risk : 1);
   }
@@ -391,6 +394,7 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
     let count = 0;
     const sum = phaseObj.assessedObjects
       .map((ao) => ao.risk)
+      .filter((risk) => risk >= 0 && risk <= 1)
       .reduce((currentSum, risk) => {
         count++;
         return currentSum + risk;
@@ -417,14 +421,14 @@ export class AssessGroupComponent implements OnInit, OnDestroy, AfterViewInit {
       .map((ap) => ap.attackPatternId);
 
     const s$ = this.appStore
-      .select('stix')
+      .select(getVisualizationData)
       .pipe(
         filter(() => this.activePhase !== undefined && this.activePhase.length > 0),
         switchMap(
-          (state) => {
+          (visualizationData) => {
             // get all the phases across the frameworks
-            const phases = Object.keys(state.visualizationData)
-              .map((curFramework) => state.visualizationData[curFramework].phases)
+            const phases = Object.keys(visualizationData)
+              .map((curFramework) => visualizationData[curFramework].phases)
               .reduce((acc, val) => acc.concat(val), []);
             // look for the currently viewed phase
             // TODO: there is potential to get the wrong phase if the phase id exists in two frameworks

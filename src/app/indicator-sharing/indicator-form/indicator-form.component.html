@@ -37,13 +37,12 @@
           <h4 class="inlineBlock"><span [class.textWarn]="form.get('pattern').dirty && form.get('pattern').hasError('required')">Pseudocode<sup>*</sup></span></h4>
           <small class="text-muted">(Optional: Use STIX patterns to get automated translations)</small>
           <simplemde formControlName="pattern" (keyup)="patternChange(form.get('pattern'))" [class.mdeError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></simplemde>
-          <mat-error *ngIf="form.get('pattern').dirty && form.get('pattern').hasError('required')">
+          <mat-error [class.showUfMatError]="form.get('pattern').dirty && form.get('pattern').hasError('required')" class="ufMatError">
               Pseudocode is <strong>required</strong>
           </mat-error>
-          <div class="mb-30" *ngIf="!form.get('pattern').dirty || !form.get('pattern').hasError('required')"></div>
 
           <p id="patternSuccess" [style.opacity]="form.get('metaProperties').get('validStixPattern').value && form.get('pattern').dirty && form.get('pattern').value.length > 0 ? 1 : 0"
-            [style.marginTop]="!form.get('pattern').hasError('required') ? '-20px' : '-5px'" [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">
+            [style.marginTop]="!form.get('pattern').hasError('required') ? '-15px' : '-5px'" [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">
             <i class="material-icons">check</i> Valid STIX Pattern</p>
 
           <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message>

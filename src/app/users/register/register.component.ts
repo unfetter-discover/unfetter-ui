@@ -1,10 +1,11 @@
 
 import { timer as observableTimer,  Observable  } from 'rxjs';
-
 import { map, switchMap } from 'rxjs/operators';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatStepper } from '@angular/material';
+import { tokenNotExpired } from 'angular2-jwt';
 
 import { UsersService } from '../../core/services/users.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -32,6 +33,9 @@ export class RegisterComponent implements OnInit {
     @ViewChild('importStix')
     public importStixEl: ElementRef;
 
+    @ViewChild('stepper')
+    public stepper: MatStepper;
+
     public helpHtml: string = `
 #### Approval Process
 
@@ -53,7 +57,7 @@ To get the most out of Unfetter, users should be in one or more organizations. A
 
     public ngOnInit() {
         const token = localStorage.getItem('unfetterUiToken');
-        if (token) {
+        if (token && tokenNotExpired('unfetterUiToken')) {
             const userFromToken$ = this.usersService.getUserFromToken()
                 .subscribe(
                     (user) => {
@@ -98,17 +102,22 @@ To get the most out of Unfetter, users should be in one or more organizations. A
                 .catch((err) => console.log(err));
                 
         } else {
-            console.log('User token not set');            
+            console.log('User token not set or is expired');
+            this.router.navigate(['/']);            
         }
     }
 
     public registerSubmit() {
+        if (this.form.status !== 'VALID') {
+            console.log('Invalid attempt to submit registration');
+            return;
+        }
         this.registrationSubmitted = true;
 
         const unfetterInformation = this.form.get('unfetterInformation').value;
         for (let control in unfetterInformation) {
             if (unfetterInformation[control] && unfetterInformation[control] !== '') {
-                if (unfetterInformation[control] instanceof Array) {                    
+                if (unfetterInformation[control] instanceof Array) {
                     let validValues = unfetterInformation[control].filter((el) => el && el !== '');
                     if (validValues && validValues.length) {
                         this.userReturn[control] = validValues;
@@ -116,29 +125,27 @@ To get the most out of Unfetter, users should be in one or more organizations. A
                 } else {
                     this.userReturn[control] = unfetterInformation[control];
                 }
-            }            
-        }  
+            }
+        }
 
-        this.userReturn.identity = { 
-            ...this.importedStixIdentity, 
-            ...cleanObjectProperties({}, { ...this.form.get('identity').value }) 
+        this.userReturn.identity = {
+            ...this.importedStixIdentity,
+            ...cleanObjectProperties({}, { ...this.form.get('identity').value })
         };
         this.userReturn.registrationInformation = cleanObjectProperties({}, { ...this.form.get('registrationInformation').value });
-        
+
         const submitRegistration$ = this.usersService.finalizeRegistration(this.userReturn)
             .subscribe(
                 (res) => {
-                    console.log('SUBMIT RES', res);
-                    
                     let registered = res.attributes.registered;
                     if (registered) {
                         // TODO registration notification
-                        this.authService.setUser(res.attributes);   
-                        this.router.navigate(['/']);                      
+                        this.authService.setUser(res.attributes);
+                        this.router.navigate(['/']);
                     } else {
-                        console.warn('Server did not properly register user.');                        
+                        console.warn('Server did not properly register user.');
                         this.submitError = true;
-                    }    
+                    }
                 },
                 (err) => {
                     console.log(err);
@@ -149,7 +156,35 @@ To get the most out of Unfetter, users should be in one or more organizations. A
                         submitRegistration$.unsubscribe();
                     }
                 }
-            );             
+            );
+    }
+
+    public enterPressed(e: KeyboardEvent) {
+        console.log(e)
+
+        if ((e.target as any).name === 'cancelBtn') {
+            this.logOut();
+        }
+
+        // Ignore if the cancel button or a stepper back button is clicked
+        if ((e.target as any).name === 'cancelBtn' || ((e as any).target.attributes && (e as any).target.attributes.matstepperprevious)) {
+            return;
+        }
+
+        e.preventDefault();
+
+        // Form is valid
+        if (this.form.status === 'VALID') {
+            this.registerSubmit();
+
+        // Step 1 is selected and valid
+        } else if (this.stepper.selectedIndex === 0 && this.form.get('registrationInformation').status === 'VALID') {
+            this.stepper.next();
+
+        // Step 2 is selected
+        } else if (this.stepper.selectedIndex === 1) {
+            this.stepper.next();
+        }
     }
 
     public openFileUpload() {
@@ -174,6 +209,10 @@ To get the most out of Unfetter, users should be in one or more organizations. A
         } catch (error) {
             this.importErrorMsg = 'Unable to read file';
         }        
+    }
+
+    public logOut() {
+        this.authService.logOut();
     }
 
     private processImportedIdentity(stixContent: any) {

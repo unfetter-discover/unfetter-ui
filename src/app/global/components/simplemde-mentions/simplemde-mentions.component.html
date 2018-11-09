@@ -1,0 +1,19 @@
+<div class="simpleMdeMentions">
+  <simplemde [(ngModel)]="value" [options]="mdeOptions" #mde></simplemde>
+
+  <span id="userMentions" #userMentions [style.display]="showUserMentions ? 'inline-block' : 'none'" class="mat-elevation-z6">
+    <div 
+      *ngFor="let user of displayedUsers$ | async; let i = index" 
+      [class.bgPrimary]="i === selectedUserIndex"
+      [class.bgPrimaryLightest]="i === hoveredRowIndex && i !== selectedUserIndex"
+      class="mention flex flexItemsCenter cursor-pointer"
+      (mouseenter)="hoveredRowIndex = i"
+      (mouseleave)="hoveredRowIndex = -1"
+      (click)="selectedUserIndex = i; addMention()">
+        <img src="{{ user.avatar_url }}" class="userAvatar">
+        <span class="fw300 flexNowrap">
+          <strong>&nbsp;{{ user.userName }}</strong> {{ user.firstName }} {{ user.lastName }}
+        </span>
+    </div>
+  </span>
+</div>

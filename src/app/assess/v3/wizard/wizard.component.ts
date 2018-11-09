@@ -1345,7 +1345,6 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
 
   public onMarkingChange(marking) {
     this.markingsChips['setMarkings'](this.ext);
-    this.markingsChips['changeDetection'].markForCheck();
   }
 
   /**
@@ -1390,8 +1389,8 @@ export class WizardComponent extends Measurements implements OnInit, AfterViewIn
           assessment: question,
           measurements: question.measurements.map(m => ({
             ...m,
-            risk: 1,
-            selected_value: {name: 'no coverage', risk: 1}
+            risk: 999,
+            selected_value: {name: 'unanswered', risk: 999}
           }))
         };
       })

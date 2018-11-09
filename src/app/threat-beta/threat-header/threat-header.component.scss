@@ -1,0 +1,34 @@
+@import '../../../styles/variables';
+@import '../_threat-beta.common.scss';
+
+  #tabWrapper {
+    background-color: $threat-dashboard-primary-lighter;
+    height: $tab-wrapper-height;
+    padding-right: 16px;
+  }
+  
+  $publishMarginRight: 24px;
+  $publishMarginBottom: 7px;
+  $publishFontWeight: normal;
+  
+  #publishButton {
+    background-color: $threat-dashboard-primary;
+    color: $light-text-default;
+    font-weight: $publishFontWeight;
+    margin-right: $publishMarginRight;
+    margin-bottom: $publishMarginBottom;
+  }
+  
+  .publishText {
+    font-weight: $publishFontWeight;
+    margin-right: $publishMarginRight;
+    margin-bottom: $publishMarginBottom;
+  }
+  
+  .indent {
+    margin-left: 56px;
+  }
+  
+  .flexColumn {
+    flex-direction: column;
+  }

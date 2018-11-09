@@ -1,0 +1,155 @@
+import { Location } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { pluck } from 'rxjs/operators';
+import { fadeInOut } from '../global/animations/fade-in-out';
+import { Router } from '@angular/router';
+import { MasterListDialogTableHeaders } from '../global/components/master-list-dialog/master-list-dialog.component';
+import { ThreatBoard } from 'stix/unfetter/threat-board';
+import { Store } from '@ngrx/store';
+import { ThreatFeatureState } from './store/threat.reducers';
+
+@Component({
+  selector: 'threat-dashboard-beta',
+  templateUrl: './threat-dashboard-beta.component.html',
+  styleUrls: ['./threat-dashboard-beta.component.scss'],
+  animations: [fadeInOut],
+})
+export class ThreatDashboardBetaComponent implements OnInit {
+
+  public showBackButton = new BehaviorSubject(false).asObservable();
+
+  public threatBoardId: string;
+
+  public finishedLoadingAll$: Observable<boolean> = new BehaviorSubject(true).asObservable(); // TODO
+
+  public failedToLoad = new BehaviorSubject(false).asObservable();
+
+  public title = new BehaviorSubject('').asObservable();
+
+  private location: Location;
+
+  readonly baseThreatBetaUrl = '/threat-beta/';
+  readonly boardFeedRoute = 'feed';
+  readonly boardRoute = 'board';
+  readonly articleRoute = 'article';
+
+  public boards$: Observable<ThreatBoard[]>;
+
+  masterListOptions = {
+    dataSource: null,
+    columns: new MasterListDialogTableHeaders('modified', 'Modified'),
+    displayRoute: this.baseThreatBetaUrl + '/result/summary',
+    modifyRoute: this.baseThreatBetaUrl + '/wizard/edit',
+    createRoute: this.baseThreatBetaUrl + '/create',
+  };
+
+  constructor(private router: Router, private store: Store<ThreatFeatureState>) { // private location: Location) {
+
+  }
+
+  ngOnInit() {
+    this.boards$ = this.store.select('threat').pipe(pluck('boardList'));
+  }
+
+  public boardView(boardId): Promise<boolean> {
+    let routePromise: Promise<boolean>;
+    routePromise = this.router.navigate([this.baseThreatBetaUrl, boardId, this.boardFeedRoute]);
+    routePromise.catch((e) => console.log(e));
+    return routePromise;
+  }
+
+  public editBoard(boardId): Promise<boolean> {
+    let routePromise: Promise<boolean>;
+    routePromise = this.router.navigate([this.baseThreatBetaUrl, 'edit', boardId]);
+    return routePromise;
+  }
+
+  /**
+   * @description
+   * @return {Promise<boolean>}
+   */
+  public onEdit(event?: any): Promise<boolean> {
+    let routePromise: Promise<boolean>;
+    if (!event || (event instanceof UIEvent)) {
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, this.threatBoardId]);
+    } else {
+      routePromise = this.router.navigate([this.masterListOptions.modifyRoute, event.id]);
+    }
+
+    routePromise.catch((e) => console.log(e));
+    return routePromise;
+  }
+
+
+  /**
+   * @description go back
+   * @param event
+   */
+  onBack(event: UIEvent): void {
+    this.location.back();
+  }
+
+  /**
+   * @description noop
+   * @return {Promise<boolean>}
+   */
+  public onShare(event?: UIEvent): Promise<boolean> {
+    console.log('noop');
+    return Promise.resolve(false);
+  }
+
+  /**
+   * @description clicked master list cell, confirm delete
+   * @param {LastModifiedAssessment} assessment
+   * @return {void}
+   */
+  public onDelete(threatBoard: ThreatBoard): void {
+    console.log('noop');
+    // TODO this.confirmDelete({ name: threatBoard.name, id: threatBoard.id });
+  }
+
+  /**
+   * @description clicked currently viewed assessment, confirm delete
+   * @return {void}
+   */
+  public onDeleteCurrent(): void {
+    console.log('noop');
+    // const boardId = this.boardId;
+    // const name = this.boardName;
+    // this.confirmDelete({ name, rollupId });
+  }
+
+  /**
+ * @description noop
+ * @return {Promise<boolean>}
+ */
+  public onFilterTabChanged($event?: UIEvent): Promise<boolean> {
+    console.log('noop');
+    return Promise.resolve(false);
+  }
+
+  /**
+   * @description router to the create page
+   * @param {event} UIEvent - optional 
+   * @return {Promise<boolean>}
+   */
+  public onCreate(event?: UIEvent): Promise<boolean> {
+    return this.router.navigateByUrl(this.masterListOptions.createRoute);
+  }
+
+  /**
+   * @description
+   * @param {LastModifiedAssessment} assessment - optional
+   * @return {Promise<boolean>}
+   */
+  public onCellSelected(threatBoard: ThreatBoard): Promise<boolean> {
+    if (!threatBoard || !threatBoard.id) {
+      return Promise.resolve(false);
+    }
+    // TODO this.store.dispatch(new CleanAssessmentResultData());
+    // this.riskByAttackPatternStore.dispatch(new CleanAssessmentRiskByAttackPatternData());
+    return this.router.navigate([this.masterListOptions.displayRoute, threatBoard.id]);
+  }
+
+}

@@ -1,14 +1,15 @@
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { BehaviorSubject } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { filter, map, withLatestFrom } from 'rxjs/operators';
 import { HeatmapOptions } from '../../../../../global/components/heatmap/heatmap.data';
 import { CarouselOptions } from '../../../../../global/components/tactics-pane/tactics-carousel/carousel.data';
 import { Tactic, TacticChain } from '../../../../../global/components/tactics-pane/tactics.model';
 import { TreemapOptions } from '../../../../../global/components/treemap/treemap.data';
 import { Dictionary } from '../../../../../models/json/dictionary';
 import { AppState } from '../../../../../root-store/app.reducers';
+import { getVisualizationData, getAttackPatternsWithArbitrarilyRenamedPropertiesForHeatMap } from '../../../../../root-store/stix/stix.selectors';
 
 @Component({
     selector: 'summary-tactics',
@@ -87,14 +88,16 @@ export class SummaryTacticsComponent implements OnInit {
      * @description 
      */
     ngOnInit(): void {
-        const sub$ = this.appStore
-            .select('stix')
+        const sub$ = combineLatest(
+            this.appStore.select(getVisualizationData),
+            this.appStore.select(getAttackPatternsWithArbitrarilyRenamedPropertiesForHeatMap)
+        )
             .pipe(
-                filter((stix) => stix.attackPatterns && stix.attackPatterns.length > 0 && stix.visualizationData !== undefined && Object.keys(stix.visualizationData).length > 0),
-                map((stix) => {
-                    const tactics = stix.attackPatterns;
+                filter(([visualizationData, attackPatterns]) => attackPatterns && attackPatterns.length > 0 && visualizationData !== undefined && Object.keys(visualizationData).length > 0),
+                map(([visualizationData, _attackPatterns]) => {
+                    const tactics = _attackPatterns;
                     let attackPatterns = this.attackPatternIdsToTactics(this.selectedAttackPatternIds, tactics as any);
-                    const chains = stix.visualizationData;
+                    const chains = visualizationData;
                     attackPatterns = this.deriveAttackPatternFramework(attackPatterns, chains);
                     return this.enhanceWithHeatMapOptions(attackPatterns);
                 })

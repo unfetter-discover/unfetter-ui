@@ -1,5 +1,5 @@
 import * as userActions from './user.actions';
-import { UserProfile } from '../../models/user/user-profile';
+import { UserProfile, UserListItem } from '../../models/user/user-profile';
 import { UserHelpers } from '../../global/static/user-helpers';
 
 export interface UserState {
@@ -9,7 +9,8 @@ export interface UserState {
     approved: boolean,
     locked: boolean,
     role: string,
-    avatar_url: string
+    avatar_url: string,
+    userList: UserListItem[]
 }
 
 export const initialState: UserState = {
@@ -19,7 +20,8 @@ export const initialState: UserState = {
     approved: false,
     locked: false,
     role: null,
-    avatar_url: null
+    avatar_url: null,
+    userList: []
 }
 
 export function usersReducer(state = initialState, action: userActions.UserActions) {
@@ -45,6 +47,11 @@ export function usersReducer(state = initialState, action: userActions.UserActio
                 userProfile: {
                     ...action.payload
                 },
+            };
+        case userActions.SET_USER_LIST:
+            return {
+                ...state,
+                userList: action.payload
             };
         case userActions.LOGOUT_USER:
             return {

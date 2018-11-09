@@ -15,7 +15,7 @@
             <indicator-sharing-filters></indicator-sharing-filters>
         </mat-sidenav>
 
-        <mat-sidenav-content [class.sidenavContentPolyfill360]="filterOpen">
+        <mat-sidenav-content [class.sidenavContentPolyfill360]="filterOpen" class="zIndexAuto">
             <div id="mainWindow">
                 <button mat-button (click)="filterContainer.open()" id="showFiltersButton" *ngIf="!filterOpen" @fadeInOut>
                     <h5 class="inlineBlock">FILTERS&nbsp;&nbsp;</h5>
@@ -73,9 +73,8 @@
                             <div class="pl-24 pr-24" *ngIf="activeMainWell === 'stats'">
                                 <indicator-sharing-summary-statistics></indicator-sharing-summary-statistics>
                             </div>
-                            <div class="pl-24 pr-24" *ngIf="activeMainWell === 'attackPatternsUsed'">
-                                <indicator-tactics [indicators]="filteredIndicators"
-                                        [mappings]="indicatorToAttackPatternMap"></indicator-tactics>
+                            <div class="pl-24 pr-24" *ngIf="activeMainWell === 'attackPatternsUsed' && filteredIndicators$ && indicatorToAttackPatternMap$">
+                                <indicator-tactics [indicators]="filteredIndicators$" [mappings]="indicatorToAttackPatternMap$"></indicator-tactics>
                             </div>
                         </div>
                     </div>
@@ -83,7 +82,7 @@
                     <div class="row" infiniteScroll (atBottom)="displayShowMoreButton() ? showMoreIndicators() : ''">
                         <div id="indicatorListWrapper" class="col-md-12 filterOpenBreakpoint" [ngClass]="{ 'col-lg-8 col-lg-offset-2': !filterOpen }">
 
-                            <div *ngFor="let indicator of displayedIndicators" [ngClass]="{ 'mb-15': !collapseAllCards, 'mb-5': collapseAllCards }">
+                            <div *ngFor="let indicator of displayedIndicators; trackBy: trackByFn" [ngClass]="{ 'mb-15': !collapseAllCards, 'mb-5': collapseAllCards }">
                                 <indicator-card [indicator]="indicator" 
                                     [attackPatterns]="getAttackPatternsByIndicatorId(indicator.id)"
                                     [intrusionSets]="getIntrusionSetsByIndicatorId(indicator.id)"
@@ -93,8 +92,7 @@
                                     [collapseAllCardsSubject]="collapseAllCardsSubject"
                                     [userToken]="userToken$ | async"
                                     (stateChange)="updateIndicator($event)" 
-                                    (indicatorDeleted)="deleteIndicator($event)"
-                                    (indicatorEdit)="editIndicator($event)"></indicator-card>
+                                    (indicatorDeleted)="deleteIndicator($event)"></indicator-card>
                             </div>
 
                             <div class="text-center mt-15 mb-20" *ngIf="displayShowMoreButton()">
