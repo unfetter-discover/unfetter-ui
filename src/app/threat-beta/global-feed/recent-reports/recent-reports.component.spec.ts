@@ -1,9 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material';
-import { GlobalModule } from '../../../global/global.module';
-import { RecentReportsComponent } from './recent-reports.component';
-import { threatReducer } from '../../store/threat.reducers';
 import { StoreModule } from '@ngrx/store';
+import { GlobalModule } from '../../../global/global.module';
+import { FeedCarouselComponent } from '../../feed/feed-carousel/feed-carousel.component';
+import { threatReducer } from '../../store/threat.reducers';
+import { RecentReportsComponent } from './recent-reports.component';
 
 
 describe('RecentReportsComponent', () => {
@@ -12,12 +13,13 @@ describe('RecentReportsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RecentReportsComponent ],
-      imports: [MatIconModule, 
-        GlobalModule, 
+      declarations: [RecentReportsComponent,
+        FeedCarouselComponent],
+      imports: [MatIconModule,
+        GlobalModule,
         StoreModule.forRoot(threatReducer)],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
