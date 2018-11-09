@@ -1,5 +1,5 @@
 @import '../../../styles/_variables.scss';
-@import '../threat-beta.common';
+@import '../_threat-beta.common.scss';
 
 #search-bar {
     .search-input {
@@ -23,10 +23,6 @@
     }
 }
 
-mat-sidenav-content {
-    width: calc(100% - 380px);
-}
-
 #feed-content {
     padding: 15px;
 }
@@ -34,7 +30,7 @@ mat-sidenav-content {
 #trends-trench {
     display: flex;
     flex-direction: column;
-    width: 380px;
+    width: $rightSidenavWidth;
     margin-left: 10px;
     padding: 15px;
     background: white;
