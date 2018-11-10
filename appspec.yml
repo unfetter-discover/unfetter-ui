@@ -5,7 +5,7 @@ os: linux
 #    destination: /var/www/html/
 hooks:
   BeforeInstall:
-    - location: docker-compose -f docker-compose.build.ui.yml
+    - location: build-ui.sh
       timeout: 300
       runas: ec2-user
 #    - location: scripts/start_server
