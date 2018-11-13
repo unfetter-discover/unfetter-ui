@@ -12,7 +12,7 @@ import { ArticleComponent } from './article/article.component';
 import { BoardLayoutComponent } from './board-layout/board-layout.component';
 import { BoardComponent } from './board/board.component';
 import { CreateComponent } from './create/create.component';
-import { FeedComponent } from './feed/feed.component';
+import { FeedComponent } from './board-feed/feed.component';
 import { GlobalActivitySortComponent } from './global-feed/global-activity-sort/global-activity-sort.component';
 import { GlobalFeedComponent } from './global-feed/global-feed.component';
 import { RecentActivityComponent } from './global-feed/recent-activity/recent-activity.component';
@@ -26,14 +26,14 @@ import { routing } from './threat-beta.routing';
 import { ThreatDashboardBetaService } from './threat-beta.service';
 import { ThreatDashboardBetaComponent } from './threat-dashboard-beta.component';
 import { ThreatHeaderComponent } from './threat-header/threat-header.component';
-import { UserCitationService } from './feed/user-citations.service';
-import { ActivityListComponent } from './feed/activity-list/activity-list.component';
-import { ContributorListComponent } from './feed/contributor-list/contributor-list.component';
-import { ReportsCarouselComponent } from './feed/feed-carousel/reports-carousel.component';
-import { RelatedBoardsCarouselComponent } from './feed/feed-carousel/related-boards-carousel.component';
-import { FeedCarouselComponent } from './feed/feed-carousel/feed-carousel.component';
-import { CommentInputComponent } from './feed/activity-list/comment-input.component';
+import { FeedCarouselComponent } from './feed-carousel/feed-carousel.component';
+import { BoardReportsComponent } from './board-feed/board-reports/board-reports.component';
+import { RelatedBoardsComponent } from './board-feed/related-boards/related-boards.component';
+import { UserCitationService } from './board-feed/user-citations.service';
+import { ActivityListComponent } from './board-feed/activity-list/activity-list.component';
+import { ContributorListComponent } from './board-feed/contributor-list/contributor-list.component';
 import { DisplayCommentComponent } from './display-comment/display-comment.component';
+import { CommentInputComponent } from './display-comment/comment-input.component';
 
 @NgModule({
   imports: [
@@ -68,10 +68,10 @@ import { DisplayCommentComponent } from './display-comment/display-comment.compo
     ActivityListComponent,
     ContributorListComponent,
     FeedCarouselComponent,
-    ReportsCarouselComponent,
-    RelatedBoardsCarouselComponent,
-    CommentInputComponent,
     DisplayCommentComponent,
+    CommentInputComponent,
+    RelatedBoardsComponent,
+    BoardReportsComponent,
   ],
   providers: [
     ThreatBetaGuard,

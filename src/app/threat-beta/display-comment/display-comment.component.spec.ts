@@ -12,12 +12,12 @@ import { FieldSortPipe } from '../../global/pipes/field-sort.pipe';
 import { TimeAgoPipe } from '../../global/pipes/time-ago.pipe';
 import { AppState, reducers } from '../../root-store/app.reducers';
 import * as userActions from '../../root-store/users/user.actions';
-import { CommentInputComponent } from '../feed/activity-list/comment-input.component';
 import * as boardActions from '../store/threat.actions';
 import { threatReducer } from '../store/threat.reducers';
 import MockThreatDashboardBetaService from '../testing/mock-threat.service';
 import { ThreatDashboardBetaService } from '../threat-beta.service';
 import { DisplayCommentComponent } from './display-comment.component';
+import { CommentInputComponent } from './comment-input.component';
 
 
 describe('DisplayCommentComponent', () => {
@@ -108,14 +108,16 @@ describe('DisplayCommentComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [DisplayCommentComponent,
-                TimeAgoPipe,
+            declarations: [
+                DisplayCommentComponent,
                 CommentInputComponent,
+                TimeAgoPipe,
                 FieldSortPipe,
                 MarkdownMentionsComponent,
                 SimplemdeMentionsComponent,
             ],
-            imports: [MatCardModule,
+            imports: [
+                MatCardModule,
                 MatIconModule,
                 MarkdownModule.forRoot(),
                 SimplemdeModule,

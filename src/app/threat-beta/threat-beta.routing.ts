@@ -3,7 +3,7 @@ import { ThreatDashboardBetaComponent } from './threat-dashboard-beta.component'
 import { CreateComponent } from './create/create.component';
 import { BoardComponent } from './board/board.component';
 import { ArticleComponent } from './article/article.component';
-import { FeedComponent } from './feed/feed.component';
+import { FeedComponent } from './board-feed/feed.component';
 import { MasterLayoutComponent } from './master-layout/master-layout.component';
 import { BoardLayoutComponent } from './board-layout/board-layout.component';
 

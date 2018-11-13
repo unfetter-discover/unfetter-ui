@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 
 import { ThreatBoard } from 'stix/unfetter/index';
 
-import { FeedCarouselComponent } from './feed-carousel.component';
+import { FeedCarouselComponent } from '../../feed-carousel/feed-carousel.component';
 import { UserCitationService } from '../user-citations.service';
 import { ThreatFeatureState } from '../../store/threat.reducers';
 
@@ -13,10 +13,10 @@ import { ThreatFeatureState } from '../../store/threat.reducers';
  */
 @Component({
     selector: 'related-boards',
-    templateUrl: './related-boards-carousel.component.html',
-    styleUrls: ['./related-boards-carousel.component.scss']
+    templateUrl: './related-boards.component.html',
+    styleUrls: ['./related-boards.component.scss']
 })
-export class RelatedBoardsCarouselComponent implements OnChanges {
+export class RelatedBoardsComponent implements OnChanges {
 
     @Input() threatBoard: ThreatBoard;
 
