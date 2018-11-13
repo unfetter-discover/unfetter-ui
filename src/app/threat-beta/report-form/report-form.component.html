@@ -48,7 +48,7 @@
             <markings-chips [model]="form.value" disableTooltips="true"></markings-chips>
           </div>
           <div class="mb-6">
-            <h4>Add Labels</h4>
+            <label>Add Labels</label>
             <add-label-alt [parentForm]="form" stixType="report" parentDocumentType="Report"></add-label-alt>
           </div>
           <div class="mb-6 mt-10 text-right">
@@ -57,6 +57,60 @@
         </mat-step>
 
         <mat-step label="UPLOAD REPORT">
+
+          <div formGroupName="metaProperties">
+
+            <div formGroupName="extractedText">
+
+              <div class="mb-6">
+                <mat-form-field class="full-width">
+                  <mat-select placeholder="File Type" formControlName="fileType">
+                    <mat-option *ngFor="let fileType of supportedFileTypes" [value]="fileType">{{ fileType | capitalize }}</mat-option>
+                  </mat-select>
+                </mat-form-field>                
+              </div>
+
+              <label>Report Location:&nbsp;&nbsp;</label>
+              <mat-radio-group formControlName="method">
+                <mat-radio-button color="primary" value="URL">URL&nbsp;&nbsp;&nbsp;</mat-radio-button>
+                <mat-radio-button color="primary" value="FILE">File</mat-radio-button>
+              </mat-radio-group>
+
+            </div>
+          </div>
+
+          <div [ngSwitch]="form.get('metaProperties').get('extractedText').get('method').value" class="mb-6">
+
+            <div *ngSwitchCase="'URL'" formArrayName="external_references">
+              <div formGroupName="0">
+                <mat-form-field class="full-width">
+                  <input matInput required placeholder="Source Name" formControlName="source_name">
+                  <mat-error *ngIf="form.get('external_references').get('0').get('source_name').hasError('required')">
+                    Source name is <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field class="full-width">
+                  <input matInput required placeholder="URL" formControlName="url">
+                  <mat-error *ngIf="form.get('external_references').get('0').get('url').hasError('required')">
+                    URL is <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+                <button type="button" mat-button color="primary" 
+                  [disabled]="form.get('external_references').get('0').status === 'INVALID' || form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'" 
+                  (click)="extractTextByUrl()">EXTRACT TEXT</button>
+                <p *ngIf="form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'">
+                  <small class="text-muted">A supported file type must be selected to extract text.</small>
+                </p>
+              </div>
+            </div>
+
+            <div *ngSwitchCase="'FILE'">file~~!!!!</div>
+
+          </div>
+
+          <h4>Content</h4>
+          <simplemde formControlName="description"></simplemde>
+          
           <div class="mb-6 mt-10 text-right">
             <button mat-button matStepperPrevious type="button">BACK</button>
             <span>&nbsp;</span>
@@ -65,6 +119,11 @@
         </mat-step>
 
       </mat-horizontal-stepper>
+
+      <p>
+        ~~~~~<br>
+        {{ form.value | json }}
+      </p>
 
     </form>
   </div>
