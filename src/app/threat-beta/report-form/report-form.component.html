@@ -32,11 +32,38 @@
       </div>
 
       <mat-horizontal-stepper>
+
         <mat-step label="DETAILS">
-          <created-by-ref class="full-width"></created-by-ref>
+          <div class="mb-6">
+            <created-by-ref class="full-width"></created-by-ref>
+          </div>
+          <div class="mb-6">
+            <mat-form-field class="full-width">
+              <mat-select multiple placeholder="Marking Definitions" formControlName="object_marking_refs">
+                <mat-option *ngFor="let marking of marking$ | async" [value]="marking.id">
+                  {{ marking.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <markings-chips [model]="form.value" disableTooltips="true"></markings-chips>
+          </div>
+          <div class="mb-6">
+            <h4>Add Labels</h4>
+            <add-label-alt [parentForm]="form" stixType="report" parentDocumentType="Report"></add-label-alt>
+          </div>
+          <div class="mb-6 mt-10 text-right">
+            <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
+          </div>
         </mat-step>
+
         <mat-step label="UPLOAD REPORT">
+          <div class="mb-6 mt-10 text-right">
+            <button mat-button matStepperPrevious type="button">BACK</button>
+            <span>&nbsp;</span>
+            <button mat-raised-button type="submit" color="primary">SAVE</button>
+          </div>
         </mat-step>
+
       </mat-horizontal-stepper>
 
     </form>
