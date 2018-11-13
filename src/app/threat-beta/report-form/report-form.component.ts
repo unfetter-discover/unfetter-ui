@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Store } from '@ngrx/store';
@@ -24,6 +24,9 @@ export class ReportFormComponent implements OnInit {
   public editMode = false;
   public marking$: Observable<any>;
   public supportedFileTypes: string[] = Object.values(ExtractTextSupportedFileTypes).concat('Other');
+  public file: File;
+
+  @ViewChild('fileInput') public fileInput: ElementRef;
 
   constructor(
     public location: Location,
@@ -63,6 +66,27 @@ export class ReportFormComponent implements OnInit {
           this.store.dispatch(new OpenSnackbar('Unable to extract text'));
         }
       );
+  }
+
+  public extractTextByFile() {
+    const fileType = this.form.get('metaProperties').get('extractedText').get('fileType').value;
+    this.extractTextService.extractTextFromFile(this.file, fileType)
+      .subscribe(
+        ({ extractedText }) => {
+          this.form.get('description').setValue(extractedText)
+        },
+        (err) => {
+          this.store.dispatch(new OpenSnackbar('Unable to extract text'));
+        }
+      );
+  }
+
+  fileInputChange(event) {
+    this.file = event.target.files[0];    
+  }
+
+  selectFiles() {
+    this.fileInput.nativeElement.click();
   }
 
   private resetForm() {

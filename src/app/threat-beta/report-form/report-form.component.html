@@ -104,7 +104,42 @@
               </div>
             </div>
 
-            <div *ngSwitchCase="'FILE'">file~~!!!!</div>
+            <div *ngSwitchCase="'FILE'">
+               <input type="file" name="document" id="document" class="displayNone" (change)="fileInputChange($event)" #fileInput>
+              <div class="mb-5 mt-5" style="padding: 5px;">
+                <div class="mb-6">
+                  <button type="button" mat-mini-fab (click)="selectFiles()" color="accent">
+                    <i class="material-icons mat-24">attach_file</i>
+                  </button>
+                </div>
+                <table *ngIf="file" class="full-width">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="flex flexItemsCenter mat-icon-button-cell-wrapper">
+                          <span>{{file.name}}</span>
+                          <span class="flex1">&nbsp;</span>
+                          <span>
+                            <button type="button" mat-icon-button (click)="file = null">
+                              <i class="material-icons mat-24">delete</i>
+                            </button>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="mb-3">
+                  <button type="button" mat-button color="primary" 
+                  [disabled]="!file || form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'" 
+                  (click)="extractTextByFile()">EXTRACT TEXT</button>
+                  <p *ngIf="form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'">
+                    <small class="text-muted">A supported file type must be selected to extract text.</small>
+                  </p>
+                </div>
+
+              </div>
+            </div>
 
           </div>
 
@@ -119,11 +154,6 @@
         </mat-step>
 
       </mat-horizontal-stepper>
-
-      <p>
-        ~~~~~<br>
-        {{ form.value | json }}
-      </p>
 
     </form>
   </div>
