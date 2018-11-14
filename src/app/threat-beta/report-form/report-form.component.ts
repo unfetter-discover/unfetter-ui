@@ -25,6 +25,7 @@ export class ReportFormComponent implements OnInit {
   public marking$: Observable<any>;
   public supportedFileTypes: string[] = Object.values(ExtractTextSupportedFileTypes).concat('Other');
   public file: File;
+  public loading = false;
 
   @ViewChild('fileInput') public fileInput: ElementRef;
 
