@@ -6,8 +6,8 @@ import {
 } from '@angular/material';
 
 import { FeedCarouselComponent } from './feed-carousel.component';
-import { LoadingSpinnerComponent } from '../../../global/components/loading-spinner/loading-spinner.component';
-import { TimesPipe } from '../../../global/pipes/times.pipe';
+import { LoadingSpinnerComponent } from '../../global/components/loading-spinner/loading-spinner.component';
+import { TimesPipe } from '../../global/pipes/times.pipe';
 
 describe('FeedCarouselComponent', () => {
 

@@ -7,11 +7,11 @@
 
 <mat-sidenav-container class="flex zIndexAuto">
         
-    <mat-sidenav-content class="min-tab-height zIndexAuto">
+    <mat-sidenav-content class="min-tab-height zIndexAuto sidenavContentPolyfill384-right">
 
         <div id="feed-content" class="flex1">
 
-            <reports-carousel [threatBoard]="threatBoard"></reports-carousel>
+            <board-reports [threatBoard]="threatBoard"></board-reports>
 
             <related-boards [threatBoard]="threatBoard"></related-boards>
 

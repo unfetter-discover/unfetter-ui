@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 
 import { ThreatBoard } from 'stix/unfetter/index';
 
-import { FeedCarouselComponent } from './feed-carousel.component';
+import { FeedCarouselComponent } from '../../feed-carousel/feed-carousel.component';
 import { ThreatDashboardBetaService } from '../../threat-beta.service';
 import { ThreatFeatureState } from '../../store/threat.reducers';
 import { getThreatBoardReports } from '../../store/threat.selectors';
@@ -15,11 +15,11 @@ import { getThreatBoardReports } from '../../store/threat.selectors';
  * to show they need someone to approve them.
  */
 @Component({
-    selector: 'reports-carousel',
-    templateUrl: './reports-carousel.component.html',
-    styleUrls: ['./reports-carousel.component.scss']
+    selector: 'board-reports',
+    templateUrl: './board-reports.component.html',
+    styleUrls: ['./board-reports.component.scss']
 })
-export class ReportsCarouselComponent implements OnInit, OnChanges {
+export class BoardReportsComponent implements OnInit, OnChanges {
 
     @Input() threatBoard: ThreatBoard;
 

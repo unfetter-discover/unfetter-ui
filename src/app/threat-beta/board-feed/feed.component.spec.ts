@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
 
@@ -9,16 +9,16 @@ import { FeedComponent } from './feed.component';
 import { SideBoardComponent } from '../side-board/side-board.component';
 import { ThreatHeaderComponent } from '../threat-header/threat-header.component';
 import { ContributorListComponent } from './contributor-list/contributor-list.component';
-import { RelatedBoardsCarouselComponent } from './feed-carousel/related-boards-carousel.component';
-import { ReportsCarouselComponent } from './feed-carousel/reports-carousel.component';
-import { FeedCarouselComponent } from './feed-carousel/feed-carousel.component';
+import { FeedCarouselComponent } from '../feed-carousel/feed-carousel.component';
+import { BoardReportsComponent } from './board-reports/board-reports.component';
+import { RelatedBoardsComponent } from './related-boards/related-boards.component';
 import { ActivityListComponent } from './activity-list/activity-list.component';
-import { CommentInputComponent } from './activity-list/comment-input.component';
+import { DisplayCommentComponent } from '../display-comment/display-comment.component';
+import { CommentInputComponent } from '../display-comment/comment-input.component';
 import { ThreatDashboardBetaService } from '../threat-beta.service';
 import MockThreatDashboardBetaService from '../testing/mock-threat.service';
 import { GlobalModule } from '../../global/global.module';
 import { threatReducer } from '../store/threat.reducers';
-import { DisplayCommentComponent } from '../display-comment/display-comment.component';
 
 describe('FeedComponent', () => {
 
@@ -39,12 +39,12 @@ describe('FeedComponent', () => {
                 declarations: [
                     FeedComponent,
                     FeedCarouselComponent,
-                    ReportsCarouselComponent,
-                    RelatedBoardsCarouselComponent,
+                    BoardReportsComponent,
+                    RelatedBoardsComponent,
                     ActivityListComponent,
-                    CommentInputComponent,
                     ContributorListComponent,
                     DisplayCommentComponent,
+                    CommentInputComponent,
                     ThreatHeaderComponent,
                     SideBoardComponent,
                 ],
