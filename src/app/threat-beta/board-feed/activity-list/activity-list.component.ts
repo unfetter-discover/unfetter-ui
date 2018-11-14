@@ -127,8 +127,8 @@ export class ActivityListComponent implements OnInit {
     }
 
     public sortByMostComments(a: any, b: any) {
-        let adata = (a && a.metaProperties) ? a.metaProperties.comments : ((a.comment) ? a.comment.replies : []) || [];
-        let bdata = (b && b.metaProperties) ? b.metaProperties.comments : ((b.comment) ? b.comment.replies : []) || [];
+        let adata = (a && a.metaProperties && a.metaProperties.comments) ? a.metaProperties.comments : ((a.comment && a.comment.replies) ? a.comment.replies : []) || [];
+        let bdata = (b && b.metaProperties && b.metaProperties.comments) ? b.metaProperties.comments : ((b.comment && b.comment.replies) ? b.comment.replies : []) || [];
         return bdata.length - adata.length;
     }
 
