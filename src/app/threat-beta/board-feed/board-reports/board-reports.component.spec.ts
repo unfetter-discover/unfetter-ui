@@ -7,18 +7,18 @@ import {
     MatProgressSpinnerModule,
 } from '@angular/material';
 
-import { ReportsCarouselComponent } from './reports-carousel.component';
-import { FeedCarouselComponent } from './feed-carousel.component';
+import { BoardReportsComponent } from './board-reports.component';
+import { FeedCarouselComponent } from '../../feed-carousel/feed-carousel.component';
 import { ThreatDashboardBetaService } from '../../threat-beta.service';
 import MockThreatDashboardBetaService from '../../testing/mock-threat.service';
 import { LoadingSpinnerComponent } from '../../../global/components/loading-spinner/loading-spinner.component';
 import { TimesPipe } from '../../../global/pipes/times.pipe';
 import { reducers } from '../../../root-store/app.reducers';
 
-describe('ReportsCarouselComponent', () => {
+describe('BoardReportsComponent', () => {
 
-    let fixture: ComponentFixture<ReportsCarouselComponent>;
-    let component: ReportsCarouselComponent;
+    let fixture: ComponentFixture<BoardReportsComponent>;
+    let component: BoardReportsComponent;
 
     beforeEach(async(() => {
         TestBed
@@ -30,7 +30,7 @@ describe('ReportsCarouselComponent', () => {
                     StoreModule.forRoot(reducers),
                 ],
                 declarations: [
-                    ReportsCarouselComponent,
+                    BoardReportsComponent,
                     FeedCarouselComponent,
                     LoadingSpinnerComponent,
                     TimesPipe,
@@ -43,7 +43,7 @@ describe('ReportsCarouselComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ReportsCarouselComponent);
+        fixture = TestBed.createComponent(BoardReportsComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

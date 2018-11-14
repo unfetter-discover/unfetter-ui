@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { pluck, take } from 'rxjs/operators';
 import { generateUUID } from '../../global/static/generate-uuid';
 import { AppState } from '../../root-store/app.reducers';
-import { UserCitationService } from '../feed/user-citations.service';
+import { UserCitationService } from '../board-feed/user-citations.service';
 import { ThreatDashboardBetaService } from '../threat-beta.service';
 
 @Component({

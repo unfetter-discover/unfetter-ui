@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { ThreatFeatureState } from '../../store/threat.reducers';
 import { pluck, distinctUntilChanged } from 'rxjs/operators';
 import { DomSanitizer } from '@angular/platform-browser';
-import { FeedCarouselComponent } from '../../feed/feed-carousel/feed-carousel.component';
+import { FeedCarouselComponent } from '../../feed-carousel/feed-carousel.component';
 
 @Component({
   selector: 'recent-reports',

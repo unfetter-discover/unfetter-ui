@@ -6,16 +6,16 @@ import {
     MatProgressSpinnerModule,
 } from '@angular/material';
 
-import { RelatedBoardsCarouselComponent } from './related-boards-carousel.component';
-import { FeedCarouselComponent } from './feed-carousel.component';
+import { RelatedBoardsComponent } from './related-boards.component';
+import { FeedCarouselComponent } from '../../feed-carousel/feed-carousel.component';
 import { LoadingSpinnerComponent } from '../../../global/components/loading-spinner/loading-spinner.component';
 import { TimesPipe } from '../../../global/pipes/times.pipe';
 import { reducers } from '../../../root-store/app.reducers';
 
-describe('RelatedBoardsCarouselComponent', () => {
+describe('RelatedBoardsComponent', () => {
 
-    let fixture: ComponentFixture<RelatedBoardsCarouselComponent>;
-    let component: RelatedBoardsCarouselComponent;
+    let fixture: ComponentFixture<RelatedBoardsComponent>;
+    let component: RelatedBoardsComponent;
 
     beforeEach(async(() => {
         TestBed
@@ -26,7 +26,7 @@ describe('RelatedBoardsCarouselComponent', () => {
                     StoreModule.forRoot(reducers),
                 ],
                 declarations: [
-                    RelatedBoardsCarouselComponent,
+                    RelatedBoardsComponent,
                     FeedCarouselComponent,
                     LoadingSpinnerComponent,
                     TimesPipe,
@@ -36,7 +36,7 @@ describe('RelatedBoardsCarouselComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(RelatedBoardsCarouselComponent);
+        fixture = TestBed.createComponent(RelatedBoardsComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
