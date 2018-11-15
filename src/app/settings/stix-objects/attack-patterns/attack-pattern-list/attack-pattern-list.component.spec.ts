@@ -73,6 +73,17 @@ describe(`AttackPatternListComponent`, () => {
         }
     };
 
+    const createData = (dataId: string, name: string) => ({
+        id: dataId,
+        attributes: {
+            id: dataId,
+            name: `Attack Pattern ${name}`,
+            kill_chain_phases: [
+                { phase_name: 'phase-x' }
+            ],
+        }
+    });
+
     // async beforeEach
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -124,17 +135,6 @@ describe(`AttackPatternListComponent`, () => {
             expect(apNode).toBeDefined();
             expect(apNode.nativeElement.textContent).toEqual(data.attributes.name);
         });
-    });
-
-    const createData = (dataId: string, name: string) => ({
-        id: dataId,
-        attributes: {
-            id: dataId,
-            name: `Attack Pattern ${name}`,
-            kill_chain_phases: [
-                { phase_name: 'phase-x' }
-            ],
-        }
     });
 
 });
