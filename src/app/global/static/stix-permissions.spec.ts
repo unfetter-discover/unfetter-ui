@@ -32,23 +32,35 @@ describe('StixPermissions', () => {
         // Need to ensure that run mode is not in DEMO
         spyOn(environment, 'runMode').and.returnValue('UAC');
     });
-    
+
     describe('Static functions', () => {        
         it('should allow all operations for an admin, but not standard user', () => {
             expect(StixPermissions.canReadStatic(unpublishedStix, admin)).toBeTruthy();
             expect(StixPermissions.canCrudStatic(unpublishedStix, admin)).toBeTruthy();
+            expect(StixPermissions.canCreateStatic(unpublishedStix, admin)).toBeTruthy();
+            expect(StixPermissions.canEditStatic(unpublishedStix, admin)).toBeTruthy();
+            expect(StixPermissions.canDeleteStatic(unpublishedStix, admin)).toBeTruthy();
             expect(StixPermissions.canReadStatic(unpublishedStix, standardUser)).toBeFalsy();
             expect(StixPermissions.canCrudStatic(unpublishedStix, standardUser)).toBeFalsy();
+            expect(StixPermissions.canCreateStatic(unpublishedStix, standardUser)).toBeFalsy();
+            expect(StixPermissions.canEditStatic(unpublishedStix, standardUser)).toBeFalsy();
+            expect(StixPermissions.canDeleteStatic(unpublishedStix, standardUser)).toBeFalsy();
         });
         
         it('should allow read only for standard user on published stix', () => {
             expect(StixPermissions.canReadStatic(publishedStix, standardUser)).toBeTruthy();
             expect(StixPermissions.canCrudStatic(publishedStix, standardUser)).toBeFalsy();
+            expect(StixPermissions.canCreateStatic(publishedStix, standardUser)).toBeFalsy();
+            expect(StixPermissions.canEditStatic(publishedStix, standardUser)).toBeFalsy();
+            expect(StixPermissions.canDeleteStatic(publishedStix, standardUser)).toBeFalsy();
         });
         
         it('should allow all operations for a standard user in same org', () => {
             expect(StixPermissions.canReadStatic(sameOrgStix, standardUser)).toBeTruthy();
             expect(StixPermissions.canCrudStatic(sameOrgStix, standardUser)).toBeTruthy();
+            expect(StixPermissions.canCreateStatic(sameOrgStix, standardUser)).toBeTruthy();
+            expect(StixPermissions.canEditStatic(sameOrgStix, standardUser)).toBeTruthy();
+            expect(StixPermissions.canDeleteStatic(sameOrgStix, standardUser)).toBeTruthy();
         });
 
         it('should handle org permissions checks', () => {
@@ -67,18 +79,30 @@ describe('StixPermissions', () => {
         it('should allow all operations for an admin, but not standard user', () => {
             expect(stixPermissionsAdmin.canRead(unpublishedStix)).toBeTruthy();
             expect(stixPermissionsAdmin.canCrud(unpublishedStix)).toBeTruthy();
+            expect(stixPermissionsAdmin.canCreate(unpublishedStix)).toBeTruthy();
+            expect(stixPermissionsAdmin.canEdit(unpublishedStix)).toBeTruthy();
+            expect(stixPermissionsAdmin.canDelete(unpublishedStix)).toBeTruthy();
             expect(stixPermissionsStandard.canRead(unpublishedStix)).toBeFalsy();
             expect(stixPermissionsStandard.canCrud(unpublishedStix)).toBeFalsy();
+            expect(stixPermissionsStandard.canCreate(unpublishedStix)).toBeFalsy();
+            expect(stixPermissionsStandard.canEdit(unpublishedStix)).toBeFalsy();
+            expect(stixPermissionsStandard.canDelete(unpublishedStix)).toBeFalsy();
         });
 
         it('should allow read only for standard user on published stix', () => {
             expect(stixPermissionsStandard.canRead(publishedStix)).toBeTruthy();
             expect(stixPermissionsStandard.canCrud(publishedStix)).toBeFalsy();
+            expect(stixPermissionsStandard.canCreate(publishedStix)).toBeFalsy();
+            expect(stixPermissionsStandard.canEdit(publishedStix)).toBeFalsy();
+            expect(stixPermissionsStandard.canDelete(publishedStix)).toBeFalsy();
         });
 
         it('should allow all operations for a standard user in same org', () => {
             expect(stixPermissionsStandard.canRead(sameOrgStix)).toBeTruthy();
             expect(stixPermissionsStandard.canCrud(sameOrgStix)).toBeTruthy();
+            expect(stixPermissionsStandard.canCreate(sameOrgStix)).toBeTruthy();
+            expect(stixPermissionsStandard.canEdit(sameOrgStix)).toBeTruthy();
+            expect(stixPermissionsStandard.canDelete(sameOrgStix)).toBeTruthy();
         });
     });
 });

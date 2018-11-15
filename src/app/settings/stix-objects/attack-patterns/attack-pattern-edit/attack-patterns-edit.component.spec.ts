@@ -97,7 +97,6 @@ describe('AttackPatternEditComponent', () => {
   describe('Test', componetInitialized);
   describe('Test', displayInfo);
   describe('Test', updating);
-
 });
 
 //////////////////////////////////
@@ -144,7 +143,8 @@ function updating() {
       fixture.whenStable().then(() => {
         const oldDescription = comp.attackPattern.attributes.description;
 
-        el = fixture.debugElement.query(By.css('.attack-pattern-desc')).nativeElement;
+        el = fixture.debugElement.query(By.css('textarea.mat-input-element')).nativeElement;
+        expect(el).toBeDefined();
         expect(el.value).toBe(comp.attackPattern.attributes.description);
 
         // simulate user entering new description into the text box
@@ -188,7 +188,8 @@ function updating() {
         el.value = 'killChainName';
         el.dispatchEvent(newEvent('input'));
 
-        el = fixture.debugElement.query(By.css('.attack-pattern-desc')).nativeElement;
+        el = fixture.debugElement.query(By.css('textarea.mat-input-element')).nativeElement;
+        expect(el).toBeDefined();
         // simulate user entering new description into the text box
         el.value = 'new attack pattern description';
         el.dispatchEvent(newEvent('input'));
