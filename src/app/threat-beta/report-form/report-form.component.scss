@@ -1,8 +1,21 @@
+@import '../threat-beta.common';
+
+mat-sidenav-container,
 #reportFormComponent {
-    background: #fff;
+  min-height: $page-height;
+  background: #fff !important;
+}
+
+.container {
+  max-width: 100%;
 }
 
 #formHeader {
   align-items: baseline;
   padding-right: 22px;
+}
+
+.right-side-panel {
+  width: $rightSidenavWidth;
+  background: #fafafa;
 }

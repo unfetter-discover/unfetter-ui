@@ -1,162 +1,193 @@
 <div id="reportFormComponent">
-  <div class="container" *ngIf="(loadingComplete$ | async) === true; else loadingBlock">
-    <form [formGroup]="form" novalidate>
-      <br>
-      <p class="lead mb-6" style="padding-left: 21px;">
-        <span *ngIf="!editMode">Add</span>
-        <span *ngIf="editMode">Edit</span>
-        <span> Report</span>
-      </p>
-      <div class="row">
-        <div class="col-xs-12">
+  <mat-sidenav-container>
 
-          <div class="flex mb-6" id="formHeader">
-            <button mat-icon-button class="mat-24 edit-close-button" style="margin-left: -18px;" (click)="location.back()"
-              type="button">
-              <mat-icon>close</mat-icon>
-            </button>
-            <span class="flex1">
-              <mat-form-field class="full-width">
-                <input matInput required placeholder="Report Name" formControlName="name">
-                <mat-error *ngIf="form.get('name').hasError('required')">
-                  Report name is <strong>required</strong>
-                </mat-error>
-              </mat-form-field>
-            </span>
-            <span>&nbsp;&nbsp;</span>
-            <span formGroupName="metaProperties">
-              <mat-checkbox color="primary" formControlName="published">Publish To All Unfetter Users</mat-checkbox>
-            </span>
+    <mat-sidenav-content class="sidenavContentPolyfill384-right zIndexAuto">
+      <div class="container" *ngIf="(loadingComplete$ | async) === true; else loadingBlock">
+        <form [formGroup]="form" novalidate>
+          <br>
+          <p class="lead mb-6" style="padding-left: 21px;">
+            <span *ngIf="!editMode">Add</span>
+            <span *ngIf="editMode">Edit</span>
+            <span> Report</span>
+          </p>
+          <div class="row">
+            <div class="col-xs-12">
+
+              <div class="flex mb-6" id="formHeader">
+                <button mat-icon-button class="mat-24 edit-close-button" style="margin-left: -18px;" (click)="location.back()"
+                  type="button">
+                  <mat-icon>close</mat-icon>
+                </button>
+                <span class="flex1">
+                  <mat-form-field class="full-width">
+                    <input matInput required placeholder="Report Name" formControlName="name">
+                    <mat-error *ngIf="form.get('name').hasError('required')">
+                      Report name is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </span>
+                <span>&nbsp;&nbsp;</span>
+                <span formGroupName="metaProperties">
+                  <mat-checkbox color="primary" formControlName="published">Publish To All Unfetter Users</mat-checkbox>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <mat-horizontal-stepper>
+
+            <mat-step label="DETAILS">
+              <div class="mb-6">
+                <created-by-ref class="full-width"></created-by-ref>
+              </div>
+              <div class="mb-6">
+                <mat-form-field class="full-width">
+                  <mat-select multiple placeholder="Marking Definitions" formControlName="object_marking_refs">
+                    <mat-option *ngFor="let marking of marking$ | async" [value]="marking.id">
+                      {{ marking.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <markings-chips [model]="form.value" disableTooltips="true"></markings-chips>
+              </div>
+              <div class="mb-6">
+                <label>Add Labels</label>
+                <add-label-alt [parentForm]="form" stixType="report" parentDocumentType="Report"></add-label-alt>
+              </div>
+              <div class="mb-6 mt-10 text-right">
+                <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
+              </div>
+            </mat-step>
+
+            <mat-step label="UPLOAD REPORT">
+
+              <div formGroupName="metaProperties">
+
+                <div formGroupName="extractedText">
+
+                  <div class="mb-6">
+                    <mat-form-field class="full-width">
+                      <mat-select placeholder="File Type" formControlName="fileType">
+                        <mat-option *ngFor="let fileType of supportedFileTypes" [value]="fileType">{{ fileType | capitalize }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>                
+                  </div>
+
+                  <label>Report Location:&nbsp;&nbsp;</label>
+                  <mat-radio-group formControlName="method">
+                    <mat-radio-button color="primary" value="URL">URL&nbsp;&nbsp;&nbsp;</mat-radio-button>
+                    <mat-radio-button color="primary" value="FILE">File</mat-radio-button>
+                  </mat-radio-group>
+
+                </div>
+              </div>
+
+              <div [ngSwitch]="form.get('metaProperties').get('extractedText').get('method').value" class="mb-6">
+
+                <div *ngSwitchCase="'URL'" formArrayName="external_references">
+                  <div formGroupName="0">
+                    <mat-form-field class="full-width">
+                      <input matInput required placeholder="Source Name" formControlName="source_name">
+                      <mat-error *ngIf="form.get('external_references').get('0').get('source_name').hasError('required')">
+                        Source name is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="full-width">
+                      <input matInput required placeholder="URL" formControlName="url">
+                      <mat-error *ngIf="form.get('external_references').get('0').get('url').hasError('required')">
+                        URL is <strong>required</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <button type="button" mat-button color="primary" 
+                      [disabled]="form.get('external_references').get('0').status === 'INVALID' || form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'" 
+                      (click)="extractTextByUrl()">EXTRACT TEXT</button>
+                    <p *ngIf="form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'">
+                      <small class="text-muted">A supported file type must be selected to extract text.</small>
+                    </p>
+                  </div>
+                </div>
+
+                <div *ngSwitchCase="'FILE'">
+                  <input type="file" name="document" id="document" class="displayNone" (change)="fileInputChange($event)" #fileInput>
+                  <div class="mb-5 mt-5" style="padding: 5px;">
+                    <div class="mb-6">
+                      <button type="button" mat-mini-fab (click)="selectFiles()" color="accent">
+                        <i class="material-icons mat-24">attach_file</i>
+                      </button>
+                    </div>
+                    <table *ngIf="file" class="full-width">
+                      <tbody>
+                        <tr>
+                          <td>
+                            <div class="flex flexItemsCenter mat-icon-button-cell-wrapper">
+                              <span>{{file.name}}</span>
+                              <span class="flex1">&nbsp;</span>
+                              <span>
+                                <button type="button" mat-icon-button (click)="file = null">
+                                  <i class="material-icons mat-24">delete</i>
+                                </button>
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div class="mb-3">
+                      <button type="button" mat-button color="primary" 
+                      [disabled]="!file || form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'" 
+                      (click)="extractTextByFile()">EXTRACT TEXT</button>
+                      <p *ngIf="form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'">
+                        <small class="text-muted">A supported file type must be selected to extract text.</small>
+                      </p>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+
+              <h4>Content</h4>
+              <simplemde formControlName="description"></simplemde>
+              
+              <div class="mb-6 mt-10 text-right">
+                <button mat-button matStepperPrevious type="button">BACK</button>
+                <span>&nbsp;</span>
+                <button mat-raised-button type="submit" color="primary">SAVE</button>
+              </div>
+            </mat-step>
+          </mat-horizontal-stepper>
+        </form>
+      </div>      
+    </mat-sidenav-content>
+
+    <mat-sidenav opened mode="side" position="end" class="right-side-panel">
+      <br>
+      <h4 class="col-xs-12 text-muted">Associated Threat Board</h4>
+      <br>
+      <div *ngIf="selectedBoard$ | async as selectedBoard" class="col-xs-12">
+          <p class="lead">{{ selectedBoard.name }}</p>
+          <div *ngIf="selectedBoard.targets && selectedBoard.targets.length">
+            <div *ngFor="let target of selectedBoard.targets">{{ target }}</div>
+          </div>
+      </div>
+      <div *ngIf="boundaryObjects$ | async as boundaryObjects">
+        <div *ngIf="boundaryObjects.malware && boundaryObjects.malware.length" class="col-xs-12">
+          <p class="lead mb-6 mt-6">Malware</p>
+          <div class="mb-3" *ngFor="let malware of boundaryObjects.malware">
+            <a routerLink="/stix/malwares/{{ malware.id }}" target="_blank">{{ malware.name }}</a>
+          </div>
+        </div>
+        <div *ngIf="boundaryObjects.intrusion_sets && boundaryObjects.intrusion_sets.length" class="col-xs-12">
+          <p class="lead mb-6 mt-6">Instrusion Sets</p>
+          <div class="mb-3" *ngFor="let intrusion_set of boundaryObjects.intrusion_sets">
+            <a routerLink="/stix/intrusion-sets/{{ intrusion_set.id }}" target="_blank">{{ intrusion_set.name }}</a>
           </div>
         </div>
       </div>
+      <br>
+    </mat-sidenav>
 
-      <mat-horizontal-stepper>
-
-        <mat-step label="DETAILS">
-          <div class="mb-6">
-            <created-by-ref class="full-width"></created-by-ref>
-          </div>
-          <div class="mb-6">
-            <mat-form-field class="full-width">
-              <mat-select multiple placeholder="Marking Definitions" formControlName="object_marking_refs">
-                <mat-option *ngFor="let marking of marking$ | async" [value]="marking.id">
-                  {{ marking.label }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <markings-chips [model]="form.value" disableTooltips="true"></markings-chips>
-          </div>
-          <div class="mb-6">
-            <label>Add Labels</label>
-            <add-label-alt [parentForm]="form" stixType="report" parentDocumentType="Report"></add-label-alt>
-          </div>
-          <div class="mb-6 mt-10 text-right">
-            <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
-          </div>
-        </mat-step>
-
-        <mat-step label="UPLOAD REPORT">
-
-          <div formGroupName="metaProperties">
-
-            <div formGroupName="extractedText">
-
-              <div class="mb-6">
-                <mat-form-field class="full-width">
-                  <mat-select placeholder="File Type" formControlName="fileType">
-                    <mat-option *ngFor="let fileType of supportedFileTypes" [value]="fileType">{{ fileType | capitalize }}</mat-option>
-                  </mat-select>
-                </mat-form-field>                
-              </div>
-
-              <label>Report Location:&nbsp;&nbsp;</label>
-              <mat-radio-group formControlName="method">
-                <mat-radio-button color="primary" value="URL">URL&nbsp;&nbsp;&nbsp;</mat-radio-button>
-                <mat-radio-button color="primary" value="FILE">File</mat-radio-button>
-              </mat-radio-group>
-
-            </div>
-          </div>
-
-          <div [ngSwitch]="form.get('metaProperties').get('extractedText').get('method').value" class="mb-6">
-
-            <div *ngSwitchCase="'URL'" formArrayName="external_references">
-              <div formGroupName="0">
-                <mat-form-field class="full-width">
-                  <input matInput required placeholder="Source Name" formControlName="source_name">
-                  <mat-error *ngIf="form.get('external_references').get('0').get('source_name').hasError('required')">
-                    Source name is <strong>required</strong>
-                  </mat-error>
-                </mat-form-field>
-                <mat-form-field class="full-width">
-                  <input matInput required placeholder="URL" formControlName="url">
-                  <mat-error *ngIf="form.get('external_references').get('0').get('url').hasError('required')">
-                    URL is <strong>required</strong>
-                  </mat-error>
-                </mat-form-field>
-                <button type="button" mat-button color="primary" 
-                  [disabled]="form.get('external_references').get('0').status === 'INVALID' || form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'" 
-                  (click)="extractTextByUrl()">EXTRACT TEXT</button>
-                <p *ngIf="form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'">
-                  <small class="text-muted">A supported file type must be selected to extract text.</small>
-                </p>
-              </div>
-            </div>
-
-            <div *ngSwitchCase="'FILE'">
-               <input type="file" name="document" id="document" class="displayNone" (change)="fileInputChange($event)" #fileInput>
-              <div class="mb-5 mt-5" style="padding: 5px;">
-                <div class="mb-6">
-                  <button type="button" mat-mini-fab (click)="selectFiles()" color="accent">
-                    <i class="material-icons mat-24">attach_file</i>
-                  </button>
-                </div>
-                <table *ngIf="file" class="full-width">
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="flex flexItemsCenter mat-icon-button-cell-wrapper">
-                          <span>{{file.name}}</span>
-                          <span class="flex1">&nbsp;</span>
-                          <span>
-                            <button type="button" mat-icon-button (click)="file = null">
-                              <i class="material-icons mat-24">delete</i>
-                            </button>
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="mb-3">
-                  <button type="button" mat-button color="primary" 
-                  [disabled]="!file || form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'" 
-                  (click)="extractTextByFile()">EXTRACT TEXT</button>
-                  <p *ngIf="form.get('metaProperties').get('extractedText').get('fileType').value === 'Other'">
-                    <small class="text-muted">A supported file type must be selected to extract text.</small>
-                  </p>
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-
-          <h4>Content</h4>
-          <simplemde formControlName="description"></simplemde>
-          
-          <div class="mb-6 mt-10 text-right">
-            <button mat-button matStepperPrevious type="button">BACK</button>
-            <span>&nbsp;</span>
-            <button mat-raised-button type="submit" color="primary">SAVE</button>
-          </div>
-        </mat-step>
-
-      </mat-horizontal-stepper>
-
-    </form>
-  </div>
+  </mat-sidenav-container>
 
   <ng-template #loadingBlock>
     <loading-spinner></loading-spinner>

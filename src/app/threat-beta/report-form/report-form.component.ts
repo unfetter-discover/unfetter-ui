@@ -13,7 +13,7 @@ import MarkingDefinitionHelpers from '../../global/static/marking-definition-hel
 import { ExtractTextSupportedFileTypes } from '../../global/enums/extract-text-file-types.enum';
 import { ExtractTextService } from '../../core/services/extract-text.service';
 import { OpenSnackbar } from '../../root-store/utility/utility.actions';
-import { getSelectedBoardId, getSelectedBoard } from '../store/threat.selectors';
+import { getSelectedBoardId, getSelectedBoard, getBoundaryObjects } from '../store/threat.selectors';
 import * as fromThreat from '../store/threat.actions';
 
 @Component({
@@ -32,6 +32,7 @@ export class ReportFormComponent implements OnInit {
   public loadingComplete$: Observable<boolean>;
   public boardId$: Observable<string>;
   public selectedBoard$: Observable<ThreatBoard>;
+  public boundaryObjects$: Observable<any>;
 
   @ViewChild('fileInput') public fileInput: ElementRef;
 
@@ -71,6 +72,7 @@ export class ReportFormComponent implements OnInit {
 
     this.loadingComplete$ = this.store.select('threat').pipe(pluck('threatboardLoadingComplete'));
     this.selectedBoard$ = this.store.select(getSelectedBoard);
+    this.boundaryObjects$ = this.store.select(getBoundaryObjects);
 
     this.marking$ = this.store
       .select('stix')
