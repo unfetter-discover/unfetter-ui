@@ -1,9 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { Observable, of as observableOf, Subscription } from 'rxjs';
-import { pluck, map, filter, withLatestFrom, tap, switchMap, take, finalize } from 'rxjs/operators';
+import { Observable, of as observableOf, Subscription, fromEvent as observableFromEvent} from 'rxjs';
+import { pluck, map, filter, withLatestFrom, tap, switchMap, take, finalize, delay, debounceTime } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { ThreatBoard } from 'stix/unfetter/index';
 
@@ -35,6 +35,9 @@ export class ReportFormComponent implements OnInit {
   public boundaryObjects$: Observable<any>;
 
   @ViewChild('fileInput') public fileInput: ElementRef;
+  @ViewChild('mde') public mde;
+
+  private codeMirror: CodeMirror.Editor;
 
   constructor(
     public location: Location,
@@ -63,6 +66,10 @@ export class ReportFormComponent implements OnInit {
           if (routeId !== currentId) {
             this.store.dispatch(new fromThreat.SetSelectedBoardId(routeId));
             this.store.dispatch(new fromThreat.FetchBoardDetailedData(routeId));
+          }
+
+          if (!this.codeMirror) {
+            this.initCodemirror();
           }
         },
         (err) => {
@@ -120,6 +127,10 @@ export class ReportFormComponent implements OnInit {
       );
   }
 
+  public highlight(event) {
+    console.log(event);
+  }
+
   fileInputChange(event) {
     this.file = event.target.files[0];    
   }
@@ -130,6 +141,33 @@ export class ReportFormComponent implements OnInit {
 
   private resetForm() {
     this.form = ReportForm();
+  }
+
+  private initCodemirror() {
+    this.loadingComplete$
+      .pipe(
+        filter(loading => !!loading),
+        take(1),
+        delay(300) // Give time for CodeMirror to initialize
+      )
+      .subscribe(() => {
+        if (this.mde && this.mde.simplemde && this.mde.simplemde.codemirror) {          
+          this.codeMirror = this.mde.simplemde.codemirror;
+          observableFromEvent(this.mde.simplemde.codemirror, 'cursorActivity')
+            .pipe(
+              filter((cm: CodeMirror.Editor) => cm.state.markedSelection && cm.state.markedSelection.length),
+              debounceTime(200),
+            )
+            .subscribe(
+              (cm) => {
+                console.log(cm);
+              },
+              (err) => console.log(err)
+            );
+        } else {
+          console.log('unable to initialize code mirror tagging');
+        }
+      });
   }
 
 }

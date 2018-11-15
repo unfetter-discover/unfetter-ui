@@ -19,3 +19,15 @@ mat-sidenav-container,
   width: $rightSidenavWidth;
   background: #fafafa;
 }
+
+#fab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 499;
+  display: none;
+
+  &.inlineBlock {
+    display: inline-block !important;
+  }
+}
