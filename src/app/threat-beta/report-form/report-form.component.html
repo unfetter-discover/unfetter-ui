@@ -1,5 +1,5 @@
 <div id="reportFormComponent">
-  <div class="container" *ngIf="!loading; else loadingBlock">
+  <div class="container" *ngIf="(loadingComplete$ | async) === true; else loadingBlock">
     <form [formGroup]="form" novalidate>
       <br>
       <p class="lead mb-6" style="padding-left: 21px;">

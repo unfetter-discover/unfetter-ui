@@ -5,7 +5,7 @@
         <side-board [boardId]="boardId$ | async"></side-board>
       </mat-sidenav>
       <mat-sidenav-content class="sidenavContentPolyfill320 fixed-page-height zIndexAuto">
-        <a mat-fab color="primary" class="bottomRightFab plainLink" routerLink="/threat-beta/report/new" *ngIf="showAddReportFab$ | async">
+          <a mat-fab color="primary" class="bottomRightFab plainLink" routerLink="/threat-beta/{{ boardId$ | async }}/report/new" *ngIf="showAddReportFab$ | async">
           <i class="material-icons mat-24">add</i>
         </a>
         <threat-header [boardId]="boardId$ | async"></threat-header>

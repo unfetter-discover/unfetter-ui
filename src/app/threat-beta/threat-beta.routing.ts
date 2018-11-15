@@ -19,11 +19,12 @@ const routes: Routes = [
       {
         path: 'edit/:id', component: CreateComponent
       }, 
+      // Reports require a boardId but don't use a child router
       { 
-        path: 'report/new', component: ReportFormComponent 
+        path: ':boardId/report/new', component: ReportFormComponent 
       },
       { 
-        path: 'report/edit/:reportId', component: ReportFormComponent 
+        path: ':boardId/report/edit/:reportId', component: ReportFormComponent 
       },
       {
         path: ':boardId',
