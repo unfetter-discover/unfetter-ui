@@ -4,6 +4,7 @@ describe('cleanObjectProperties function', () => {
     const testObj = {
         foo: { 
             bar: [],
+            bars: [null, 'string'],
             whim: '',
             wham: {},
             whap: null,
@@ -17,6 +18,6 @@ describe('cleanObjectProperties function', () => {
             ...testObj 
         };
         const cleanedObj = cleanObjectProperties({}, testObjCopy);
-        expect(Object.entries(cleanedObj.foo)).toEqual([['real', 1], ['real2', false]]);
+        expect(Object.entries(cleanedObj.foo)).toEqual([['bars', ['string']], ['real', 1], ['real2', false]]);
     });
 });

@@ -144,7 +144,7 @@ describe('HeatmapComponent', () => {
         expect(newopts.zoom.cellTitleExtent).toEqual(4);
     });
 
-    xit('should accept input heatmap data, default settings', async(() => {
+    it('should accept input heatmap data, default settings', async(() => {
         component.data = mockData;
         fixture.detectChanges();
 

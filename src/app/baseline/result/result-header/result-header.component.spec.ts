@@ -1,53 +1,73 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
+import { TestBed, ComponentFixture, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { StoreModule } from '@ngrx/store';
+
+import { By } from '@angular/platform-browser';
+import {
+    MatIconModule,
+    MatTabsModule,
+} from '@angular/material';
 
 import { ResultHeaderComponent } from './result-header.component';
 import { SummaryCalculationService } from '../summary/summary-calculation.service';
+import { InfoBarComponent } from '../../../global/components/info-bar/info-bar.component';
+import { reducers } from '../../../root-store/app.reducers';
 
-xdescribe('ResultHeaderComponent', () => {
-  let component: ResultHeaderComponent;
-  let fixture: ComponentFixture<ResultHeaderComponent>;
+describe('ResultHeaderComponent', () => {
 
-  const serviceMock = { baseline: {}};
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      schemas: [NO_ERRORS_SCHEMA],
-      declarations: [ResultHeaderComponent],
-      providers: [
-        {
-          provide: SummaryCalculationService,
-          useValue: serviceMock
-        }
-      ]
-    })
-      .compileComponents();
-  }));
+    let fixture: ComponentFixture<ResultHeaderComponent>;
+    let component: ResultHeaderComponent;
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ResultHeaderComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    const serviceMock = {
+        baseline: {}
+    };
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(async(() => {
+        TestBed
+            .configureTestingModule({
+                imports: [
+                    MatIconModule,
+                    MatTabsModule,
+                    RouterTestingModule,
+                    StoreModule.forRoot(reducers),
+                ],
+                declarations: [
+                    ResultHeaderComponent,
+                    InfoBarComponent,
+                ],
+                providers: [
+                    {
+                        provide: SummaryCalculationService,
+                        useValue: serviceMock
+                    }
+                ]
+            })
+            .compileComponents();
+    }));
 
-  it('should have a published string and no PUBLISH button if create date is known', () => {
-    component.published = null;
-    let publishButton = fixture.debugElement.query(By.css('#publishButton')).nativeElement;
-    let publishArea = fixture.debugElement.query(By.css('.publishText'));
-    expect(publishButton).toBeTruthy();
-    expect(publishArea).toBeFalsy();
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ResultHeaderComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-    component.published = new Date(2018, 2);
-    fixture.detectChanges();
-    publishArea = fixture.debugElement.query(By.css('.publishText')).nativeElement;
-    expect(publishArea).toBeTruthy();
-    publishButton = fixture.debugElement.query(By.css('#publishButton'));
-    expect(publishButton).toBeFalsy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
+    it('should have a published string and no PUBLISH button if create date is known', () => {
+        component.published = null;
+        let publishButton = fixture.debugElement.query(By.css('#publishButton')).nativeElement;
+        let publishArea = fixture.debugElement.query(By.css('.publishText'));
+        expect(publishButton).toBeTruthy();
+        expect(publishArea).toBeFalsy();
+
+        component.published = new Date(2018, 2);
+        fixture.detectChanges();
+        publishArea = fixture.debugElement.query(By.css('.publishText')).nativeElement;
+        expect(publishArea).toBeTruthy();
+        publishButton = fixture.debugElement.query(By.css('#publishButton'));
+        expect(publishButton).toBeFalsy();
+    });
+
 });

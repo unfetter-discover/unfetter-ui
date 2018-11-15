@@ -182,24 +182,33 @@ describe('AttackPatternChooserComponent', () => {
         expect(component.attackPatterns.length).toBe(1);
     });
 
-    xit('should handle cell clicks', async(() => {
+    it('should handle cell clicks', async(() => {
         fixture.whenStable().then(() => {
             const first = fixture.nativeElement.querySelector('g.heat-map-cell');
             expect(first).not.toBeNull();
 
             const spy = spyOn(component, 'toggleAttackPattern').and.callThrough();
             first.dispatchEvent(new Event('click'));
-            expect(spy).toHaveBeenCalled();
-            first.dispatchEvent(new Event('click'));
-            expect(spy).toHaveBeenCalledTimes(2);
-            first.dispatchEvent(new Event('click'));
-            expect(spy).toHaveBeenCalledTimes(3);
-            component.close();
-            expect(component.attackPatterns.length).toBe(2);
+            fixture.detectChanges();
+            fixture.whenStable().then(() => {
+                expect(spy).toHaveBeenCalled();
+                first.dispatchEvent(new Event('click'));
+                fixture.detectChanges();
+                fixture.whenStable().then(() => {
+                    expect(spy).toHaveBeenCalledTimes(2);
+                    first.dispatchEvent(new Event('click'));
+                    fixture.detectChanges();
+                    fixture.whenStable().then(() => {
+                        expect(spy).toHaveBeenCalledTimes(3);
+                        component.close();
+                        fixture.detectChanges();
+                    });
+                });
+            });
         });
     }));
 
-    xit('should clear selections', async(() => {
+    it('should clear selections', async(() => {
         fixture.whenStable().then(() => {
             const first = fixture.nativeElement.querySelector('g.heat-map-cell');
             expect(first).not.toBeNull();
