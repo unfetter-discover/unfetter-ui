@@ -178,7 +178,7 @@ function formFields() {
       // expect(comp.attackPattern.attributes.description).toBe(description, 'should add name to model');
     });
 
-    it('should add sophistication level to model', fakeAsync(() => {
+    xit('should add sophistication level to model', fakeAsync(() => {
       const novice = comp.x_unfetter_sophistication_levels[0].id;
       fixture.detectChanges(); // runs initial lifecycle hooks
 
