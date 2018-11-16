@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormArray } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { Observable, of as observableOf, Subscription, fromEvent as observableFromEvent} from 'rxjs';
@@ -17,6 +17,7 @@ import { OpenSnackbar, HideFooter, ShowFooter } from '../../root-store/utility/u
 import { getSelectedBoardId, getSelectedBoard, getBoundaryObjects } from '../store/threat.selectors';
 import * as fromThreat from '../store/threat.actions';
 import { CodeMirrorHelpers } from '../../global/static/codemirror-helpers';
+import { TextTagForm } from '../../global/form-models/text-tag';
 
 @Component({
   selector: 'report-form',
@@ -143,9 +144,24 @@ export class ReportFormComponent implements OnInit, OnDestroy {
   }
 
   public onTagClick(apId) {
-    // TODO generate tag
-    console.log(apId);
-    console.log(this.codeMirror.state.markedSelection);
+    const selection = this.codeMirror.state.markedSelection[0];
+    const tag = {
+      stixId: apId,
+      text: selection.lines.map(l => l.text).reduce((acc, cur) => acc + cur, ''),
+      range: {
+        anchor: {
+          line: selection.doc.sel.ranges[0].head.line,
+          ch: selection.doc.sel.ranges[0].head.ch
+        },
+        head: {
+          line: selection.doc.sel.ranges[0].anchor.line,
+          ch:  selection.doc.sel.ranges[0].anchor.ch
+        }
+      }
+    };
+    const tagForm = TextTagForm();
+    tagForm.patchValue(tag);
+    (this.form.get('metaProperties').get('textTags') as FormArray).push(tagForm);
   }
 
   fileInputChange(event) {
@@ -174,7 +190,8 @@ export class ReportFormComponent implements OnInit, OnDestroy {
           observableFromEvent(this.mde.simplemde.codemirror, 'cursorActivity')
             .pipe(
               tap(() => this.showFab = false),
-              filter((cm: CodeMirror.Editor) => cm.state.markedSelection && cm.state.markedSelection.length),
+              // Only allow 1 selection, to avoid multi-range selections
+              filter((cm: CodeMirror.Editor) => cm.state.markedSelection && cm.state.markedSelection.length === 1),
               debounceTime(200),
             )
             .subscribe(

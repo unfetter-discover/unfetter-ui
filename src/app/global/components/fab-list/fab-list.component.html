@@ -9,15 +9,15 @@
     height="searchListHeight" width="searchListWidth" cdkConnectedOverlay>
     <div #searchList id="searchList" class="mat-elevation-z18" [ngStyle]="{ 'max-width.px': searchListWidth, 'max-height.px': searchListHeight }">
       <!-- TODO add search bar back after there's a way to keep the text selected -->
-      <!-- <div id="searchWrapper">
-          <mat-form-field floatLabel="never" id="searchInput" class="full-width">
-            <input matInput #filter placeholder="Search" [formControl]="searchTerm$" (focus)="$event.preventDefault()">
-            <mat-icon matPrefix>search</mat-icon>
-          </mat-form-field>
-        </div> -->
+      <div id="searchWrapper">
+        <mat-form-field floatLabel="never" id="searchInput" class="full-width">
+          <input matInput #filter placeholder="Search" [formControl]="searchTerm$">
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field>
+      </div>
       <div id="searchResults">
-        <div *ngFor="let item of items$ | async" class="searchResultItem">
-          <a (click)="tagClicked.emit(item[itemIdProperty])">{{ item[itemNameProperty] || 'Unknown' }}</a>
+        <div *ngFor="let item of searchResults$ | async" class="searchResultItem">
+          <a (click)="onTagClick(item[itemIdProperty])">{{ item[itemNameProperty] || 'Unknown' }}</a>
         </div>
       </div>
     </div>

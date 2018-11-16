@@ -14,7 +14,8 @@ export const ReportForm = () => {
                 fileType: new FormControl(ExtractTextSupportedFileTypes.PDF),
                 method: new FormControl('URL') 
             }),
-            published: new FormControl(true)
+            published: new FormControl(true),
+            textTags: new FormArray([])
         }),
         object_marking_refs: new FormControl([]),
     })

@@ -16,8 +16,7 @@
 #searchResults {
   z-index: 1;
   overflow-y: auto;
-  // This is needed if the search bar is being used
-  // margin-top: -35px;
+  margin-top: -34px;
 }
 
 .searchResultItem {
