@@ -104,6 +104,7 @@ import { MarkdownMentionsComponent } from './components/markdown-mentions/markdo
 import { TextHighlightComponent } from './components/text-highlight/text-highlight.component';
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
 import { FabListComponent } from './components/fab-list/fab-list.component';
+import { TextTagListComponent } from './components/text-tag-list/text-tag-list.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -196,6 +197,7 @@ const unfetterComponents = [
     TextHighlightComponent,
     CodeEditorComponent,
     FabListComponent,
+    TextTagListComponent,
 ];
 
 @NgModule({
@@ -227,7 +229,7 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,        
+        ...unfetterComponents,                
     ],
     exports: [
         ...unfetterComponents,

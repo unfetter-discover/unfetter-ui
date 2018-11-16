@@ -152,6 +152,8 @@
 
               <h4>Content</h4>              
               <simplemde formControlName="description" #mde></simplemde>
+              <h4 *ngIf="form.get('metaProperties').get('textTags').value.length">Text Tags</h4>
+              <text-tag-list [form]="form"></text-tag-list>
               
               <div class="mb-6 mt-10 text-right">
                 <button mat-button matStepperPrevious type="button">BACK</button>
