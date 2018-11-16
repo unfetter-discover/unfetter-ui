@@ -1,5 +1,17 @@
 @import '../threat-beta.common';
 
+#fab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 499;
+  display: none;
+
+  &.inlineBlock {
+    display: inline-block !important;
+  }
+}
+
 mat-sidenav-container,
 #reportFormComponent {
   min-height: $page-height;
@@ -18,16 +30,4 @@ mat-sidenav-container,
 .right-side-panel {
   width: $rightSidenavWidth;
   background: #fafafa;
-}
-
-#fab {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 499;
-  display: none;
-
-  &.inlineBlock {
-    display: inline-block !important;
-  }
 }

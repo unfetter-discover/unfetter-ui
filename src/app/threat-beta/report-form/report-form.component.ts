@@ -6,6 +6,7 @@ import { Observable, of as observableOf, Subscription, fromEvent as observableFr
 import { pluck, map, filter, withLatestFrom, tap, switchMap, take, finalize, delay, debounceTime } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { ThreatBoard } from 'stix/unfetter/index';
+import { AttackPattern } from 'stix';
 
 import { ReportForm } from '../../global/form-models/report';
 import { AppState } from '../../root-store/app.reducers';
@@ -15,6 +16,7 @@ import { ExtractTextService } from '../../core/services/extract-text.service';
 import { OpenSnackbar } from '../../root-store/utility/utility.actions';
 import { getSelectedBoardId, getSelectedBoard, getBoundaryObjects } from '../store/threat.selectors';
 import * as fromThreat from '../store/threat.actions';
+import { CodeMirrorHelpers } from '../../global/static/codemirror-helpers';
 
 @Component({
   selector: 'report-form',
@@ -31,13 +33,20 @@ export class ReportFormComponent implements OnInit {
   public file: File;
   public loadingComplete$: Observable<boolean>;
   public boardId$: Observable<string>;
+  public attackPatterns$: Observable<AttackPattern[]>;
   public selectedBoard$: Observable<ThreatBoard>;
   public boundaryObjects$: Observable<any>;
+  public showFab = false;
 
-  @ViewChild('fileInput') public fileInput: ElementRef;
-  @ViewChild('mde') public mde;
+  @ViewChild('fileInput') 
+  public fileInput: ElementRef;
+  @ViewChild('mde') 
+  public mde;
+  @ViewChild('fab')
+  public fab: ElementRef;
 
   private codeMirror: CodeMirror.Editor;
+  private codeMirrorHelpers: CodeMirrorHelpers;
 
   constructor(
     public location: Location,
@@ -80,6 +89,7 @@ export class ReportFormComponent implements OnInit {
     this.loadingComplete$ = this.store.select('threat').pipe(pluck('threatboardLoadingComplete'));
     this.selectedBoard$ = this.store.select(getSelectedBoard);
     this.boundaryObjects$ = this.store.select(getBoundaryObjects);
+    this.attackPatterns$ = this.store.select('stix').pipe(pluck('attackPatterns'));
 
     this.marking$ = this.store
       .select('stix')
@@ -127,8 +137,9 @@ export class ReportFormComponent implements OnInit {
       );
   }
 
-  public highlight(event) {
-    console.log(event);
+  public onTagClick(apId) {
+    console.log(apId);
+    console.log(this.codeMirror.state.markedSelection);
   }
 
   fileInputChange(event) {
@@ -153,6 +164,7 @@ export class ReportFormComponent implements OnInit {
       .subscribe(() => {
         if (this.mde && this.mde.simplemde && this.mde.simplemde.codemirror) {          
           this.codeMirror = this.mde.simplemde.codemirror;
+          this.codeMirrorHelpers = new CodeMirrorHelpers(this.codeMirror);
           observableFromEvent(this.mde.simplemde.codemirror, 'cursorActivity')
             .pipe(
               filter((cm: CodeMirror.Editor) => cm.state.markedSelection && cm.state.markedSelection.length),
@@ -161,6 +173,8 @@ export class ReportFormComponent implements OnInit {
             .subscribe(
               (cm) => {
                 console.log(cm);
+                this.showFab = true;
+                this.codeMirrorHelpers.positionAtCursor(this.fab.nativeElement, 0, -22);
               },
               (err) => console.log(err)
             );

@@ -1,8 +1,12 @@
 <div id="reportFormComponent">
-  <mat-sidenav-container>
+  <span id="fab" #fab [class.inlineBlock]="showFab">
+    <fab-list [(showFab)]="showFab" [items$]="attackPatterns$" (tagClicked)="onTagClick($event)"></fab-list>
+  </span>
+
+  <mat-sidenav-container *ngIf="(loadingComplete$ | async) === true; else loadingBlock">   
 
     <mat-sidenav-content class="sidenavContentPolyfill384-right zIndexAuto">
-      <div class="container" *ngIf="(loadingComplete$ | async) === true; else loadingBlock">
+      <div class="container">
         <form [formGroup]="form" novalidate>
           <br>
           <p class="lead mb-6" style="padding-left: 21px;">
@@ -146,7 +150,7 @@
 
               </div>
 
-              <h4>Content</h4>
+              <h4>Content</h4>              
               <simplemde formControlName="description" #mde></simplemde>
               
               <div class="mb-6 mt-10 text-right">
@@ -160,15 +164,16 @@
       </div>      
     </mat-sidenav-content>
 
-    <mat-sidenav opened mode="side" position="end" class="right-side-panel">
-      <br>
-      <h4 class="col-xs-12 text-muted">Associated Threat Board</h4>
-      <br>
+    <mat-sidenav opened mode="side" position="end" class="right-side-panel">      
       <div *ngIf="selectedBoard$ | async as selectedBoard" class="col-xs-12">
-          <p class="lead">{{ selectedBoard.name }}</p>
-          <div *ngIf="selectedBoard.targets && selectedBoard.targets.length">
-            <div *ngFor="let target of selectedBoard.targets">{{ target }}</div>
-          </div>
+        <br>
+        <h4 class="text-muted">Associated Threat Board</h4>
+        <p class="lead">{{ selectedBoard.name }}</p>
+        <div><hr></div>
+        <div *ngIf="selectedBoard.boundaries && selectedBoard.boundaries.targets && selectedBoard.boundaries.targets.length">
+          <p class="lead mb-6 mt-6">Targets</p>
+          <div *ngFor="let target of selectedBoard.boundaries.targets" class="mb-3">{{ target }}</div>
+        </div>
       </div>
       <div *ngIf="boundaryObjects$ | async as boundaryObjects">
         <div *ngIf="boundaryObjects.malware && boundaryObjects.malware.length" class="col-xs-12">
