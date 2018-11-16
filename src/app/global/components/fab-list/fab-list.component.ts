@@ -7,7 +7,7 @@ import { ConnectedPosition } from '@angular/cdk/overlay';
   templateUrl: './fab-list.component.html',
   styleUrls: ['./fab-list.component.scss']
 })
-export class FabListComponent implements OnInit {
+export class FabListComponent {
 
   // ~~~ Required Inputs ~~~
   /**
@@ -40,23 +40,5 @@ export class FabListComponent implements OnInit {
     { ...this.preferredPosition, overlayY: 'bottom' },
     { ...this.preferredPosition, originX: 'start', overlayX: 'end' }
   ];
-
-  @HostListener('document:mousedown', ['$event'])
-  public clickedOutside(event) {
-    if (this.showFab && !this.fab.nativeElement.contains(event.target)) {
-      if (this.searchList && this.searchList.nativeElement && this.searchList.nativeElement.contains(event.target)) {
-        event.preventDefault();
-        return;
-      }
-      this.showFab = false;
-      this.showFabChange.emit(false);
-      // Searching is still mostly commented ou in text-highlight component
-      // this.searchTerm$.patchValue('');
-    }
-  }
-
-  constructor() { }
-
-  ngOnInit() {
-  }
+  public showList = false;
 }

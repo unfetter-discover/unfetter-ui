@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Store } from '@ngrx/store';
@@ -13,7 +13,7 @@ import { AppState } from '../../root-store/app.reducers';
 import MarkingDefinitionHelpers from '../../global/static/marking-definition-helper';
 import { ExtractTextSupportedFileTypes } from '../../global/enums/extract-text-file-types.enum';
 import { ExtractTextService } from '../../core/services/extract-text.service';
-import { OpenSnackbar } from '../../root-store/utility/utility.actions';
+import { OpenSnackbar, HideFooter, ShowFooter } from '../../root-store/utility/utility.actions';
 import { getSelectedBoardId, getSelectedBoard, getBoundaryObjects } from '../store/threat.selectors';
 import * as fromThreat from '../store/threat.actions';
 import { CodeMirrorHelpers } from '../../global/static/codemirror-helpers';
@@ -21,10 +21,9 @@ import { CodeMirrorHelpers } from '../../global/static/codemirror-helpers';
 @Component({
   selector: 'report-form',
   templateUrl: './report-form.component.html',
-  styleUrls: ['./report-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./report-form.component.scss']
 })
-export class ReportFormComponent implements OnInit {
+export class ReportFormComponent implements OnInit, OnDestroy {
 
   public form: FormGroup = ReportForm();
   public editMode = false;
@@ -36,7 +35,7 @@ export class ReportFormComponent implements OnInit {
   public attackPatterns$: Observable<AttackPattern[]>;
   public selectedBoard$: Observable<ThreatBoard>;
   public boundaryObjects$: Observable<any>;
-  public showFab = false;
+  public showFab: boolean;
 
   @ViewChild('fileInput') 
   public fileInput: ElementRef;
@@ -56,6 +55,11 @@ export class ReportFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.selectedBoard$ = this.store.select(getSelectedBoard);
+    this.boundaryObjects$ = this.store.select(getBoundaryObjects);
+    this.attackPatterns$ = this.store.select('stix').pipe(pluck('attackPatterns'));
+    this.loadingComplete$ = this.store.select('threat').pipe(pluck('threatboardLoadingComplete'));
+
     this.boardId$ = this.route.params
       .pipe(
         filter((params) => params && params.boardId),
@@ -84,12 +88,7 @@ export class ReportFormComponent implements OnInit {
         (err) => {
           console.log(err);
         }
-      );
-
-    this.loadingComplete$ = this.store.select('threat').pipe(pluck('threatboardLoadingComplete'));
-    this.selectedBoard$ = this.store.select(getSelectedBoard);
-    this.boundaryObjects$ = this.store.select(getBoundaryObjects);
-    this.attackPatterns$ = this.store.select('stix').pipe(pluck('attackPatterns'));
+      );    
 
     this.marking$ = this.store
       .select('stix')
@@ -104,6 +103,12 @@ export class ReportFormComponent implements OnInit {
           });
         })
       );
+    
+    this.store.dispatch(new HideFooter());
+  }
+  
+  ngOnDestroy() {
+    this.store.dispatch(new ShowFooter());
   }
 
   public extractTextByUrl() {
@@ -138,6 +143,7 @@ export class ReportFormComponent implements OnInit {
   }
 
   public onTagClick(apId) {
+    // TODO generate tag
     console.log(apId);
     console.log(this.codeMirror.state.markedSelection);
   }
@@ -167,14 +173,14 @@ export class ReportFormComponent implements OnInit {
           this.codeMirrorHelpers = new CodeMirrorHelpers(this.codeMirror);
           observableFromEvent(this.mde.simplemde.codemirror, 'cursorActivity')
             .pipe(
+              tap(() => this.showFab = false),
               filter((cm: CodeMirror.Editor) => cm.state.markedSelection && cm.state.markedSelection.length),
               debounceTime(200),
             )
             .subscribe(
               (cm) => {
-                console.log(cm);
+                this.codeMirrorHelpers.positionAtCursor(this.fab.nativeElement, 0, -25);
                 this.showFab = true;
-                this.codeMirrorHelpers.positionAtCursor(this.fab.nativeElement, 0, -22);
               },
               (err) => console.log(err)
             );
