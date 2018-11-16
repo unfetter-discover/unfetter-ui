@@ -70,6 +70,12 @@ describe('SelectionListComponent', () => {
         fixture.whenStable().then(() => {
             expect(component).toBeTruthy();
         });
+
+        checkbox.dispatchEvent(new Event('click'));
+        fixture.detectChanges();
+        fixture.whenStable().then(() => {
+            expect(component).toBeTruthy();
+        });
     });
 
 });

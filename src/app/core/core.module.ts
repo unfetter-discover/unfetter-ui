@@ -11,7 +11,7 @@ import { UsersService } from './services/users.service';
 import { WebsocketService } from './services/web-socket.service';
 import { NotificationsService } from './services/notifications.service';
 import { SnackBarService } from './services/snackbar.service';
-import { ExtractTextService } from './services/extract-test.service';
+import { ExtractTextService } from './services/extract-text.service';
 
 @NgModule({
 })
