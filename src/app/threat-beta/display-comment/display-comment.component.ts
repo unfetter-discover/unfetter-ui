@@ -136,7 +136,7 @@ export class DisplayCommentComponent implements OnInit {
             (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
           );
       } else {
-        this.threatboardService.editArticle(this.board_article)
+        this.threatboardService.updateArticle(this.board_article)
           .subscribe(
             (response) => console['debug'](`(${new Date().toISOString()}) article updated`),
             (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)
@@ -173,7 +173,7 @@ export class DisplayCommentComponent implements OnInit {
             (err) => console.log(`(${new Date().toISOString()}) error updating board likes`, err),
           );
         } else {
-          this.threatboardService.editArticle(this.board_article)
+          this.threatboardService.updateArticle(this.board_article)
           .subscribe(
             (response) => console['debug'](`(${new Date().toISOString()}) article updated`),
             (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)
