@@ -20,6 +20,7 @@ import { CodeMirrorHelpers } from '../../global/static/codemirror-helpers';
 import { TextTagForm } from '../../global/form-models/text-tag';
 import { cleanObjectProperties } from '../../global/static/clean-object-properties';
 import { ThreatDashboardBetaService } from '../threat-beta.service';
+import { ExternalReferencesForm } from '../../global/form-models/external-references';
 
 @Component({
   selector: 'report-form',
@@ -126,6 +127,26 @@ export class ReportFormComponent implements OnInit, OnDestroy {
             });
         })
       );
+
+    const method$ = this.form.get('metaProperties').get('extractedText').get('method').valueChanges
+        .pipe(
+          startWith(this.form.get('metaProperties').get('extractedText').get('method').value),
+          finalize(() => method$ && method$.unsubscribe()),
+        )
+        .subscribe((method) => {
+          const extRefLength = (this.form.get('external_references') as FormArray).controls.length;
+
+          if (extRefLength === 1) {
+            const firstExtRef = (this.form.get('external_references') as FormArray).at(0);
+            if (method === 'FILE' && firstExtRef && firstExtRef.status === 'INVALID') {
+              (this.form.get('external_references') as FormArray).removeAt(0);
+            }
+          } else if (extRefLength === 0) {
+            if (method === 'URL') {
+              (this.form.get('external_references') as FormArray).push(ExternalReferencesForm());
+            }
+          }
+        });
   }
   
   ngOnDestroy() {
