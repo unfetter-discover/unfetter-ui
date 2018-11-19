@@ -182,7 +182,7 @@ export class ActivityListComponent implements OnInit {
             Object.values(this._activity).some((acty: any) => {
                 if (this.isFeedItemInActivity(feedItem, acty)) {
                     if (acty.type === 'x-unfetter-article') {
-                        this.threatboardService.editArticle(acty)
+                        this.threatboardService.updateArticle(acty)
                             .subscribe(
                                 (response) => console['debug'](`(${new Date().toISOString()}) article updated`),
                                 (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)
@@ -299,7 +299,7 @@ export class ActivityListComponent implements OnInit {
         } else if (this.commentTarget.comment && this.commentTarget.comment.replies) {
             this.commentTarget.comment.replies.push(comment);
         }
-        this.threatboardService.editArticle(article)
+        this.threatboardService.updateArticle(article)
             .subscribe(
                 (response) => console['debug'](`(${new Date().toISOString()}) article updated`),
                 (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)

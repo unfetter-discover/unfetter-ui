@@ -155,6 +155,7 @@
               <h4 *ngIf="form.get('metaProperties').get('textTags').value.length">Text Tags</h4>
               <text-tag-list [form]="form"></text-tag-list>
               <div *ngIf="indicatedPatterns$ | async as indicatedPatterns">
+                <br>
                 <h4 *ngIf="indicatedPatterns.length">Indicated Techniques</h4>
                 <div *ngFor="let pattern of indicatedPatterns; index as i;">
                   <h5  class="flex flexItemsCenter">

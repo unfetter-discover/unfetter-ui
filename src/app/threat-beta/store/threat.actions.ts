@@ -22,6 +22,9 @@ export enum ThreatActionTypes {
     AddArticle = '[Threat] Add Article',
     UpdateArticle = '[Threat] Update Article',
     DeleteArticle = '[Threat] Delete Article',
+    AddReport = '[Threat] Add Report',
+    UpdateReport = '[Threat] Update Report',
+    DeleteReport = '[Threat] Delete Report',
     AddBoard = '[Threat] Add Board',
     UpdateBoard = '[Threat] Update Board',
     DeleteBoard = '[Threat] Delete Board',
@@ -32,8 +35,6 @@ export enum ThreatActionTypes {
 
 export class FetchBaseData implements Action {
     public readonly type = ThreatActionTypes.FetchBaseData;
-
-    constructor() { }
 }
 
 export class FetchBoardDetailedData implements Action {
@@ -120,6 +121,24 @@ export class DeleteArticle implements Action {
     constructor(public payload: string) { }
 }
 
+export class AddReport implements Action {
+    public readonly type = ThreatActionTypes.AddReport;
+
+    constructor(public payload: Report) { }
+}
+
+export class UpdateReport implements Action {
+    public readonly type = ThreatActionTypes.UpdateReport;
+
+    constructor(public payload: Report) { }
+}
+
+export class DeleteReport implements Action {
+    public readonly type = ThreatActionTypes.DeleteReport;
+
+    constructor(public payload: string) { }
+}
+
 export class AddBoard implements Action {
     public readonly type = ThreatActionTypes.AddBoard;
 
@@ -166,6 +185,9 @@ export type threatActions =
     | AddArticle
     | UpdateArticle
     | DeleteArticle
+    | AddReport
+    | UpdateReport
+    | DeleteReport
     | AddBoard
     | UpdateBoard
     | DeleteBoard

@@ -217,7 +217,7 @@ export class ArticleEditorComponent implements OnInit {
             // TODO handle edge case - article doesnt have created_by_ref
             tempArticle.created_by_ref = board.created_by_ref;
             return observableForkJoin(
-              this.threatService.addArticle(tempArticle),
+              this.threatService.createArticle(tempArticle),
               observableOf(board)
             );
           }),
@@ -252,7 +252,7 @@ export class ArticleEditorComponent implements OnInit {
   private editArticle(tempArticle: Article): Promise<boolean> {
     return new Promise((resolve: (boolean) => void, reject: (boolean) => void) => {
       tempArticle.id = this.articleToEdit.id;
-      const editArticle$ = this.threatService.editArticle(tempArticle)
+      const editArticle$ = this.threatService.updateArticle(tempArticle)
         .pipe(finalize(() => editArticle$ && editArticle$.unsubscribe()))
         .subscribe(
           (updatedArticle) => {
