@@ -11,7 +11,7 @@
         <!-- TODO <ng-container *ngTemplateOutlet="articleTemplate;context:{article:item}"></ng-container> -->
     </ng-container>
     <ng-container *ngIf="item.comment">
-        <display-comment [comment]="item" [parent]=null [board_article]="boards[item.id]" (newComment)="addAComment($event)"></display-comment>
+        <display-comment [comment]="item" [parent]=null [board_article]="boards[item.id]"></display-comment>
     </ng-container>
 </ng-container>
 </div>

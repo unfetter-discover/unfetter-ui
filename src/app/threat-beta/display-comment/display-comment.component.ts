@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { pluck, take } from 'rxjs/operators';
+import { finalize, pluck, take } from 'rxjs/operators';
 import { generateUUID } from '../../global/static/generate-uuid';
 import { AppState } from '../../root-store/app.reducers';
+import * as threatActions from '../store/threat.actions';
 import { UserCitationService } from '../board-feed/user-citations.service';
+import { ThreatFeatureState } from '../store/threat.reducers';
 import { ThreatDashboardBetaService } from '../threat-beta.service';
 
 @Component({
@@ -15,7 +17,6 @@ export class DisplayCommentComponent implements OnInit {
 
   @Input() comment: any; // TODO Comment interface
   @Input() parent: any; // TODO Comment interface
-  @Output() newComment = new EventEmitter<any>(); // TODO Comment interface
 
   /**
    * The threatboard or article the comment belongs to. We only use this when persisting likes & comments added to the threatboard itself.
@@ -36,6 +37,8 @@ export class DisplayCommentComponent implements OnInit {
   constructor(
     private threatboardService: ThreatDashboardBetaService,
     private appStore: Store<AppState>,
+
+    private threatStore: Store<ThreatFeatureState>,
     private citations: UserCitationService) { }  // TODO, move UCS?
 
   ngOnInit() {
@@ -124,14 +127,12 @@ export class DisplayCommentComponent implements OnInit {
         this.board_article.metaProperties.comments.push(comment);
       }
       if (this.board_article.type !== 'x-unfetter-article') {
-        this.threatboardService.updateBoard(this.board_article)
+        const updateBoard$ = this.threatboardService.updateBoard(this.board_article)
+          .pipe(finalize(() => updateBoard$ && updateBoard$.unsubscribe()))
           .subscribe(
-            (response) => {
+            (updatedBoard) => {
+              this.threatStore.dispatch(new threatActions.UpdateBoard(updatedBoard));
               console['debug'](`(${new Date().toISOString()}) board updated`);
-              if (!isReply) {
-                console.log('Not a reply add to the list.');
-                this.newComment.emit(comment);
-              }
             },
             (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
           );

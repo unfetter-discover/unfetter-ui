@@ -47,8 +47,4 @@ export class RecentActivityComponent implements OnInit {
 
   public get activity() { return Object.values(this._activity); } // TODO .sort(this.activitySorts[this.activeSort].sorter); }
   public get boards() { return this._boards; } // TODO Refactor this
-
-  public addAComment(comment: any) {
-    this._activity[comment.id] = comment;
-}
 }
