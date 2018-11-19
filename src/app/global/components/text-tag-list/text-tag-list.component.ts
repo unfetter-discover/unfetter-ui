@@ -4,6 +4,7 @@ import { StixCoreEnum } from 'stix';
 import { switchMap, withLatestFrom, pluck } from 'rxjs/operators';
 import { of as observableOf } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { FormArray } from '@angular/forms';
 
 import { AppState } from '../../../root-store/app.reducers';
 
@@ -24,6 +25,7 @@ export class TextTagListComponent implements OnInit {
   public dataNameProperty: string = 'name';
 
   public idToNameMap = {};
+  public textTagsFormArray: FormArray;
 
   constructor(private store: Store<AppState>) { }
 
@@ -42,7 +44,9 @@ export class TextTagListComponent implements OnInit {
       data.forEach((datum) => {
         this.idToNameMap[datum[this.dataIpProperty]] = datum[this.dataNameProperty];
       });
-    });    
+    });
+
+    this.textTagsFormArray = this.form.get('metaProperties').get('textTags') as FormArray;
   }
 
 }

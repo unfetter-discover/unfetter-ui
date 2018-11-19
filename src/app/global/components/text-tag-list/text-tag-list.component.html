@@ -1,9 +1,9 @@
 <div class="textTagListComponent" [formGroup]="form.get('metaProperties')">
-  <div formArrayName="textTags" *ngFor="let tag of form.get('metaProperties').get('textTags').controls; index as i" #row>
+  <div formArrayName="textTags" *ngFor="let tag of textTagsFormArray.controls; index as i" #row>
     <h5 class="flex flexItemsCenter">
       <span>{{ idToNameMap[tag.value.stixId] || 'unknown' }}</span>
       <span class="flex1">&nbsp;</span>
-      <button mat-icon-button type="button" (click)="form.get('metaProperties').get('textTags').removeAt(i)">
+      <button mat-icon-button type="button" (click)="textTagsFormArray.removeAt(i)">
         <i class="material-icons mat-24">delete</i>
       </button>
     </h5>

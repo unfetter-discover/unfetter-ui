@@ -168,7 +168,7 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
                     }
                 });
 
-            const nodeUpdate = nodeEnter.merge(node);
+            const nodeUpdate = nodeEnter.merge(node as any);
 
             // Transition nodes to their new position.
             nodeUpdate.transition()
@@ -239,7 +239,7 @@ export class CollapsibleTreeComponent implements OnInit, OnChanges {
                     return d.data.color || CollapsibleTreeComponent.DEFAULT_COLOR;
                 });
 
-            const linkUpdate = linkEnter.merge(link);
+            const linkUpdate = linkEnter.merge(link as any);
 
             // Transition links to their new position.
             linkUpdate.transition()
