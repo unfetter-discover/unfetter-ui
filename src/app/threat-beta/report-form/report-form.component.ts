@@ -2,8 +2,8 @@ import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, Afte
 import { FormGroup, FormArray } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { Observable, of as observableOf, Subscription, fromEvent as observableFromEvent} from 'rxjs';
-import { pluck, map, filter, withLatestFrom, tap, switchMap, take, finalize, delay, debounceTime } from 'rxjs/operators';
+import { Observable, of as observableOf, Subscription, fromEvent as observableFromEvent, combineLatest} from 'rxjs';
+import { pluck, map, filter, withLatestFrom, tap, switchMap, take, finalize, delay, debounceTime, startWith } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { ThreatBoard } from 'stix/unfetter/index';
 import { AttackPattern } from 'stix';
@@ -36,6 +36,7 @@ export class ReportFormComponent implements OnInit, OnDestroy {
   public attackPatterns$: Observable<AttackPattern[]>;
   public selectedBoard$: Observable<ThreatBoard>;
   public boundaryObjects$: Observable<any>;
+  public indicatedPatterns$: Observable<any>;
   public showFab: boolean;
 
   @ViewChild('fileInput') 
@@ -56,6 +57,8 @@ export class ReportFormComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.store.dispatch(new HideFooter());
+
     this.selectedBoard$ = this.store.select(getSelectedBoard);
     this.boundaryObjects$ = this.store.select(getBoundaryObjects);
     this.attackPatterns$ = this.store.select('stix').pipe(pluck('attackPatterns'));
@@ -105,7 +108,21 @@ export class ReportFormComponent implements OnInit, OnDestroy {
         })
       );
     
-    this.store.dispatch(new HideFooter());
+    this.indicatedPatterns$ = combineLatest(
+        this.form.get('object_refs').valueChanges.pipe(startWith(this.form.get('object_refs').value)),
+        this.attackPatterns$
+      )
+      .pipe(
+        map(([indicatedPatterns, attackPatterns]) => {
+          return indicatedPatterns
+            .map((indicatedPattern) => {
+              return {
+                id: indicatedPattern,
+                name: attackPatterns.find((ap) => ap.id === indicatedPattern).name || 'Unknown'
+              };
+            });
+        })
+      );
   }
   
   ngOnDestroy() {
@@ -167,6 +184,12 @@ export class ReportFormComponent implements OnInit, OnDestroy {
       objectRefs.push(apId);
       this.form.get('object_refs').patchValue(objectRefs);
     }
+  }
+
+  public removeIndicatedPattern(index: number) {
+    const objectRefsCopy = this.form.get('object_refs').value;
+    objectRefsCopy.splice(index, 1);
+    this.form.get('object_refs').patchValue(objectRefsCopy);
   }
 
   fileInputChange(event) {

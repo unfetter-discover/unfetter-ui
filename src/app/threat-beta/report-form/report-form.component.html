@@ -154,6 +154,19 @@
               <simplemde formControlName="description" #mde></simplemde>
               <h4 *ngIf="form.get('metaProperties').get('textTags').value.length">Text Tags</h4>
               <text-tag-list [form]="form"></text-tag-list>
+              <div *ngIf="indicatedPatterns$ | async as indicatedPatterns">
+                <h4 *ngIf="indicatedPatterns.length">Indicated Techniques</h4>
+                <div *ngFor="let pattern of indicatedPatterns; index as i;">
+                  <h5  class="flex flexItemsCenter">
+                    <span>{{ pattern.name }}</span>
+                    <span class="flex1">&nbsp;</span>
+                    <button type="button" mat-icon-button (click)="removeIndicatedPattern(i)">
+                      <mat-icon class="mat-24">delete</mat-icon>
+                    </button>
+                  </h5>
+                  <hr>
+                </div>
+              </div>
               
               <div class="mb-6 mt-10 text-right">
                 <button mat-button matStepperPrevious type="button">BACK</button>
