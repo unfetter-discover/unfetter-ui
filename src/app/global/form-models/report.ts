@@ -18,5 +18,6 @@ export const ReportForm = () => {
             textTags: new FormArray([])
         }),
         object_marking_refs: new FormControl([]),
+        object_refs: new FormControl([])
     })
 };

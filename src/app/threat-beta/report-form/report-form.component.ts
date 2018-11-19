@@ -162,6 +162,11 @@ export class ReportFormComponent implements OnInit, OnDestroy {
     const tagForm = TextTagForm();
     tagForm.patchValue(tag);
     (this.form.get('metaProperties').get('textTags') as FormArray).push(tagForm);
+    const objectRefs = this.form.get('object_refs').value;
+    if (!objectRefs.includes(apId)) {
+      objectRefs.push(apId);
+      this.form.get('object_refs').patchValue(objectRefs);
+    }
   }
 
   fileInputChange(event) {
