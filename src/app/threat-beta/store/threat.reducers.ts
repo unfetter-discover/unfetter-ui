@@ -192,6 +192,11 @@ export function threatReducer(state = initialState, action: threatActions): Thre
                 return state;
             }
         }
+        case ThreatActionTypes.AddAttachedReport:
+            return {
+                ...state,
+                attachedReports: [...state.attachedReports, action.payload]
+            };     
         case ThreatActionTypes.SetShowAddReportFab:
             return {
                 ...state,

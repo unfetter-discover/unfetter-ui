@@ -15,7 +15,7 @@ import { ExtractTextSupportedFileTypes } from '../../global/enums/extract-text-f
 import { ExtractTextService } from '../../core/services/extract-text.service';
 import { OpenSnackbar, HideFooter, ShowFooter } from '../../root-store/utility/utility.actions';
 import { getSelectedBoardId, getSelectedBoard, getBoundaryObjects } from '../store/threat.selectors';
-import * as fromThreat from '../store/threat.actions';
+import * as threatActions from '../store/threat.actions';
 import { CodeMirrorHelpers } from '../../global/static/codemirror-helpers';
 import { TextTagForm } from '../../global/form-models/text-tag';
 import { cleanObjectProperties } from '../../global/static/clean-object-properties';
@@ -84,8 +84,8 @@ export class ReportFormComponent implements OnInit, OnDestroy {
       .subscribe(
         ([routeId, currentId]) => {
           if (routeId !== currentId) {
-            this.store.dispatch(new fromThreat.SetSelectedBoardId(routeId));
-            this.store.dispatch(new fromThreat.FetchBoardDetailedData(routeId));
+            this.store.dispatch(new threatActions.SetSelectedBoardId(routeId));
+            this.store.dispatch(new threatActions.FetchBoardDetailedData(routeId));
           }
 
           if (!this.codeMirror) {
@@ -197,30 +197,11 @@ export class ReportFormComponent implements OnInit, OnDestroy {
 
   public onSubmit() {
     const tempReport = new Report(cleanObjectProperties({}, this.form.value));
+    if (tempReport.external_references && tempReport.external_references.length === 1 && Object.keys(tempReport.external_references[0]).length === 0) {
+      delete tempReport.external_references;
+    }
     if (!this.editMode) {
-      this.threatService.createReport(tempReport)
-        .pipe(
-          tap((reportResponse) => {
-            // TODO add report to ngrx
-          }),
-          switchMap((reportResponse) => {
-            return forkJoin(
-              observableOf(reportResponse),
-              this.store.select(getSelectedBoard).pipe(take(1))
-            );
-          }),
-          switchMap(([reportResponse, threatBoard]) => {
-            const updatedBoard = {
-              ...threatBoard,
-              reports: [...threatBoard.reports, reportResponse.id]
-            };
-            return this.threatService.updateBoard(updatedBoard as any);
-          })
-        )
-        .subscribe((boardResponse) => {
-          console.log(boardResponse);
-          // TODO update board in ngrx
-        });
+      this.addArticle(tempReport);
     }
   }
 
@@ -230,6 +211,31 @@ export class ReportFormComponent implements OnInit, OnDestroy {
 
   selectFiles() {
     this.fileInput.nativeElement.click();
+  }
+
+  private addArticle(tempReport: Report) {
+    this.threatService.createReport(tempReport)
+      .pipe(
+        switchMap((reportResponse) => {
+          return forkJoin(
+            observableOf(reportResponse),
+            this.store.select(getSelectedBoard).pipe(take(1))
+          );
+        }),
+        switchMap(([reportResponse, threatBoard]) => {
+          const updatedBoard = {
+            ...threatBoard,
+            reports: [...threatBoard.reports, reportResponse.id]
+          };
+          return this.threatService.updateBoard(updatedBoard as any);
+        })
+      )
+      .subscribe((boardResponse) => {
+        this.store.dispatch(new threatActions.AddAttachedReport(tempReport));
+        this.store.dispatch(new threatActions.UpdateBoard(boardResponse));
+        this.store.dispatch(new OpenSnackbar('Report Successfully Added'));
+        this.location.back();
+      });
   }
 
   private resetForm() {

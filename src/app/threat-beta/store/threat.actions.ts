@@ -22,9 +22,9 @@ export enum ThreatActionTypes {
     AddArticle = '[Threat] Add Article',
     UpdateArticle = '[Threat] Update Article',
     DeleteArticle = '[Threat] Delete Article',
-    AddReport = '[Threat] Add Report',
-    UpdateReport = '[Threat] Update Report',
-    DeleteReport = '[Threat] Delete Report',
+    AddAttachedReport = '[Threat] Add Attached Report',
+    UpdateAttachedReport = '[Threat] Update Attached Report',
+    DeleteAttachedReport = '[Threat] Delete Attached Report',
     AddBoard = '[Threat] Add Board',
     UpdateBoard = '[Threat] Update Board',
     DeleteBoard = '[Threat] Delete Board',
@@ -121,20 +121,20 @@ export class DeleteArticle implements Action {
     constructor(public payload: string) { }
 }
 
-export class AddReport implements Action {
-    public readonly type = ThreatActionTypes.AddReport;
+export class AddAttachedReport implements Action {
+    public readonly type = ThreatActionTypes.AddAttachedReport;
 
     constructor(public payload: Report) { }
 }
 
-export class UpdateReport implements Action {
-    public readonly type = ThreatActionTypes.UpdateReport;
+export class UpdateAttachedReport implements Action {
+    public readonly type = ThreatActionTypes.UpdateAttachedReport;
 
     constructor(public payload: Report) { }
 }
 
-export class DeleteReport implements Action {
-    public readonly type = ThreatActionTypes.DeleteReport;
+export class DeleteAttachedReport implements Action {
+    public readonly type = ThreatActionTypes.DeleteAttachedReport;
 
     constructor(public payload: string) { }
 }
@@ -185,9 +185,9 @@ export type threatActions =
     | AddArticle
     | UpdateArticle
     | DeleteArticle
-    | AddReport
-    | UpdateReport
-    | DeleteReport
+    | AddAttachedReport
+    | UpdateAttachedReport
+    | DeleteAttachedReport
     | AddBoard
     | UpdateBoard
     | DeleteBoard
