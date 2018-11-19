@@ -7,7 +7,7 @@
 
     <mat-sidenav-content class="sidenavContentPolyfill384-right zIndexAuto">
       <div class="container">
-        <form [formGroup]="form" novalidate>
+        <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
           <br>
           <p class="lead mb-6" style="padding-left: 21px;">
             <span *ngIf="!editMode">Add</span>
@@ -42,7 +42,7 @@
 
             <mat-step label="DETAILS">
               <div class="mb-6">
-                <created-by-ref class="full-width"></created-by-ref>
+                <created-by-ref class="full-width" [formCtrl]="form.get('created_by_ref')"></created-by-ref>
               </div>
               <div class="mb-6">
                 <mat-form-field class="full-width">
@@ -59,7 +59,7 @@
                 <add-label-alt [parentForm]="form" stixType="report" parentDocumentType="Report"></add-label-alt>
               </div>
               <div class="mb-6 mt-10 text-right">
-                <button mat-raised-button matStepperNext type="button" color="primary">CONTINUE</button>
+                <button mat-raised-button matStepperNext type="button" color="primary" [disabled]="form.get('created_by_ref').status === 'INVALID'">CONTINUE</button>
               </div>
             </mat-step>
 
@@ -172,7 +172,7 @@
               <div class="mb-6 mt-10 text-right">
                 <button mat-button matStepperPrevious type="button">BACK</button>
                 <span>&nbsp;</span>
-                <button mat-raised-button type="submit" color="primary">SAVE</button>
+                <button mat-raised-button type="submit" color="primary" [disabled]="form.status === 'INVALID'">SAVE</button>
               </div>
             </mat-step>
           </mat-horizontal-stepper>

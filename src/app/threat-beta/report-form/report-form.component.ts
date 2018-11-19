@@ -2,11 +2,11 @@ import { Component, OnInit, ChangeDetectionStrategy, ViewChild, ElementRef, Afte
 import { FormGroup, FormArray } from '@angular/forms';
 import { Location } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { Observable, of as observableOf, Subscription, fromEvent as observableFromEvent, combineLatest} from 'rxjs';
+import { Observable, of as observableOf, Subscription, fromEvent as observableFromEvent, combineLatest, forkJoin} from 'rxjs';
 import { pluck, map, filter, withLatestFrom, tap, switchMap, take, finalize, delay, debounceTime, startWith } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { ThreatBoard } from 'stix/unfetter/index';
-import { AttackPattern } from 'stix';
+import { AttackPattern, Report } from 'stix';
 
 import { ReportForm } from '../../global/form-models/report';
 import { AppState } from '../../root-store/app.reducers';
@@ -18,6 +18,8 @@ import { getSelectedBoardId, getSelectedBoard, getBoundaryObjects } from '../sto
 import * as fromThreat from '../store/threat.actions';
 import { CodeMirrorHelpers } from '../../global/static/codemirror-helpers';
 import { TextTagForm } from '../../global/form-models/text-tag';
+import { cleanObjectProperties } from '../../global/static/clean-object-properties';
+import { ThreatDashboardBetaService } from '../threat-beta.service';
 
 @Component({
   selector: 'report-form',
@@ -53,7 +55,8 @@ export class ReportFormComponent implements OnInit, OnDestroy {
     public location: Location,
     private route: ActivatedRoute,
     private store: Store<AppState>,
-    private extractTextService: ExtractTextService
+    private extractTextService: ExtractTextService,
+    private threatService: ThreatDashboardBetaService
   ) { }
 
   ngOnInit() {
@@ -190,6 +193,35 @@ export class ReportFormComponent implements OnInit, OnDestroy {
     const objectRefsCopy = this.form.get('object_refs').value;
     objectRefsCopy.splice(index, 1);
     this.form.get('object_refs').patchValue(objectRefsCopy);
+  }
+
+  public onSubmit() {
+    const tempReport = new Report(cleanObjectProperties({}, this.form.value));
+    if (!this.editMode) {
+      this.threatService.createReport(tempReport)
+        .pipe(
+          tap((reportResponse) => {
+            // TODO add report to ngrx
+          }),
+          switchMap((reportResponse) => {
+            return forkJoin(
+              observableOf(reportResponse),
+              this.store.select(getSelectedBoard).pipe(take(1))
+            );
+          }),
+          switchMap(([reportResponse, threatBoard]) => {
+            const updatedBoard = {
+              ...threatBoard,
+              reports: [...threatBoard.reports, reportResponse.id]
+            };
+            return this.threatService.updateBoard(updatedBoard as any);
+          })
+        )
+        .subscribe((boardResponse) => {
+          console.log(boardResponse);
+          // TODO update board in ngrx
+        });
+    }
   }
 
   fileInputChange(event) {
