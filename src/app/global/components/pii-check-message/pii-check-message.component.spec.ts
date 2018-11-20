@@ -1,8 +1,10 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormControl, Validators } from '@angular/forms';
-
 import { PiiCheckMessageComponent } from './pii-check-message.component';
+import { WebWorkerService } from '../../../core/services/web-worker.service';
+import { Subject } from 'rxjs';
 
 describe('PiiCheckMessageComponent', () => {
 
@@ -15,7 +17,23 @@ describe('PiiCheckMessageComponent', () => {
     beforeEach(async(() => {
         TestBed
             .configureTestingModule({
-                declarations: [ PiiCheckMessageComponent ]
+                declarations: [ PiiCheckMessageComponent ],
+                schemas: [NO_ERRORS_SCHEMA],
+                providers: [
+                    {
+                        provide: WebWorkerService,
+                        useValue: {
+                            generateClient() { 
+                                return {
+                                    connect() {
+                                        return new Subject();
+                                    },
+                                    sendMessage() { }
+                                };
+                            }                   
+                        }
+                    }
+                ]
             })
             .compileComponents();
     }));
