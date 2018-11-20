@@ -3,10 +3,11 @@ import { Subject, of as observableOf, Observable, empty as observableEmpty } fro
 import { WorkerTypes } from '../../global/enums/web-workers.enum';
 import { share, filter, take, pluck, tap } from 'rxjs/operators';
 import { WorkerClient } from '../../global/static/worker-client';
+import { WorkerMessage } from '../../global/models/worker-message';
 
 @Injectable()
 export class WebWorkerService {
-    public workerSubjects: { [index: string]: Subject<any> } = {};
+    public workerSubjects: { [index: string]: Subject<WorkerMessage<any>> } = {};
     public componentId = 1;
     public jobId = 1;
     public workersSupported = typeof (Worker) !== 'undefined';
@@ -39,7 +40,6 @@ export class WebWorkerService {
             console.log('Web workers are not supported in this browser');
         }
     }
-
     
     /**
      * @param  {WorkerTypes} workerType
@@ -70,7 +70,7 @@ export class WebWorkerService {
             return this.workerSubjects[workerType]
                 .asObservable()
                 .pipe(
-                    filter((resp: any) => resp.component !== undefined && resp.component === component),
+                    filter((resp) => resp.component !== undefined && resp.component === component),
                     tap(({ jobId }) => jobId > highestJobId ? highestJobId = jobId : ''),
                     filter(({ jobId }) => jobId <= highestJobId),
                     pluck('payload')
@@ -89,7 +89,7 @@ export class WebWorkerService {
         return this.workerSubjects[workerType]
             .asObservable()
             .pipe(
-                filter((resp: any) => resp.jobId !== undefined && resp.jobId === jobId),
+                filter((resp) => resp.jobId !== undefined && resp.jobId === jobId),
                 pluck('payload'),
                 take(1)
             );

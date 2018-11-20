@@ -2,7 +2,6 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { debounceTime, map, tap } from 'rxjs/operators';
 
-import { WebWorkerHelpers, WorkerUrls } from '../../static/web-worker-helper';
 import { WebWorkerService } from '../../../core/services/web-worker.service';
 import { WorkerTypes } from '../../enums/web-workers.enum';
 
