@@ -1,6 +1,7 @@
 // Use basic JavaScript only as this is not transpiled
 
-function validationErrors(inputString) {
+function validationErrors(data) {
+  const inputString = data.payload;
   var REGEX_VALIDATORS = [
     {
       regex: /(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/g,
@@ -22,7 +23,7 @@ function validationErrors(inputString) {
       });
     }
   }
-  postMessage(errors);
+  postMessage({ component: data.component, jobId: data.jobId, payload: errors });
 };
 
 onmessage = function (event) {
@@ -30,7 +31,7 @@ onmessage = function (event) {
     console.log('PII Check worker closing');
     close();
   } else if (event.data.payload !== undefined) {
-    validationErrors(event.data.payload);
+    validationErrors(event.data);
   } else {
     console.log('Invalid message sent to PII Check worker');
   }

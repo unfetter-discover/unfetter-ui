@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, of as observableOf, Observable, empty as observableEmpty } from 'rxjs';
 import { WorkerTypes } from '../../global/enums/web-workers.enum';
-import { share, filter, take } from 'rxjs/operators';
+import { share, filter, take, pluck, tap } from 'rxjs/operators';
 import { WorkerClient } from '../../global/static/worker-client';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class WebWorkerService {
             Object.values(WorkerTypes).forEach((workerType) => {
                 console.log('Creating worker:', workerType);
                 try {
-                    const worker = new Worker(`/assets/${workerType}.js`);
+                    const worker = new Worker(`/assets/workers/${workerType}.js`);
                     const observerable = new Observable(subscriber => {
                         const handleMessage = response => subscriber.next(response.data);
                         worker.onmessage = handleMessage;
@@ -66,9 +66,14 @@ export class WebWorkerService {
             return observableEmpty();
         }
         if (component !== undefined) {
-            return this.workerSubjects[workerType].asObservable()
+            let highestJobId = this.jobId;
+            return this.workerSubjects[workerType]
+                .asObservable()
                 .pipe(
-                    filter((resp: any) => resp.component !== undefined && resp.component === component)
+                    filter((resp: any) => resp.component !== undefined && resp.component === component),
+                    tap(({ jobId }) => jobId > highestJobId ? highestJobId = jobId : ''),
+                    filter(({ jobId }) => jobId <= highestJobId),
+                    pluck('payload')
                 );
         } else {
             return this.workerSubjects[workerType].asObservable();
@@ -81,9 +86,11 @@ export class WebWorkerService {
         }
         const jobId = this.jobId++;
         this.workerSubjects[workerType].next({ jobId, payload });
-        return this.workerSubjects[workerType].asObservable()
+        return this.workerSubjects[workerType]
+            .asObservable()
             .pipe(
                 filter((resp: any) => resp.jobId !== undefined && resp.jobId === jobId),
+                pluck('payload'),
                 take(1)
             );
     }
@@ -92,7 +99,8 @@ export class WebWorkerService {
         if (!this.workersSupported) {
             return;
         }
-        this.workerSubjects[workerType].next({ component, payload });
+        const jobId = this.jobId++;
+        this.workerSubjects[workerType].next({ jobId, component, payload });
     }
     
     public generateComponentId(): number {
