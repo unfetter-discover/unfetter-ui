@@ -6,7 +6,7 @@ import { threatReducer } from '../../store/threat.reducers';
 import { RecentReportsComponent } from './recent-reports.component';
 import { FeedCarouselComponent } from '../../feed-carousel/feed-carousel.component';
 
-describe('RecentReportsComponent', () => {
+xdescribe('RecentReportsComponent', () => {
 
   let component: RecentReportsComponent;
   let fixture: ComponentFixture<RecentReportsComponent>;
