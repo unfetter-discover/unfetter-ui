@@ -23,7 +23,7 @@
             </mat-card-content>
         </mat-card>
 
-        <ng-container *ngFor="let item of activity$ | async">
+        <ng-container *ngFor="let item of activity$ | async; trackBy: trackByFn">
             <ng-container *ngIf="item.type === 'x-unfetter-article'">
                 <ng-container *ngTemplateOutlet="articleTemplate;context:{article:item}"></ng-container>
             </ng-container>
@@ -76,7 +76,7 @@
                     (submit)="submitActivityComment($event)"></comment-input>
             <div label="Comments" *ngIf="hasActivityComments(article)">
                 <hr/>
-                <ng-container *ngFor="let comment of article.metaProperties.comments | sortByField: 'submitted'">
+                <ng-container *ngFor="let comment of article.metaProperties.comments | sortByField: 'submitted'; trackBy: trackByFn">
                     <display-comment [comment]="comment" [parent]=article [board_article]=article [user]="user"></display-comment>
                 </ng-container>
             </div>

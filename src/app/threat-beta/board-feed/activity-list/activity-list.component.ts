@@ -13,6 +13,7 @@ import * as threatActions from '../../store/threat.actions';
 import { ThreatFeatureState } from '../../store/threat.reducers';
 import { ThreatDashboardBetaService } from '../../threat-beta.service';
 import { UserCitationService } from '../user-citations.service';
+import { AngularHelper } from '../../../global/static/angular-helper';
 
 
 
@@ -284,6 +285,10 @@ export class ActivityListComponent implements OnInit {
             this.commentTarget.comment.replies.push(comment);
         }
         this.updateArticleAndStore(article);
+    }
+
+    public trackByFn(index: number, item: any): number {
+        return AngularHelper.genericTrackBy(index, item);
     }
 
     /**

@@ -6,6 +6,7 @@ import { ThreatFeatureState } from '../../store/threat.reducers';
 import { ThreatBoard } from 'stix/unfetter/index';
 import { AppState } from '../../../app.service';
 import { User } from '../../../models/user/user';
+import { AngularHelper } from '../../../global/static/angular-helper';
 
 @Component({
   selector: 'recent-activity',
@@ -53,5 +54,9 @@ export class RecentActivityComponent implements OnInit {
     // console['debug'](`(${new Date().toISOString()}) activity list:`, this._activity);
     // this._loaded = true;
 
+  }
+
+  public trackByFn(index: number, item: any): number {
+    return AngularHelper.genericTrackBy(index, item);
   }
 }
