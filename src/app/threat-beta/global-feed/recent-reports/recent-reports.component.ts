@@ -34,7 +34,8 @@ export class RecentReportsComponent implements OnInit {
   ngOnInit() {
     this.store.select('threat')
       .pipe(
-        pluck('feedReports')
+        pluck('feedReports'),
+        distinctUntilChanged(),
       )
       .subscribe(
         (reports: any[]) => {
