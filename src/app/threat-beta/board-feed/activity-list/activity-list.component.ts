@@ -1,16 +1,20 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { pluck, take } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-
-import { ThreatBoard } from 'stix/unfetter/index';
-
+import { combineLatest } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+import { map, pluck, take, finalize } from 'rxjs/operators';
+import { ThreatBoard, Article } from 'stix/unfetter/index';
+import { generateUUID } from '../../../global/static/generate-uuid';
+import { AppState } from '../../../root-store/app.reducers';
+import * as threatActions from '../../store/threat.actions';
+import { ThreatFeatureState } from '../../store/threat.reducers';
 import { ThreatDashboardBetaService } from '../../threat-beta.service';
 import { UserCitationService } from '../user-citations.service';
-import { ThreatFeatureState } from '../../store/threat.reducers';
-import { AppState } from '../../../root-store/app.reducers';
-import { generateUUID } from '../../../global/static/generate-uuid';
+
+
 
 /**
  * Lists the comments and article on a threatboard. Potentially will also list comments on a report that is a part of
@@ -35,15 +39,13 @@ export class ActivityListComponent implements OnInit {
     /**
      * The current user. Needed for when they add a comment or reply.
      */
-    private user: any;
+    public user: any;
 
     /**
      * The full list of comments (with replies) and threatboard article (with comments and replies). Should also list
      * comments made on reports that are a part of the threatboard.
      */
-    private _activity = {};
-
-    private _loaded = false;
+    public activity$: Observable<any>
 
     /**
      * The list of sorting algorithms for the feed display. The 'Newest' is the default sort, and the user can pick any.
@@ -86,32 +88,24 @@ export class ActivityListComponent implements OnInit {
                 err => console.log('could not load user', err)
             );
 
-        // TODO need reports (that have comments) too
-        this.boardStore.select('threat')
-            .pipe(
-                pluck('articles')
-            )
-            .subscribe(
-                (articles: any[]) => {
-                    if (this.threatBoard && this.threatBoard.metaProperties
-                            && this.threatBoard.metaProperties.comments) {
-                        this.threatBoard.metaProperties.comments.forEach(comment => {
-                            this._activity[comment.id] = comment;
-                        });
-                    }
-                    articles.forEach(article => this._activity[article.id] = article);
-                    console['debug'](`(${new Date().toISOString()}) activity list:`, this._activity);
-                    this._loaded = true;
-                },
-                (err) => console.log(`(${new Date().toISOString()}) Error loading board article:`, err)
-            );
+        const article$: Observable<any> = this.boardStore.select('threat')
+            .pipe(pluck('articles'));
+
+        let comment$: Observable<any> = new Observable();
+        if (this.threatBoard && this.threatBoard.metaProperties
+            && this.threatBoard.metaProperties.comments) {
+            comment$ = of(this.threatBoard.metaProperties.comments);
+        }
+        this.activity$ = combineLatest(
+            article$,
+            comment$
+        )
+            .pipe(map((result) => {
+                return [...result[0], ...result[1]].sort(this.activitySorts[this.activeSort].sorter);
+            }));
     }
 
-    public get loaded() { return this._loaded; }
-
     public get sorts() { return Object.keys(this.activitySorts); }
-
-    public get activity() { return Object.values(this._activity).sort(this.activitySorts[this.activeSort].sorter); }
 
     public sortByFirstCreated(a: any, b: any) {
         return (a.created || a.submitted).toString().localeCompare(b.created || b.submitted);
@@ -123,7 +117,7 @@ export class ActivityListComponent implements OnInit {
 
     public sortByMostLikes(a: any, b: any) {
         return ((b.metaProperties || b.comment || {}).likes || []).length -
-                ((a.metaProperties || a.comment || {}).likes || []).length;
+            ((a.metaProperties || a.comment || {}).likes || []).length;
     }
 
     public sortByMostComments(a: any, b: any) {
@@ -169,6 +163,40 @@ export class ActivityListComponent implements OnInit {
         return likes;
     }
 
+    private updateArticleAndStore(article: Article) {
+        const updateArticle$ = this.threatboardService.updateArticle(article)
+            .pipe(finalize(() => updateArticle$ && updateArticle$.unsubscribe()))
+            .subscribe(
+                (updatedArticle) => {
+                    if (!updatedArticle.metaProperties) {
+                        if (article.metaProperties) {
+                            updatedArticle.metaProperties = article.metaProperties;
+                        }
+                    }
+                    this.boardStore.dispatch(new threatActions.UpdateArticle(updatedArticle));
+                    console['debug'](`(${new Date().toISOString()}) article updated`);
+                },
+                (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)
+            )
+    }
+
+    private updateBoardAndStore(board: ThreatBoard) {
+        const updateBoard$ = this.threatboardService.updateBoard(board)
+            .pipe(finalize(() => updateBoard$ && updateBoard$.unsubscribe()))
+            .subscribe(
+                (updatedBoard) => {
+                    if (!updatedBoard.metaProperties) {
+                        if (board.metaProperties) {
+                            updatedBoard.metaProperties = board.metaProperties;
+                        }
+                    }
+                    this.boardStore.dispatch(new threatActions.UpdateBoard(updatedBoard));
+                    console['debug'](`(${new Date().toISOString()}) board updated`);
+                },
+                (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
+            );
+    }
+
     public clickActivityLike(feedItem: any) {
         const likes = this.getActivityLikes(feedItem);
         if (likes) {
@@ -178,45 +206,16 @@ export class ActivityListComponent implements OnInit {
             } else {
                 likes.splice(liked, 1);
             }
-            // find the top parent (threatboard or article or report) of this feedItem
-            Object.values(this._activity).some((acty: any) => {
-                if (this.isFeedItemInActivity(feedItem, acty)) {
-                    if (acty.type === 'x-unfetter-article') {
-                        this.threatboardService.updateArticle(acty)
-                            .subscribe(
-                                (response) => console['debug'](`(${new Date().toISOString()}) article updated`),
-                                (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)
-                            );
-                    } else if (acty.type === 'report') {
-                        // TODO not yet implemented
-                    } else if (acty.comment) {
-                        this.threatboardService.updateBoard(this.threatBoard)
-                            .subscribe(
-                                (response) => console['debug'](`(${new Date().toISOString()}) board likes updated`),
-                                (err) => console.log(`(${new Date().toISOString()}) error updating board likes`, err),
-                            );
-                    }
-                    return true;
-                }
-            });
-        }
-    }
-
-    private isFeedItemInActivity(feedItem, activity) {
-        if (feedItem === activity) {
+            if (feedItem.type === 'x-unfetter-article') {
+                this.updateArticleAndStore(feedItem);
+            } else if (feedItem.type === 'report') {
+                // TODO not yet implemented
+            } else if (feedItem.comment) {
+                // Covered in the comment displayer
+            }
             return true;
         }
-        if (activity.metaProperties && activity.metaProperties.comments) {
-            return activity.metaProperties.comments.some(comment => {
-                return (feedItem === comment) || (comment.comment && comment.comment.replies &&
-                        comment.comment.replies.some((reply) => feedItem === reply));
-            });
-        }
-        if (activity.comment && activity.comment.replies) {
-            return activity.comment.replies.some(reply => feedItem === reply);
-        }
-        return false;
-    }
+    };
 
     public hasActivityComments(feedItem: any) {
         if (!feedItem) {
@@ -224,7 +223,7 @@ export class ActivityListComponent implements OnInit {
         }
         if ((feedItem.type === 'x-unfetter-article') || (feedItem.type === 'report')) {
             return feedItem.metaProperties && feedItem.metaProperties.comments
-                    && (feedItem.metaProperties.comments.length > 0);
+                && (feedItem.metaProperties.comments.length > 0);
         }
         return feedItem.comment && feedItem.comment.replies && (feedItem.comment.replies.length > 0);
     }
@@ -233,7 +232,7 @@ export class ActivityListComponent implements OnInit {
         const date = new Date();
         let safe_avatar_url = '';
         if (this.user && this.user.auth && this.user.auth.avatar_url) {
-          safe_avatar_url = this.user.auth.avatar_url;
+            safe_avatar_url = this.user.auth.avatar_url;
         }
         const newComment = {
             id: `x-unfetter-comment--${generateUUID()}`,
@@ -252,24 +251,16 @@ export class ActivityListComponent implements OnInit {
             newComment.comment.replies = [];
             this.submitThreatBoardComment(newComment);
         } else {
-            Object.values(this._activity).some((acty: any) => {
-                if (this.isFeedItemInActivity(this.commentTarget, acty)) {
-                    if (acty.type === 'x-unfetter-article') {
-                        this.addArticleComment(acty, newComment);
-                    } else if (acty.type === 'report') {
-                        // TODO not yet implemented
-                    } else if (acty.comment) {
-                        this.submitThreatBoardComment(newComment);
-                    }
-                    return true;
-                }
-            });
+            if (this.commentTarget.type === 'x-unfetter-article') {
+                this.addArticleComment(this.commentTarget, newComment);
+            } else if (this.commentTarget.type === 'report') {
+                // TODO not yet implemented
+            } else if (this.commentTarget.comment) {
+                // Covered in display comment component
+            }
+            return true;
         }
         this.commentTarget = false;
-    }
-
-    public addAComment(comment: any) {
-        this._activity[comment.id] = comment;
     }
 
     private submitThreatBoardComment(comment: any) {
@@ -278,14 +269,7 @@ export class ActivityListComponent implements OnInit {
                 this.threatBoard.metaProperties.comments = [];
             }
             this.threatBoard.metaProperties.comments.push(comment);
-            this.threatboardService.updateBoard(this.threatBoard)
-                .subscribe(
-                    (response) => {
-                        console['debug'](`(${new Date().toISOString()}) board updated`);
-                        this.addAComment(comment);
-                    },
-                    (err) => console.log(`(${new Date().toISOString()}) error updating board`, err)
-                );
+            this.updateBoardAndStore(this.threatBoard);
         }
     }
 
@@ -299,11 +283,7 @@ export class ActivityListComponent implements OnInit {
         } else if (this.commentTarget.comment && this.commentTarget.comment.replies) {
             this.commentTarget.comment.replies.push(comment);
         }
-        this.threatboardService.updateArticle(article)
-            .subscribe(
-                (response) => console['debug'](`(${new Date().toISOString()}) article updated`),
-                (err) => console.log(`(${new Date().toISOString()}) error updating article`, err)
-            );
+        this.updateArticleAndStore(article);
     }
 
     /**

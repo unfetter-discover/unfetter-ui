@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div id="activity-feed" *ngIf="loaded; else loadingBlock">
+    <div id="activity-feed">
 
         <mat-card>
             <mat-card-content>
@@ -23,22 +23,17 @@
             </mat-card-content>
         </mat-card>
 
-        <ng-container *ngFor="let item of activity">
+        <ng-container *ngFor="let item of activity$ | async">
             <ng-container *ngIf="item.type === 'x-unfetter-article'">
                 <ng-container *ngTemplateOutlet="articleTemplate;context:{article:item}"></ng-container>
             </ng-container>
             <ng-container *ngIf="item.comment">
-                <display-comment [comment]="item" [parent]=null [board_article]=threatBoard (newComment)="addAComment($event)"></display-comment>
+                <display-comment [comment]="item" [parent]=null [board_article]=threatBoard [user]=user></display-comment>
             </ng-container>
         </ng-container>
-
     </div>
 
 </div>
-
-<ng-template #loadingBlock>
-    <loading-spinner height="250px"></loading-spinner>
-</ng-template>
 
 <ng-template #articleTemplate let-article="article">
 
@@ -82,7 +77,7 @@
             <div label="Comments" *ngIf="hasActivityComments(article)">
                 <hr/>
                 <ng-container *ngFor="let comment of article.metaProperties.comments | sortByField: 'submitted'">
-                    <display-comment [comment]="comment" [parent]=article [board_article]=article (newComment)="addAComment($event)"></display-comment>
+                    <display-comment [comment]="comment" [parent]=article [board_article]=article [user]="user"></display-comment>
                 </ng-container>
             </div>
         </mat-card-footer>

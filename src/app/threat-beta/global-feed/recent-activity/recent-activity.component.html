@@ -6,12 +6,13 @@
     <div class="flex1"></div>
     <global-activity-sort></global-activity-sort>
   </div>
-  <ng-container *ngFor="let item of activity">
+  <ng-container *ngFor="let board of board$ | async">
+<!-- TODO 
     <ng-container *ngIf="item.type === 'x-unfetter-article'">
-        <!-- TODO <ng-container *ngTemplateOutlet="articleTemplate;context:{article:item}"></ng-container> -->
-    </ng-container>
-    <ng-container *ngIf="item.comment">
-        <display-comment [comment]="item" [parent]=null [board_article]="boards[item.id]"></display-comment>
-    </ng-container>
+        <ng-container *ngTemplateOutlet="articleTemplate;context:{article:item}"></ng-container>
+    </ng-container> -->
+    <div *ngFor="let c of board.metaProperties.comments">
+      <display-comment [comment]="c" [parent]=null [board_article]="board" [user]="user"></display-comment>
+    </div>
 </ng-container>
 </div>
