@@ -22,17 +22,19 @@ export enum ThreatActionTypes {
     AddArticle = '[Threat] Add Article',
     UpdateArticle = '[Threat] Update Article',
     DeleteArticle = '[Threat] Delete Article',
+    AddAttachedReport = '[Threat] Add Attached Report',
+    UpdateAttachedReport = '[Threat] Update Attached Report',
+    DeleteAttachedReport = '[Threat] Delete Attached Report',
     AddBoard = '[Threat] Add Board',
     UpdateBoard = '[Threat] Update Board',
     DeleteBoard = '[Threat] Delete Board',
+    SetShowAddReportFab = '[Threat] Set Show Add Report Fab',
 
     ClearData = '[Threat] Clear Data'
 }
 
 export class FetchBaseData implements Action {
     public readonly type = ThreatActionTypes.FetchBaseData;
-
-    constructor() { }
 }
 
 export class FetchBoardDetailedData implements Action {
@@ -119,6 +121,24 @@ export class DeleteArticle implements Action {
     constructor(public payload: string) { }
 }
 
+export class AddAttachedReport implements Action {
+    public readonly type = ThreatActionTypes.AddAttachedReport;
+
+    constructor(public payload: Report) { }
+}
+
+export class UpdateAttachedReport implements Action {
+    public readonly type = ThreatActionTypes.UpdateAttachedReport;
+
+    constructor(public payload: Report) { }
+}
+
+export class DeleteAttachedReport implements Action {
+    public readonly type = ThreatActionTypes.DeleteAttachedReport;
+
+    constructor(public payload: string) { }
+}
+
 export class AddBoard implements Action {
     public readonly type = ThreatActionTypes.AddBoard;
 
@@ -135,6 +155,12 @@ export class DeleteBoard implements Action {
     public readonly type = ThreatActionTypes.DeleteBoard;
 
     constructor(public payload: string) { }
+}
+
+export class SetShowAddReportFab implements Action {
+    public readonly type = ThreatActionTypes.SetShowAddReportFab;
+
+    constructor(public payload: boolean) { }
 }
 
 export class ClearData implements Action {
@@ -159,7 +185,11 @@ export type threatActions =
     | AddArticle
     | UpdateArticle
     | DeleteArticle
+    | AddAttachedReport
+    | UpdateAttachedReport
+    | DeleteAttachedReport
     | AddBoard
     | UpdateBoard
     | DeleteBoard
+    | SetShowAddReportFab
     | ClearData;
