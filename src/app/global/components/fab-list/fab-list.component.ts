@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, ViewChild, HostListener, Output, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { ConnectedPosition } from '@angular/cdk/overlay';
 import { FormControl } from '@angular/forms';
-import { startWith, map, debounceTime, withLatestFrom } from 'rxjs/operators';
+import { startWith, map, debounceTime, withLatestFrom, tap } from 'rxjs/operators';
 import { RxjsHelpers } from '../../static/rxjs-helpers';
 
 @Component({
@@ -37,6 +37,7 @@ export class FabListComponent implements OnInit {
   
   public searchTerm$ = new FormControl('');
   public searchResults$: Observable<any[]>;
+  public recentlyUsedSearchResults$: Subject<any[]> = new BehaviorSubject([]);
   public searchListHeight = '338';
   public searchListWidth = '226';
   public preferredPosition: ConnectedPosition = { originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'top' };
@@ -46,6 +47,8 @@ export class FabListComponent implements OnInit {
     { ...this.preferredPosition, originX: 'start', overlayX: 'end' }
   ];
   public showList = false;
+
+  private recentlyUsedTags = new Set<string>();
 
   @HostListener('document:mousedown', ['$event'])
   public clickedOutside(event) {
@@ -57,7 +60,7 @@ export class FabListComponent implements OnInit {
       this.showFab = false;
       this.searchTerm$.patchValue('');
     }
-  }
+  }  
 
   ngOnInit() {
     this.searchResults$ = this.searchTerm$.valueChanges
@@ -73,11 +76,22 @@ export class FabListComponent implements OnInit {
             return item.filter((st) => st[this.itemNameProperty] && st[this.itemNameProperty].toLowerCase().indexOf(searchTerm) > -1);
           }
         }),
-        RxjsHelpers.sortByField('name', 'ASCENDING')
+        RxjsHelpers.sortByField('name', 'ASCENDING'),
+        map((items) => {
+          const recentlyUsedItems = items.filter((item) => this.recentlyUsedTags.has(item[this.itemIdProperty]));
+          if (recentlyUsedItems.length) {
+            this.recentlyUsedSearchResults$.next(recentlyUsedItems);
+            return items.filter((item) => !this.recentlyUsedTags.has(item[this.itemIdProperty]));
+          } else {
+            this.recentlyUsedSearchResults$.next([]);
+            return items;
+          }
+        })
       );
   }
 
   public onTagClick(val) {
+    this.recentlyUsedTags.add(val);
     this.tagClicked.emit(val);
     this.showFabChange.emit(false);
     this.searchTerm$.patchValue('');
