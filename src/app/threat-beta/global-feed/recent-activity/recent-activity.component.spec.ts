@@ -5,7 +5,7 @@ import { reducers } from '../../../root-store/app.reducers';
 import { RecentActivityComponent } from './recent-activity.component';
 
 
-describe('RecentActivityComponent', () => {
+xdescribe('RecentActivityComponent', () => {
   let component: RecentActivityComponent;
   let fixture: ComponentFixture<RecentActivityComponent>;
 

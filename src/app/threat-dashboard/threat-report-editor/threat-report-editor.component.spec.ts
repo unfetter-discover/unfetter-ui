@@ -27,7 +27,7 @@ class MockThreatReport {
     }
 }
 
-xdescribe('ThreatReportEditorComponent', () => {
+describe('ThreatReportEditorComponent', () => {
 
     let component: ThreatReportEditorComponent;
     let fixture: ComponentFixture<ThreatReportEditorComponent>;
