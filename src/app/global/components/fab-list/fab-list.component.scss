@@ -1,4 +1,5 @@
 @import '../../../../styles/variables';
+@import '../../../../styles/modules/mat-colors';
 
 #searchList {
   border-radius: 4px;
@@ -38,5 +39,5 @@
 }
 
 .recentItemsShown {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px dashed get-color($grey);
 }
