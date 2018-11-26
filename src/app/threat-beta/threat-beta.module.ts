@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatProgressBarModule, MatRadioModule, MatDatepickerModule, MatNativeDateModule } from '@angular/material';
+import { MatProgressBarModule, MatRadioModule, MatDatepickerModule, MatNativeDateModule, MatStepperModule } from '@angular/material';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
@@ -34,6 +34,7 @@ import { ActivityListComponent } from './board-feed/activity-list/activity-list.
 import { ContributorListComponent } from './board-feed/contributor-list/contributor-list.component';
 import { DisplayCommentComponent } from './display-comment/display-comment.component';
 import { CommentInputComponent } from './display-comment/comment-input.component';
+import { ReportFormComponent } from './report-form/report-form.component';
 
 @NgModule({
   imports: [
@@ -44,6 +45,7 @@ import { CommentInputComponent } from './display-comment/comment-input.component
     MatNativeDateModule,
     MatProgressBarModule,
     MatRadioModule,
+    MatStepperModule,
     ReactiveFormsModule,
     routing,
     StoreModule.forFeature('threat', threatReducer),
@@ -72,6 +74,7 @@ import { CommentInputComponent } from './display-comment/comment-input.component
     CommentInputComponent,
     RelatedBoardsComponent,
     BoardReportsComponent,
+    ReportFormComponent,
   ],
   providers: [
     ThreatBetaGuard,

@@ -1,15 +1,17 @@
 
-import { of as observableOf, forkJoin as observableForkJoin,  Observable  } from 'rxjs';
-
-import { tap, switchMap, map, pluck, filter } from 'rxjs/operators';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
+import { of as observableOf, forkJoin as observableForkJoin,  Observable  } from 'rxjs';
+import { tap, switchMap, map, pluck, filter } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
+
 import { AssessmentMeta } from 'stix/assess/v2/assessment-meta';
 import { BaseComponentService } from '../../../components/base-service.component';
 import * as fromRoot from '../../../root-store/app.reducers';
 import { Constance } from '../../../utils/constance';
 import { RxjsHelpers } from '../../static/rxjs-helpers';
+
 
 
 @Component({
@@ -21,6 +23,7 @@ export class CreatedByRefComponent implements OnInit {
 
     @Input() public model: any;
     @Input() public assessmentMeta: AssessmentMeta;
+    @Input() public formCtrl: FormControl;
     @Output() public orgSelected: EventEmitter<String> = new EventEmitter<String>();
     public selected: string;
     public userOrgs$: Observable<any[]>;
@@ -77,6 +80,8 @@ export class CreatedByRefComponent implements OnInit {
             this.selected = this.model.attributes.created_by_ref;
         } else if (this.model && this.model.created_by_ref) {
             this.selected = this.model.created_by_ref;
+        } else if (this.formCtrl) {
+            this.selected = this.formCtrl.value;
         }
     }
     /**
@@ -98,6 +103,8 @@ export class CreatedByRefComponent implements OnInit {
             this.model.attributes.created_by_ref = value;
         } else if (this.model) {
             this.model.created_by_ref = value;
+        } else if (this.formCtrl) {
+            this.formCtrl.patchValue(value);
         }
 
         if (this.assessmentMeta) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { forkJoin } from 'rxjs';
+import { forkJoin, combineLatest } from 'rxjs';
 import { take, pluck } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 
@@ -24,9 +24,9 @@ export class UserCitationService {
          * Threatboards should probably be owned by organizations, not individual users. We currently have no concept
          * for a user, when creating a threatboard, to assign it to a particular organization.
          */
-        forkJoin(
-            this.appStore.select(getOrganizations).pipe(take(1)),
-            this.appStore.select('users').pipe(pluck('userList'), take(1))
+        combineLatest(
+            this.appStore.select(getOrganizations),
+            this.appStore.select('users').pipe(pluck('userList'))
         )
         .subscribe(
             ([orgs, users]) => {

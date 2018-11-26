@@ -1,0 +1,30 @@
+<div class="fabListComponent">
+  <span id="fab" #fab #trigger="cdkOverlayOrigin" cdkOverlayOrigin [class.inlineBlock]="showFab">
+    <button mat-mini-fab color="accent">
+      <i class="material-icons mat-24">add</i>
+    </button>
+  </span>
+
+  <ng-template [cdkConnectedOverlayOrigin]="trigger" [cdkConnectedOverlayOpen]="showFab" [cdkConnectedOverlayPositions]="positions"
+    height="searchListHeight" width="searchListWidth" cdkConnectedOverlay>
+    <div #searchList id="searchList" class="mat-elevation-z18" [ngStyle]="{ 'max-width.px': searchListWidth, 'max-height.px': searchListHeight }">
+      <!-- TODO add search bar back after there's a way to keep the text selected -->
+      <div id="searchWrapper">
+        <mat-form-field floatLabel="never" id="searchInput" class="full-width">
+          <input matInput #filter placeholder="Search" [formControl]="searchTerm$">
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field>
+      </div>
+      <div id="searchResults">
+        <div *ngIf="recentlyUsedSearchResults$ | async as recentlyUsedSearchResults" [ngClass]="{ 'recentItemsShown': recentlyUsedSearchResults.length }">
+          <div *ngFor="let item of recentlyUsedSearchResults$ | async" class="searchResultItem">
+            <a (click)="onTagClick(item[itemIdProperty])">{{ item[itemNameProperty] || 'Unknown' }}</a>
+          </div>
+        </div>
+        <div *ngFor="let item of searchResults$ | async" class="searchResultItem">
+          <a (click)="onTagClick(item[itemIdProperty])">{{ item[itemNameProperty] || 'Unknown' }}</a>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

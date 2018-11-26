@@ -34,7 +34,8 @@ export class RecentReportsComponent implements OnInit {
   ngOnInit() {
     this.store.select('threat')
       .pipe(
-        pluck('feedReports')
+        pluck('feedReports'),
+        distinctUntilChanged(),
       )
       .subscribe(
         (reports: any[]) => {
@@ -70,7 +71,7 @@ export class RecentReportsComponent implements OnInit {
 
 public getReportBackgroundImage(item: any) {
   return this.sanitizer.bypassSecurityTrustStyle(
-          (item.metaProperties.image ? `url(${item.metaProperties.image}), ` : '') +
+          (item.metaProperties && item.metaProperties.image ? `url(${item.metaProperties.image}), ` : '') +
           'linear-gradient(transparent, transparent)');
 }
 
