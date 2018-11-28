@@ -66,6 +66,7 @@ export class IndicatorFormComponent implements OnInit {
   };
   public editData: any = null;
   public currentStepperIndex = 0;
+  public patternSyntaxes = ['text', 'stix-pattern', 'sigma'];
 
   @ViewChild('associatedDataStep')
   public associatedDataStep: MatStep;

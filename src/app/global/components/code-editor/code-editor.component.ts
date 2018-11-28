@@ -73,6 +73,9 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
   public syntaxCtrl: FormControl = new FormControl('');
 
   @Input()
+  public hideLangSelector = false;
+
+  @Input()
   public set selectedLang(v: ufCodeMirrorModes) {
     this._selectedLang = v;
     this.syntaxCtrl.patchValue(v);

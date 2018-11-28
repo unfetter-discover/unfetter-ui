@@ -13,6 +13,7 @@ import { SearchParameters } from './models/search-parameters';
 import { SortTypes } from './models/sort-types.enum';
 import { StixUrls } from '../global/enums/stix-urls.enum';
 import { StixApiOptions } from '../global/models/stix-api-options';
+import { SigmaTranslations } from '../global/models/sigma-translation';
 
 @Injectable()
 export class IndicatorSharingService {
@@ -112,6 +113,11 @@ export class IndicatorSharingService {
     public translateAllPatterns(pattern: string): Observable<any> {
         const body = { data: { pattern } };
         return this.genericApi.post(`${this.patternHandlerUrl}/translate-all`, body);
+    }
+
+    public translateSigma(pattern: string): Observable<SigmaTranslations> {
+        const body = { data: { pattern } };
+        return this.genericApi.post(`${this.patternHandlerUrl}/translate-all`, body).pipe(RxjsHelpers.unwrapJsonApi()) as any;
     }
 
     public patternHandlerObjects(pattern: string): Observable<any> {

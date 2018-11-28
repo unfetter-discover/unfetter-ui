@@ -34,18 +34,36 @@
           <h4>Description</h4>
           <simplemde formControlName="description"></simplemde>
 
-          <h4 class="inlineBlock"><span [class.textWarn]="form.get('pattern').dirty && form.get('pattern').hasError('required')">Pseudocode<sup>*</sup></span></h4>
-          <small class="text-muted">(Optional: Use STIX patterns to get automated translations)</small>
-          <simplemde formControlName="pattern" (keyup)="patternChange(form.get('pattern'))" [class.mdeError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></simplemde>
+          <h4 class="inlineBlock">
+            <span [class.textWarn]="form.get('pattern').dirty && form.get('pattern').hasError('required')">Pseudocode<sup>*</sup>&nbsp;&nbsp;&nbsp;</span>
+            <small formGroupName="metaProperties">
+              <mat-radio-group formControlName="patternSyntax">
+                <mat-radio-button color="primary" value="{{ syntax }}" *ngFor="let syntax of patternSyntaxes">{{ syntax | capitalize }}&nbsp;&nbsp;&nbsp;</mat-radio-button>
+              </mat-radio-group>
+            </small>
+          </h4>
+          <div [ngSwitch]="form.get('metaProperties').get('patternSyntax').value">
+            <div *ngSwitchCase="'stix-pattern'">
+              <code-editor formControlName="pattern" hideLangSelector="true" [class.cmError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></code-editor>
+            </div>
+            <div *ngSwitchCase="'sigma'">
+              <code-editor formControlName="pattern" hideLangSelector="true" selectedLang="YAML" [class.cmError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></code-editor>
+            </div>
+            <div *ngSwitchDefault>
+              <simplemde formControlName="pattern" (keyup)="patternChange(form.get('pattern'))" [class.mdeError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></simplemde>
+            </div>
+          </div>
+          
           <mat-error [class.showUfMatError]="form.get('pattern').dirty && form.get('pattern').hasError('required')" class="ufMatError">
               Pseudocode is <strong>required</strong>
-          </mat-error>
+          </mat-error>          
 
           <p id="patternSuccess" [style.opacity]="form.get('metaProperties').get('validStixPattern').value && form.get('pattern').dirty && form.get('pattern').value.length > 0 ? 1 : 0"
             [style.marginTop]="!form.get('pattern').hasError('required') ? '-15px' : '-5px'" [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">
             <i class="material-icons">check</i> Valid STIX Pattern</p>
 
           <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message>
+          
 
           <div class="mb-6" *ngIf="firstShowPatternTranslations">
             <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">
