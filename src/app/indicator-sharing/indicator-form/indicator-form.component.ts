@@ -45,7 +45,9 @@ export class IndicatorFormComponent implements OnInit {
   public organizations: any;
   public attackPatterns: any[] = [];
   public showPatternTranslations = false;
+  public showSigmaTranslations = false;
   public firstShowPatternTranslations = false;
+  public firstShowSigmaTranslations = false;
   public showAdditionalQueries = true;
   public includeQueries = {
     carElastic: true,
@@ -454,11 +456,21 @@ export class IndicatorFormComponent implements OnInit {
       } catch (e) { }
     }
 
+    if (tempIndicator.metaProperties.sigmaQueries &&
+      (tempIndicator.metaProperties.sigmaQueries.length === 0 || tempIndicator.metaProperties.sigmaQueries.map(q => q.include).filter(q => !!q).length === 0)
+    ) {
+      try {
+        delete tempIndicator.metaProperties.sigmaQueries;
+      } catch (e) { }
+    } else if (tempIndicator.metaProperties.sigmaQueries && tempIndicator.metaProperties.sigmaQueries.length > 0) {
+      tempIndicator.metaProperties.sigmaQueries = tempIndicator.metaProperties.sigmaQueries.filter((sigmaQuery) => sigmaQuery.query && sigmaQuery.include);
+    }
+
     if (Object.keys(tempIndicator.metaProperties.queries).length === 0) {
       try {
         delete tempIndicator.metaProperties.queries;
       } catch (e) { }
-    }
+    }    
   }  
 
   private handlePatternChange() {
@@ -563,6 +575,10 @@ export class IndicatorFormComponent implements OnInit {
               include: new FormControl(true)
             }));
           });
+          this.showSigmaTranslations = true;
+          this.firstShowSigmaTranslations = true;
+        } else {
+          this.showSigmaTranslations = false;
         }
       });
 
@@ -583,7 +599,20 @@ export class IndicatorFormComponent implements OnInit {
         this.patternObjSubject.next(this.patternObjs);
       });
 
-    // TODO reset sigma
+    const resetSigma$ = this.form.get('metaProperties').get('patternSyntax').valueChanges
+      .pipe(
+        filter((syntax) => syntax !== 'sigma'),
+        finalize(() => resetSigma$ && resetSigma$.unsubscribe())
+      )
+      .subscribe(() => {
+        this.form.get('metaProperties').get('validSigma').setValue(false);
+        const sigmaQueries = this.form.get('metaProperties').get('sigmaQueries') as FormArray;
+        while (sigmaQueries.length !== 0) {
+          sigmaQueries.removeAt(0)
+        }
+        this.showSigmaTranslations = false;
+        this.firstShowSigmaTranslations = false;
+      });
   }
 
   /**

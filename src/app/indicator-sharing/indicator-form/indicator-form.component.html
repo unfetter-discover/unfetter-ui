@@ -71,7 +71,7 @@
           <div class="mb-6" *ngIf="firstShowPatternTranslations">
             <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">
               <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showPatternTranslations}">chevron_right</i>
-              <span class="h5">&nbsp;Automatic Pattern Translations</span>
+              <span class="h5">&nbsp;Automatic Stix Pattern Translations</span>
             </div>
             <div class="uf-well queriesContainer" *ngIf="showPatternTranslations" @heightCollapse>
               <div formGroupName="metaProperties">
@@ -109,6 +109,26 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <div class="mb-6" *ngIf="form.get('metaProperties').get('patternSyntax').value === 'sigma' && firstShowSigmaTranslations" formGroupName="metaProperties">
+            <div class="uf-collapsible-control mb-10" (click)="showSigmaTranslations = !showSigmaTranslations">
+              <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showSigmaTranslations}">chevron_right</i>
+              <span class="h5">&nbsp;Automatic Sigma Translations</span>
+            </div>
+            <div class="uf-well" formArrayName="sigmaQueries" *ngIf="showSigmaTranslations" @heightCollapse>
+              <div *ngFor="let sigmaQuery of form.get('metaProperties').get('sigmaQueries').controls; index as i" class="mb-6">
+                <div class="mb-5">
+                  <label>{{ sigmaQuery.value.tool | sigmaTool }}</label>
+                  <br>
+                  <code>{{ sigmaQuery.value.query }}</code>
+                </div>
+                <div [formGroupName]="i">
+                  <mat-checkbox formControlName="include">Include</mat-checkbox>
+                </div>
+              </div>
+            </div>
+              
           </div>
 
           <h4>Implementations</h4>
