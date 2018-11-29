@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { of as observableOf, forkJoin as observableForkJoin, Observable, Subject, combineLatest } from 'rxjs';
-import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize, take, withLatestFrom, map, filter } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize, take, withLatestFrom, map, filter, share, tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -98,7 +98,8 @@ export class IndicatorFormComponent implements OnInit {
     private genericApi: GenericApi,
     public store: Store<fromIndicatorSharing.IndicatorSharingFeatureState>,
     public location: Location,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef
   ) { 
     DomHelper.ScrollToTop();
   }
@@ -170,66 +171,8 @@ export class IndicatorFormComponent implements OnInit {
         }
       }
     );
-
-    const patternChange$ = (this.form.get('pattern') as FormControl).valueChanges.pipe(
-      debounceTime(100),
-      distinctUntilChanged(),
-      switchMap((pattern: any): Observable<[PatternHandlerTranslateAll, PatternHandlerGetObjects]> => {
-        if (pattern && pattern.length > 0) {
-          return observableForkJoin(
-            this.indicatorSharingService.translateAllPatterns(pattern).pipe(pluck('attributes')),
-            this.indicatorSharingService.patternHandlerObjects(pattern).pipe(pluck('attributes'))
-          );
-        } else {
-          return observableForkJoin(
-            observableOf(this.initialPatternHandlerResponse),
-            observableOf(this.initialGetObjectsResponse)
-          );
-        }
-      }))
-      .subscribe(
-        ([translations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
-
-          // ~~~ Pattern Translations ~~~
-          this.form.get('metaProperties').get('validStixPattern').setValue(translations.validated);
-          this.form.get('metaProperties').get('queries').get('carElastic').patchValue({
-            query: translations['car-elastic']
-          });
-          this.form.get('metaProperties').get('queries').get('carSplunk').patchValue({
-            query: translations['car-splunk']
-          });
-          this.form.get('metaProperties').get('queries').get('cimSplunk').patchValue({
-            query: translations['cim-splunk']
-          });
-
-          if (translations['car-elastic'] || translations['car-splunk'] || translations['cim-splunk']) {
-            this.showPatternTranslations = true;
-            this.firstShowPatternTranslations = true;
-          }
-
-          // ~~~ Pattern Objects ~~~
-          if (!objects.object) {
-            objects.object = [];
-          }
-          const patternObjSet: Set<string> = new Set(
-            objects.object.map((patternObj: PatternHandlerPatternObject): string => JSON.stringify(patternObj))
-          );
-          this.patternObjs = Array.from(patternObjSet)
-            .map((patternString: string): PatternHandlerPatternObject => JSON.parse(patternString))
-            .map((patternObj: PatternHandlerPatternObject) => {
-              patternObj.action = '*';
-              return patternObj;
-            }) || [];
-
-          this.patternObjSubject.next(this.patternObjs);
-        },
-        (err) => {
-          console.log(err);
-        },
-        () => {
-          patternChange$.unsubscribe();
-        }
-      );
+    
+    this.handlePatternChange();
 
     this.store
       .select('config')
@@ -515,6 +458,98 @@ export class IndicatorFormComponent implements OnInit {
         delete tempIndicator.metaProperties.queries;
       } catch (e) { }
     }
+  }  
+
+  private handlePatternChange() {
+    const patternChange$ = (this.form.get('pattern') as FormControl).valueChanges
+      .pipe(
+        debounceTime(100),
+        distinctUntilChanged(),
+        share(),
+        finalize(() => patternChange$ && patternChange$.unsubscribe())
+      );
+
+    const stixPattern$ = combineLatest(
+        patternChange$,
+        this.form.get('metaProperties').get('patternSyntax').valueChanges
+      )
+      .pipe(
+        filter(([_, syntax]) => syntax === 'stix-pattern'),
+        switchMap(([pattern]): Observable<[PatternHandlerTranslateAll, PatternHandlerGetObjects]> => {
+          if (pattern && pattern.length > 0) {
+            return observableForkJoin(
+              this.indicatorSharingService.translateAllPatterns(pattern).pipe(pluck('attributes')),
+              this.indicatorSharingService.patternHandlerObjects(pattern).pipe(pluck('attributes'))
+            );
+          } else {
+            return observableForkJoin(
+              observableOf(this.initialPatternHandlerResponse),
+              observableOf(this.initialGetObjectsResponse)
+            );
+          }
+        })
+      )
+      .subscribe(
+        ([translations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
+
+          // ~~~ Pattern Translations ~~~
+          this.form.get('metaProperties').get('validStixPattern').setValue(translations.validated);
+          this.form.get('metaProperties').get('queries').get('carElastic').patchValue({
+            query: translations['car-elastic']
+          });
+          this.form.get('metaProperties').get('queries').get('carSplunk').patchValue({
+            query: translations['car-splunk']
+          });
+          this.form.get('metaProperties').get('queries').get('cimSplunk').patchValue({
+            query: translations['cim-splunk']
+          });
+
+          if (translations['car-elastic'] || translations['car-splunk'] || translations['cim-splunk']) {
+            this.showPatternTranslations = true;
+            this.firstShowPatternTranslations = true;
+            this.changeDetectorRef.markForCheck();
+          }
+
+          // ~~~ Pattern Objects ~~~
+          if (!objects.object) {
+            objects.object = [];
+          }
+          const patternObjSet: Set<string> = new Set(
+            objects.object.map((patternObj: PatternHandlerPatternObject): string => JSON.stringify(patternObj))
+          );
+          this.patternObjs = Array.from(patternObjSet)
+            .map((patternString: string): PatternHandlerPatternObject => JSON.parse(patternString))
+            .map((patternObj: PatternHandlerPatternObject) => {
+              patternObj.action = '*';
+              return patternObj;
+            }) || [];
+
+          this.patternObjSubject.next(this.patternObjs);
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
+          stixPattern$.unsubscribe();
+        }
+      );
+
+    // Reset forms/objects related to STIX Patterns when another syntax is selected
+    const resetStixPattern$ = this.form.get('metaProperties').get('patternSyntax').valueChanges
+      .pipe(
+        filter((syntax) => syntax !== 'stix-pattern'),
+        finalize(() => resetStixPattern$ && resetStixPattern$.unsubscribe())
+      )
+      .subscribe(() => {
+        this.form.get('metaProperties').get('validStixPattern').setValue(false);
+        this.form.get('metaProperties').get('queries').get('carElastic').patchValue({ query: '' });
+        this.form.get('metaProperties').get('queries').get('carSplunk').patchValue({ query: '' });
+        this.form.get('metaProperties').get('queries').get('cimSplunk').patchValue({ query: '' });
+        this.showPatternTranslations = false;
+        this.firstShowPatternTranslations = false;
+        this.patternObjs = [];
+        this.patternObjSubject.next(this.patternObjs);
+      });
   }
 
   /**
