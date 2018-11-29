@@ -23,6 +23,7 @@ import { mockConfigService } from '../../testing/mock-config-service';
 import { ConfigService } from '../../core/services/config.service';
 import { ReadableBytesPipe } from '../../global/pipes/readable-bytes.pipe';
 import * as fromApp from '../../root-store/app.reducers';
+import { SigmaToolPipe } from '../../global/pipes/sigma-tool.pipe';
 
 describe('IndicatorCardComponent', () => {
 
@@ -133,6 +134,7 @@ describe('IndicatorCardComponent', () => {
                     CapitalizePipe,
                     ChipLinksComponent,
                     ReadableBytesPipe,
+                    SigmaToolPipe,
                 ],
                 imports: [
                     MatButtonModule,

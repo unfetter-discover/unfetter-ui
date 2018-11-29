@@ -523,8 +523,7 @@ export class IndicatorFormComponent implements OnInit {
         })
       )
       .subscribe(
-        ([translations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {         
-
+        ([translations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
           // ~~~ Pattern Translations ~~~
           this.form.get('metaProperties').get('validStixPattern').setValue(translations.validated);
           this.form.get('metaProperties').get('queries').get('carElastic').patchValue({
