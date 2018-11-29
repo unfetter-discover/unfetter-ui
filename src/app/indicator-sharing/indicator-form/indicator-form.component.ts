@@ -495,7 +495,7 @@ export class IndicatorFormComponent implements OnInit {
 
     const patternChange$ = (this.form.get('pattern') as FormControl).valueChanges
       .pipe(
-        debounceTime(100),
+        debounceTime(200),
         distinctUntilChanged(),
         share(),
         finalize(() => patternChange$ && patternChange$.unsubscribe())

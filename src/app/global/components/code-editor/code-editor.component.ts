@@ -211,6 +211,12 @@ export class CodeEditorComponent implements AfterViewInit, ControlValueAccessor,
       case 'YML':
         config.mode = 'yaml';
         config.tabSize = 2;
+        config.extraKeys = {
+          Tab: (cm: any) => {
+            const spaces = Array(cm.getOption('indentUnit') + 1).join(' ');
+            cm.replaceSelection(spaces);
+          }
+        }
         this.codemirror = CodeMirror(this.cm.nativeElement, config);
         break;
       case 'XML':
