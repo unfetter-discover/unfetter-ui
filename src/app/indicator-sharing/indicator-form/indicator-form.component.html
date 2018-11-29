@@ -58,12 +58,16 @@
               Pseudocode is <strong>required</strong>
           </mat-error>          
 
-          <p id="patternSuccess" [style.opacity]="form.get('metaProperties').get('validStixPattern').value && form.get('pattern').dirty && form.get('pattern').value.length > 0 ? 1 : 0"
+          <p id="patternSuccess" [style.opacity]="(form.get('metaProperties').get('validStixPattern').value || form.get('metaProperties').get('validSigma').value) && form.get('pattern').dirty && form.get('pattern').value.length > 0 ? 1 : 0"
             [style.marginTop]="!form.get('pattern').hasError('required') ? '-15px' : '-5px'" [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">
-            <i class="material-icons">check</i> Valid STIX Pattern</p>
+            <i class="material-icons">check</i>
+            <span>&nbsp;Valid&nbsp;</span>
+            <span *ngIf="form.get('metaProperties').get('validStixPattern').value">STIX Pattern</span>
+            <span *ngIf="form.get('metaProperties').get('validSigma').value">Sigma</span>
+          </p>
 
           <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message>
-          
+
           <div class="mb-6" *ngIf="firstShowPatternTranslations">
             <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">
               <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showPatternTranslations}">chevron_right</i>

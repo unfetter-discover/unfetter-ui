@@ -41,7 +41,8 @@ export const IndicatorForm = () => {
                 })
             }),
             relationships: new FormControl([]),
-            sigma_queries: new FormArray([]),
+            sigmaQueries: new FormArray([]),
+            validSigma: new FormControl(false),            
             validStixPattern: new FormControl(false)            
         })
     })

@@ -117,7 +117,7 @@ export class IndicatorSharingService {
 
     public translateSigma(pattern: string): Observable<SigmaTranslations> {
         const body = { data: { pattern } };
-        return this.genericApi.post(`${this.patternHandlerUrl}/translate-all`, body).pipe(RxjsHelpers.unwrapJsonApi()) as any;
+        return this.genericApi.post(`${this.patternHandlerUrl}/sigma/translate-all`, body).pipe(RxjsHelpers.unwrapJsonApi()) as any;
     }
 
     public patternHandlerObjects(pattern: string): Observable<any> {

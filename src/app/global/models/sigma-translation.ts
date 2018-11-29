@@ -16,5 +16,5 @@ export interface SigmaTranslations {
     pattern: string;
     validated: boolean;
     message?: string;
-    translations: SigmaTranslation[]
+    translations?: SigmaTranslation[]
 }

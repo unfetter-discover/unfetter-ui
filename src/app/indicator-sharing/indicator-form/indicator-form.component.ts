@@ -31,6 +31,7 @@ import { AdditionalQueriesForm } from '../../global/form-models/additional-queri
 import { DomHelper } from '../../global/static/dom-helper';
 import { Identity } from 'stix';
 import { getPreferredKillchainAttackPatterns } from '../../root-store/stix/stix.selectors';
+import { SigmaTranslations } from '../../global/models/sigma-translation';
 
 @Component({
   selector: 'indicator-form',
@@ -534,6 +535,37 @@ export class IndicatorFormComponent implements OnInit {
         }
       );
 
+    const sigma$ = combineLatest(
+        patternChange$,
+        this.form.get('metaProperties').get('patternSyntax').valueChanges
+      )
+      .pipe(
+        filter(([_, syntax]) => syntax === 'sigma'),
+        switchMap(([pattern]) => {
+          if (pattern) {
+            return this.indicatorSharingService.translateSigma(pattern);
+          } else {
+            return observableOf({ validated: false } as SigmaTranslations);
+          }
+        })
+      )
+      .subscribe((translationResp) => {
+        this.form.get('metaProperties').get('validSigma').setValue(translationResp.validated);
+        const sigmaQueries = this.form.get('metaProperties').get('sigmaQueries') as FormArray;
+        while (sigmaQueries.length !== 0) {
+          sigmaQueries.removeAt(0)
+        }
+        if (translationResp.translations && translationResp.translations.length) {
+          translationResp.translations.forEach((translation) => {
+            sigmaQueries.push(new FormGroup({
+              tool: new FormControl(translation.tool),
+              query: new FormControl(translation.query),
+              include: new FormControl(true)
+            }));
+          });
+        }
+      });
+
     // Reset forms/objects related to STIX Patterns when another syntax is selected
     const resetStixPattern$ = this.form.get('metaProperties').get('patternSyntax').valueChanges
       .pipe(
@@ -550,6 +582,8 @@ export class IndicatorFormComponent implements OnInit {
         this.patternObjs = [];
         this.patternObjSubject.next(this.patternObjs);
       });
+
+    // TODO reset sigma
   }
 
   /**
