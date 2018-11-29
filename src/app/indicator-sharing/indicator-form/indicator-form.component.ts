@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { of as observableOf, forkJoin as observableForkJoin, Observable, Subject, combineLatest } from 'rxjs';
-import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize, take, withLatestFrom, map, filter, share, tap } from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, switchMap, pluck, finalize, take, withLatestFrom, map, filter, share, tap, skip } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { MatStep, MatStepper, MatHorizontalStepper } from '@angular/material';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 
-import { IndicatorForm } from '../../global/form-models/indicator';
+import { IndicatorForm, SigmaQueryForm } from '../../global/form-models/indicator';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import * as fromIndicatorSharing from '../store/indicator-sharing.reducers';
 import * as indicatorSharingActions from '../store/indicator-sharing.actions';
@@ -112,6 +112,7 @@ export class IndicatorFormComponent implements OnInit {
     this.resetForm();
     const route = this.route.snapshot.url.length && this.route.snapshot.url[0].path;
     if (route === 'edit') {
+      this.editMode = true;
       observableForkJoin(
         this.route.params
           .pipe(
@@ -128,8 +129,7 @@ export class IndicatorFormComponent implements OnInit {
         ([indicatorId, indicators]: [string, any[]]) => {
           const indicatorToEdit = indicators.find((indicator) => indicator.id === indicatorId);
           if (indicatorToEdit) {
-            this.editData = indicatorToEdit;
-            this.editMode = true;
+            this.editData = indicatorToEdit;            
             this.setEditValues();
           } else {
             console.log('Unable to find indicator to edit');
@@ -419,6 +419,23 @@ export class IndicatorFormComponent implements OnInit {
         this.showPatternTranslations = true;
         this.firstShowPatternTranslations = true;
       }
+
+      if (this.editData.metaProperties.sigmaQueries) {
+        this.editData.metaProperties.sigmaQueries.forEach((sigmaQuery) => {
+          const sigmaQueryForm = SigmaQueryForm();
+          sigmaQueryForm.patchValue(sigmaQuery);
+          (this.form.get('metaProperties').get('sigmaQueries') as FormArray).push(sigmaQueryForm);
+        });
+
+        if (this.editData.metaProperties.sigmaQueries.map(q => q.include).filter(q => !!q).length) {
+          this.firstShowSigmaTranslations = true;
+          this.showSigmaTranslations = true;
+        }
+      }
+
+      if (this.editData.metaProperties.validStixPattern && !this.editData.metaProperties.patternSyntax) {
+        this.form.get('metaProperties').get('patternSyntax').patchValue('stix-pattern');
+      }
     }
 
     this.store.select('indicatorSharing')
@@ -474,6 +491,8 @@ export class IndicatorFormComponent implements OnInit {
   }  
 
   private handlePatternChange() {
+    const skipCount = this.editMode ? 1 : 0;
+
     const patternChange$ = (this.form.get('pattern') as FormControl).valueChanges
       .pipe(
         debounceTime(100),
@@ -487,6 +506,7 @@ export class IndicatorFormComponent implements OnInit {
         this.form.get('metaProperties').get('patternSyntax').valueChanges
       )
       .pipe(
+        skip(skipCount),
         filter(([_, syntax]) => syntax === 'stix-pattern'),
         switchMap(([pattern]): Observable<[PatternHandlerTranslateAll, PatternHandlerGetObjects]> => {
           if (pattern && pattern.length > 0) {
@@ -503,7 +523,7 @@ export class IndicatorFormComponent implements OnInit {
         })
       )
       .subscribe(
-        ([translations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {
+        ([translations, objects]: [PatternHandlerTranslateAll, PatternHandlerGetObjects]) => {         
 
           // ~~~ Pattern Translations ~~~
           this.form.get('metaProperties').get('validStixPattern').setValue(translations.validated);
@@ -548,10 +568,10 @@ export class IndicatorFormComponent implements OnInit {
       );
 
     const sigma$ = combineLatest(
-        patternChange$,
-        this.form.get('metaProperties').get('patternSyntax').valueChanges
+        patternChange$, this.form.get('metaProperties').get('patternSyntax').valueChanges
       )
       .pipe(
+        skip(skipCount),
         filter(([_, syntax]) => syntax === 'sigma'),
         switchMap(([pattern]) => {
           if (pattern) {
@@ -585,6 +605,7 @@ export class IndicatorFormComponent implements OnInit {
     // Reset forms/objects related to STIX Patterns when another syntax is selected
     const resetStixPattern$ = this.form.get('metaProperties').get('patternSyntax').valueChanges
       .pipe(
+        skip(skipCount),
         filter((syntax) => syntax !== 'stix-pattern'),
         finalize(() => resetStixPattern$ && resetStixPattern$.unsubscribe())
       )
@@ -601,6 +622,7 @@ export class IndicatorFormComponent implements OnInit {
 
     const resetSigma$ = this.form.get('metaProperties').get('patternSyntax').valueChanges
       .pipe(
+        skip(skipCount),
         filter((syntax) => syntax !== 'sigma'),
         finalize(() => resetSigma$ && resetSigma$.unsubscribe())
       )

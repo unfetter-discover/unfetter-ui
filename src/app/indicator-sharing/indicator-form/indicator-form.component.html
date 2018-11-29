@@ -44,7 +44,7 @@
           </h4>
           <div [ngSwitch]="form.get('metaProperties').get('patternSyntax').value">
             <div *ngSwitchCase="'stix-pattern'">
-              <code-editor formControlName="pattern" hideLangSelector="true" [class.cmError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></code-editor>
+              <code-editor formControlName="pattern" hideLangSelector="true" selectedLang="Other" [class.cmError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></code-editor>
             </div>
             <div *ngSwitchCase="'sigma'">
               <code-editor formControlName="pattern" hideLangSelector="true" selectedLang="YAML" [class.cmError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></code-editor>

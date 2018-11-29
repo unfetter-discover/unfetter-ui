@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 export const SigmaQueryForm = () => {
     return new FormGroup({
         tool: new FormControl('', Validators.required),
-        query: new FormControl('', Validators.required)
+        query: new FormControl('', Validators.required),
+        include: new FormControl(true)
     });
 };
 
