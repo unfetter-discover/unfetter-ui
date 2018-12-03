@@ -34,7 +34,8 @@ export const initialSearchParameters: SearchParameters = {
     dataSources: [],
     intrusionSets: [],
     observedData: [],
-    validStixPattern: false
+    validStixPattern: false,
+    validSigma: false
 };
 
 export const initialState: IndicatorSharingState = {

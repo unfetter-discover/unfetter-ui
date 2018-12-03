@@ -52,8 +52,11 @@
           <i class="material-icons mat-24 labelColor">view_comfy</i>
         </button>
       </div>
+      <div class="mb-9">
+        <mat-checkbox formControlName="validStixPattern">STIX Pattern</mat-checkbox>
+      </div>
       <div class="mb-12">
-        <mat-checkbox formControlName="validStixPattern">Show STIX Patterns Only</mat-checkbox>
+        <mat-checkbox formControlName="validSigma">Sigma</mat-checkbox>
       </div>
       <div class="mb-9" id="obsDataWrapper">
         <button mat-button (click)="toggleObservedDataDialog()">

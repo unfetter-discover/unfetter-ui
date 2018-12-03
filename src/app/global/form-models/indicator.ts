@@ -1,6 +1,14 @@
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 
+export const SigmaQueryForm = () => {
+    return new FormGroup({
+        tool: new FormControl('', Validators.required),
+        query: new FormControl('', Validators.required),
+        include: new FormControl(true)
+    });
+};
+
 export const IndicatorForm = () => {
     return new FormGroup({
         name: new FormControl('', Validators.required),
@@ -15,9 +23,10 @@ export const IndicatorForm = () => {
         kill_chain_phases: new FormArray([]),
         x_mitre_data_sources: new FormControl([]),
         metaProperties: new FormGroup({
+            additional_queries: new FormArray([]),            
             observedData: new FormArray([]),
-            additional_queries: new FormArray([]),
-            relationships: new FormControl([]),
+            published: new FormControl(true),
+            patternSyntax: new FormControl('text'),
             queries: new FormGroup({
                 carElastic: new FormGroup({
                     query: new FormControl(''),
@@ -32,8 +41,10 @@ export const IndicatorForm = () => {
                     include: new FormControl(true)
                 })
             }),
-            validStixPattern: new FormControl(false),
-            published: new FormControl(true)
+            relationships: new FormControl([]),
+            sigmaQueries: new FormArray([]),
+            validSigma: new FormControl(false),            
+            validStixPattern: new FormControl(false)            
         })
     })
 };

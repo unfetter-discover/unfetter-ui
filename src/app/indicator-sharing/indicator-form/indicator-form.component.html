@@ -34,23 +34,44 @@
           <h4>Description</h4>
           <simplemde formControlName="description"></simplemde>
 
-          <h4 class="inlineBlock"><span [class.textWarn]="form.get('pattern').dirty && form.get('pattern').hasError('required')">Pseudocode<sup>*</sup></span></h4>
-          <small class="text-muted">(Optional: Use STIX patterns to get automated translations)</small>
-          <simplemde formControlName="pattern" (keyup)="patternChange(form.get('pattern'))" [class.mdeError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></simplemde>
+          <h4 class="inlineBlock">
+            <span [class.textWarn]="form.get('pattern').dirty && form.get('pattern').hasError('required')">Pseudocode<sup>*</sup>&nbsp;&nbsp;&nbsp;</span>
+            <small formGroupName="metaProperties">
+              <mat-radio-group formControlName="patternSyntax">
+                <mat-radio-button color="primary" value="{{ syntax }}" *ngFor="let syntax of patternSyntaxes">{{ syntax | capitalize }}&nbsp;&nbsp;&nbsp;</mat-radio-button>
+              </mat-radio-group>
+            </small>
+          </h4>
+          <div [ngSwitch]="form.get('metaProperties').get('patternSyntax').value">
+            <div *ngSwitchCase="'stix-pattern'">
+              <code-editor formControlName="pattern" hideLangSelector="true" selectedLang="Other" [class.cmError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></code-editor>
+            </div>
+            <div *ngSwitchCase="'sigma'">
+              <code-editor formControlName="pattern" hideLangSelector="true" selectedLang="YAML" [class.cmError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></code-editor>
+            </div>
+            <div *ngSwitchDefault>
+              <simplemde formControlName="pattern" (keyup)="patternChange(form.get('pattern'))" [class.mdeError]="form.get('pattern').dirty && form.get('pattern').hasError('required')"></simplemde>
+            </div>
+          </div>
+          
           <mat-error [class.showUfMatError]="form.get('pattern').dirty && form.get('pattern').hasError('required')" class="ufMatError">
               Pseudocode is <strong>required</strong>
-          </mat-error>
+          </mat-error>          
 
-          <p id="patternSuccess" [style.opacity]="form.get('metaProperties').get('validStixPattern').value && form.get('pattern').dirty && form.get('pattern').value.length > 0 ? 1 : 0"
+          <p id="patternSuccess" [style.opacity]="(form.get('metaProperties').get('validStixPattern').value || form.get('metaProperties').get('validSigma').value) && form.get('pattern').dirty && form.get('pattern').value.length > 0 ? 1 : 0"
             [style.marginTop]="!form.get('pattern').hasError('required') ? '-15px' : '-5px'" [style.marginBottom]="!form.get('pattern').hasError('required') ? '15px' : '0px'">
-            <i class="material-icons">check</i> Valid STIX Pattern</p>
+            <i class="material-icons">check</i>
+            <span>&nbsp;Valid&nbsp;</span>
+            <span *ngIf="form.get('metaProperties').get('validStixPattern').value">STIX Pattern</span>
+            <span *ngIf="form.get('metaProperties').get('validSigma').value">Sigma</span>
+          </p>
 
           <pii-check-message [formCtrl]="form.get('pattern')"></pii-check-message>
 
           <div class="mb-6" *ngIf="firstShowPatternTranslations">
             <div class="uf-collapsible-control mb-10" (click)="showPatternTranslations = !showPatternTranslations">
               <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showPatternTranslations}">chevron_right</i>
-              <span class="h5">&nbsp;Automatic Pattern Translations</span>
+              <span class="h5">&nbsp;Automatic Stix Pattern Translations</span>
             </div>
             <div class="uf-well queriesContainer" *ngIf="showPatternTranslations" @heightCollapse>
               <div formGroupName="metaProperties">
@@ -88,6 +109,26 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <div class="mb-6" *ngIf="form.get('metaProperties').get('patternSyntax').value === 'sigma' && firstShowSigmaTranslations" formGroupName="metaProperties">
+            <div class="uf-collapsible-control mb-10" (click)="showSigmaTranslations = !showSigmaTranslations">
+              <i class="material-icons mat-24 transition02" [ngClass]="{'rotate90': showSigmaTranslations}">chevron_right</i>
+              <span class="h5">&nbsp;Automatic Sigma Translations</span>
+            </div>
+            <div class="uf-well" formArrayName="sigmaQueries" *ngIf="showSigmaTranslations" @heightCollapse>
+              <div *ngFor="let sigmaQuery of form.get('metaProperties').get('sigmaQueries').controls; index as i" class="mb-6">
+                <div class="mb-5">
+                  <label>{{ sigmaQuery.value.tool | sigmaTool }}</label>
+                  <br>
+                  <code>{{ sigmaQuery.value.query }}</code>
+                </div>
+                <div [formGroupName]="i">
+                  <mat-checkbox formControlName="include">Include</mat-checkbox>
+                </div>
+              </div>
+            </div>
+              
           </div>
 
           <h4>Implementations</h4>
