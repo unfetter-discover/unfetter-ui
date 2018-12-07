@@ -1,5 +1,5 @@
 import { forkJoin as observableForkJoin, of as observableOf,  Observable, throwError  } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
+import { map, pluck, withLatestFrom } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Relationship } from 'stix';
 
@@ -14,6 +14,8 @@ import { SortTypes } from './models/sort-types.enum';
 import { StixUrls } from '../global/enums/stix-urls.enum';
 import { StixApiOptions } from '../global/models/stix-api-options';
 import { SigmaTranslations } from '../global/models/sigma-translation';
+import { IndicatorSharingFeatureState } from './store/indicator-sharing.reducers';
+import { Store } from '@ngrx/store';
 
 @Injectable()
 export class IndicatorSharingService {
@@ -31,7 +33,8 @@ export class IndicatorSharingService {
 
     constructor(
         private genericApi: GenericApi,
-        private authService: AuthService
+        private authService: AuthService,
+        private store: Store<IndicatorSharingFeatureState>
     ) { }
 
     public getIndicators(filter: object = {}): Observable<any> {
@@ -144,7 +147,9 @@ export class IndicatorSharingService {
         const url = `${this.baseUrl}/search?searchparameters=${encodeURIComponent(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`;
         return this.genericApi.getNgrx<any>(url)
             .pipe(
-                RxjsHelpers.unwrapJsonApi()
+                RxjsHelpers.unwrapJsonApi(),
+                withLatestFrom(this.store.select('users').pipe(pluck('userList'))),
+                RxjsHelpers.populateSocials()
             );
     }
 

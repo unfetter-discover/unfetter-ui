@@ -1,6 +1,7 @@
 import { ConfigKeys } from '../enums/config-keys.enum';
 import { Observable } from 'rxjs';
 import { JsonApiData, StixCore } from 'stix';
+import { UserListItem } from '../../models/user/user-profile';
 
 export class RxjsHelpers {
 
@@ -182,5 +183,28 @@ export class RxjsHelpers {
                 })
             });
         };     
+    }
+
+
+    public static populateSocials<T extends StixCore = any>() {
+        return (source: Observable<[T[], UserListItem[]]>) => {
+            return new Observable<T[]>((observer) => {
+                return source.subscribe({
+                    next([stixArr, users]) {
+                        return stixArr.map((stix) => {
+                            if (stix.metaProperties && stix.metaProperties.comments && stix.metaProperties.comments.length) {
+                                stix.metaProperties.comments = stix.metaProperties.comments.map((comment) => {
+                                    console.log('~~~~', comment);
+                                    return {};
+                                });
+                            }
+                            return stix;
+                        });
+                    },
+                    error(err) { observer.error(err); },
+                    complete() { observer.complete(); }
+                })
+            });
+        };
     }
 }
