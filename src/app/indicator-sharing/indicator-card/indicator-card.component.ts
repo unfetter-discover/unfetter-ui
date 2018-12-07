@@ -47,7 +47,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
 
     public user;
     public showCommentTextArea: boolean = false;
-    public commentText: string = '';
     public message = '';
     public messageTimeout: any;
     public alreadyLiked: boolean = false;
@@ -170,16 +169,14 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
         }      
     }
 
-    public submitComment() {
-        const comment = this.commentText;
+    public submitComment(comment: string) {
         this.showCommentTextArea = false;
         this.flashMessage('Comment Submitted...');
         const addComment$ = this.indicatorSharingService.addComment(comment, this.indicator.id)
             .subscribe(
                 (res) => {
-                    this.updateIndicatorState(res.attributes);
+                    this.updateIndicatorState(res);
                     this.flashMessage('Comment sucessfully added.');
-                    this.commentText = ''; 
                 },
                 (err) => {
                     this.flashMessage('Unable to add comment.');

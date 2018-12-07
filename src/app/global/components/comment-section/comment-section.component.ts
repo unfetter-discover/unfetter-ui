@@ -1,5 +1,4 @@
-import { Component, OnInit, Output, Input } from '@angular/core';
-import { EventEmitter } from 'protractor';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'comment-section',
@@ -12,7 +11,10 @@ export class CommentSectionComponent implements OnInit {
   public stix: any;
   
   @Output()
-  public submitted = new EventEmitter();
+  public commentSubmitted = new EventEmitter();
+  
+  @Output()
+  public replySubmitted = new EventEmitter();
 
   @Output()
   public cancelled = new EventEmitter();

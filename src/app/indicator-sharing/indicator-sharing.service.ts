@@ -1,5 +1,5 @@
 import { forkJoin as observableForkJoin, of as observableOf,  Observable, throwError  } from 'rxjs';
-import { map, pluck, withLatestFrom } from 'rxjs/operators';
+import { map, pluck, withLatestFrom, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Relationship, Indicator } from 'stix';
 
@@ -56,9 +56,14 @@ export class IndicatorSharingService {
         return this.genericApi.patch(`${this.baseUrl}/${indicator.id}`, { data: { _id: indicator.id, type: 'indicator', attributes: indicator } });
     }
 
-    public addComment(comment, id) {
+    public addComment(comment, id): Observable<Indicator> {
         const url = `${this.multiplesUrl}/${id}/comment`;
-        return this.genericApi.patch(url, {data: { attributes: {'comment': comment}}});
+        return this.genericApi.patch(url, {data: { attributes: {'comment': comment}}})
+            .pipe(
+                RxjsHelpers.unwrapJsonApi(),
+                withLatestFrom(this.store.select('users').pipe(pluck('userList'))),
+                RxjsHelpers.populateSocialsSingle()
+            );
     }
 
     public addLike(id) {

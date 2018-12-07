@@ -214,4 +214,30 @@ export class RxjsHelpers {
             });
         };
     }
+
+    public static populateSocialsSingle<T extends StixCore = any>() {
+        return (source: Observable<[T, UserListItem[]]>) => {
+            return new Observable<T>((observer) => {
+                return source.subscribe({
+                    next([stix, users]) {
+                        if (stix.metaProperties && stix.metaProperties.comments && stix.metaProperties.comments.length) {
+                            stix.metaProperties.comments = stix.metaProperties.comments.map((comment) => {
+                                if (comment.user && comment.user.id) {
+                                    const foundUser = users.find((user) => user._id === comment.user.id);
+                                    if (foundUser) {
+                                        comment.user.userName = foundUser.userName || 'Unknown';
+                                        comment.user.avatar_url = foundUser.avatar_url;
+                                    }
+                                }
+                                return comment;
+                            });
+                        }
+                        observer.next(stix);
+                    },
+                    error(err) { observer.error(err); },
+                    complete() { observer.complete(); }
+                })
+            });
+        };
+    }
 }
