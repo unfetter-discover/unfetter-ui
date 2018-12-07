@@ -66,6 +66,16 @@ export class IndicatorSharingService {
             );
     }
 
+    public addReply(reply, id, commentId): Observable<Indicator> {
+        const url = `${this.multiplesUrl}/${id}/${commentId}/reply`;
+        return this.genericApi.patch(url, {data: { attributes: { reply }}})
+            .pipe(
+                RxjsHelpers.unwrapJsonApi(),
+                withLatestFrom(this.store.select('users').pipe(pluck('userList'))),
+                RxjsHelpers.populateSocialsSingle()
+            );
+    }
+
     public addLike(id) {
         const url = `${this.multiplesUrl}/${id}/like`;
         return this.genericApi.get(url);

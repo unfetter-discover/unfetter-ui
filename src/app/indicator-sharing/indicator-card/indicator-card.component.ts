@@ -1,7 +1,9 @@
 import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, Renderer2, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
-import { Observable ,  Subscription ,  BehaviorSubject } from 'rxjs';
-import { Store } from '@ngrx/store';
 import { MatTooltip } from '@angular/material';
+import { Observable ,  Subscription ,  BehaviorSubject } from 'rxjs';
+import { pluck, distinctUntilChanged } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { Indicator } from 'stix';
 
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { FormatHelpers } from '../../global/static/format-helpers';
@@ -17,7 +19,6 @@ import { GridFSFile } from '../../global/models/grid-fs-file';
 import { Constance } from '../../utils/constance';
 import { MasterConfig } from '../../core/services/run-config.service';
 import { AppState } from '../../root-store/app.reducers';
-import { pluck, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
     selector: 'indicator-card',
@@ -28,7 +29,23 @@ import { pluck, distinctUntilChanged } from 'rxjs/operators';
 })
 
 export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy {
-    @Input() public indicator: any;
+
+    @Input() 
+    public set indicator(v: Indicator | any) {
+        if (v.metaProperties && v.metaProperties.comments) {        
+            const replyCount = v.metaProperties.comments
+                .map(com => (com.replies && com.replies.length) || 0)
+                .reduce((acc, cur) => acc + cur, 0);
+            this.commentCount = replyCount + v.metaProperties.comments.length;
+        } else {
+            this.commentCount = 0;
+        }
+
+        this._indicator = v;
+    }
+
+    public get indicator() { return this._indicator }
+
     @Input() public attackPatterns: any;
     @Input() public intrusionSets: any;
     @Input() public creator: any;
@@ -44,6 +61,8 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
 
     @Output() public stateChange: EventEmitter<any> = new EventEmitter();
     @Output() public indicatorDeleted: EventEmitter<any> = new EventEmitter();
+
+    public commentCount = 0;
 
     public user;
     public showCommentTextArea: boolean = false;
@@ -61,6 +80,7 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     public readonly runMode = environment.runMode;
 
     private collapseCard$: Subscription;
+    private _indicator;
 
     private readonly FLASH_MSG_TIMER: number = 1500;
     private readonly FLASH_TOOLTIP_TIMER: number = 500;
@@ -188,6 +208,26 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
                     }
                 }
             );        
+    }
+
+    public submitReply(e: { commentId: string, reply: string }) {
+        console.log('~~~~', e);
+        this.showCommentTextArea = false;
+        this.flashMessage('Reply Submitted...');
+        // const addReply$ = this.indicatorSharingService.addReply(e.reply, this.indicator.id, e.commentId)
+        //     .subscribe(
+        //         (res) => {
+        //             this.updateIndicatorState(res);
+        //             this.flashMessage('Reply sucessfully added.');
+        //         },
+        //         (err) => {
+        //             this.flashMessage('Unable to reply.');
+        //             console.log(err);
+        //         },
+        //         () => {
+        //             if (addReply$) {
+        //                 addReply$.unsubscribe();
+        //         });
     }
 
     public whitespaceToBreak(comment: string): string {

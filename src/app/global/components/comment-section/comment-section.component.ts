@@ -11,13 +11,13 @@ export class CommentSectionComponent implements OnInit {
   public stix: any;
   
   @Output()
-  public commentSubmitted = new EventEmitter();
+  public commentSubmitted = new EventEmitter<string>();
   
   @Output()
-  public replySubmitted = new EventEmitter();
+  public replySubmitted = new EventEmitter<{ commentId: string, reply: string }>();
 
   @Output()
-  public cancelled = new EventEmitter();
+  public cancelled = new EventEmitter<null>();
 
   public commentText = '';
 

@@ -9,7 +9,7 @@
   </div>
   <div label="Comments" *ngIf="stix && stix.metaProperties && stix.metaProperties.comments && stix.metaProperties.comments.length > 0">
     <hr>
-    <div *ngFor="let comment of stix.metaProperties.comments | sortByField: 'submitted'; let i = index" class="comment">
+    <div *ngFor="let comment of stix.metaProperties.comments | sortByField: 'submitted'" class="comment">
       <comment [comment]="comment"></comment>
       <a (click)="reply.show = !reply.show">Reply</a>
       
@@ -20,12 +20,21 @@
           </div>
           <div class="text-right">
             <button mat-button (click)="reply.text = ''; reply.show = false;">CANCEL</button>
-            <button mat-raised-button color="primary" [disabled]="reply.text === ''" (click)="replySubmitted.emit(reply.text)">SAVE</button>
+            <button mat-raised-button color="primary" [disabled]="reply.text === ''" (click)="replySubmitted.emit({ commentId: comment._id, reply: reply.text })">SAVE</button>
           </div>
         </div>
       </div>
 
+      <div *ngIf="comment.replies && comment.replies.length" class="replyWrapper">
+        <div *ngFor="let commentReply of comment.replies">
+          <hr>
+          <p>{{ commentReply | json }}</p>
+          <comment [comment]="commentReply"></comment>
+        </div>
+      </div>
+
       <hr>
+
     </div>
   </div>
 </div>

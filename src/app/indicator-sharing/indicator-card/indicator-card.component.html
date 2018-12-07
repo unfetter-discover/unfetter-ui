@@ -283,7 +283,7 @@
       </mat-tab-group>
 
       <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">
-        <comment-section [stix]="indicator" (commentSubmitted)="submitComment($event)" (cancelled)="showCommentTextArea = false;"></comment-section>
+        <comment-section [stix]="indicator" (commentSubmitted)="submitComment($event)" (replySubmitted)="submitReply($event)" (cancelled)="showCommentTextArea = false;"></comment-section>
       </div>
     </div>
 
@@ -303,7 +303,7 @@
 
     <button mat-button color="{{ alreadyCommented ? 'primary' : '' }}" (click)="showCommentTextArea = !showCommentTextArea; showCommentTextArea && collapseContents ? collapseContents = false : ''">
       <i class="material-icons mat-24">chat_bubble</i>
-      <span *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">&nbsp;{{indicator.metaProperties.comments.length}}</span>
+      <span *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">&nbsp;{{ commentCount }}</span>
     </button>
   </mat-card-actions>
 </mat-card>

@@ -185,7 +185,6 @@ export class RxjsHelpers {
         };     
     }
 
-
     public static populateSocials<T extends StixCore = any>() {
         return (source: Observable<[T[], UserListItem[]]>) => {
             return new Observable<T[]>((observer) => {
@@ -200,6 +199,18 @@ export class RxjsHelpers {
                                             comment.user.userName = foundUser.userName || 'Unknown';
                                             comment.user.avatar_url = foundUser.avatar_url;
                                         }
+                                    }
+                                    if (comment.replies) {                                        
+                                        comment.replies = comment.replies.map((reply) => {
+                                            if (reply.user && reply.user.id) {
+                                                const foundUser = users.find((user) => user._id === reply.user.id);
+                                                if (foundUser) {
+                                                    reply.user.userName = foundUser.userName || 'Unknown';
+                                                    reply.user.avatar_url = foundUser.avatar_url;
+                                                }
+                                            }
+                                            return comment;
+                                        });
                                     }
                                     return comment;
                                 });
@@ -216,7 +227,7 @@ export class RxjsHelpers {
     }
 
     public static populateSocialsSingle<T extends StixCore = any>() {
-        return (source: Observable<[T, UserListItem[]]>) => {
+        return (source: Observable<any>) => {
             return new Observable<T>((observer) => {
                 return source.subscribe({
                     next([stix, users]) {
@@ -228,6 +239,18 @@ export class RxjsHelpers {
                                         comment.user.userName = foundUser.userName || 'Unknown';
                                         comment.user.avatar_url = foundUser.avatar_url;
                                     }
+                                }
+                                if (comment.replies) {  
+                                    comment.replies = comment.replies.map((reply) => {
+                                        if (reply.user && reply.user.id) {
+                                            const foundUser = users.find((user) => user._id === reply.user.id);
+                                            if (foundUser) {
+                                                reply.user.userName = foundUser.userName || 'Unknown';
+                                                reply.user.avatar_url = foundUser.avatar_url;
+                                            }
+                                        }
+                                        return comment;
+                                    });
                                 }
                                 return comment;
                             });
