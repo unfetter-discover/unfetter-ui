@@ -1,7 +1,7 @@
 import { forkJoin as observableForkJoin, of as observableOf,  Observable, throwError  } from 'rxjs';
 import { map, pluck, withLatestFrom } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Relationship } from 'stix';
+import { Relationship, Indicator } from 'stix';
 
 import { GenericApi } from '../core/services/genericapi.service';
 import { Constance } from '../utils/constance';
@@ -16,6 +16,7 @@ import { StixApiOptions } from '../global/models/stix-api-options';
 import { SigmaTranslations } from '../global/models/sigma-translation';
 import { IndicatorSharingFeatureState } from './store/indicator-sharing.reducers';
 import { Store } from '@ngrx/store';
+import { Sensor } from 'stix/unfetter/index';
 
 @Injectable()
 export class IndicatorSharingService {
@@ -37,9 +38,14 @@ export class IndicatorSharingService {
         private store: Store<IndicatorSharingFeatureState>
     ) { }
 
-    public getIndicators(filter: object = {}): Observable<any> {
+    public getIndicators(filter: object = {}): Observable<Indicator[]> {
         const url = `${this.baseUrl}?filter=${encodeURIComponent(JSON.stringify(filter))}&sort=${encodeURIComponent(JSON.stringify({ 'stix.created': -1 }))}&metaproperties=true`;
-        return this.genericApi.get(url);
+        return this.genericApi.get(url)
+            .pipe(
+                RxjsHelpers.unwrapJsonApi(),
+                withLatestFrom(this.store.select('users').pipe(pluck('userList'))),
+                RxjsHelpers.populateSocials()
+            );
     }
 
     public addIndicator(indicator): Observable<any> {
@@ -83,7 +89,7 @@ export class IndicatorSharingService {
         }
     }
 
-    public getSensors(): Observable<any> {
+    public getSensors(): Observable<Sensor[]> {
         const projectObj = {
             'stix.name': 1,
             'stix.id': 1,
@@ -101,7 +107,8 @@ export class IndicatorSharingService {
         const sortObj = {
             'stix.name': 1
         };
-        return this.genericApi.get(`${this.sensorsUrl}?project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}&sort=${JSON.stringify(sortObj)}&metaproperties=true`);
+        return this.genericApi.get(`${this.sensorsUrl}?project=${JSON.stringify(projectObj)}&filter=${JSON.stringify(filterObj)}&sort=${JSON.stringify(sortObj)}&metaproperties=true`)
+            .pipe(RxjsHelpers.unwrapJsonApi());
     }
 
     public getTotalIndicatorCount(): Observable<number> {
@@ -143,7 +150,7 @@ export class IndicatorSharingService {
         return this.genericApi.post(this.relationshipUrl, body);
     }
 
-    public doSearch(searchParameters: SearchParameters, sortType: SortTypes): Observable<any> {
+    public doSearch(searchParameters: SearchParameters, sortType: SortTypes): Observable<Indicator[]> {
         const url = `${this.baseUrl}/search?searchparameters=${encodeURIComponent(JSON.stringify(searchParameters))}&sorttype=${sortType}&metaproperties=true`;
         return this.genericApi.getNgrx<any>(url)
             .pipe(

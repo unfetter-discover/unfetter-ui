@@ -191,15 +191,22 @@ export class RxjsHelpers {
             return new Observable<T[]>((observer) => {
                 return source.subscribe({
                     next([stixArr, users]) {
-                        return stixArr.map((stix) => {
+                        stixArr.map((stix) => {
                             if (stix.metaProperties && stix.metaProperties.comments && stix.metaProperties.comments.length) {
                                 stix.metaProperties.comments = stix.metaProperties.comments.map((comment) => {
-                                    console.log('~~~~', comment);
-                                    return {};
+                                    if (comment.user && comment.user.id) {
+                                        const foundUser = users.find((user) => user._id === comment.user.id);
+                                        if (foundUser) {
+                                            comment.user.userName = foundUser.userName || 'Unknown';
+                                            comment.user.avatar_url = foundUser.avatar_url;
+                                        }
+                                    }
+                                    return comment;
                                 });
                             }
                             return stix;
                         });
+                        observer.next(stixArr);
                     },
                     error(err) { observer.error(err); },
                     complete() { observer.complete(); }

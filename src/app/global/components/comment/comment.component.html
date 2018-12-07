@@ -1,0 +1,12 @@
+<div class="commentComponent" *ngIf="comment">
+  <div class="flex flexItemsCenter mb-12">
+    <span *ngIf="comment.user.avatar_url">
+      <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
+    </span>
+    <span>&nbsp;
+      <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
+      <small class="text-muted" title="{{ comment.submitted | date:'medium' }}"> &bull; {{ comment.submitted | timeAgo }}</small>
+    </span>
+  </div>
+  <markdown-mentions [markDown]="comment.comment"></markdown-mentions>
+</div>

@@ -57,7 +57,7 @@ export class IndicatorSharingEffects {
                 this.indicatorSharingService.getIndicatorToAttackPatternRelationships()
                     .pipe(
                         map((rels) => [rels, stixState.attackPatterns]),
-                        RxjsHelpers.stixRelationshipArrayToObject('source_ref')
+                        RxjsHelpers.stixRelationshipArrayToObject('source_ref'),
                     ),
                 this.indicatorSharingService.getSensors(),
                 this.indicatorSharingService.getTotalIndicatorCount(),
@@ -67,13 +67,6 @@ export class IndicatorSharingEffects {
                         RxjsHelpers.stixRelationshipArrayToObject()
                     )
             )),
-            map((results) => [
-                results[0].map((r) => r.attributes),
-                results[1],
-                results[2].map((r) => r.attributes),
-                results[3],
-                results[4]
-            ]),
             mergeMap(([indicators, indicatorToApMap, sensors, indCount, intrToApMap]) => [
                 new indicatorSharingActions.SetIndicators(indicators),
                 new indicatorSharingActions.SetIndicatorToApMap(indicatorToApMap),
@@ -125,7 +118,6 @@ export class IndicatorSharingEffects {
         .ofType(indicatorSharingActions.ADD_INDICATOR)
         .pipe(
             switchMap((_) => this.indicatorSharingService.getSensors()),
-            map((sensorRes) => sensorRes.map((sensor) => sensor.attributes)),
             mergeMap((sensors) => [ 
                 new indicatorSharingActions.FetchIndicators(),
                 new indicatorSharingActions.SetSensors(sensors) 

@@ -117,6 +117,8 @@ import { TextHighlightComponent } from './components/text-highlight/text-highlig
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
 import { FabListComponent } from './components/fab-list/fab-list.component';
 import { TextTagListComponent } from './components/text-tag-list/text-tag-list.component';
+import { CommentComponent } from './components/comment/comment.component';
+import { CommentSectionComponent } from './components/comment-section/comment-section.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -210,7 +212,9 @@ const unfetterComponents = [
     CodeEditorComponent,
     FabListComponent,
     TextTagListComponent,
-    SigmaToolPipe
+    SigmaToolPipe,
+    CommentComponent,
+    CommentSectionComponent,
 ];
 
 @NgModule({
@@ -242,7 +246,7 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,                
+        ...unfetterComponents,                            
     ],
     exports: [
         ...unfetterComponents,

@@ -294,7 +294,8 @@
         <div label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
           <hr>
           <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index" class="comment">
-            <div class="flex flexItemsCenter mb-12">
+            <comment [comment]="comment"></comment>
+            <!-- <div class="flex flexItemsCenter mb-12">
               <span *ngIf="comment.user.avatar_url">
                 <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
               </span>
@@ -303,7 +304,7 @@
                 <small class="text-muted" title="{{ comment.submitted | date:'medium' }}"> &bull; {{ comment.submitted | timeAgo }}</small>
               </span>
             </div>
-            <markdown-mentions [markDown]="comment.comment"></markdown-mentions>
+            <markdown-mentions [markDown]="comment.comment"></markdown-mentions> -->
             <hr>
           </div>
         </div>
