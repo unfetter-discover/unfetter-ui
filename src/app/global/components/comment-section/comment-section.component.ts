@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, Input } from '@angular/core';
+import { EventEmitter } from 'protractor';
 
 @Component({
   selector: 'comment-section',
@@ -6,6 +7,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./comment-section.component.scss']
 })
 export class CommentSectionComponent implements OnInit {
+
+  @Input()
+  public stix: any;
+  
+  @Output()
+  public submitted = new EventEmitter();
+
+  @Output()
+  public cancelled = new EventEmitter();
+
+  public commentText = '';
 
   constructor() { }
 
