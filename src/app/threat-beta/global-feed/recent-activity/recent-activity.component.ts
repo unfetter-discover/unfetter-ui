@@ -33,10 +33,7 @@ export class RecentActivityComponent implements OnInit {
       take(1),
     )
     .subscribe(
-      (user: User) => {
-        console['debug'](`(${new Date().toISOString()}) got user info:`, user);
-        this.user = user;
-      },
+      (user: User) => this.user = user,
       err => console.log('could not load user', err)
     );
     // TODO need reports & articles (that have comments) too

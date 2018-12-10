@@ -82,10 +82,7 @@ export class ActivityListComponent implements OnInit {
                 take(1),
             )
             .subscribe(
-                user => {
-                    console['debug'](`(${new Date().toISOString()}) got user info:`, user);
-                    this.user = user;
-                },
+                user => this.user = user,
                 err => console.log('could not load user', err)
             );
 
