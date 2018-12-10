@@ -54,6 +54,7 @@ $notification-row-height: 106;
 
 .notificationTitle {
     width: 430px;
+    font-size: 18px;
 
     span {
         display: inline-block;
@@ -70,7 +71,7 @@ $notification-row-height: 106;
     p,
     small,
     .text-muted {
-        color: rgba(0, 0, 0, 0.57) !important;
+        color: $dark-text-dimmed !important;
     }
 }
 

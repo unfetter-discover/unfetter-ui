@@ -11,7 +11,7 @@
     <hr>
     <div *ngFor="let comment of stix.metaProperties.comments | sortByField: 'submitted'" class="comment">
       <comment [comment]="comment"></comment>
-      <a (click)="reply.show = !reply.show">Reply</a>
+      <a (click)="reply.show = !reply.show" class="plainLink"><strong>REPLY</strong></a>
       
       <div #reply>
         <div *ngIf="reply.show === true">
