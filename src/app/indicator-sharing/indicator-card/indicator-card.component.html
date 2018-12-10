@@ -57,22 +57,27 @@
         <i class="material-icons">check</i> Valid Sigma
       </small>
 
-      <ng-container *ngIf="indicator.metaProperties && indicator.metaProperties.patternSyntax && indicator.metaProperties.patternSyntax === 'sigma' || (indicator.metaProperties && indicator.metaProperties.validSigma); else stixPattern">
-        <p>
-          <code-editor value="{{ indicator.pattern }}" readOnly="true" selectedLang="YAML"></code-editor>
-        </p>
-      </ng-container>
-      <ng-template #stixPattern>
-        <ng-container *ngIf="(indicator.metaProperties && indicator.metaProperties.patternSyntax && indicator.metaProperties.patternSyntax === 'stix-pattern') || (indicator.metaProperties && indicator.metaProperties.validStixPattern); else textPattern">
-          <p><code class="codeBlock">{{ indicator.pattern }}</code></p>
+      <div>
+        <ng-container *ngIf="indicator.metaProperties && indicator.metaProperties.patternSyntax && indicator.metaProperties.patternSyntax === 'sigma' || (indicator.metaProperties && indicator.metaProperties.validSigma); else stixPattern">
+          <p>
+            <code-editor value="{{ indicator.pattern }}" readOnly="true" selectedLang="YAML"></code-editor>
+          </p>
         </ng-container>
-      </ng-template>
-      <ng-template #textPattern>
-        <p>
-          <markdown-editor [editing]="false" [flushed]="true" [truncate]="true"
-                [value]="indicator.pattern"></markdown-editor>
-        </p>
-      </ng-template>
+        <ng-template #stixPattern>
+          <ng-container *ngIf="(indicator.metaProperties && indicator.metaProperties.patternSyntax && indicator.metaProperties.patternSyntax === 'stix-pattern') || (indicator.metaProperties && indicator.metaProperties.validStixPattern); else textPattern">
+            <p><code class="codeBlock">{{ indicator.pattern }}</code></p>
+          </ng-container>
+        </ng-template>
+        <ng-template #textPattern>
+          <p>
+            <markdown-editor [editing]="false" [flushed]="true" [truncate]="true"
+                  [value]="indicator.pattern"></markdown-editor>
+          </p>
+        </ng-template>
+      </div>
+
+      <!-- Sometimes rendered markdown messed up floats -->
+      <div class="altClearFix"></div>
 
       <label *ngIf="(indicator.labels && indicator.labels.length) || canCrud">Labels</label>
       <div class="flex flexItemsCenter">
@@ -121,7 +126,7 @@
           </div>
         </div>
       </div>
-
+      
       <mat-tab-group #tabGroup>
         <mat-tab label="Details">
           <div *ngIf="indicator.description">
