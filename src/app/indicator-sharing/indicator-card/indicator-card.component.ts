@@ -211,7 +211,6 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     public submitReply(e: { commentId: string, reply: string }) {
-        console.log('~~~~in submit reply~~~~~\n', e);
         this.showCommentTextArea = false;
         this.flashMessage('Reply Submitted...');
         const addReply$ = this.indicatorSharingService.addReply(e.reply, this.indicator.id, e.commentId)

@@ -185,39 +185,17 @@ export class RxjsHelpers {
         };     
     }
 
+    /**
+     * @returns {() => Observable}
+     * @description Recommend use: Before this is called, call a `withLatestFrom(this.store.select('users').pipe(pluck('userList')))`
+     *      This will populate comments in the STIX metaProperties with user information.  This variant takes a STIX array
+     */
     public static populateSocials<T extends StixCore = any>() {
         return (source: Observable<[T[], UserListItem[]]>) => {
             return new Observable<T[]>((observer) => {
                 return source.subscribe({
                     next([stixArr, users]) {
-                        stixArr.map((stix) => {
-                            if (stix.metaProperties && stix.metaProperties.comments && stix.metaProperties.comments.length) {
-                                stix.metaProperties.comments = stix.metaProperties.comments.map((comment) => {
-                                    if (comment.user && comment.user.id) {
-                                        const foundUser = users.find((user) => user._id === comment.user.id);
-                                        if (foundUser) {
-                                            comment.user.userName = foundUser.userName || 'Unknown';
-                                            comment.user.avatar_url = foundUser.avatar_url;
-                                        }
-                                    }
-                                    if (comment.replies) {                                        
-                                        comment.replies = comment.replies.map((reply) => {
-                                            if (reply.user && reply.user.id) {
-                                                const foundUser = users.find((user) => user._id === reply.user.id);
-                                                if (foundUser) {
-                                                    reply.user.userName = foundUser.userName || 'Unknown';
-                                                    reply.user.avatar_url = foundUser.avatar_url;
-                                                }
-                                            }
-                                            return reply;
-                                        });
-                                    }
-                                    return comment;
-                                });
-                            }
-                            return stix;
-                        });
-                        observer.next(stixArr);
+                        observer.next(stixArr.map((stix) => RxjsHelpers.handlePopulateSocial(stix, users)));
                     },
                     error(err) { observer.error(err); },
                     complete() { observer.complete(); }
@@ -226,41 +204,57 @@ export class RxjsHelpers {
         };
     }
 
+    /**
+     * @returns {() => Observable}
+     * @description Recommend use: Before this is called, call a `withLatestFrom(this.store.select('users').pipe(pluck('userList')))`
+     *      This will populate comments in the stix metaProperties with user information.  This variants takes a single STIX object
+     */
     public static populateSocialsSingle<T extends StixCore = any>() {
         return (source: Observable<any>) => {
             return new Observable<T>((observer) => {
                 return source.subscribe({
                     next([stix, users]) {
-                        if (stix.metaProperties && stix.metaProperties.comments && stix.metaProperties.comments.length) {
-                            stix.metaProperties.comments = stix.metaProperties.comments.map((comment) => {
-                                if (comment.user && comment.user.id) {
-                                    const foundUser = users.find((user) => user._id === comment.user.id);
-                                    if (foundUser) {
-                                        comment.user.userName = foundUser.userName || 'Unknown';
-                                        comment.user.avatar_url = foundUser.avatar_url;
-                                    }
-                                }
-                                if (comment.replies) {  
-                                    comment.replies = comment.replies.map((reply) => {
-                                        if (reply.user && reply.user.id) {
-                                            const foundUser = users.find((user) => user._id === reply.user.id);
-                                            if (foundUser) {
-                                                reply.user.userName = foundUser.userName || 'Unknown';
-                                                reply.user.avatar_url = foundUser.avatar_url;
-                                            }
-                                        }
-                                        return reply;
-                                    });
-                                }
-                                return comment;
-                            });
-                        }
-                        observer.next(stix);
+                        observer.next(RxjsHelpers.handlePopulateSocial(stix, users));
                     },
                     error(err) { observer.error(err); },
                     complete() { observer.complete(); }
                 })
             });
         };
+    }
+
+    /**
+     * @param  {T extends StixCore} stix
+     * @param  {UserListItem[]} users
+     * @description Common logic for populateSocials and populateSocialsSingle functions
+     */
+    public static handlePopulateSocial<T extends StixCore = any>(stix: T, users: UserListItem[]) {
+        if (stix.metaProperties && stix.metaProperties.comments && stix.metaProperties.comments.length) {
+            stix.metaProperties.comments = stix.metaProperties.comments.map((comment) => RxjsHelpers.handlePopulateComment(comment, users));
+        }
+        return stix;
+    }
+
+    public static handlePopulateComment(comment, users: UserListItem[]) {
+        if (comment.user && comment.user.id) {
+            const foundUser = users.find((user) => user._id === comment.user.id);
+            if (foundUser) {
+                comment.user.userName = foundUser.userName || 'Unknown';
+                comment.user.avatar_url = foundUser.avatar_url;
+            }
+        }
+        if (comment.replies) {
+            comment.replies = comment.replies.map((reply) => {
+                if (reply.user && reply.user.id) {
+                    const foundUser = users.find((user) => user._id === reply.user.id);
+                    if (foundUser) {
+                        reply.user.userName = foundUser.userName || 'Unknown';
+                        reply.user.avatar_url = foundUser.avatar_url;
+                    }
+                }
+                return reply;
+            });
+        }
+        return comment;
     }
 }

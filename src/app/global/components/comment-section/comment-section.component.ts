@@ -1,11 +1,11 @@
-import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
+import { Component, Output, Input, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'comment-section',
   templateUrl: './comment-section.component.html',
   styleUrls: ['./comment-section.component.scss']
 })
-export class CommentSectionComponent implements OnInit {
+export class CommentSectionComponent {
 
   @Input()
   public stix: any;
@@ -22,9 +22,4 @@ export class CommentSectionComponent implements OnInit {
   public commentText = '';
 
   constructor() { }
-
-  ngOnInit() {
-    console.log('~~~~\n', this.stix);
-  }
-
 }

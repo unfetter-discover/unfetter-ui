@@ -1,6 +1,6 @@
 
 import { forkJoin as observableForkJoin, of as observableOf, combineLatest as observableCombineLatest, forkJoin } from 'rxjs';
-import { withLatestFrom, switchMap, filter, map, mergeMap, pluck, skip, catchError, take } from 'rxjs/operators';
+import { withLatestFrom, switchMap, filter, map, mergeMap, pluck, skip, catchError, take, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import * as indicatorSharingActions from './indicator-sharing.actions';
 import * as fromIndicators from './indicator-sharing.reducers';
 import { WebsocketService } from '../../core/services/web-socket.service';
-import { WSMessageTypes } from '../../global/enums/ws-message-types.enum';
+import { WSMessageTypes, WSSocialTypes } from '../../global/enums/ws-message-types.enum';
 import { GenericApi } from '../../core/services/genericapi.service';
 import { IndicatorSharingService } from '../indicator-sharing.service';
 import { Constance } from '../../utils/constance';
@@ -34,6 +34,13 @@ export class IndicatorSharingEffects {
             ),
             filter(([userId, message]) => message.body.user.id !== userId),
             map(([userId, message]) => message),
+            withLatestFrom(this.store.select('users').pipe(pluck('userList'))),
+            map(([message, users]) => {
+                if (message.type === WSSocialTypes.COMMENT) {
+                    message.body = RxjsHelpers.handlePopulateComment(message.body, users as any);
+                }
+                return message;
+            }),
             map((message) => ({
                 type: indicatorSharingActions.UPDATE_SOCIAL,
                 payload: message

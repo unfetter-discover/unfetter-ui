@@ -3,6 +3,7 @@ import * as fromApp from '../../root-store/app.reducers'
 import { SearchParameters } from '../models/search-parameters';
 import { SortTypes } from '../models/sort-types.enum';
 import { Constance } from '../../utils/constance';
+import { WSSocialTypes } from '../../global/enums/ws-message-types.enum';
 
 export interface IndicatorSharingFeatureState extends fromApp.AppState {
     indicatorSharing: IndicatorSharingState
@@ -214,7 +215,7 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                     updatedIndicator.metaProperties = {};
                 }
                 switch (action.payload.type) {
-                    case 'COMMENT':
+                    case WSSocialTypes.COMMENT:
                         if (!updatedIndicator.metaProperties.comments) {
                             updatedIndicator.metaProperties.comments = [];
                         }
