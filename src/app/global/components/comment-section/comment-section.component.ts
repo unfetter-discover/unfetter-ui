@@ -24,6 +24,7 @@ export class CommentSectionComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    console.log('~~~~\n', this.stix);
   }
 
 }

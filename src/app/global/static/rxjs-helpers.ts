@@ -209,7 +209,7 @@ export class RxjsHelpers {
                                                     reply.user.avatar_url = foundUser.avatar_url;
                                                 }
                                             }
-                                            return comment;
+                                            return reply;
                                         });
                                     }
                                     return comment;
@@ -249,7 +249,7 @@ export class RxjsHelpers {
                                                 reply.user.avatar_url = foundUser.avatar_url;
                                             }
                                         }
-                                        return comment;
+                                        return reply;
                                     });
                                 }
                                 return comment;

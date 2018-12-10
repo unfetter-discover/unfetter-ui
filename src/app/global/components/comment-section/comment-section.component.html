@@ -28,7 +28,6 @@
       <div *ngIf="comment.replies && comment.replies.length" class="replyWrapper">
         <div *ngFor="let commentReply of comment.replies">
           <hr>
-          <p>{{ commentReply | json }}</p>
           <comment [comment]="commentReply"></comment>
         </div>
       </div>
