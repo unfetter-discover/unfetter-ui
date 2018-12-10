@@ -221,6 +221,16 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                         }
                         updatedIndicator.metaProperties.comments.unshift(action.payload.body);
                         break;
+                    case WSSocialTypes.REPLY:
+                        if (!updatedIndicator.metaProperties.comments) {
+                            updatedIndicator.metaProperties.comments = [];
+                        }
+                        const { commentId } = action.payload.body;
+                        const commentToUpdate = updatedIndicator.metaProperties.comments.find((comm) => comm._id === commentId);
+                        if (commentToUpdate) {
+                            commentToUpdate.replies.unshift(action.payload.body);
+                        }
+                        break;
                 }
 
                 iIndicators[indicatorIndex] = updatedIndicator;

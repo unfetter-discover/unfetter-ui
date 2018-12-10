@@ -36,8 +36,11 @@ export class IndicatorSharingEffects {
             map(([userId, message]) => message),
             withLatestFrom(this.store.select('users').pipe(pluck('userList'))),
             map(([message, users]) => {
-                if (message.type === WSSocialTypes.COMMENT) {
-                    message.body = RxjsHelpers.handlePopulateComment(message.body, users as any);
+                switch (message.type) {
+                    case WSSocialTypes.COMMENT:
+                    case WSSocialTypes.REPLY:
+                        message.body = RxjsHelpers.handlePopulateComment(message.body, users as any);
+                        break;
                 }
                 return message;
             }),
