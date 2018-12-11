@@ -19,6 +19,7 @@ import { GridFSFile } from '../../global/models/grid-fs-file';
 import { Constance } from '../../utils/constance';
 import { MasterConfig } from '../../core/services/run-config.service';
 import { AppState } from '../../root-store/app.reducers';
+import { sortArray } from '../../global/pipes/field-sort.pipe';
 
 @Component({
     selector: 'indicator-card',
@@ -32,7 +33,8 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
 
     @Input() 
     public set indicator(v: Indicator | any) {
-        if (v.metaProperties && v.metaProperties.comments) {        
+        if (v.metaProperties && v.metaProperties.comments) {
+            v.metaProperties.comments = sortArray(v.metaProperties.comments, 'submitted');        
             const replyCount = v.metaProperties.comments
                 .map(com => (com.replies && com.replies.length) || 0)
                 .reduce((acc, cur) => acc + cur, 0);
@@ -116,6 +118,17 @@ export class IndicatorCardComponent implements OnInit, AfterViewInit, OnDestroy 
             const alreadyCommented = this.indicator.metaProperties.comments.find((comment) => comment.user.id === this.user._id);
             if (alreadyCommented) {
                 this.alreadyCommented = true;
+            }
+
+            if (!alreadyCommented) {
+                const replies = this.indicator.metaProperties.comments
+                    .filter(comment => comment.replies && comment.replies.length)
+                    .map(comment => comment.replies)
+                    .reduce((acc, cur) => acc.concat(cur), []);
+                const replied = replies.find((reply) => reply.user.id === this.user._id);
+                if (replied) {
+                    this.alreadyCommented = true;
+                }
             }
         }
 
