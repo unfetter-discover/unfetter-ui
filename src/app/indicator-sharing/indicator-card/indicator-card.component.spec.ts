@@ -195,13 +195,6 @@ describe('IndicatorCardComponent', () => {
         expect(component.indicator.labels.includes('test')).toBeTruthy();        
     });
 
-    it('should add comment', () => {
-        component.commentText = 'test';
-        component.submitComment();
-        expect(component.indicator.metaProperties.comments).toBeTruthy();
-        expect(component.indicator.metaProperties.comments.map((comObj) => comObj.comment).includes('test')).toBeTruthy();
-    });
-
     it('should add like', () => {
         component.likeIndicator();
         expect(component.indicator.metaProperties.likes).toBeTruthy();

@@ -1,0 +1,39 @@
+<div class="commentSectionComponent">
+  <h4>Comment</h4>
+  <div class="mb-6">
+    <simplemde-mentions ngDefaultControl [(ngModel)]="commentText" [options]="{ autofocus: true }" class="mdeComment"></simplemde-mentions>
+  </div>
+  <div class="text-right">
+    <button mat-button (click)="commentText = ''; cancelled.emit(null)">CANCEL</button>
+    <button mat-raised-button color="primary" [disabled]="commentText === ''" (click)="commentSubmitted.emit(commentText)">SAVE</button>
+  </div>
+  <div label="Comments" *ngIf="stix && stix.metaProperties && stix.metaProperties.comments && stix.metaProperties.comments.length > 0">
+    <hr>
+    <div *ngFor="let comment of stix.metaProperties.comments" class="comment">
+      <comment [comment]="comment"></comment>
+      <a (click)="reply.show = !reply.show" class="plainLink"><strong>REPLY</strong></a>
+      
+      <div #reply>
+        <div *ngIf="reply.show === true">
+          <div class="mb-6 mt-3">
+            <simplemde-mentions ngDefaultControl [(ngModel)]="reply.text" [options]="{ autofocus: true }" class="mdeComment"></simplemde-mentions>
+          </div>
+          <div class="text-right">
+            <button mat-button (click)="reply.text = ''; reply.show = false;">CANCEL</button>
+            <button mat-raised-button color="primary" [disabled]="reply.text === ''" (click)="replySubmitted.emit({ commentId: comment._id, reply: reply.text })">SAVE</button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="comment.replies && comment.replies.length" class="replyWrapper">
+        <div *ngFor="let commentReply of comment.replies">
+          <hr>
+          <comment [comment]="commentReply"></comment>
+        </div>
+      </div>
+
+      <hr>
+
+    </div>
+  </div>
+</div>
