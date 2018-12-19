@@ -22,10 +22,10 @@
     <ng-container *ngIf="authServices && (authServices.length > 1)">
       <button id="login-button" mat-raised-button *ngIf="!demoMode && !authService.loggedIn()"
           [matMenuTriggerFor]="loginMenu" color="accent">Sign In / Register</button>
-      <mat-menu #loginMenu="matMenu" class="login-options" [overlapTrigger]="false">
+      <mat-menu #loginMenu="matMenu" class="signin-options" [overlapTrigger]="false">
         <a *ngFor="let service of authServices" mat-button color="primary" href="/api/auth/{{service}}-login">
           <img src="assets/images/logos/{{service}}.png" width="32" height="32">
-          <span class="login-option">... Using {{service | capitalize}}</span>
+          <span class="signin-option">... Using {{service | capitalize}}</span>
         </a>
       </mat-menu>
     </ng-container>

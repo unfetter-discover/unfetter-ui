@@ -199,3 +199,11 @@
     height: 35px;
     margin-left: 9px;
 }
+
+::ng-deep .mat-menu-panel.signin-options {
+    width: 200px;
+
+    .signin-option {
+        padding-left: 4px;
+    }
+}
