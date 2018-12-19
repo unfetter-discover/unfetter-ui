@@ -18,6 +18,7 @@ export class BoardLayoutComponent implements OnInit {
   public failedToLoad = new BehaviorSubject(false).asObservable();
 
   public boardId$: Observable<string>;
+  public showAddReportFab$: Observable<boolean>;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +48,8 @@ export class BoardLayoutComponent implements OnInit {
           console.log(err);
         }
       );
+
+    this.showAddReportFab$ = this.store.select('threat').pipe(pluck('showAddReportFab'));
 
     this.finishedLoadingAll$ = this.store.select('threat').pipe(pluck('threatboardLoadingComplete'));
   }

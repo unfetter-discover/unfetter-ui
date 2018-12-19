@@ -3,6 +3,7 @@ import * as fromApp from '../../root-store/app.reducers'
 import { SearchParameters } from '../models/search-parameters';
 import { SortTypes } from '../models/sort-types.enum';
 import { Constance } from '../../utils/constance';
+import { WSSocialTypes } from '../../global/enums/ws-message-types.enum';
 
 export interface IndicatorSharingFeatureState extends fromApp.AppState {
     indicatorSharing: IndicatorSharingState
@@ -34,7 +35,8 @@ export const initialSearchParameters: SearchParameters = {
     dataSources: [],
     intrusionSets: [],
     observedData: [],
-    validStixPattern: false
+    validStixPattern: false,
+    validSigma: false
 };
 
 export const initialState: IndicatorSharingState = {
@@ -213,11 +215,21 @@ export function indicatorSharingReducer(state = initialState, action: indicatorS
                     updatedIndicator.metaProperties = {};
                 }
                 switch (action.payload.type) {
-                    case 'COMMENT':
+                    case WSSocialTypes.COMMENT:
                         if (!updatedIndicator.metaProperties.comments) {
                             updatedIndicator.metaProperties.comments = [];
                         }
                         updatedIndicator.metaProperties.comments.unshift(action.payload.body);
+                        break;
+                    case WSSocialTypes.REPLY:
+                        if (!updatedIndicator.metaProperties.comments) {
+                            updatedIndicator.metaProperties.comments = [];
+                        }
+                        const { commentId } = action.payload.body;
+                        const commentToUpdate = updatedIndicator.metaProperties.comments.find((comm) => comm._id === commentId);
+                        if (commentToUpdate) {
+                            commentToUpdate.replies.unshift(action.payload.body);
+                        }
                         break;
                 }
 

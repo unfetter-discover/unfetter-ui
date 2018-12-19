@@ -196,14 +196,16 @@ export class CodeMirrorHelpers {
 
     /**
      * @param {HTMLElement} elementToPosition
+     * @param {number} paddingLeft=13
+     * @param {number} paddingBottom=2
      * @param {HTMLElement} relativeElement
      * @description Positions an absolute positioned HTML element at cursor
      *      The relative element is needed if there is the mentions window is wrapped 
      *      in a relative element, such as mat-sidenav-container
      */
-    positionAtCursor(elementToPosition: HTMLElement, relativeElement?: HTMLElement): void {
+    positionAtCursor(elementToPosition: HTMLElement, paddingLeft = 13, paddingBottom = 2, relativeElement?: HTMLElement): void {
         const pos = this.codeMirror.cursorCoords(false);
-        const left = pos.left + 13, top = pos.bottom + 2;
+        const left = pos.left + paddingLeft, top = pos.bottom + paddingBottom;
         if (!elementToPosition.style) {
             console.log('Warning: Attempt to style an object without a style property');
         } else if (relativeElement) {

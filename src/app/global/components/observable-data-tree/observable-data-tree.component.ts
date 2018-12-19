@@ -113,7 +113,7 @@ export class ObservableDataTreeComponent implements OnInit {
             }
 
         } else {
-            console.log('There is nothing to add observable data to, please use a componenant input');
+            console.log('There is nothing to add observable data to, please use a component input');
         }
     }
 

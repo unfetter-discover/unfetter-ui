@@ -1,3 +1,5 @@
+// ~~~ Vendor ~~~
+
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
@@ -31,6 +33,30 @@ import {OverlayModule} from '@angular/cdk/overlay';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { SimplemdeModule, SIMPLEMDE_CONFIG } from 'ng2-simplemde';
 import { ClipboardModule } from 'ngx-clipboard';
+
+// ~~~ Pipes ~~~
+
+import { CapitalizePipe } from './pipes/capitalize.pipe';
+import { FieldSortPipe } from './pipes/field-sort.pipe';
+import { SophisticationPipe } from './pipes/sophistication.pipe';
+import { TimeAgoPipe } from './pipes/time-ago.pipe';
+import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
+import { TimesPipe } from './pipes/times.pipe';
+import { SigmaToolPipe } from './pipes/sigma-tool.pipe';
+
+// ~~~ Directives ~~~
+
+import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
+import { ResizeDirective } from './directives/resize.directive';
+import { ScrollTrapDirective } from './directives/scroll-trap.directive';
+
+// ~~~ Services ~~~
+
+import { AuthService } from '../core/services/auth.service';
+import { TacticsControlService } from './components/tactics-pane/tactics-control.service';
+import { TacticsTooltipService } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
+
+// ~~~ Components ~~~
 
 import { AdditionalQueriesComponent } from './components/additional-queries/additional-queries.component';
 import { AddLabelReactiveComponent } from './components/add-label/add-label.component';
@@ -74,35 +100,25 @@ import { SpeedDialComponent } from './components/speed-dial/speed-dial.component
 import { StixTableComponent } from './components/stix-table/stix-table.component';
 import { TacticsCarouselComponent } from './components/tactics-pane/tactics-carousel/tactics-carousel.component';
 import { TacticsCarouselControlComponent } from './components/tactics-pane/tactics-carousel/tactics-carousel-control.component';
-import { TacticsControlService } from './components/tactics-pane/tactics-control.service';
 import { TacticsHeatmapComponent } from './components/tactics-pane/tactics-heatmap/tactics-heatmap.component';
 import { TacticsPaneComponent } from './components/tactics-pane/tactics-pane.component';
 import { TacticsTooltipComponent } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.component';
-import { TacticsTooltipService } from './components/tactics-pane/tactics-tooltip/tactics-tooltip.service';
 import { TacticsTreemapComponent } from './components/tactics-pane/tactics-treemap/tactics-treemap.component';
 import { TreemapComponent } from './components/treemap/treemap.component';
 import { FileListComponent } from './components/file-list/file-list.component';
 import { ExternalReferencesListComponent } from './components/external-references-list/external-references-list.component';
 import { ImplementationsListComponent } from './components/implementations-list/implementations-list.component';
 import { AddLabelAltComponent } from './components/add-label-alt/add-label-alt.component';
-
-import { InfiniteScrollDirective } from './directives/infinite-scroll.directive';
-import { ResizeDirective } from './directives/resize.directive';
-
-import { CapitalizePipe } from './pipes/capitalize.pipe';
-import { FieldSortPipe } from './pipes/field-sort.pipe';
-import { SophisticationPipe } from './pipes/sophistication.pipe';
-import { TimeAgoPipe } from './pipes/time-ago.pipe';
-import { AuthService } from '../core/services/auth.service';
-import { ReadableBytesPipe } from './pipes/readable-bytes.pipe';
-import { TimesPipe } from './pipes/times.pipe';
 import { UnfetterCarouselComponent, PrimedDirective } from './components/tactics-pane/tactics-carousel/unf-carousel.component';
-import { ScrollTrapDirective } from './directives/scroll-trap.directive';
 import { SimplemdeMentionsComponent } from './components/simplemde-mentions/simplemde-mentions.component';
 import { SimpleMDEConfig } from './static/simplemde-config';
 import { MarkdownMentionsComponent } from './components/markdown-mentions/markdown-mentions.component';
 import { TextHighlightComponent } from './components/text-highlight/text-highlight.component';
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
+import { FabListComponent } from './components/fab-list/fab-list.component';
+import { TextTagListComponent } from './components/text-tag-list/text-tag-list.component';
+import { CommentComponent } from './components/comment/comment.component';
+import { CommentSectionComponent } from './components/comment-section/comment-section.component';
 
 const matModules = [
     MatAutocompleteModule,
@@ -194,6 +210,11 @@ const unfetterComponents = [
     ScrollTrapDirective,
     TextHighlightComponent,
     CodeEditorComponent,
+    FabListComponent,
+    TextTagListComponent,
+    SigmaToolPipe,
+    CommentComponent,
+    CommentSectionComponent,
 ];
 
 @NgModule({
@@ -225,7 +246,7 @@ const unfetterComponents = [
         ...matModules
     ],
     declarations: [
-        ...unfetterComponents,
+        ...unfetterComponents,                            
     ],
     exports: [
         ...unfetterComponents,

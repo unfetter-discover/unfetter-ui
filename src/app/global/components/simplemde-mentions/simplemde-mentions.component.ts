@@ -183,7 +183,7 @@ export class SimplemdeMentionsComponent implements ControlValueAccessor, AfterVi
         ) {
           this.mentionTerm$.next(this.initMentionTerm);
           this.showUserMentions = true;
-          this.codeMirrorHelpers.positionAtCursor(this.userMentions.nativeElement, this.elRef.nativeElement);
+          this.codeMirrorHelpers.positionAtCursor(this.userMentions.nativeElement, 13, 2, this.elRef.nativeElement);
           this.mentionTerm$.next({
             wordRange: word.range,
             term: '@'

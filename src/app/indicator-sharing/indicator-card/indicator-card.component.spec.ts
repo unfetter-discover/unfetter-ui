@@ -23,6 +23,7 @@ import { mockConfigService } from '../../testing/mock-config-service';
 import { ConfigService } from '../../core/services/config.service';
 import { ReadableBytesPipe } from '../../global/pipes/readable-bytes.pipe';
 import * as fromApp from '../../root-store/app.reducers';
+import { SigmaToolPipe } from '../../global/pipes/sigma-tool.pipe';
 
 describe('IndicatorCardComponent', () => {
 
@@ -133,6 +134,7 @@ describe('IndicatorCardComponent', () => {
                     CapitalizePipe,
                     ChipLinksComponent,
                     ReadableBytesPipe,
+                    SigmaToolPipe,
                 ],
                 imports: [
                     MatButtonModule,
@@ -191,13 +193,6 @@ describe('IndicatorCardComponent', () => {
         component.addLabel('test');
         expect(component.indicator.labels).toBeTruthy();
         expect(component.indicator.labels.includes('test')).toBeTruthy();        
-    });
-
-    it('should add comment', () => {
-        component.commentText = 'test';
-        component.submitComment();
-        expect(component.indicator.metaProperties.comments).toBeTruthy();
-        expect(component.indicator.metaProperties.comments.map((comObj) => comObj.comment).includes('test')).toBeTruthy();
     });
 
     it('should add like', () => {

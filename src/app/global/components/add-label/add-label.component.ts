@@ -46,7 +46,6 @@ export class AddLabelReactiveComponent implements OnInit {
     }
 
     public buttonClick(e) {
-        console.log('~~~~', this.labelInput);
         e.preventDefault();
         this.showAddLabel = !this.showAddLabel;
         if (this.showAddLabel) {

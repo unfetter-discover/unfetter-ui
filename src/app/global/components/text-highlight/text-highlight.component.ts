@@ -30,10 +30,7 @@ export class TextHighlightComponent implements OnInit {
   public set showFab(v: boolean) { 
     if (!v) { this.selection = null; }
     this._showFab = v;
-  }
-
-  public searchListHeight = '338';
-  public searchListWidth = '226';
+  }  
 
   public searchTerm$ = new FormControl('');
   public searchResults$: Observable<any[]> = observableOf([]);
@@ -72,11 +69,7 @@ export class TextHighlightComponent implements OnInit {
 
   @HostListener('document:mousedown', ['$event'])
   public clickedOutside(event) {
-    if (this.showFab && !this.fab.nativeElement.contains(event.target)) {
-      if (this.action === 'TAG' && this.searchList && this.searchList.nativeElement && this.searchList.nativeElement.contains(event.target)) {
-        event.preventDefault();
-        return;
-      }
+    if (this.showFab && this.action !== 'TAG' && !this.fab.nativeElement.contains(event.target)) {
       this.showFab = false;
       this.searchTerm$.patchValue('');
     }
@@ -101,6 +94,8 @@ export class TextHighlightComponent implements OnInit {
   }
 
   public onTagClick(id: string) {
+    console.log(id);
+    
     const idSet = new Set([...this.recentTagIds, id]);
     this.recentTagIds = Array.from(idSet);
     this.tagClicked.emit({

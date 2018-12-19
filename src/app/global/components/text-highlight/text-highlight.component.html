@@ -1,44 +1,10 @@
 <div class="textHighlightComponent" (mouseup)="mouseUp($event)">
-
-  <span 
-    id="fab" 
-    #fab 
-    #trigger="cdkOverlayOrigin" 
-    cdkOverlayOrigin
-    [class.inlineBlock]="showFab"
-  >
+  <span id="fab" #fab [class.inlineBlock]="showFab">
     <button mat-mini-fab color="accent" matTooltip="{{ toolTipText }}" (click)="onClick()" *ngIf="action === 'QUOTE'">
       <i class="material-icons mat-24">add</i>
     </button>
-    <button mat-mini-fab color="accent" *ngIf="action === 'TAG'">
-      <i class="material-icons mat-24">add</i>
-    </button>
+    <fab-list [(showFab)]="showFab" [items$]="searchResults$" (tagClicked)="onTagClick($event)" *ngIf="action === 'TAG'"></fab-list>
   </span>
-
-  <ng-template
-    [cdkConnectedOverlayOrigin]="trigger" 
-    [cdkConnectedOverlayOpen]="showFab"
-    [cdkConnectedOverlayPositions]="positions"
-    height="searchListHeight"
-    width="searchListWidth"
-    cdkConnectedOverlay
-    *ngIf="action === 'TAG'"
-  >
-    <div #searchList id="searchList" class="mat-elevation-z18" [ngStyle]="{ 'max-width.px': searchListWidth, 'max-height.px': searchListHeight }">
-      <!-- TODO add search bar back after there's a way to keep the text selected -->
-      <!-- <div id="searchWrapper">
-        <mat-form-field floatLabel="never" id="searchInput" class="full-width">
-          <input matInput #filter placeholder="Search" [formControl]="searchTerm$" (focus)="$event.preventDefault()">
-          <mat-icon matPrefix>search</mat-icon>
-        </mat-form-field>
-      </div> -->
-      <div id="searchResults">
-        <div *ngFor="let stix of searchResults$ | async" class="searchResultItem">
-          <a (click)="onTagClick(stix.id)">{{ stix.name || 'Unknown' }}</a>
-        </div>
-      </div>
-    </div>
-  </ng-template>
   
   <ng-content></ng-content>
 

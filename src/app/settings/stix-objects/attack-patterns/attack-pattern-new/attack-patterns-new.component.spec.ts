@@ -1,15 +1,17 @@
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { Location } from '@angular/common';
+import { TestBed, ComponentFixture, async, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, async, fakeAsync, tick } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatInputModule, MatSelectModule, MatSnackBar } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
+import { of as observableOf, Observable } from 'rxjs';
+import { StoreModule } from '@ngrx/store';
+
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
-import { StoreModule } from '@ngrx/store';
-import { of as observableOf, Observable } from 'rxjs';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog, MatInputModule, MatSelectModule, MatSnackBar } from '@angular/material';
+
 import { ComponentModule } from '../../../../components/component.module';
 import { CoreModule } from '../../../../core/core.module';
 import { ConfigService } from '../../../../core/services/config.service';
@@ -17,20 +19,21 @@ import { GlobalModule } from '../../../../global/global.module';
 import { reducers } from '../../../../root-store/app.reducers';
 import { click, newEvent } from '../../../../testing/index';
 import { StixService } from '../../../stix.service';
+
 // Load the implementations that should be tested
 import { AttackPatternNewComponent } from './attack-patterns-new.component';
 import { MarkdownEditorComponent } from '../../../../global/components/markdown-editor/markdown-editor.component';
 import { MarkdownComponent } from 'ngx-markdown';
 
-
 /** Duration of the select opening animation. */
 const SELECT_OPEN_ANIMATION = 200;
+
 /** Duration of the select closing animation and the timeout interval for the backdrop. */
 const SELECT_CLOSE_ANIMATION = 500;
 
 ////// Testing Vars //////
-let comp: AttackPatternNewComponent;
 let fixture: ComponentFixture<AttackPatternNewComponent>;
+let comp: AttackPatternNewComponent;
 let overlayContainerElement: HTMLElement;
 let de: DebugElement;
 let el: HTMLInputElement;
@@ -51,7 +54,7 @@ let serviceMock = {
 describe('AttackPatternNewComponent', () => {
   describe('Test', componentInitialized);
   describe('Test', buttons);
-  xdescribe('Test', formFields)
+  describe('Test', formFields)
 });
 
 //////////////////////////////////
@@ -175,7 +178,7 @@ function formFields() {
       // expect(comp.attackPattern.attributes.description).toBe(description, 'should add name to model');
     });
 
-    it('should add sophistication level to model', fakeAsync(() => {
+    xit('should add sophistication level to model', fakeAsync(() => {
       const novice = comp.x_unfetter_sophistication_levels[0].id;
       fixture.detectChanges(); // runs initial lifecycle hooks
 
@@ -194,7 +197,7 @@ function formFields() {
       expect(comp.attackPattern.attributes.x_unfetter_sophistication_level).toBe(novice, 'should add name to model');
     }));
 
-    it('should add kill chain to model', fakeAsync(() => {
+    xit('should add kill chain to model', fakeAsync(() => {
       const killChainName = 'kill-chain-name';
       const phaseName = 'Phase name';
       fixture.detectChanges(); // runs initial lifecycle hooks

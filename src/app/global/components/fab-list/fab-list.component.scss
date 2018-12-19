@@ -1,0 +1,43 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/modules/mat-colors';
+
+#searchList {
+  border-radius: 4px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#searchWrapper,
+#searchResults {
+  padding: 4px;
+}
+
+#searchResults {
+  z-index: 1;
+  overflow-y: auto;
+  margin-top: -34px;
+}
+
+.searchResultItem {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  a {
+    color: $dark-text-default;
+  }
+}
+
+#searchInput ::ng-deep {
+  transform: translateY(-14px);
+
+  .mat-icon {
+    transform: translateY(5px);
+  }
+}
+
+.recentItemsShown {
+  border-bottom: 1px dashed get-color($grey);
+}

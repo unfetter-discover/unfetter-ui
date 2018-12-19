@@ -46,27 +46,49 @@
     <div *ngIf="!collapseContents">
 
       <label>Pseudocode</label>
-        <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.pattern" (cbOnError)="handleCopy($event, patternTooltip)" (cbOnSuccess)="handleCopy($event, patternTooltip)">
-          <mat-icon>content_copy</mat-icon>
-          <div #patternTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
-        </button>
-        <small *ngIf="indicator.metaProperties && indicator.metaProperties.validStixPattern">
-          <i class="material-icons">check</i> Valid STIX Pattern
-        </small>
-        <p>
-          <code class="codeBlock">{{ indicator.pattern }}</code>
-        </p>
+      <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.pattern" (cbOnError)="handleCopy($event, patternTooltip)" (cbOnSuccess)="handleCopy($event, patternTooltip)">
+        <mat-icon>content_copy</mat-icon>
+        <div #patternTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
+      </button>
+      <small *ngIf="indicator.metaProperties && indicator.metaProperties.validStixPattern">
+        <i class="material-icons">check</i> Valid STIX Pattern
+      </small>
+      <small *ngIf="indicator.metaProperties && indicator.metaProperties.validSigma">
+        <i class="material-icons">check</i> Valid Sigma
+      </small>
 
-        <label *ngIf="(indicator.labels && indicator.labels.length) || canCrud">Labels</label>
-        <div class="flex flexItemsCenter">
-            <mat-chip-list>
-                <mat-chip *ngFor="let label of indicator.labels" [selected]="highlightObj.labels[label]" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
-            </mat-chip-list>
-            <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels" *ngIf="canCrud"></add-label-reactive>
-        </div>
+      <div>
+        <ng-container *ngIf="indicator.metaProperties && indicator.metaProperties.patternSyntax && indicator.metaProperties.patternSyntax === 'sigma' || (indicator.metaProperties && indicator.metaProperties.validSigma); else stixPattern">
+          <p>
+            <code-editor value="{{ indicator.pattern }}" readOnly="true" selectedLang="YAML"></code-editor>
+          </p>
+        </ng-container>
+        <ng-template #stixPattern>
+          <ng-container *ngIf="(indicator.metaProperties && indicator.metaProperties.patternSyntax && indicator.metaProperties.patternSyntax === 'stix-pattern') || (indicator.metaProperties && indicator.metaProperties.validStixPattern); else textPattern">
+            <p><code class="codeBlock">{{ indicator.pattern }}</code></p>
+          </ng-container>
+        </ng-template>
+        <ng-template #textPattern>
+          <p>
+            <markdown-editor [editing]="false" [flushed]="true" [truncate]="true"
+                  [value]="indicator.pattern"></markdown-editor>
+          </p>
+        </ng-template>
+      </div>
 
-        <label *ngIf="(attackPatterns && attackPatterns.length > 0) || canCrud">Indicated Techniques</label>
-        <add-attack-pattern [existingAttackPatterns]="attackPatterns" [indicator]="indicator" [createdByRef]="indicator.created_by_ref" [canCrud]="canCrud"></add-attack-pattern>
+      <!-- Sometimes rendered markdown messed up floats -->
+      <div class="altClearFix"></div>
+
+      <label *ngIf="(indicator.labels && indicator.labels.length) || canCrud">Labels</label>
+      <div class="flex flexItemsCenter">
+          <mat-chip-list>
+              <mat-chip *ngFor="let label of indicator.labels" [selected]="highlightObj.labels[label]" class="cursor-pointer chipListChip">{{label | capitalize}}</mat-chip>
+          </mat-chip-list>
+          <add-label-reactive [stixType]="'indicator'" (labelAdded)="addLabel($event)" [currentLabels]="indicator.labels" *ngIf="canCrud"></add-label-reactive>
+      </div>
+
+      <label *ngIf="(attackPatterns && attackPatterns.length > 0) || canCrud">Indicated Techniques</label>
+      <add-attack-pattern [existingAttackPatterns]="attackPatterns" [indicator]="indicator" [createdByRef]="indicator.created_by_ref" [canCrud]="canCrud"></add-attack-pattern>
 
       <div *ngIf="attackPatterns && attackPatterns.length > 0">
         <div class="uf-collapsible-control mb-10 mt-6" (click)="showAttackPatternDetails = !showAttackPatternDetails">
@@ -104,7 +126,7 @@
           </div>
         </div>
       </div>
-
+      
       <mat-tab-group #tabGroup>
         <mat-tab label="Details">
           <div *ngIf="indicator.description">
@@ -165,9 +187,9 @@
           </div>
         </mat-tab>
 
-        <mat-tab label="Scripts" *ngIf="indicator.metaProperties && (indicator.metaProperties.queries || indicator.metaProperties.additional_queries)">
+        <mat-tab label="Scripts" *ngIf="indicator.metaProperties && (indicator.metaProperties.queries || indicator.metaProperties.additional_queries || indicator.metaProperties.sigmaQueries)">
+          <h4 class="fw400" *ngIf="indicator.metaProperties.queries || indicator.metaProperties.sigmaQueries">Automatically Generated Queries</h4>
           <div *ngIf="indicator.metaProperties.queries">
-            <h4 class="fw400">Generated Pattern Translations</h4>
             <div *ngIf="indicator.metaProperties.queries.carElastic && indicator.metaProperties.queries.carElastic.include && indicator.metaProperties.queries.carElastic.query">
               <label>Elastic Search</label>
               <button mat-icon-button color="primary" ngxClipboard [cbContent]="indicator.metaProperties.queries.carElastic.query"  (cbOnError)="handleCopy($event, elasticTooltip)" (cbOnSuccess)="handleCopy($event, elasticTooltip)">
@@ -199,6 +221,20 @@
               </div>
             </div>
           </div>
+
+          <div *ngIf="indicator.metaProperties.sigmaQueries">
+            <div *ngFor="let sigmaQuery of indicator.metaProperties.sigmaQueries">
+              <label>{{ sigmaQuery.tool | sigmaTool }}</label>
+              <button mat-icon-button color="primary" ngxClipboard [cbContent]="sigmaQuery.query" (cbOnError)="handleCopy($event, cimTooltip)" (cbOnSuccess)="handleCopy($event, cimTooltip)">
+                <mat-icon>content_copy</mat-icon>
+                <div #cimTooltip="matTooltip" matTooltip="{{ copyText }}" matTooltipPosition="after" class="inlineBlock"></div>
+              </button>
+              <div class="mb-6">
+                <code class="codeBlock">{{ sigmaQuery.query }}</code>
+              </div>
+            </div>
+          </div>
+
           <div *ngIf="indicator.metaProperties.additional_queries">
             <h4 class="fw400">User Created Queries</h4>
             <div *ngFor="let query of indicator.metaProperties.additional_queries; let i = index">
@@ -252,30 +288,7 @@
       </mat-tab-group>
 
       <div class="mt-20 overFlowHidden" @heightCollapse *ngIf="showCommentTextArea">
-        <h4>Comment</h4>
-        <div class="mb-6">
-          <simplemde-mentions ngDefaultControl [(ngModel)]="commentText" [options]="{ autofocus: true }" class="mdeComment"></simplemde-mentions>
-        </div>
-        <div class="text-right">
-          <button mat-button (click)="showCommentTextArea = false; commentText = ''">CANCEL</button>
-          <button mat-raised-button color="primary" [disabled]="commentText === ''" (click)="submitComment()">SAVE</button>
-        </div>
-        <div label="Comments" *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">
-          <hr>
-          <div *ngFor="let comment of indicator.metaProperties.comments | sortByField: 'submitted'; let i = index" class="comment">
-            <div class="flex flexItemsCenter mb-12">
-              <span *ngIf="comment.user.avatar_url">
-                <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
-              </span>
-              <span>&nbsp;
-                <a routerLink="/users/profile/{{comment.user.id}}">{{ comment.user.userName }}</a>
-                <small class="text-muted" title="{{ comment.submitted | date:'medium' }}"> &bull; {{ comment.submitted | timeAgo }}</small>
-              </span>
-            </div>
-            <markdown-mentions [markDown]="comment.comment"></markdown-mentions>
-            <hr>
-          </div>
-        </div>
+        <comment-section [stix]="indicator" (commentSubmitted)="submitComment($event)" (replySubmitted)="submitReply($event)" (cancelled)="showCommentTextArea = false;"></comment-section>
       </div>
     </div>
 
@@ -295,7 +308,7 @@
 
     <button mat-button color="{{ alreadyCommented ? 'primary' : '' }}" (click)="showCommentTextArea = !showCommentTextArea; showCommentTextArea && collapseContents ? collapseContents = false : ''">
       <i class="material-icons mat-24">chat_bubble</i>
-      <span *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">&nbsp;{{indicator.metaProperties.comments.length}}</span>
+      <span *ngIf="indicator.metaProperties && indicator.metaProperties.comments && indicator.metaProperties.comments.length > 0">&nbsp;{{ commentCount }}</span>
     </button>
   </mat-card-actions>
 </mat-card>

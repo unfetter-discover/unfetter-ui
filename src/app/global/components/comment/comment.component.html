@@ -1,0 +1,16 @@
+<div class="commentComponent" *ngIf="comment">
+  <div class="flex flexItemsCenter mb-12">
+    <span *ngIf="comment.user.avatar_url">
+      <img src="{{ comment.user.avatar_url }}" alt="{{ comment.user.userName }} avatar" class="smallAvatar">&nbsp;
+    </span>
+    <span *ngIf="!comment.user.avatar_url" class="inlineFlex flexItemsCenter text-muted">
+      <mat-icon style="font-size: 26px">account_circle</mat-icon>
+    </span>
+    <span>&nbsp;
+      <a routerLink="/users/profile/{{comment.user.id}}" *ngIf="comment.user.userName">{{ comment.user.userName }}</a>
+      <span *ngIf="!comment.user.userName" class="text-muted">Unknown User</span>
+      <small class="text-muted" title="{{ comment.submitted | date:'medium' }}"> &bull; {{ comment.submitted | timeAgo }}</small>
+    </span>
+  </div>
+  <markdown-mentions [markDown]="comment.comment"></markdown-mentions>
+</div>

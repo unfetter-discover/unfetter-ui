@@ -1,5 +1,7 @@
 FROM node:10.1-alpine
 
+ARG https_proxy_url
+
 LABEL MAINTAINER="UNFETTER"
 LABEL Description="UNFETTER user interface, Angular app"
 
@@ -20,6 +22,11 @@ COPY package.json $WORKING_DIRECTORY
 
 # RUN rm -rf $WORKING_DIRECTORY/node_modules
 RUN echo $WORKING_DIRECTORY
+
+RUN if [ "x$https_proxy_url" = "x" ] ; then echo No proxy applied ; else npm config --global set proxy $https_proxy_url ; fi
+RUN if [ "x$https_proxy_url" = "x" ] ; then echo No https_proxy applied ; else npm config --global set https_proxy $https_proxy_url ; fi
+ENV HTTP_PROXY "$https_proxy_url"
+ENV HTTPS_PROXY "$https_proxy_url"
 
 # The NPM package depends on TAR package, which has a test directory with an encrypted tgz file, that gets blocked by some antivirus scanners. Removing it.
 RUN apk add --update git && \

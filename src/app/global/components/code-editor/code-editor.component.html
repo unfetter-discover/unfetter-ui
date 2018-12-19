@@ -10,14 +10,17 @@
   <div class="toolbar" *ngIf="!readOnly">
     <div class="toolbar-inner">
 
-      <label>Syntax:&nbsp;&nbsp;</label>
-      <mat-form-field>
-        <mat-select [(ngModel)]="selectedLang">
-          <mat-option *ngFor="let lang of langs" [value]="lang">{{ lang }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <span *ngIf="!hideLangSelector">
+        <label>Syntax:&nbsp;&nbsp;</label>
+        <mat-form-field >
+          <mat-select [(ngModel)]="selectedLang">
+            <mat-option *ngFor="let lang of langs" [value]="lang">{{ lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <i class="separator">|</i>
+      </span>
       
-      <i class="separator">|</i>
       <a title="Dark Mode" tabindex="-1" class="control-icon" 
         [class.active]="theme === 'material'" 
         (click)="theme !== 'material' ? theme= 'material' : theme = 'idea'">

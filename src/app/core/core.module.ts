@@ -11,7 +11,8 @@ import { UsersService } from './services/users.service';
 import { WebsocketService } from './services/web-socket.service';
 import { NotificationsService } from './services/notifications.service';
 import { SnackBarService } from './services/snackbar.service';
-import { ExtractTextService } from './services/extract-test.service';
+import { ExtractTextService } from './services/extract-text.service';
+import { WebWorkerService } from './services/web-worker.service';
 
 @NgModule({
 })
@@ -31,7 +32,8 @@ export class CoreModule {
                 NotificationsService,
                 HttpClientModule,
                 SnackBarService,
-                ExtractTextService,                
+                ExtractTextService, 
+                WebWorkerService,               
                 { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
             ],
         };
